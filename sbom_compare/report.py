@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from tabulate import tabulate
 from colorama import Fore, Style, init
+import requests
 
 from .comparator import ComparisonResult
 
@@ -263,6 +264,35 @@ class ReportGenerator:
         }
         return stage_names.get(stage, stage)
     
+    def _fetch_vuln_info(self, vuln_id: str) -> Optional[Dict]:
+        """从OSV API获取漏洞信息
+        
+        Args:
+            vuln_id: 原始漏洞ID，可能包含多个ID（用 / 分隔）
+            
+        Returns:
+            Optional[Dict]: 漏洞信息，如果获取失败则返回None
+        """
+        # 处理多个漏洞ID的情况
+        vuln_ids = [id.strip() for id in vuln_id.split('/')]
+        
+        for vuln_id in vuln_ids:
+            try:
+                # 移除前缀
+                if vuln_id.startswith("Warn: Project is vulnerable to: "):
+                    vuln_id = vuln_id[32:]
+                
+                response = requests.get(f"https://api.osv.dev/v1/vulns/{vuln_id}")
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    print(f"Warning: Failed to fetch vulnerability info for {vuln_id}")
+            except Exception as e:
+                print(f"Error fetching vulnerability info for {vuln_id}: {str(e)}")
+        
+        print(f"Warning: Failed to fetch vulnerability info for all IDs: {vuln_id}")
+        return None
+    
     def _generate_html_report(self, output_path: str) -> None:
         """生成HTML格式的报告"""
         # 创建依赖关系图
@@ -276,6 +306,156 @@ class ReportGenerator:
     
     def _get_html_report_content(self) -> str:
         """获取HTML报告内容"""
+        # 定义CSS样式
+        css_styles = """
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        """
+
         # 简单的HTML模板
         html_template = """
         <!DOCTYPE html>
@@ -284,131 +464,7 @@ class ReportGenerator:
             <meta charset="utf-8">
             <title>SBOM 比较报告</title>
             <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    margin: 20px;
-                    background-color: #f5f5f5;
-                }}
-                .container {{
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    background-color: white;
-                    padding: 20px;
-                    border-radius: 5px;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                }}
-                h1, h2 {{
-                    color: #333;
-                }}
-                table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 20px 0;
-                }}
-                th, td {{
-                    padding: 12px;
-                    text-align: left;
-                    border-bottom: 1px solid #ddd;
-                }}
-                th {{
-                    background-color: #f8f9fa;
-                }}
-                tr:hover {{
-                    background-color: #f5f5f5;
-                }}
-                .collapsible {{
-                    background-color: #f2f2f2;
-                    color: #2980b9;
-                    cursor: pointer;
-                    padding: 18px;
-                    width: 100%;
-                    border: none;
-                    text-align: left;
-                    outline: none;
-                    font-size: 18px;
-                    margin-top: 20px;
-                    border-radius: 5px 5px 0 0;
-                    border-left: 5px solid #3498db;
-                    font-weight: bold;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }}
-                .active, .collapsible:hover {{
-                    background-color: #e9ecef;
-                }}
-                .content {{
-                    display: none;
-                    overflow: hidden;
-                    background-color: #f8f9fa;
-                    padding: 20px;
-                    border-radius: 0 0 5px 5px;
-                }}
-                .collapsible:after {{
-                    content: '+';
-                    font-weight: bold;
-                    float: right;
-                    margin-left: 5px;
-                }}
-                .active:after {{
-                    content: '-';
-                }}
-                .security-score {{
-                    background-color: #f8f9fa;
-                    padding: 20px;
-                    border-radius: 5px;
-                    margin: 20px 0;
-                }}
-                .score-summary {{
-                    text-align: center;
-                    margin-bottom: 20px;
-                }}
-                .total-score {{
-                    font-size: 36px;
-                    font-weight: bold;
-                    color: #2980b9;
-                }}
-                .score-percentage {{
-                    font-size: 24px;
-                    color: #666;
-                    margin: 0 10px;
-                }}
-                .score-grade {{
-                    display: inline-block;
-                    padding: 2px 15px;
-                    border-radius: 20px;
-                    font-weight: bold;
-                    margin-left: 10px;
-                    color: white;
-                }}
-                .grade-a {{
-                    background-color: #4CAF50;
-                }}
-                .grade-b {{
-                    background-color: #FFC107;
-                }}
-                .grade-c {{
-                    background-color: #FF9800;
-                }}
-                .grade-d, .grade-f {{
-                    background-color: #F44336;
-                }}
-                .category-score {{
-                    margin-bottom: 10px;
-                    padding: 10px;
-                    border-radius: 5px;
-                }}
-                .category-score-high {{
-                    background-color: #E8F5E9;
-                }}
-                .category-score-medium {{
-                    background-color: #FFF8E1;
-                }}
-                .category-score-low {{
-                    background-color: #FFEBEE;
-                }}
-                {vuln_styles}
+                {css_styles}
             </style>
         </head>
         <body>
@@ -478,7 +534,10 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{pkg_name}</td><td>{version}</td><td>{license_name}</td></tr>")
             
             added_packages_section = f"""
-            <button class="collapsible">新增包 ({len(self.result.added_packages)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+            <button class="collapsible">
+                <span style="flex-grow: 1;">新增包 ({len(self.result.added_packages)})</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
             <div class="content">
                 <table>
                     <tr>
@@ -502,7 +561,10 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{pkg_name}</td><td>{version}</td><td>{license_name}</td></tr>")
             
             removed_packages_section = f"""
-            <button class="collapsible">移除包 ({len(self.result.removed_packages)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+            <button class="collapsible">
+                <span style="flex-grow: 1;">移除包 ({len(self.result.removed_packages)})</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
             <div class="content">
                 <table>
                     <tr>
@@ -731,8 +793,59 @@ class ReportGenerator:
                             if len(severity_desc) == 2:
                                 severity = severity_desc[0]
                                 description = severity_desc[1]
+                                
+                                # 从OSV API获取详细信息
+                                osv_data = self._fetch_vuln_info(vuln_id)
+                                if osv_data:
+                                    # 添加别名信息
+                                    if "aliases" in osv_data:
+                                        description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
+                                    
+                                    # 添加发布日期
+                                    if "published" in osv_data:
+                                        try:
+                                            published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
+                                            description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
+                                        except:
+                                            pass
+                                    
+                                    # 添加参考链接
+                                    if "references" in osv_data:
+                                        description += "\n\n参考链接:"
+                                        for ref in osv_data["references"]:
+                                            description += f"\n- {ref.get('url', '')}"
+                                    
+                                    # 添加漏洞类型
+                                    if "type" in osv_data:
+                                        description += f"\n\n漏洞类型: {osv_data['type']}"
+                                    
+                                    # 添加影响范围
+                                    if "affected" in osv_data:
+                                        description += "\n\n影响范围:"
+                                        for affected in osv_data["affected"]:
+                                            if "package" in affected:
+                                                description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
+                                                if "ecosystem" in affected["package"]:
+                                                    description += f" ({affected['package']['ecosystem']})"
+                                else:
+                                    description += "\n\n获取漏洞详细信息失败"
+                                
+                                # 处理漏洞ID格式
+                                processed_vuln_id = vuln_id
+                                # if "/" in vuln_id:
+                                #     # 如果有多个ID，使用第一个
+                                #     processed_vuln_id = vuln_id.split("/")[0].strip()
+                                # 移除常见前缀
+                                prefixes_to_remove = [
+                                    "Warn: Project is vulnerable to: "
+                                ]
+                                for prefix in prefixes_to_remove:
+                                    if processed_vuln_id.startswith(prefix):
+                                        processed_vuln_id = processed_vuln_id[len(prefix):]
+                                
                                 vulnerabilities.append({
-                                    "id": vuln_id,
+                                    "id": processed_vuln_id,
+                                    "original_id": vuln_id,  # 保存原始ID
                                     "severity": severity,
                                     "description": description
                                 })
@@ -753,28 +866,48 @@ class ReportGenerator:
                             "未知": "vuln-unknown"
                         }.get(vuln["severity"], "vuln-unknown")
                         
-                        # 处理漏洞ID
-                        vuln_id = vuln['id']
-                        if vuln_id.startswith("Warn: Project is vulnerable to: "):
-                            vuln_id = vuln_id[32:]  # 移除前缀
+                        # 预处理描述文本，将换行符替换为HTML标签
+                        description_lines = vuln['description'].split('\n')
+                        processed_lines = []
+                        current_section = []
+                        
+                        for line in description_lines:
+                            if line.startswith("相关漏洞ID:") or line.startswith("参考链接:") or line.startswith("影响范围:"):
+                                if current_section:
+                                    processed_lines.append('<br>'.join(current_section))
+                                    current_section = []
+                                processed_lines.append(f'<div class="section-header">{line}</div>')
+                            elif line.startswith("- "):
+                                current_section.append(line[2:])
+                            else:
+                                if current_section:
+                                    processed_lines.append('<br>'.join(current_section))
+                                    current_section = []
+                                processed_lines.append(line)
+                        
+                        if current_section:
+                            processed_lines.append('<br>'.join(current_section))
+                        
+                        description_html = '<br>'.join(processed_lines)
                         
                         vuln_rows.append(f"""
                         <tr>
-                            <td>{vuln_id}</td>
-                            <td class="{severity_class}">{vuln['severity']}</td>
-                            <td>{vuln['description']}</td>
+                            <td>{vuln['id']}</td>
+                            <td>{description_html}</td>
                         </tr>
                         """)
                     
                     vulnerability_section = f"""
-                    <button class="collapsible">漏洞信息（来源：Scorecard） ({len(vulnerabilities)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+                    <button class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：Scorecard） ({len(vulnerabilities)})</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
                     <div class="content">
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 30%">漏洞ID</th>
-                                    <th style="width: 15%">严重程度</th>
-                                    <th style="width: 55%">描述</th>
+                                    <th style="width: 35%">漏洞ID</th>
+                                    <th style="width: 65%">描述</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -783,27 +916,6 @@ class ReportGenerator:
                         </table>
                     </div>
                     """
-        
-        # 添加漏洞相关的CSS样式
-        vuln_styles = """
-        .vuln-critical {
-            color: #d32f2f;
-            font-weight: bold;
-        }
-        .vuln-high {
-            color: #f44336;
-            font-weight: bold;
-        }
-        .vuln-medium {
-            color: #ff9800;
-        }
-        .vuln-low {
-            color: #4caf50;
-        }
-        .vuln-unknown {
-            color: #9e9e9e;
-        }
-        """
         
         # 在HTML模板中添加漏洞信息部分和样式
         html_content = html_template.format(
@@ -823,7 +935,7 @@ class ReportGenerator:
             risk_analysis_section=risk_analysis_section,
             security_score_section=security_score_section,
             vulnerability_section=vulnerability_section,
-            vuln_styles=vuln_styles
+            css_styles=css_styles
         )
         
         return html_content
