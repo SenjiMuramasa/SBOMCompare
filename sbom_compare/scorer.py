@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 from .comparator import ComparisonResult
+from .scorecard import ScorecardAPI
 
 logger = logging.getLogger("sbom-compare.scorer")
 
@@ -38,7 +39,8 @@ class SecurityScore:
 class SecurityScoreCalculator:
     """安全评分计算器"""
     
-    def __init__(self, comparison_result: ComparisonResult, source_type: str = "generic"):
+    def __init__(self, comparison_result: ComparisonResult, source_type: str = "generic",
+                 github_org: Optional[str] = None, github_repo: Optional[str] = None):
         """
         初始化评分计算器
         
@@ -49,22 +51,34 @@ class SecurityScoreCalculator:
                 - "ci_to_container": CI中生成的SBOM与容器SBOM比较
                 - "source_to_container": 源代码SBOM与容器SBOM比较
                 - "generic": 通用SBOM比较（默认）
+            github_org: GitHub组织名称（用于获取Scorecard评分）
+            github_repo: GitHub仓库名称（用于获取Scorecard评分）
         """
         self.result = comparison_result
         self.source_type = source_type
         self.has_risks = hasattr(comparison_result, "risks")
+        self.github_org = github_org
+        self.github_repo = github_repo
+        self.scorecard_api = ScorecardAPI()
+        self.scorecard_score = None
+        self.scorecard_details = None
         
         # 定义各类别的最高分（满分10分）
         self.max_scores = {
-            "dependency_integrity": 2.5,  # 依赖完整性
-            "version_consistency": 2.0,   # 版本一致性
-            "license_compliance": 1.5,    # 许可证合规性
-            "supply_chain_integrity": 2.5,  # 供应链完整性
-            "risk_assessment": 1.5        # 风险评估
+            "dependency_integrity": 2.0,    # 依赖完整性
+            "version_consistency": 1.5,     # 版本一致性
+            "license_compliance": 1.5,      # 许可证合规性
+            "supply_chain_integrity": 2.0,  # 供应链完整性
+            "risk_assessment": 1.0,         # 风险评估
+            "scorecard_assessment": 2.0     # Scorecard评估
         }
         
         # 调整不同阶段的评分权重
         self._adjust_weights_by_source_type()
+        
+        # 如果提供了GitHub信息，获取Scorecard评分
+        if github_org and github_repo:
+            self.scorecard_score, self.scorecard_details = self.scorecard_api.get_project_score(github_org, github_repo)
     
     def _adjust_weights_by_source_type(self) -> None:
         """根据比较类型调整权重"""
@@ -99,6 +113,7 @@ class SecurityScoreCalculator:
         license_compliance = self._score_license_compliance()
         supply_chain_integrity = self._score_supply_chain_integrity()
         risk_assessment = self._score_risk_assessment()
+        scorecard_assessment = self._score_scorecard_assessment()
         
         # 汇总类别得分
         categories = {
@@ -106,7 +121,8 @@ class SecurityScoreCalculator:
             "version_consistency": version_consistency,
             "license_compliance": license_compliance,
             "supply_chain_integrity": supply_chain_integrity,
-            "risk_assessment": risk_assessment
+            "risk_assessment": risk_assessment,
+            "scorecard_assessment": scorecard_assessment
         }
         
         # 计算总分
@@ -494,6 +510,55 @@ class SecurityScoreCalculator:
         
         return ScoreCategory(
             name="风险评估",
+            score=score,
+            max_score=max_score,
+            details=details,
+            impact_factors=impact_factors
+        )
+    
+    def _score_scorecard_assessment(self) -> ScoreCategory:
+        """评估Scorecard得分"""
+        max_score = self.max_scores["scorecard_assessment"]
+        score = 0.0
+        details = []
+        impact_factors = []
+        
+        if self.scorecard_score is not None:
+            # Scorecard评分范围是0-10，直接使用
+            score = (self.scorecard_score / 10.0) * max_score
+            
+            # 获取重要检查项状态
+            if self.scorecard_details:
+                check_scores = self.scorecard_api.get_check_scores(self.scorecard_details)
+                important_checks = self.scorecard_api.get_important_checks(check_scores)
+                
+                # 添加重要检查项的状态到详情
+                risk_items = []
+                for check, status in important_checks.items():
+                    if status == "风险较高":
+                        risk_items.append(check)
+                        impact_factors.append(f"{check}风险")
+                    elif status == "需要改进":
+                        details.append(f"{check}需要改进")
+                
+                if risk_items:
+                    details.append(f"以下项目风险较高: {', '.join(risk_items)}")
+                
+                # 根据Scorecard评分添加总体评价
+                if self.scorecard_score >= 8.0:
+                    details.append("项目整体安全实践良好")
+                elif self.scorecard_score >= 6.0:
+                    details.append("项目安全实践有待改进")
+                else:
+                    details.append("项目安全实践亟需加强")
+                    impact_factors.append("整体安全实践不足")
+        else:
+            score = max_score * 0.6  # 如果无法获取Scorecard评分，给予基础分
+            details.append("无法获取Scorecard评分数据")
+            impact_factors.append("缺少Scorecard评估")
+        
+        return ScoreCategory(
+            name="Scorecard评估",
             score=score,
             max_score=max_score,
             details=details,

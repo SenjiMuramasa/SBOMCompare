@@ -31,56 +31,17 @@ logger = logging.getLogger("sbom-compare")
 
 def parse_args():
     """解析命令行参数"""
-    parser = argparse.ArgumentParser(
-        description="比较SPDX-2.3格式的SBOM文件并分析供应链风险"
-    )
-    parser.add_argument(
-        "-a", "--sbom-a", 
-        required=True, 
-        help="第一个SBOM文件的路径"
-    )
-    parser.add_argument(
-        "-b", "--sbom-b", 
-        required=True, 
-        help="第二个SBOM文件的路径"
-    )
-    parser.add_argument(
-        "--report", 
-        help="生成报告的输出路径 (默认: ./report/目录下)"
-    )
-    parser.add_argument(
-        "--format", 
-        choices=["text", "html", "json"], 
-        default="text",
-        help="报告输出格式 (默认: text)"
-    )
-    parser.add_argument(
-        "--risk-analysis", 
-        action="store_true",
-        help="执行详细的供应链风险分析"
-    )
-    parser.add_argument(
-        "--security-score", 
-        action="store_true",
-        help="计算供应链安全评分"
-    )
-    parser.add_argument(
-        "--visualize", 
-        action="store_true",
-        help="可视化SBOM差异"
-    )
-    parser.add_argument(
-        "--compare-type",
-        choices=["generic", "source_to_ci", "ci_to_container", "source_to_container"],
-        default="generic",
-        help="供应链阶段比较类型 (默认: generic)"
-    )
-    parser.add_argument(
-        "-v", "--verbose", 
-        action="store_true",
-        help="显示详细输出"
-    )
-    
+    parser = argparse.ArgumentParser(description="比较两个SBOM文件的差异")
+    parser.add_argument("sbom_a", help="第一个SBOM文件路径")
+    parser.add_argument("sbom_b", help="第二个SBOM文件路径")
+    parser.add_argument("--format", "-f", choices=["text", "html", "json"], default="text",
+                      help="输出格式: text, html, json (默认: text)")
+    parser.add_argument("--output", "-o", help="输出文件路径")
+    parser.add_argument("--type", "-t", choices=["source_to_ci", "ci_to_container", 
+                                               "source_to_container", "generic"],
+                      default="generic", help="SBOM比较类型")
+    parser.add_argument("--github-org", help="GitHub组织名称（用于获取Scorecard评分）")
+    parser.add_argument("--github-repo", help="GitHub仓库名称（用于获取Scorecard评分）")
     return parser.parse_args()
 
 def validate_files(sbom_a_path, sbom_b_path):
@@ -117,67 +78,53 @@ def ensure_report_dir():
 
 def main():
     """主函数"""
+    # 解析命令行参数
     args = parse_args()
     
-    # 设置日志级别
-    if args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    logger.info("SBOM比较工具启动")
-    logger.info(f"比较类型: {args.compare_type}")
-    
-    # 验证文件
-    if not validate_files(args.sbom_a, args.sbom_b):
-        return 1
-    
     try:
-        # 解析SBOM文件
-        logger.info(f"解析SBOM文件: {args.sbom_a}")
-        parser_a = SBOMParser(args.sbom_a)
-        sbom_a = parser_a.parse()
-        
-        logger.info(f"解析SBOM文件: {args.sbom_b}")
-        parser_b = SBOMParser(args.sbom_b)
-        sbom_b = parser_b.parse()
+        # 读取SBOM文件
+        sbom_a = SBOMParser(os.path.join("sample_data", args.sbom_a)).parse()
+        sbom_b = SBOMParser(os.path.join("sample_data", args.sbom_b)).parse()
         
         # 比较SBOM
-        logger.info("比较SBOM文件")
         comparator = SBOMComparator(sbom_a, sbom_b)
-        comparison_result = comparator.compare()
+        result = comparator.compare()
+        
+        # 计算安全评分
+        calculator = SecurityScoreCalculator(
+            result, 
+            source_type=args.type,
+            github_org=args.github_org,
+            github_repo=args.github_repo
+        )
+        security_score = calculator.calculate()
+        result.security_score = security_score
         
         # 风险分析
-        if args.risk_analysis:
-            logger.info(f"执行风险分析 (类型: {args.compare_type})")
-            risk_analyzer = RiskAnalyzer(comparison_result, args.compare_type)
+        if args.type != "generic":
+            logger.info(f"执行风险分析 (类型: {args.type})")
+            risk_analyzer = RiskAnalyzer(result, args.type)
             risks = risk_analyzer.analyze()
-            comparison_result.risks = risks
-        
-        # 安全评分
-        security_score = None
-        if args.security_score or args.risk_analysis:
-            logger.info("计算供应链安全评分")
-            score_calculator = SecurityScoreCalculator(comparison_result, args.compare_type)
-            security_score = score_calculator.calculate()
-            comparison_result.security_score = security_score
+            result.risks = risks
         
         # 生成报告 - 默认输出到 report 目录
-        report_generator = ReportGenerator(comparison_result)
+        report_generator = ReportGenerator(result)
         
         # 如果用户没有指定报告路径，使用默认路径
-        if not args.report:
+        if not args.output:
             # 确保报告目录存在
             report_dir = ensure_report_dir()
             
             # 生成默认文件名
             default_filename = get_default_report_filename(
-                args.sbom_a, args.sbom_b, args.format, args.compare_type
+                args.sbom_a, args.sbom_b, args.format, args.type
             )
             
             # 构建完整路径
             report_path = os.path.join(report_dir, default_filename)
             logger.info(f"使用默认报告路径: {report_path}")
         else:
-            report_path = args.report
+            report_path = args.output
         
         # 生成报告
         logger.info(f"生成{args.format}格式报告: {report_path}")
@@ -186,13 +133,13 @@ def main():
         # 打印结果摘要
         report_generator.print_console_report()
         
-        if args.compare_type != "generic":
-            print(f"\n供应链阶段比较类型: {args.compare_type}")
-            if args.compare_type == "source_to_ci":
+        if args.type != "generic":
+            print(f"\n供应链阶段比较类型: {args.type}")
+            if args.type == "source_to_ci":
                 print("比较源代码阶段与CI阶段SBOM差异")
-            elif args.compare_type == "ci_to_container":
+            elif args.type == "ci_to_container":
                 print("比较CI阶段与容器阶段SBOM差异")
-            elif args.compare_type == "source_to_container":
+            elif args.type == "source_to_container":
                 print("比较源代码阶段与容器阶段SBOM差异（端到端）")
         
         # 打印安全评分
