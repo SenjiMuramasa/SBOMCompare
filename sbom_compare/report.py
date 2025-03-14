@@ -224,6 +224,23 @@ class ReportGenerator:
                                 lines.append(f"    建议: {risk.recommendation}")
                                 lines.append("")
         
+        # 添加漏洞信息部分
+        if hasattr(self.result, "security_score"):
+            security_score = self.result.security_score
+            scorecard_category = security_score.categories.get("scorecard_assessment")
+            if scorecard_category:
+                vulnerabilities = []
+                for detail in scorecard_category.details:
+                    if detail.startswith("- "):
+                        vulnerabilities.append(detail[2:])
+                
+                if vulnerabilities:
+                    lines.append("\n漏洞信息:")
+                    lines.append("-" * 80)
+                    for vuln in vulnerabilities:
+                        lines.append(vuln)
+                    lines.append("")
+        
         return "\n".join(lines)
     
     def _group_risks_by_stage(self, risks):
@@ -264,110 +281,98 @@ class ReportGenerator:
         <!DOCTYPE html>
         <html>
         <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>SBOM比较报告</title>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
             <style>
                 body {{
                     font-family: Arial, sans-serif;
                     line-height: 1.6;
-                    margin: 0;
+                    margin: 20px;
+                    background-color: #f5f5f5;
+                }}
+                .container {{
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    background-color: white;
                     padding: 20px;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }}
+                h1, h2 {{
                     color: #333;
                 }}
-                h1 {{
-                    color: #2c3e50;
-                    border-bottom: 2px solid #3498db;
-                    padding-bottom: 10px;
-                }}
-                h2 {{
-                    color: #2980b9;
-                    margin-top: 30px;
-                }}
                 table {{
-                    border-collapse: collapse;
                     width: 100%;
+                    border-collapse: collapse;
                     margin: 20px 0;
                 }}
                 th, td {{
-                    text-align: left;
                     padding: 12px;
-                    border: 1px solid #ddd;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
                 }}
                 th {{
+                    background-color: #f8f9fa;
+                }}
+                tr:hover {{
+                    background-color: #f5f5f5;
+                }}
+                .collapsible {{
                     background-color: #f2f2f2;
-                }}
-                tr:nth-child(even) {{
-                    background-color: #f9f9f9;
-                }}
-                .risk-high {{
-                    background-color: #FFEBEE;
-                    border-left: 5px solid #F44336;
-                    padding: 10px;
-                    margin: 10px 0;
-                }}
-                .risk-medium {{
-                    background-color: #FFF8E1;
-                    border-left: 5px solid #FFC107;
-                    padding: 10px;
-                    margin: 10px 0;
-                }}
-                .risk-low {{
-                    background-color: #E8F5E9;
-                    border-left: 5px solid #4CAF50;
-                    padding: 10px;
-                    margin: 10px 0;
-                }}
-                .graph-container {{
-                    text-align: center;
-                    margin: 20px 0;
-                }}
-                .stats {{
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: space-between;
-                    margin: 20px 0;
-                }}
-                .stat-box {{
-                    background-color: #f2f2f2;
-                    border-radius: 5px;
-                    padding: 15px;
-                    margin: 10px;
-                    flex: 1 0 200px;
-                    text-align: center;
-                }}
-                .stat-number {{
-                    font-size: 2em;
-                    font-weight: bold;
-                    color: #3498db;
-                }}
-                .stage-header {{
-                    background-color: #EBF5FB;
-                    padding: 5px 10px;
-                    margin: 15px 0 5px 0;
-                    border-radius: 3px;
-                    border-left: 5px solid #3498db;
-                }}
-                .stage-header h3 {{
-                    margin: 5px 0;
                     color: #2980b9;
+                    cursor: pointer;
+                    padding: 18px;
+                    width: 100%;
+                    border: none;
+                    text-align: left;
+                    outline: none;
+                    font-size: 18px;
+                    margin-top: 20px;
+                    border-radius: 5px 5px 0 0;
+                    border-left: 5px solid #3498db;
+                    font-weight: bold;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }}
+                .active, .collapsible:hover {{
+                    background-color: #e9ecef;
+                }}
+                .content {{
+                    display: none;
+                    overflow: hidden;
+                    background-color: #f8f9fa;
+                    padding: 20px;
+                    border-radius: 0 0 5px 5px;
+                }}
+                .collapsible:after {{
+                    content: '+';
+                    font-weight: bold;
+                    float: right;
+                    margin-left: 5px;
+                }}
+                .active:after {{
+                    content: '-';
                 }}
                 .security-score {{
                     background-color: #f8f9fa;
-                    border-radius: 8px;
                     padding: 20px;
+                    border-radius: 5px;
                     margin: 20px 0;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
                 }}
                 .score-summary {{
-                    font-size: 1.2em;
-                    margin-bottom: 15px;
-                    padding-bottom: 10px;
-                    border-bottom: 1px solid #ddd;
+                    text-align: center;
+                    margin-bottom: 20px;
                 }}
                 .total-score {{
-                    font-size: 2.5em;
+                    font-size: 36px;
                     font-weight: bold;
+                    color: #2980b9;
+                }}
+                .score-percentage {{
+                    font-size: 24px;
+                    color: #666;
+                    margin: 0 10px;
                 }}
                 .score-grade {{
                     display: inline-block;
@@ -403,107 +408,60 @@ class ReportGenerator:
                 .category-score-low {{
                     background-color: #FFEBEE;
                 }}
-                /* 可收缩表格样式 */
-                .collapsible {{
-                    background-color: #f2f2f2;
-                    color: #2980b9;
-                    cursor: pointer;
-                    padding: 18px;
-                    width: 100%;
-                    border: none;
-                    text-align: left;
-                    outline: none;
-                    font-size: 18px;
-                    margin-top: 20px;
-                    border-radius: 5px 5px 0 0;
-                    border-left: 5px solid #3498db;
-                    font-weight: bold;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }}
-                .collapsible:hover {{
-                    background-color: #e6f2ff;
-                }}
-                .collapsible:after {{
-                    content: '\\002B';
-                    font-weight: bold;
-                    font-size: 22px;
-                    margin-left: 10px;
-                }}
-                .active:after {{
-                    content: '\\2212';
-                }}
-                .content {{
-                    padding: 0 18px;
-                    max-height: 0;
-                    overflow: hidden;
-                    transition: max-height 0.2s ease-out;
-                    background-color: white;
-                    border-radius: 0 0 5px 5px;
-                    border: 1px solid #ddd;
-                    border-top: none;
-                }}
-                .content-visible {{
-                    max-height: 500px;
-                    overflow-y: auto;
-                }}
+                {vuln_styles}
             </style>
         </head>
         <body>
-            <h1>SBOM比较报告</h1>
-            <p><strong>生成时间:</strong> {timestamp}</p>
-            <p><strong>SBOM A:</strong> {sbom_a_path}</p>
-            <p><strong>SBOM B:</strong> {sbom_b_path}</p>
-
-            {security_score_section}
-            
-            <h2>基本统计信息</h2>
-            <div class="stats">
-                <div class="stat-box">
-                    <div class="stat-number">{added_count}</div>
-                    <div>新增包</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">{removed_count}</div>
-                    <div>移除包</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">{version_changes_count}</div>
-                    <div>版本变更</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">{license_changes_count}</div>
-                    <div>许可证变更</div>
-                </div>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: {timestamp}</p>
+                <p>SBOM A: {sbom_a_path}</p>
+                <p>SBOM B: {sbom_b_path}</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>{added_count}</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>{removed_count}</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>{version_changes_count}</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>{license_changes_count}</td>
+                    </tr>
+                </table>
+                
+                {security_score_section}
+                {vulnerability_section}
+                {added_packages_section}
+                {removed_packages_section}
+                {version_changes_section}
+                {license_changes_section}
+                {supplier_changes_section}
+                {dependency_graph_section}
+                {risk_analysis_section}
             </div>
-
-            {added_packages_section}
-            {removed_packages_section}
-            {version_changes_section}
-            {license_changes_section}
-            {supplier_changes_section}
-            {dependency_graph_section}
-            {risk_analysis_section}
             
-            <!-- 可收缩表格脚本 -->
             <script>
-                document.addEventListener('DOMContentLoaded', function() {{
-                    var coll = document.getElementsByClassName("collapsible");
-                    for (var i = 0; i < coll.length; i++) {{
-                        coll[i].addEventListener("click", function() {{
-                            this.classList.toggle("active");
-                            var content = this.nextElementSibling;
-                            if (content.classList.contains("content-visible")) {{
-                                content.classList.remove("content-visible");
-                                content.style.maxHeight = null;
-                            }} else {{
-                                content.classList.add("content-visible");
-                                content.style.maxHeight = "500px";
-                            }}
-                        }});
-                    }}
-                }});
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {{
+                    coll[i].addEventListener("click", function() {{
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {{
+                            content.style.display = "none";
+                        }} else {{
+                            content.style.display = "block";
+                        }}
+                    }});
+                }}
             </script>
         </body>
         </html>
@@ -716,9 +674,14 @@ class ReportGenerator:
                 cat_percentage = (category.score / category.max_score) * 100
                 category_class = "category-score-high" if cat_percentage >= 80 else "category-score-medium" if cat_percentage >= 60 else "category-score-low"
                 
+                # 对于scorecard_assessment分类，过滤掉漏洞信息
+                details = category.details
+                if category_name == "scorecard_assessment":
+                    details = [d for d in details if not d.startswith("- ")]
+                
                 details_html = ""
-                if category.details:
-                    details_html = f"<p><strong>详情:</strong> {'; '.join(category.details)}</p>"
+                if details:
+                    details_html = f"<p><strong>详情:</strong> {'; '.join(details)}</p>"
                 
                 impact_html = ""
                 if category.impact_factors:
@@ -751,7 +714,98 @@ class ReportGenerator:
             </div>
             """
         
-        # 填充模板
+        # 添加漏洞信息部分
+        vulnerability_section = ""
+        if hasattr(self.result, "security_score"):
+            security_score = self.result.security_score
+            scorecard_category = security_score.categories.get("scorecard_assessment")
+            if scorecard_category:
+                vulnerabilities = []
+                for detail in scorecard_category.details:
+                    if detail.startswith("- "):
+                        # 解析漏洞信息
+                        vuln_info = detail[2:].split(" (")
+                        if len(vuln_info) == 2:
+                            vuln_id = vuln_info[0]
+                            severity_desc = vuln_info[1].split("): ")
+                            if len(severity_desc) == 2:
+                                severity = severity_desc[0]
+                                description = severity_desc[1]
+                                vulnerabilities.append({
+                                    "id": vuln_id,
+                                    "severity": severity,
+                                    "description": description
+                                })
+                
+                if vulnerabilities:
+                    # 按严重程度排序
+                    severity_order = {"严重": 1, "高危": 2, "中危": 3, "低危": 4, "未知": 5}
+                    vulnerabilities.sort(key=lambda x: severity_order.get(x["severity"], 5))
+                    
+                    # 生成漏洞表格HTML
+                    vuln_rows = []
+                    for vuln in vulnerabilities:
+                        severity_class = {
+                            "严重": "vuln-critical",
+                            "高危": "vuln-high",
+                            "中危": "vuln-medium",
+                            "低危": "vuln-low",
+                            "未知": "vuln-unknown"
+                        }.get(vuln["severity"], "vuln-unknown")
+                        
+                        # 处理漏洞ID
+                        vuln_id = vuln['id']
+                        if vuln_id.startswith("Warn: Project is vulnerable to: "):
+                            vuln_id = vuln_id[32:]  # 移除前缀
+                        
+                        vuln_rows.append(f"""
+                        <tr>
+                            <td>{vuln_id}</td>
+                            <td class="{severity_class}">{vuln['severity']}</td>
+                            <td>{vuln['description']}</td>
+                        </tr>
+                        """)
+                    
+                    vulnerability_section = f"""
+                    <button class="collapsible">漏洞信息（来源：Scorecard） ({len(vulnerabilities)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%">漏洞ID</th>
+                                    <th style="width: 15%">严重程度</th>
+                                    <th style="width: 55%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {"".join(vuln_rows)}
+                            </tbody>
+                        </table>
+                    </div>
+                    """
+        
+        # 添加漏洞相关的CSS样式
+        vuln_styles = """
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        """
+        
+        # 在HTML模板中添加漏洞信息部分和样式
         html_content = html_template.format(
             timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             sbom_a_path=self.sbom_a.file_path,
@@ -767,7 +821,9 @@ class ReportGenerator:
             supplier_changes_section=supplier_changes_section,
             dependency_graph_section=dependency_graph_section,
             risk_analysis_section=risk_analysis_section,
-            security_score_section=security_score_section
+            security_score_section=security_score_section,
+            vulnerability_section=vulnerability_section,
+            vuln_styles=vuln_styles
         )
         
         return html_content

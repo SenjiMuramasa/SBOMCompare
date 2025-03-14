@@ -544,6 +544,21 @@ class SecurityScoreCalculator:
                 if risk_items:
                     details.append(f"以下项目风险较高: {', '.join(risk_items)}")
                 
+                # 提取并添加漏洞信息
+                vulnerabilities = self.scorecard_api.get_vulnerability_details(self.scorecard_details)
+                if vulnerabilities:
+                    details.append("\n已知漏洞信息:")
+                    for vuln in vulnerabilities:
+                        severity_color = {
+                            "CRITICAL": "严重",
+                            "HIGH": "高危",
+                            "MEDIUM": "中危",
+                            "LOW": "低危",
+                            "unknown": "未知"
+                        }.get(vuln["severity"], "未知")
+                        details.append(f"- {vuln['id']} ({severity_color}): {vuln['description']}")
+                    impact_factors.append("存在已知漏洞")
+                
                 # 根据Scorecard评分添加总体评价
                 if self.scorecard_score >= 8.0:
                     details.append("项目整体安全实践良好")

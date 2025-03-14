@@ -7,7 +7,7 @@ Scorecard API 集成模块 - 获取项目的 Scorecard 评分
 
 import logging
 import requests
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 
 logger = logging.getLogger("sbom-compare.scorecard")
 
@@ -106,4 +106,43 @@ class ScorecardAPI:
                 else:
                     status[check] = "风险较高"
                     
-        return status 
+        return status
+
+    def get_vulnerability_details(self, data: Dict) -> List[Dict]:
+        """
+        从Scorecard数据中提取漏洞信息
+        
+        Args:
+            data: Scorecard API返回的完整数据
+            
+        Returns:
+            List[Dict]: 漏洞信息列表，每个漏洞包含ID、描述和严重程度
+        """
+        vulnerabilities = []
+        if not data or "checks" not in data:
+            return vulnerabilities
+            
+        # 查找Vulnerabilities检查项
+        for check in data["checks"]:
+            if check.get("name") == "Vulnerabilities":
+                details = check.get("details", [])
+                for detail in details:
+                    # 检查detail是否为字符串（CVE ID）
+                    if isinstance(detail, str):
+                        # 如果是字符串，假设它是CVE ID
+                        vuln_info = {
+                            "id": detail,
+                            "description": f"发现漏洞 {detail}",
+                            "severity": "unknown"
+                        }
+                    else:
+                        # 如果是字典，尝试提取详细信息
+                        vuln_info = {
+                            "id": detail.get("id", ""),
+                            "description": detail.get("description", ""),
+                            "severity": detail.get("severity", "unknown")
+                        }
+                    vulnerabilities.append(vuln_info)
+                break
+                
+        return vulnerabilities 
