@@ -15,6 +15,7 @@ import networkx as nx
 from tabulate import tabulate
 from colorama import Fore, Style, init
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from .comparator import ComparisonResult
 
@@ -230,16 +231,13 @@ class ReportGenerator:
             security_score = self.result.security_score
             scorecard_category = security_score.categories.get("scorecard_assessment")
             if scorecard_category:
-                vulnerabilities = []
-                for detail in scorecard_category.details:
-                    if detail.startswith("- "):
-                        vulnerabilities.append(detail[2:])
+                vulnerabilities = self._process_vulnerabilities(scorecard_category)
                 
                 if vulnerabilities:
                     lines.append("\n漏洞信息:")
                     lines.append("-" * 80)
                     for vuln in vulnerabilities:
-                        lines.append(vuln)
+                        lines.append(vuln["description"])
                     lines.append("")
         
         return "\n".join(lines)
@@ -268,7 +266,7 @@ class ReportGenerator:
         """从OSV API获取漏洞信息
         
         Args:
-            vuln_id: 原始漏洞ID，可能包含多个ID（用 / 分隔）
+            vuln_id: 漏洞ID，可能包含多个ID（用 / 分隔）
             
         Returns:
             Optional[Dict]: 漏洞信息，如果获取失败则返回None
@@ -276,22 +274,133 @@ class ReportGenerator:
         # 处理多个漏洞ID的情况
         vuln_ids = [id.strip() for id in vuln_id.split('/')]
         
-        for vuln_id in vuln_ids:
+        for single_id in vuln_ids:
             try:
                 # 移除前缀
-                if vuln_id.startswith("Warn: Project is vulnerable to: "):
-                    vuln_id = vuln_id[32:]
+                if single_id.startswith("Warn: Project is vulnerable to: "):
+                    single_id = single_id[32:]
                 
-                response = requests.get(f"https://api.osv.dev/v1/vulns/{vuln_id}")
+                response = requests.get(f"https://api.osv.dev/v1/vulns/{single_id}")
                 if response.status_code == 200:
-                    return response.json()
+                    data = response.json()
+                    # 如果成功获取到信息，添加其他ID作为别名
+                    if "aliases" not in data:
+                        data["aliases"] = []
+                    # 将其他ID添加为别名，但不包括当前ID
+                    other_ids = [id for id in vuln_ids if id != single_id]
+                    if other_ids:
+                        data["aliases"].extend(other_ids)
+                    return data
                 else:
-                    print(f"Warning: Failed to fetch vulnerability info for {vuln_id}")
+                    print(f"Warning: Failed to fetch vulnerability info for {single_id}")
             except Exception as e:
-                print(f"Error fetching vulnerability info for {vuln_id}: {str(e)}")
+                print(f"Error fetching vulnerability info for {single_id}: {str(e)}")
+                continue
         
         print(f"Warning: Failed to fetch vulnerability info for all IDs: {vuln_id}")
         return None
+
+    def _process_vulnerabilities(self, scorecard_category) -> List[Dict]:
+        """处理漏洞信息，使用多线程并行获取详细信息
+        
+        Args:
+            scorecard_category: Scorecard评估类别
+            
+        Returns:
+            List[Dict]: 处理后的漏洞信息列表
+        """
+        vulnerabilities = []
+        vuln_details = []
+        
+        # 收集所有需要获取信息的漏洞ID
+        for detail in scorecard_category.details:
+            if detail.startswith("- "):
+                # 解析漏洞信息
+                vuln_info = detail[2:].split(" (")
+                if len(vuln_info) == 2:
+                    vuln_id = vuln_info[0]
+                    severity_desc = vuln_info[1].split("): ")
+                    if len(severity_desc) == 2:
+                        severity = severity_desc[0]
+                        description = severity_desc[1]
+                        vuln_details.append({
+                            "id": vuln_id,
+                            "severity": severity,
+                            "description": description
+                        })
+        
+        # 使用线程池并行获取所有漏洞的详细信息
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            # 提交所有任务
+            future_to_vuln = {
+                executor.submit(self._fetch_vuln_info, vuln["id"]): vuln 
+                for vuln in vuln_details
+            }
+            
+            # 获取所有结果
+            for future in as_completed(future_to_vuln):
+                vuln = future_to_vuln[future]
+                try:
+                    osv_data = future.result()
+                    description = vuln["description"]
+                    
+                    if osv_data:
+                        # 添加别名信息
+                        if "aliases" in osv_data:
+                            description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
+                        
+                        # 添加发布日期
+                        if "published" in osv_data:
+                            try:
+                                published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
+                                description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
+                            except Exception:
+                                pass
+                        
+                        # 添加参考链接
+                        if "references" in osv_data:
+                            description += "\n\n参考链接:"
+                            for ref in osv_data["references"]:
+                                description += f"\n- {ref.get('url', '')}"
+                        
+                        # 添加漏洞类型
+                        if "type" in osv_data:
+                            description += f"\n\n漏洞类型: {osv_data['type']}"
+                        
+                        # 添加影响范围
+                        if "affected" in osv_data:
+                            description += "\n\n影响范围:"
+                            for affected in osv_data["affected"]:
+                                if "package" in affected:
+                                    description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
+                                    if "ecosystem" in affected["package"]:
+                                        description += f" ({affected['package']['ecosystem']})"
+                    else:
+                        # 如果OSV API获取失败，仍然添加原始漏洞ID作为相关漏洞ID
+                        if "/" in vuln["id"]:
+                            related_ids = [id.strip() for id in vuln["id"].split("/")]
+                            description += f"\n\n相关漏洞ID: {', '.join(related_ids)}"
+                        description += "\n\n获取漏洞详细信息失败"
+                    
+                    # 处理漏洞ID格式
+                    processed_vuln_id = vuln["id"]
+                    prefixes_to_remove = [
+                        "Warn: Project is vulnerable to: "
+                    ]
+                    for prefix in prefixes_to_remove:
+                        if processed_vuln_id.startswith(prefix):
+                            processed_vuln_id = processed_vuln_id[len(prefix):]
+                    
+                    vulnerabilities.append({
+                        "id": processed_vuln_id,
+                        "severity": vuln["severity"],
+                        "description": description
+                    })
+                except Exception as e:
+                    print(f"Error processing vulnerability {vuln['id']}: {str(e)}")
+                    continue
+        
+        return vulnerabilities
     
     def _generate_html_report(self, output_path: str) -> None:
         """生成HTML格式的报告"""
@@ -782,73 +891,7 @@ class ReportGenerator:
             security_score = self.result.security_score
             scorecard_category = security_score.categories.get("scorecard_assessment")
             if scorecard_category:
-                vulnerabilities = []
-                for detail in scorecard_category.details:
-                    if detail.startswith("- "):
-                        # 解析漏洞信息
-                        vuln_info = detail[2:].split(" (")
-                        if len(vuln_info) == 2:
-                            vuln_id = vuln_info[0]
-                            severity_desc = vuln_info[1].split("): ")
-                            if len(severity_desc) == 2:
-                                severity = severity_desc[0]
-                                description = severity_desc[1]
-                                
-                                # 从OSV API获取详细信息
-                                osv_data = self._fetch_vuln_info(vuln_id)
-                                if osv_data:
-                                    # 添加别名信息
-                                    if "aliases" in osv_data:
-                                        description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
-                                    
-                                    # 添加发布日期
-                                    if "published" in osv_data:
-                                        try:
-                                            published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
-                                            description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
-                                        except:
-                                            pass
-                                    
-                                    # 添加参考链接
-                                    if "references" in osv_data:
-                                        description += "\n\n参考链接:"
-                                        for ref in osv_data["references"]:
-                                            description += f"\n- {ref.get('url', '')}"
-                                    
-                                    # 添加漏洞类型
-                                    if "type" in osv_data:
-                                        description += f"\n\n漏洞类型: {osv_data['type']}"
-                                    
-                                    # 添加影响范围
-                                    if "affected" in osv_data:
-                                        description += "\n\n影响范围:"
-                                        for affected in osv_data["affected"]:
-                                            if "package" in affected:
-                                                description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
-                                                if "ecosystem" in affected["package"]:
-                                                    description += f" ({affected['package']['ecosystem']})"
-                                else:
-                                    description += "\n\n获取漏洞详细信息失败"
-                                
-                                # 处理漏洞ID格式
-                                processed_vuln_id = vuln_id
-                                # if "/" in vuln_id:
-                                #     # 如果有多个ID，使用第一个
-                                #     processed_vuln_id = vuln_id.split("/")[0].strip()
-                                # 移除常见前缀
-                                prefixes_to_remove = [
-                                    "Warn: Project is vulnerable to: "
-                                ]
-                                for prefix in prefixes_to_remove:
-                                    if processed_vuln_id.startswith(prefix):
-                                        processed_vuln_id = processed_vuln_id[len(prefix):]
-                                
-                                vulnerabilities.append({
-                                    "id": processed_vuln_id,
-                                    "original_id": vuln_id,  # 保存原始ID
-                                    "severity": severity,
-                                    "description": description
-                                })
+                vulnerabilities = self._process_vulnerabilities(scorecard_category)
                 
                 if vulnerabilities:
                     # 按严重程度排序
