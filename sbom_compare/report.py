@@ -307,6 +307,115 @@ class ReportGenerator:
         
         print(f"Warning: Failed to fetch vulnerability info for all IDs: {vuln_id}")
         return None
+    
+    def _fetch_cve_info(self, cve_id: str) -> Optional[Dict]:
+        """从CVE API获取漏洞详细信息
+        
+        Args:
+            cve_id: CVE标识符，如"CVE-2021-44716"
+            
+        Returns:
+            Optional[Dict]: 包含CVE详细信息的字典，如果获取失败则返回None
+        """
+        url = f"https://cveawg.mitre.org/api/cve/{cve_id}"
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Warning: Failed to fetch CVE info for {cve_id} (Status code: {response.status_code})")
+                return None
+        except Exception as e:
+            print(f"Error fetching CVE info for {cve_id}: {str(e)}")
+            return None
+    
+    def _enhance_with_cve_info(self, description: str, osv_data: Dict) -> str:
+        """使用CVE信息增强漏洞描述
+        
+        Args:
+            description: 原始漏洞描述
+            osv_data: OSV API返回的漏洞信息
+            
+        Returns:
+            str: 增强后的漏洞描述
+        """
+        # 检查是否包含CVE ID
+        cve_ids = []
+        if "aliases" in osv_data:
+            for alias in osv_data["aliases"]:
+                if alias.startswith("CVE-"):
+                    cve_ids.append(alias)
+        
+        # 如果找到CVE ID，获取详细信息
+        for cve_id in cve_ids:
+            cve_data = self._fetch_cve_info(cve_id)
+            
+            if cve_data:
+                # 添加CVE信息标题
+                description += f"\n\n来自 {cve_id} 的附加信息:"
+                
+                # 提取CVE描述
+                try:
+                    descriptions = cve_data["containers"]["cna"]["descriptions"]
+                    for desc in descriptions:
+                        if desc["lang"] == "en":
+                            cve_description = desc["value"]
+                            description += f"\n描述: {cve_description}"
+                            break
+                except (KeyError, IndexError):
+                    pass
+                
+                # 提取发布和更新日期
+                try:
+                    published = cve_data["cveMetadata"]["datePublished"]
+                    updated = cve_data["cveMetadata"]["dateUpdated"]
+                    description += f"\n发布日期: {published[:10]}"
+                    description += f"\n最后更新: {updated[:10]}"
+                except (KeyError, IndexError):
+                    pass
+                
+                # 提取参考链接
+                try:
+                    references = cve_data["containers"]["cna"]["references"]
+                    if references:
+                        description += "\nCVE参考链接:"
+                        for ref in references[:5]:  # 最多显示5个链接
+                            url = ref.get("url")
+                            if url:
+                                description += f"\n- {url}"
+                except (KeyError, IndexError):
+                    pass
+                
+                # 只处理第一个CVE ID
+                break
+        
+        return description
+
+    def _fetch_cve_info_batch(self, cve_ids: List[str]) -> Dict[str, Optional[Dict]]:
+        """批量从CVE API获取漏洞详细信息
+        
+        Args:
+            cve_ids: CVE标识符列表
+            
+        Returns:
+            Dict[str, Optional[Dict]]: 包含CVE ID和对应详细信息的字典
+        """
+        results = {}
+        
+        # 使用线程池并行获取所有CVE信息
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            future_to_cve = {executor.submit(self._fetch_cve_info, cve_id): cve_id for cve_id in cve_ids}
+            
+            for future in as_completed(future_to_cve):
+                cve_id = future_to_cve[future]
+                try:
+                    cve_data = future.result()
+                    results[cve_id] = cve_data
+                except Exception as e:
+                    print(f"Error fetching CVE info for {cve_id}: {str(e)}")
+                    results[cve_id] = None
+        
+        return results
 
     def _process_vulnerabilities(self, scorecard_category) -> List[Dict]:
         """处理漏洞信息，使用多线程并行获取详细信息
@@ -337,76 +446,147 @@ class ReportGenerator:
                             "description": description
                         })
         
-        # 使用线程池并行获取所有漏洞的详细信息
+        # 使用线程池并行获取所有漏洞的OSV信息
+        osv_results = {}
+        all_cve_ids = set()
+        
         with ThreadPoolExecutor(max_workers=10) as executor:
-            # 提交所有任务
+            # 提交所有OSV API查询任务
             future_to_vuln = {
                 executor.submit(self._fetch_vuln_info, vuln["id"]): vuln 
                 for vuln in vuln_details
             }
             
-            # 获取所有结果
+            # 获取所有OSV结果并收集需要查询的CVE IDs
             for future in as_completed(future_to_vuln):
                 vuln = future_to_vuln[future]
                 try:
                     osv_data = future.result()
-                    description = vuln["description"]
+                    osv_results[vuln["id"]] = {
+                        "vuln": vuln,
+                        "osv_data": osv_data
+                    }
                     
-                    if osv_data:
-                        # 添加别名信息
-                        if "aliases" in osv_data:
-                            description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
-                        
-                        # 添加发布日期
-                        if "published" in osv_data:
-                            try:
-                                published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
-                                description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
-                            except Exception:
-                                pass
-                        
-                        # 添加参考链接
-                        if "references" in osv_data:
-                            description += "\n\n参考链接:"
-                            for ref in osv_data["references"]:
-                                description += f"\n- {ref.get('url', '')}"
-                        
-                        # 添加漏洞类型
-                        if "type" in osv_data:
-                            description += f"\n\n漏洞类型: {osv_data['type']}"
-                        
-                        # 添加影响范围
-                        if "affected" in osv_data:
-                            description += "\n\n影响范围:"
-                            for affected in osv_data["affected"]:
-                                if "package" in affected:
-                                    description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
-                                    if "ecosystem" in affected["package"]:
-                                        description += f" ({affected['package']['ecosystem']})"
-                    else:
-                        # 如果OSV API获取失败，仍然添加原始漏洞ID作为相关漏洞ID
-                        if "/" in vuln["id"]:
-                            related_ids = [id.strip() for id in vuln["id"].split("/")]
-                            description += f"\n\n相关漏洞ID: {', '.join(related_ids)}"
-                        description += "\n\n获取漏洞详细信息失败"
-                    
-                    # 处理漏洞ID格式
-                    processed_vuln_id = vuln["id"]
-                    prefixes_to_remove = [
-                        "Warn: Project is vulnerable to: "
-                    ]
-                    for prefix in prefixes_to_remove:
-                        if processed_vuln_id.startswith(prefix):
-                            processed_vuln_id = processed_vuln_id[len(prefix):]
-                    
-                    vulnerabilities.append({
-                        "id": processed_vuln_id,
-                        "severity": vuln["severity"],
-                        "description": description
-                    })
+                    # 收集所有需要查询的CVE ID
+                    if osv_data and "aliases" in osv_data:
+                        for alias in osv_data["aliases"]:
+                            if alias.startswith("CVE-"):
+                                all_cve_ids.add(alias)
+                                break  # 每个漏洞只处理第一个CVE ID
                 except Exception as e:
                     print(f"Error processing vulnerability {vuln['id']}: {str(e)}")
-                    continue
+                    osv_results[vuln["id"]] = {
+                        "vuln": vuln,
+                        "osv_data": None
+                    }
+        
+        # 并行获取所有CVE信息
+        cve_results = {}
+        if all_cve_ids:
+            cve_results = self._fetch_cve_info_batch(list(all_cve_ids))
+        
+        # 整合OSV和CVE信息
+        for vuln_id, result in osv_results.items():
+            vuln = result["vuln"]
+            osv_data = result["osv_data"]
+            description = vuln["description"]
+            
+            if osv_data:
+                # 添加别名信息
+                if "aliases" in osv_data:
+                    description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
+                
+                # 添加发布日期
+                if "published" in osv_data:
+                    try:
+                        published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
+                        description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
+                    except Exception:
+                        pass
+                
+                # 添加参考链接
+                if "references" in osv_data:
+                    description += "\n\n参考链接:"
+                    for ref in osv_data["references"]:
+                        description += f"\n- {ref.get('url', '')}"
+                
+                # 添加漏洞类型
+                if "type" in osv_data:
+                    description += f"\n\n漏洞类型: {osv_data['type']}"
+                
+                # 添加影响范围
+                if "affected" in osv_data:
+                    description += "\n\n影响范围:"
+                    for affected in osv_data["affected"]:
+                        if "package" in affected:
+                            description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
+                            if "ecosystem" in affected["package"]:
+                                description += f" ({affected['package']['ecosystem']})"
+                
+                # 添加CVE信息
+                if "aliases" in osv_data:
+                    for alias in osv_data["aliases"]:
+                        if alias.startswith("CVE-") and alias in cve_results and cve_results[alias]:
+                            cve_data = cve_results[alias]
+                            
+                            # 添加CVE信息标题
+                            description += f"\n\n来自 {alias} 的附加信息:"
+                            
+                            # 提取CVE描述
+                            try:
+                                cve_descriptions = cve_data["containers"]["cna"]["descriptions"]
+                                for desc in cve_descriptions:
+                                    if desc["lang"] == "en":
+                                        cve_description = desc["value"]
+                                        description += f"\n描述: {cve_description}"
+                                        break
+                            except (KeyError, IndexError):
+                                pass
+                            
+                            # 提取发布和更新日期
+                            try:
+                                published = cve_data["cveMetadata"]["datePublished"]
+                                updated = cve_data["cveMetadata"]["dateUpdated"]
+                                description += f"\n发布日期: {published[:10]}"
+                                description += f"\n最后更新: {updated[:10]}"
+                            except (KeyError, IndexError):
+                                pass
+                            
+                            # 提取参考链接
+                            try:
+                                references = cve_data["containers"]["cna"]["references"]
+                                if references:
+                                    description += "\nCVE参考链接:"
+                                    for ref in references[:5]:  # 最多显示5个链接
+                                        url = ref.get("url")
+                                        if url:
+                                            description += f"\n- {url}"
+                            except (KeyError, IndexError):
+                                pass
+                            
+                            # 只处理第一个CVE ID
+                            break
+            else:
+                # 如果OSV API获取失败，仍然添加原始漏洞ID作为相关漏洞ID
+                if "/" in vuln["id"]:
+                    related_ids = [id.strip() for id in vuln["id"].split("/")]
+                    description += f"\n\n相关漏洞ID: {', '.join(related_ids)}"
+                description += "\n\n获取漏洞详细信息失败"
+            
+            # 处理漏洞ID格式
+            processed_vuln_id = vuln["id"]
+            prefixes_to_remove = [
+                "Warn: Project is vulnerable to: "
+            ]
+            for prefix in prefixes_to_remove:
+                if processed_vuln_id.startswith(prefix):
+                    processed_vuln_id = processed_vuln_id[len(prefix):]
+            
+            vulnerabilities.append({
+                "id": processed_vuln_id,
+                "severity": vuln["severity"],
+                "description": description
+            })
         
         return vulnerabilities
     
@@ -451,6 +631,8 @@ class ReportGenerator:
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
         }
         th {
             background-color: #f8f9fa;
@@ -462,6 +644,17 @@ class ReportGenerator:
             font-weight: bold;
             color: #2980b9;
             margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
         }
         .collapsible {
             background-color: #f2f2f2;
@@ -570,6 +763,11 @@ class ReportGenerator:
         }
         .vuln-unknown {
             color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
         }
         """
 
@@ -936,8 +1134,22 @@ class ReportGenerator:
                                     processed_lines.append('<br>'.join(current_section))
                                     current_section = []
                                 processed_lines.append(f'<div class="section-header">{line}</div>')
+                            elif line.startswith("来自 CVE-") and "的附加信息:" in line:
+                                if current_section:
+                                    processed_lines.append('<br>'.join(current_section))
+                                    current_section = []
+                                processed_lines.append(f'<div class="cve-header">{line}</div>')
+                            elif line.startswith("描述:") or line.startswith("发布日期:") or line.startswith("最后更新:") or line.startswith("CVE参考链接:"):
+                                if current_section:
+                                    processed_lines.append('<br>'.join(current_section))
+                                    current_section = []
+                                processed_lines.append(f'<div class="section-header">{line}</div>')
                             elif line.startswith("- "):
-                                current_section.append(line[2:])
+                                if "://" in line:  # 这是一个URL链接
+                                    url = line[2:]
+                                    current_section.append(f'<span class="vuln-link">{url}</span>')
+                                else:
+                                    current_section.append(line[2:])
                             else:
                                 if current_section:
                                     processed_lines.append('<br>'.join(current_section))
@@ -965,8 +1177,8 @@ class ReportGenerator:
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 35%">漏洞ID</th>
-                                    <th style="width: 65%">描述</th>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
                                 </tr>
                             </thead>
                             <tbody>
