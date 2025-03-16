@@ -65,12 +65,11 @@ class SecurityScoreCalculator:
         
         # 定义各类别的最高分（满分10分）
         self.max_scores = {
-            "dependency_integrity": 2.0,    # 依赖完整性
-            "version_consistency": 1.5,     # 版本一致性
+            "supply_chain_integrity": 3.0,  # 供应链完整性
+            "version_consistency": 2.0,     # 版本一致性
             "license_compliance": 1.5,      # 许可证合规性
-            "supply_chain_integrity": 2.0,  # 供应链完整性
-            "risk_assessment": 1.0,         # 风险评估
-            "scorecard_assessment": 2.0     # Scorecard评估
+            "risk_assessment": 2.0,         # 风险评估
+            "scorecard_assessment": 1.5     # Scorecard评估
         }
         
         # 调整不同阶段的评分权重
@@ -83,44 +82,55 @@ class SecurityScoreCalculator:
     def _adjust_weights_by_source_type(self) -> None:
         """根据比较类型调整权重"""
         if self.source_type == "source_to_ci":
-            # CI阶段更关注依赖完整性和版本一致性
-            self.max_scores["dependency_integrity"] = 3.0
+            # CI阶段更关注供应链完整性和版本一致性
+            self.max_scores["supply_chain_integrity"] = 3.5
             self.max_scores["version_consistency"] = 2.5
-            self.max_scores["supply_chain_integrity"] = 1.5
+            self.max_scores["risk_assessment"] = 1.5
         elif self.source_type == "ci_to_container":
-            # 容器阶段更关注供应链完整性
-            self.max_scores["dependency_integrity"] = 2.0
-            self.max_scores["supply_chain_integrity"] = 3.0
-        elif self.source_type == "source_to_container":
-            # 端到端更均衡但强调供应链完整性
-            self.max_scores["supply_chain_integrity"] = 3.0
+            # 容器阶段更关注供应链完整性和风险评估
+            self.max_scores["supply_chain_integrity"] = 4.0
+            self.max_scores["version_consistency"] = 1.5
             self.max_scores["risk_assessment"] = 2.0
-            self.max_scores["dependency_integrity"] = 2.0
+        elif self.source_type == "source_to_container":
+            # 端到端更均衡但强调供应链完整性和风险评估
+            self.max_scores["supply_chain_integrity"] = 3.5
+            self.max_scores["risk_assessment"] = 2.5
+            self.max_scores["license_compliance"] = 1.5
         
         # 确保总分为10
+        self._normalize_max_scores()
+    
+    def _normalize_max_scores(self) -> None:
+        """确保各类别最高分总和为10"""
         total = sum(self.max_scores.values())
         if total != 10.0:
             factor = 10.0 / total
-            self.max_scores = {k: v * factor for k, v in self.max_scores.items()}
+            for key in self.max_scores:
+                self.max_scores[key] = round(self.max_scores[key] * factor, 1)
+                
+        # 处理可能的舍入误差
+        total = sum(self.max_scores.values())
+        if total != 10.0:
+            # 调整最大权重的类别以确保总和为10
+            max_key = max(self.max_scores, key=self.max_scores.get)
+            self.max_scores[max_key] += (10.0 - total)
     
     def calculate(self) -> SecurityScore:
         """计算安全评分"""
         logger.info("开始计算软件供应链安全评分")
         
         # 计算各类别得分
-        dependency_integrity = self._score_dependency_integrity()
+        supply_chain_integrity = self._score_supply_chain_integrity()
         version_consistency = self._score_version_consistency()
         license_compliance = self._score_license_compliance()
-        supply_chain_integrity = self._score_supply_chain_integrity()
         risk_assessment = self._score_risk_assessment()
         scorecard_assessment = self._score_scorecard_assessment()
         
         # 汇总类别得分
         categories = {
-            "dependency_integrity": dependency_integrity,
+            "supply_chain_integrity": supply_chain_integrity,
             "version_consistency": version_consistency,
             "license_compliance": license_compliance,
-            "supply_chain_integrity": supply_chain_integrity,
             "risk_assessment": risk_assessment,
             "scorecard_assessment": scorecard_assessment
         }
@@ -148,49 +158,62 @@ class SecurityScoreCalculator:
         logger.info(f"安全评分计算完成：{total_score:.1f}/{max_score:.1f} ({grade})")
         return score
     
-    def _score_dependency_integrity(self) -> ScoreCategory:
-        """评估依赖完整性"""
-        max_score = self.max_scores["dependency_integrity"]
+    def _score_supply_chain_integrity(self) -> ScoreCategory:
+        """评估供应链完整性"""
+        max_score = self.max_scores["supply_chain_integrity"]
         score = max_score
         details = []
         impact_factors = []
         
-        # 计算基线包数量 (用于相对变化计算)
-        baseline_count = len(self.result.sbom_a.packages)
-        if baseline_count == 0:
-            baseline_count = 1  # 避免除零错误
+        # 基线包数量
+        baseline_count = max(1, len(self.result.sbom_a.packages))
         
-        # 评估新增包
-        added_packages = self.result.added_packages
-        if added_packages:
-            added_ratio = len(added_packages) / baseline_count
-            penalty = min(max_score * 0.4, max_score * 0.1 * added_ratio * 10)
+        # 评估供应商变更
+        supplier_changes = self.result.supplier_changes
+        if supplier_changes:
+            change_ratio = len(supplier_changes) / baseline_count
+            penalty = min(max_score * 0.3, max_score * 0.06 * change_ratio * 10)
             score -= penalty
             
-            if len(added_packages) > 10:
-                details.append(f"大量新增包({len(added_packages)}个)可能增加攻击面")
-                impact_factors.append("大量新增依赖")
-            elif len(added_packages) > 0:
-                details.append(f"新增了{len(added_packages)}个包")
+            if len(supplier_changes) > 5:
+                details.append(f"大量供应商变更({len(supplier_changes)}个)可能表明供应链重定向")
+                impact_factors.append("供应链重定向")
+            else:
+                details.append(f"{len(supplier_changes)}个包的供应商发生变更")
         
-        # 评估移除包
-        removed_packages = self.result.removed_packages
-        if removed_packages:
-            removed_ratio = len(removed_packages) / baseline_count
-            penalty = min(max_score * 0.3, max_score * 0.08 * removed_ratio * 10)
-            score -= penalty
-            
-            if len(removed_packages) > 10:
-                details.append(f"大量移除包({len(removed_packages)}个)可能影响功能稳定性")
-                impact_factors.append("大量移除依赖")
-            elif len(removed_packages) > 0:
-                details.append(f"移除了{len(removed_packages)}个包")
+        # 通用情况下评估新增包
+        if not self.source_type or self.source_type not in ["source_to_ci", "ci_to_container", "source_to_container"]:
+            added_packages = self.result.added_packages
+            if added_packages:
+                added_ratio = len(added_packages) / baseline_count
+                penalty = min(max_score * 0.25, max_score * 0.05 * added_ratio * 10)
+                score -= penalty
+                
+                if len(added_packages) > 10:
+                    details.append(f"大量新增包({len(added_packages)}个)可能增加攻击面")
+                    impact_factors.append("大量新增依赖")
+                elif len(added_packages) > 0:
+                    details.append(f"新增了{len(added_packages)}个包")
+        
+        # 通用情况下评估移除包
+        if not self.source_type or self.source_type not in ["source_to_ci", "ci_to_container", "source_to_container"]:
+            removed_packages = self.result.removed_packages
+            if removed_packages:
+                removed_ratio = len(removed_packages) / baseline_count
+                penalty = min(max_score * 0.2, max_score * 0.04 * removed_ratio * 10)
+                score -= penalty
+                
+                if len(removed_packages) > 10:
+                    details.append(f"大量移除包({len(removed_packages)}个)可能影响功能稳定性")
+                    impact_factors.append("大量移除依赖")
+                elif len(removed_packages) > 0:
+                    details.append(f"移除了{len(removed_packages)}个包")
         
         # 评估依赖关系变更
         dependency_changes = self.result.dependency_changes
         if dependency_changes:
             change_ratio = len(dependency_changes) / baseline_count
-            penalty = min(max_score * 0.3, max_score * 0.05 * change_ratio * 10)
+            penalty = min(max_score * 0.2, max_score * 0.04 * change_ratio * 10)
             score -= penalty
             
             if len(dependency_changes) > 5:
@@ -199,15 +222,66 @@ class SecurityScoreCalculator:
             elif len(dependency_changes) > 0:
                 details.append(f"发生了{len(dependency_changes)}处依赖关系变更")
         
+        # 根据SBOM比较类型进行特定评分
+        if self.source_type == "source_to_ci":
+            # 在CI阶段新增的未定义包是严重问题
+            if self.result.added_packages:
+                ratio = len(self.result.added_packages) / baseline_count
+                penalty = min(max_score * 0.4, max_score * 0.08 * ratio * 10)
+                score -= penalty
+                details.append(f"CI阶段新增了{len(self.result.added_packages)}个在源代码中未定义的包")
+                impact_factors.append("CI阶段引入未授权包")
+        
+        elif self.source_type == "ci_to_container":
+            # 容器中缺失的包是严重问题
+            if self.result.removed_packages:
+                ratio = len(self.result.removed_packages) / baseline_count
+                penalty = min(max_score * 0.45, max_score * 0.09 * ratio * 10)
+                score -= penalty
+                details.append(f"容器镜像中缺少{len(self.result.removed_packages)}个在CI构建中存在的包")
+                impact_factors.append("容器缺失必要依赖")
+            
+            # 容器中新增的包也需关注
+            if self.result.added_packages:
+                ratio = len(self.result.added_packages) / baseline_count
+                penalty = min(max_score * 0.35, max_score * 0.07 * ratio * 10)
+                score -= penalty
+                details.append(f"容器镜像中包含{len(self.result.added_packages)}个在CI构建中未出现的包")
+                impact_factors.append("容器引入额外依赖")
+        
+        elif self.source_type == "source_to_container":
+            # 源代码到容器的变化，特别关注新增包
+            if self.result.added_packages:
+                ratio = len(self.result.added_packages) / baseline_count
+                penalty = min(max_score * 0.4, max_score * 0.08 * ratio * 10)
+                score -= penalty
+                details.append(f"容器中存在{len(self.result.added_packages)}个在源代码中未声明的包")
+                impact_factors.append("端到端额外依赖引入")
+            
+            # 源代码到容器的变化，关注移除包
+            if self.result.removed_packages:
+                ratio = len(self.result.removed_packages) / baseline_count
+                penalty = min(max_score * 0.35, max_score * 0.07 * ratio * 10)
+                score -= penalty
+                details.append(f"源代码中定义但容器中缺少{len(self.result.removed_packages)}个包")
+                impact_factors.append("端到端缺失依赖")
+        
         # 确保分数不为负
         score = max(0, score)
         
         # 如果没有问题，添加积极评价
         if score > max_score * 0.8 and not impact_factors:
-            details.append("依赖结构相对稳定，变更较少")
+            if self.source_type == "source_to_ci":
+                details.append("CI阶段保持了与源代码定义的依赖一致性")
+            elif self.source_type == "ci_to_container":
+                details.append("容器镜像正确包含了CI阶段构建的所有组件")
+            elif self.source_type == "source_to_container":
+                details.append("从源代码到容器的整个供应链保持了高度完整性")
+            else:
+                details.append("供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象")
         
         return ScoreCategory(
-            name="依赖完整性",
+            name="供应链完整性",
             score=score,
             max_score=max_score,
             details=details,
@@ -239,7 +313,7 @@ class SecurityScoreCalculator:
             # 主版本变更扣分较多
             if major_changes:
                 major_ratio = len(major_changes) / baseline_count
-                penalty = min(max_score * 0.5, max_score * 0.1 * major_ratio * 10)
+                penalty = min(max_score * 0.6, max_score * 0.12 * major_ratio * 10)
                 score -= penalty
                 details.append(f"{len(major_changes)}个包发生主版本变更，可能存在API不兼容")
                 impact_factors.append("主版本变更")
@@ -247,7 +321,7 @@ class SecurityScoreCalculator:
             # 次版本变更扣分中等
             if minor_changes:
                 minor_ratio = len(minor_changes) / baseline_count
-                penalty = min(max_score * 0.3, max_score * 0.06 * minor_ratio * 10)
+                penalty = min(max_score * 0.4, max_score * 0.08 * minor_ratio * 10)
                 score -= penalty
                 details.append(f"{len(minor_changes)}个包发生次版本变更")
                 if len(minor_changes) > 5:
@@ -256,14 +330,14 @@ class SecurityScoreCalculator:
             # 补丁版本变更扣分较少
             if patch_changes:
                 patch_ratio = len(patch_changes) / baseline_count
-                penalty = min(max_score * 0.2, max_score * 0.03 * patch_ratio * 10)
+                penalty = min(max_score * 0.25, max_score * 0.05 * patch_ratio * 10)
                 score -= penalty
                 details.append(f"{len(patch_changes)}个包发生补丁版本变更")
             
             # 其他版本变更
             if other_changes:
                 other_ratio = len(other_changes) / baseline_count
-                penalty = min(max_score * 0.2, max_score * 0.04 * other_ratio * 10)
+                penalty = min(max_score * 0.3, max_score * 0.06 * other_ratio * 10)
                 score -= penalty
                 details.append(f"{len(other_changes)}个包发生其他版本变更")
         
@@ -284,7 +358,7 @@ class SecurityScoreCalculator:
                     continue
             
             if downgrades:
-                penalty = min(max_score * 0.7, len(downgrades) * max_score * 0.1)
+                penalty = min(max_score * 0.8, len(downgrades) * max_score * 0.15)
                 score -= penalty
                 details.append(f"{len(downgrades)}个包发生版本降级，可能丢失安全修复")
                 impact_factors.append("版本降级")
@@ -368,87 +442,6 @@ class SecurityScoreCalculator:
         
         return ScoreCategory(
             name="许可证合规性",
-            score=score,
-            max_score=max_score,
-            details=details,
-            impact_factors=impact_factors
-        )
-    
-    def _score_supply_chain_integrity(self) -> ScoreCategory:
-        """评估供应链完整性"""
-        max_score = self.max_scores["supply_chain_integrity"]
-        score = max_score
-        details = []
-        impact_factors = []
-        
-        # 基线包数量
-        baseline_count = max(1, len(self.result.sbom_a.packages))
-        
-        # 评估供应商变更
-        supplier_changes = self.result.supplier_changes
-        if supplier_changes:
-            change_ratio = len(supplier_changes) / baseline_count
-            penalty = min(max_score * 0.5, max_score * 0.1 * change_ratio * 10)
-            score -= penalty
-            
-            if len(supplier_changes) > 5:
-                details.append(f"大量供应商变更({len(supplier_changes)}个)可能表明供应链重定向")
-                impact_factors.append("供应链重定向")
-            else:
-                details.append(f"{len(supplier_changes)}个包的供应商发生变更")
-        
-        # 根据SBOM比较类型进行特定评分
-        if self.source_type == "source_to_ci":
-            # 在CI阶段新增的未定义包是严重问题
-            if self.result.added_packages:
-                ratio = len(self.result.added_packages) / baseline_count
-                penalty = min(max_score * 0.6, max_score * 0.12 * ratio * 10)
-                score -= penalty
-                details.append(f"CI阶段新增了{len(self.result.added_packages)}个在源代码中未定义的包")
-                impact_factors.append("CI阶段引入未授权包")
-        
-        elif self.source_type == "ci_to_container":
-            # 容器中缺失的包是严重问题
-            if self.result.removed_packages:
-                ratio = len(self.result.removed_packages) / baseline_count
-                penalty = min(max_score * 0.7, max_score * 0.14 * ratio * 10)
-                score -= penalty
-                details.append(f"容器镜像中缺少{len(self.result.removed_packages)}个在CI构建中存在的包")
-                impact_factors.append("容器缺失必要依赖")
-            
-            # 容器中新增的包也需关注
-            if self.result.added_packages:
-                ratio = len(self.result.added_packages) / baseline_count
-                penalty = min(max_score * 0.5, max_score * 0.1 * ratio * 10)
-                score -= penalty
-                details.append(f"容器镜像中包含{len(self.result.added_packages)}个在CI构建中未出现的包")
-                impact_factors.append("容器引入额外依赖")
-        
-        elif self.source_type == "source_to_container":
-            # 源代码到容器的变化，特别关注新增包
-            if self.result.added_packages:
-                ratio = len(self.result.added_packages) / baseline_count
-                penalty = min(max_score * 0.6, max_score * 0.12 * ratio * 10)
-                score -= penalty
-                details.append(f"容器中存在{len(self.result.added_packages)}个在源代码中未声明的包")
-                impact_factors.append("端到端额外依赖引入")
-        
-        # 确保分数不为负
-        score = max(0, score)
-        
-        # 如果没有问题，添加积极评价
-        if score > max_score * 0.8 and not impact_factors:
-            if self.source_type == "source_to_ci":
-                details.append("CI阶段保持了与源代码定义的依赖一致性")
-            elif self.source_type == "ci_to_container":
-                details.append("容器镜像正确包含了CI阶段构建的所有组件")
-            elif self.source_type == "source_to_container":
-                details.append("从源代码到容器的整个供应链保持了高度完整性")
-            else:
-                details.append("供应链保持了较高的完整性，无明显篡改迹象")
-        
-        return ScoreCategory(
-            name="供应链完整性",
             score=score,
             max_score=max_score,
             details=details,
