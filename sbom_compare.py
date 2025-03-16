@@ -90,6 +90,13 @@ def main():
         comparator = SBOMComparator(sbom_a, sbom_b)
         result = comparator.compare()
         
+        # 风险分析
+        if args.type != "generic":
+            logger.info(f"执行风险分析 (类型: {args.type})")
+            risk_analyzer = RiskAnalyzer(result, args.type)
+            risks = risk_analyzer.analyze()
+            result.risks = risks
+
         # 计算安全评分
         calculator = SecurityScoreCalculator(
             result, 
@@ -99,13 +106,6 @@ def main():
         )
         security_score = calculator.calculate()
         result.security_score = security_score
-        
-        # 风险分析
-        if args.type != "generic":
-            logger.info(f"执行风险分析 (类型: {args.type})")
-            risk_analyzer = RiskAnalyzer(result, args.type)
-            risks = risk_analyzer.analyze()
-            result.risks = risks
         
         # 生成报告 - 默认输出到 report 目录
         report_generator = ReportGenerator(result)

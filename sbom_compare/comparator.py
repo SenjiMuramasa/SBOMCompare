@@ -56,6 +56,7 @@ class ComparisonResult:
     license_changes: List[LicenseChange] = field(default_factory=list)
     supplier_changes: List[SupplierChange] = field(default_factory=list)
     dependency_changes: List[DependencyChange] = field(default_factory=list)
+    risks: Dict[str, List[Any]] = field(default_factory=lambda: {"high": [], "medium": [], "low": []})
 
 
 class SBOMComparator:

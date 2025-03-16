@@ -462,8 +462,11 @@ class SecurityScoreCalculator:
         details = []
         impact_factors = []
         
+        # 重新检查是否有风险分析结果，不仅依赖初始化时的检查
+        has_risks = hasattr(self.result, "risks")
+        
         # 仅在有风险分析结果时评分
-        if self.has_risks and hasattr(self.result, "risks"):
+        if has_risks:
             # 高风险项
             high_risks = self.result.risks.get("high", [])
             if high_risks:
@@ -505,7 +508,7 @@ class SecurityScoreCalculator:
         score = max(0, score)
         
         # 如果风险很少或没有，添加积极评价
-        if self.has_risks and score > max_score * 0.8 and not impact_factors:
+        if has_risks and score > max_score * 0.8 and not impact_factors:
             details.append("风险分析未发现明显的安全问题")
         
         return ScoreCategory(
