@@ -942,7 +942,7 @@ class ReportGenerator:
                     
                     vulnerability_section = f"""
                     <button class="collapsible">
-                        <span style="flex-grow: 1;">漏洞信息（来源：Scorecard） ({len(vulnerabilities)})</span>
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV API） ({len(vulnerabilities)})</span>
                         <span style="font-size:14px;color:#666">点击展开/收起</span>
                     </button>
                     <div class="content">

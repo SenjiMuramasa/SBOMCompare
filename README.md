@@ -60,6 +60,8 @@ SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，
 
 ### 基本用法
 
+将SBOM文件存入sample_data目录，然后运行以下命令：
+
 ```bash
 python sbom_compare.py <sbom_a.json> <sbom_b.json> [options]
 ```
