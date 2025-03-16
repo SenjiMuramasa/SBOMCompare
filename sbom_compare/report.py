@@ -140,7 +140,15 @@ class ReportGenerator:
             headers = ["包名", "旧版本", "新版本", "变更类型"]
             
             for change in self.result.version_changes:
-                change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                # 规范化版本号进行比较
+                normalized_old = change.old_version[1:] if change.old_version.startswith('v') else change.old_version
+                normalized_new = change.new_version[1:] if change.new_version.startswith('v') else change.new_version
+                
+                # 当规范化后的版本相同时显示为"无变更"
+                if normalized_old == normalized_new:
+                    change_type = "无变更"
+                else:
+                    change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
                 table_data.append([
                     change.package_name,
                     change.old_version,
@@ -691,7 +699,15 @@ class ReportGenerator:
         if self.result.version_changes:
             rows = []
             for change in self.result.version_changes:
-                change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                # 规范化版本号进行比较
+                normalized_old = change.old_version[1:] if change.old_version.startswith('v') else change.old_version
+                normalized_new = change.new_version[1:] if change.new_version.startswith('v') else change.new_version
+                
+                # 当规范化后的版本相同时显示为"无变更"
+                if normalized_old == normalized_new:
+                    change_type = "无变更"
+                else:
+                    change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
                 rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_version}</td><td>{change.new_version}</td><td>{change_type}</td></tr>")
             
             version_changes_section = f"""

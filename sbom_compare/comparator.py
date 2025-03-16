@@ -56,7 +56,6 @@ class ComparisonResult:
     license_changes: List[LicenseChange] = field(default_factory=list)
     supplier_changes: List[SupplierChange] = field(default_factory=list)
     dependency_changes: List[DependencyChange] = field(default_factory=list)
-    risks: Dict[str, List[Any]] = field(default_factory=lambda: {"high": [], "medium": [], "low": []})
 
 
 class SBOMComparator:
@@ -121,19 +120,25 @@ class SBOMComparator:
             version_a = self.sbom_a.version_map.get(pkg_name)
             version_b = self.sbom_b.version_map.get(pkg_name)
             
-            if version_a and version_b and version_a != version_b:
-                # 检测是主版本、次版本还是补丁版本变更
-                is_major, is_minor, is_patch = self._analyze_version_change(version_a, version_b)
+            if version_a and version_b:
+                # 规范化版本号，去掉前缀"v"
+                normalized_version_a = version_a[1:] if version_a.startswith('v') else version_a
+                normalized_version_b = version_b[1:] if version_b.startswith('v') else version_b
                 
-                change = VersionChange(
-                    package_name=pkg_name,
-                    old_version=version_a,
-                    new_version=version_b,
-                    is_major=is_major,
-                    is_minor=is_minor,
-                    is_patch=is_patch
-                )
-                self.result.version_changes.append(change)
+                # 只有当规范化后的版本号不同时才记录变更
+                if normalized_version_a != normalized_version_b:
+                    # 检测是主版本、次版本还是补丁版本变更
+                    is_major, is_minor, is_patch = self._analyze_version_change(normalized_version_a, normalized_version_b)
+                    
+                    change = VersionChange(
+                        package_name=pkg_name,
+                        old_version=version_a,
+                        new_version=version_b,
+                        is_major=is_major,
+                        is_minor=is_minor,
+                        is_patch=is_patch
+                    )
+                    self.result.version_changes.append(change)
         
         logger.debug(f"发现 {len(self.result.version_changes)} 个版本变更")
     
