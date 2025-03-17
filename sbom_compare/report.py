@@ -217,6 +217,9 @@ class ReportGenerator:
                             for risk in risks:
                                 all_stages[stage].append((level, risk))
             
+            # 计算总风险数量
+            total_risks = sum(len(risks) for risks in all_stages.values())
+            
             # 先处理通用风险（没有特定阶段）
             if all_stages[None]:
                 for level, risk in all_stages[None]:
@@ -787,6 +790,73 @@ class ReportGenerator:
             display: block;
             padding: 3px 0;
         }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
         """
 
         # 简单的HTML模板
@@ -1025,6 +1095,9 @@ class ReportGenerator:
                             for risk in risks:
                                 all_stages[stage].append((level, risk))
             
+            # 计算总风险数量
+            total_risks = sum(len(risks) for risks in all_stages.values())
+            
             # 先处理通用风险（没有特定阶段）
             if all_stages[None]:
                 for level, risk in all_stages[None]:
@@ -1034,10 +1107,10 @@ class ReportGenerator:
                     
                     risk_items.append(f"""
                     <div class="risk-{level}">
-                        <h3>{risk.category}</h3>
-                        <p>{risk.description}</p>
-                        <p><strong>受影响的包:</strong> {affected_packages}</p>
-                        <p><strong>建议:</strong> {risk.recommendation}</p>
+                        <div class="risk-category">{risk.category}</div>
+                        <div class="risk-description">{risk.description}</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> {affected_packages}</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> {risk.recommendation}</div>
                     </div>
                     """)
             
@@ -1049,7 +1122,7 @@ class ReportGenerator:
                     # 只添加一次阶段标题
                     risk_items.append(f"""
                     <div class="stage-header">
-                        <h3>【{stage_name}阶段】</h3>
+                        <span>【{stage_name}阶段】</span>
                     </div>
                     """)
                     
@@ -1064,17 +1137,24 @@ class ReportGenerator:
                         
                         risk_items.append(f"""
                         <div class="risk-{level}">
-                            <h3>{risk.category}</h3>
-                            <p>{risk.description}</p>
-                            <p><strong>受影响的包:</strong> {affected_packages}</p>
-                            <p><strong>建议:</strong> {risk.recommendation}</p>
+                            <div class="risk-category">{risk.category}</div>
+                            <div class="risk-description">{risk.description}</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> {affected_packages}</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> {risk.recommendation}</div>
                         </div>
                         """)
             
             if risk_items:
                 risk_analysis_section = f"""
-                <h2>风险分析</h2>
-                {"".join(risk_items)}
+                <button class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 ({total_risks})</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        {"".join(risk_items)}
+                    </div>
+                </div>
                 """
         
         # 安全评分部分
