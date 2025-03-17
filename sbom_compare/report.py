@@ -202,37 +202,55 @@ class ReportGenerator:
             lines.append("风险分析")
             lines.append("-" * 80)
             
-            # 按风险级别分组
+            # 收集所有风险，按阶段和级别进行分组
+            all_stages = {"source": [], "ci": [], "container": [], "end-to-end": [], None: []}
+            
             risk_levels = ["high", "medium", "low"]
             for level in risk_levels:
                 if level in self.result.risks and self.result.risks[level]:
-                    lines.append(f"\n{level.upper()} 级别风险:")
-                    
                     # 按供应链阶段分组
                     stage_risks = self._group_risks_by_stage(self.result.risks[level])
                     
-                    # 先显示通用风险
-                    if None in stage_risks:
-                        for risk in stage_risks[None]:
-                            lines.append(f"  - {risk.category}: {risk.description}")
-                            lines.append(f"    受影响的包: {', '.join(risk.affected_packages[:5])}")
-                            if len(risk.affected_packages) > 5:
-                                lines.append(f"    ... 等共{len(risk.affected_packages)}个包")
-                            lines.append(f"    建议: {risk.recommendation}")
-                            lines.append("")
+                    # 将风险按阶段收集，并保留级别信息
+                    for stage, risks in stage_risks.items():
+                        if stage in all_stages:
+                            for risk in risks:
+                                all_stages[stage].append((level, risk))
+            
+            # 先处理通用风险（没有特定阶段）
+            if all_stages[None]:
+                for level, risk in all_stages[None]:
+                    affected_packages = ", ".join(risk.affected_packages[:5])
+                    if len(risk.affected_packages) > 5:
+                        affected_packages += f"... 等共{len(risk.affected_packages)}个包"
                     
-                    # 显示特定阶段的风险
-                    stages = ["source", "ci", "container", "end-to-end"]
-                    for stage in stages:
-                        if stage in stage_risks:
-                            lines.append(f"  【{self._get_stage_name(stage)}阶段】")
-                            for risk in stage_risks[stage]:
-                                lines.append(f"  - {risk.category}: {risk.description}")
-                                lines.append(f"    受影响的包: {', '.join(risk.affected_packages[:5])}")
-                                if len(risk.affected_packages) > 5:
-                                    lines.append(f"    ... 等共{len(risk.affected_packages)}个包")
-                                lines.append(f"    建议: {risk.recommendation}")
-                                lines.append("")
+                    lines.append(f"{level.upper()} 级别风险:")
+                    lines.append(f"  - {risk.category}: {risk.description}")
+                    lines.append(f"    受影响的包: {affected_packages}")
+                    lines.append(f"    建议: {risk.recommendation}")
+                    lines.append("")
+            
+            # 处理按阶段分组的风险
+            stages = ["source", "ci", "container", "end-to-end"]
+            for stage in stages:
+                if all_stages[stage]:  # 如果该阶段有风险
+                    stage_name = self._get_stage_name(stage)
+                    # 只添加一次阶段标题
+                    lines.append(f"  【{stage_name}阶段】")
+                    
+                    # 按风险级别排序（高到低）
+                    sorted_risks = sorted(all_stages[stage], key=lambda x: {"high": 0, "medium": 1, "low": 2}[x[0]])
+                    
+                    # 显示该阶段的所有风险
+                    for level, risk in sorted_risks:
+                        affected_packages = ", ".join(risk.affected_packages[:5])
+                        if len(risk.affected_packages) > 5:
+                            affected_packages += f"... 等共{len(risk.affected_packages)}个包"
+                        
+                        lines.append(f"  - {risk.category}: {risk.description}")
+                        lines.append(f"    受影响的包: {affected_packages}")
+                        lines.append(f"    建议: {risk.recommendation}")
+                        lines.append("")
         
         # 添加漏洞信息部分
         if hasattr(self.result, "security_score"):
@@ -983,52 +1001,66 @@ class ReportGenerator:
         if hasattr(self.result, "risks"):
             risk_items = []
             
+            # 收集所有风险，按阶段和级别进行分组
+            all_stages = {"source": [], "ci": [], "container": [], "end-to-end": [], None: []}
+            
             risk_levels = ["high", "medium", "low"]
             for level in risk_levels:
                 if level in self.result.risks and self.result.risks[level]:
                     # 按供应链阶段分组
                     stage_risks = self._group_risks_by_stage(self.result.risks[level])
                     
-                    # 通用风险
-                    if None in stage_risks:
-                        for risk in stage_risks[None]:
-                            affected_packages = ", ".join(risk.affected_packages[:5])
-                            if len(risk.affected_packages) > 5:
-                                affected_packages += f"... 等共{len(risk.affected_packages)}个包"
-                            
-                            risk_items.append(f"""
-                            <div class="risk-{level}">
-                                <h3>{risk.category}</h3>
-                                <p>{risk.description}</p>
-                                <p><strong>受影响的包:</strong> {affected_packages}</p>
-                                <p><strong>建议:</strong> {risk.recommendation}</p>
-                            </div>
-                            """)
+                    # 将风险按阶段收集，并保留级别信息
+                    for stage, risks in stage_risks.items():
+                        if stage in all_stages:
+                            for risk in risks:
+                                all_stages[stage].append((level, risk))
+            
+            # 先处理通用风险（没有特定阶段）
+            if all_stages[None]:
+                for level, risk in all_stages[None]:
+                    affected_packages = ", ".join(risk.affected_packages[:5])
+                    if len(risk.affected_packages) > 5:
+                        affected_packages += f"... 等共{len(risk.affected_packages)}个包"
                     
-                    # 特定阶段的风险
-                    stages = ["source", "ci", "container", "end-to-end"]
-                    for stage in stages:
-                        if stage in stage_risks:
-                            stage_name = self._get_stage_name(stage)
-                            risk_items.append(f"""
-                            <div class="stage-header">
-                                <h3>【{stage_name}阶段】</h3>
-                            </div>
-                            """)
-                            
-                            for risk in stage_risks[stage]:
-                                affected_packages = ", ".join(risk.affected_packages[:5])
-                                if len(risk.affected_packages) > 5:
-                                    affected_packages += f"... 等共{len(risk.affected_packages)}个包"
-                                
-                                risk_items.append(f"""
-                                <div class="risk-{level}">
-                                    <h3>{risk.category}</h3>
-                                    <p>{risk.description}</p>
-                                    <p><strong>受影响的包:</strong> {affected_packages}</p>
-                                    <p><strong>建议:</strong> {risk.recommendation}</p>
-                                </div>
-                                """)
+                    risk_items.append(f"""
+                    <div class="risk-{level}">
+                        <h3>{risk.category}</h3>
+                        <p>{risk.description}</p>
+                        <p><strong>受影响的包:</strong> {affected_packages}</p>
+                        <p><strong>建议:</strong> {risk.recommendation}</p>
+                    </div>
+                    """)
+            
+            # 处理按阶段分组的风险
+            stages = ["source", "ci", "container", "end-to-end"]
+            for stage in stages:
+                if all_stages[stage]:  # 如果该阶段有风险
+                    stage_name = self._get_stage_name(stage)
+                    # 只添加一次阶段标题
+                    risk_items.append(f"""
+                    <div class="stage-header">
+                        <h3>【{stage_name}阶段】</h3>
+                    </div>
+                    """)
+                    
+                    # 按风险级别排序（高到低）
+                    sorted_risks = sorted(all_stages[stage], key=lambda x: {"high": 0, "medium": 1, "low": 2}[x[0]])
+                    
+                    # 显示该阶段的所有风险
+                    for level, risk in sorted_risks:
+                        affected_packages = ", ".join(risk.affected_packages[:5])
+                        if len(risk.affected_packages) > 5:
+                            affected_packages += f"... 等共{len(risk.affected_packages)}个包"
+                        
+                        risk_items.append(f"""
+                        <div class="risk-{level}">
+                            <h3>{risk.category}</h3>
+                            <p>{risk.description}</p>
+                            <p><strong>受影响的包:</strong> {affected_packages}</p>
+                            <p><strong>建议:</strong> {risk.recommendation}</p>
+                        </div>
+                        """)
             
             if risk_items:
                 risk_analysis_section = f"""
