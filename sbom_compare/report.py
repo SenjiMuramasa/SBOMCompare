@@ -927,7 +927,10 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_version}</td><td>{change.new_version}</td><td>{change_type}</td></tr>")
             
             version_changes_section = f"""
-            <button class="collapsible">版本变更 ({len(self.result.version_changes)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+            <button class="collapsible">
+                <span style="flex-grow: 1;">版本变更 ({len(self.result.version_changes)})</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
             <div class="content">
                 <table>
                     <tr>
@@ -951,7 +954,10 @@ class ReportGenerator:
                 rows.append(f"<tr{row_class}><td>{change.package_name}</td><td>{change.old_license}</td><td>{change.new_license}</td><td>{compatibility}</td></tr>")
             
             license_changes_section = f"""
-            <button class="collapsible">许可证变更 ({len(self.result.license_changes)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+            <button class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 ({len(self.result.license_changes)})</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
             <div class="content">
                 <table>
                     <tr>
@@ -973,7 +979,10 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_supplier}</td><td>{change.new_supplier}</td></tr>")
             
             supplier_changes_section = f"""
-            <button class="collapsible">供应商变更 ({len(self.result.supplier_changes)}) <span style="font-size:14px;color:#666">点击展开/收起</span></button>
+            <button class="collapsible">
+                <span style="flex-grow: 1;">供应商变更 ({len(self.result.supplier_changes)})</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
             <div class="content">
                 <table>
                     <tr>
