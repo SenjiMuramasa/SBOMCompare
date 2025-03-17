@@ -126,7 +126,7 @@ python sbom_compare.py syft_sbom.json syft-build.spdx.json --github-org myorg --
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/yourusername/sbom-compare.git
+git clone https://github.com/SenjiMuramasa/sbom-compare.git
 ```
 
 2. 安装依赖：
