@@ -8,8 +8,11 @@ SBOM比较器 - 比较两个SBOM文件的差异
 import logging
 from typing import Dict, List, Set, Tuple, Any, Optional
 from dataclasses import dataclass, field
+import re
+import time
+from tqdm import tqdm
 
-from .parser import SBOMData
+from .parser import SBOMData, SPDXPackage
 
 logger = logging.getLogger("sbom-compare.comparator")
 
@@ -64,87 +67,146 @@ class SBOMComparator:
     def __init__(self, sbom_a: SBOMData, sbom_b: SBOMData):
         self.sbom_a = sbom_a
         self.sbom_b = sbom_b
-        self.result = ComparisonResult(sbom_a, sbom_b)
+        self.logger = logging.getLogger("sbom-compare.comparator")
     
     def compare(self) -> ComparisonResult:
-        """比较两个SBOM并返回差异结果"""
-        logger.info("开始比较SBOM文件")
+        """比较两个SBOM"""
+        start_time = time.time()
+        self.logger.info("开始比较SBOM...")
+        print("开始SBOM比较分析...")
         
-        # 比较包集合
-        self._compare_package_sets()
+        # 创建结果对象
+        result = ComparisonResult(self.sbom_a, self.sbom_b)
         
-        # 比较相同包的版本变化
-        self._compare_versions()
-        
-        # 比较许可证变化
-        self._compare_licenses()
-        
-        # 比较供应商变化
-        self._compare_suppliers()
-        
-        # 比较依赖关系变化
-        self._compare_dependencies()
-        
-        logger.info(f"比较完成，共发现 {self._count_changes()} 处变化")
-        return self.result
-    
-    def _count_changes(self) -> int:
-        """计算总的变化数量"""
-        return (
-            len(self.result.added_packages) +
-            len(self.result.removed_packages) +
-            len(self.result.version_changes) +
-            len(self.result.license_changes) +
-            len(self.result.supplier_changes) +
-            len(self.result.dependency_changes)
-        )
-    
-    def _compare_package_sets(self) -> None:
-        """比较两个SBOM中的包集合"""
+        # 获取包名集合
         packages_a = set(self.sbom_a.package_map.keys())
         packages_b = set(self.sbom_b.package_map.keys())
         
-        added_packages = packages_b - packages_a
-        removed_packages = packages_a - packages_b
+        # 找出新增、删除和共有的包
+        result.added_packages = list(packages_b - packages_a)
+        result.removed_packages = list(packages_a - packages_b)
+        common_packages = packages_a & packages_b
         
-        self.result.added_packages = sorted(list(added_packages))
-        self.result.removed_packages = sorted(list(removed_packages))
+        # 打印步骤信息
+        print(f"发现 {len(result.added_packages)} 个新增包, {len(result.removed_packages)} 个移除包")
+        print(f"分析 {len(common_packages)} 个共同包的变更...")
         
-        logger.debug(f"发现 {len(added_packages)} 个新增包，{len(removed_packages)} 个移除包")
-    
-    def _compare_versions(self) -> None:
-        """比较相同包的版本变化"""
-        common_packages = set(self.sbom_a.package_map.keys()) & set(self.sbom_b.package_map.keys())
-        
-        for pkg_name in common_packages:
-            version_a = self.sbom_a.version_map.get(pkg_name)
-            version_b = self.sbom_b.version_map.get(pkg_name)
+        # 分析版本变更
+        print("正在分析版本变更...")
+        progress = tqdm(common_packages, desc="分析版本变更", unit="包")
+        for pkg_name in progress:
+            pkg_a = self.sbom_a.get_package_by_name(pkg_name)
+            pkg_b = self.sbom_b.get_package_by_name(pkg_name)
             
-            if version_a and version_b:
-                # 规范化版本号，去掉前缀"v"并移除空格
-                normalized_version_a = self._normalize_version(version_a)
-                normalized_version_b = self._normalize_version(version_b)
+            # 比较版本（处理NOASSERTION和空字符串）
+            version_a = pkg_a.version if pkg_a.version else ""
+            version_b = pkg_b.version if pkg_b.version else ""
+            
+            # 规范化版本号进行比较
+            normalized_version_a = self._normalize_version(version_a)
+            normalized_version_b = self._normalize_version(version_b)
+            
+            # 只有当规范化后的版本不同时才记录变更
+            if normalized_version_a != normalized_version_b:
+                is_major, is_minor, is_patch = self._analyze_version_change(normalized_version_a, normalized_version_b)
                 
-                # 只有当规范化后的版本号不同时才记录变更
-                if normalized_version_a != normalized_version_b:
-                    # 检测是主版本、次版本还是补丁版本变更
-                    is_major, is_minor, is_patch = self._analyze_version_change(normalized_version_a, normalized_version_b)
-                    
-                    change = VersionChange(
-                        package_name=pkg_name,
-                        old_version=version_a,
-                        new_version=version_b,
-                        is_major=is_major,
-                        is_minor=is_minor,
-                        is_patch=is_patch
-                    )
-                    self.result.version_changes.append(change)
+                # 添加到版本变更列表
+                version_change = VersionChange(
+                    pkg_name, 
+                    version_a, 
+                    version_b,
+                    is_major=is_major,
+                    is_minor=is_minor,
+                    is_patch=is_patch
+                )
+                result.version_changes.append(version_change)
         
-        logger.debug(f"发现 {len(self.result.version_changes)} 个版本变更")
+        # 分析许可证变更
+        print("正在分析许可证变更...")
+        progress = tqdm(common_packages, desc="分析许可证变更", unit="包")
+        for pkg_name in progress:
+            pkg_a = self.sbom_a.get_package_by_name(pkg_name)
+            pkg_b = self.sbom_b.get_package_by_name(pkg_name)
+            
+            # 比较许可证（处理NOASSERTION和空字符串）
+            license_a = pkg_a.license_concluded if pkg_a.license_concluded else ""
+            license_b = pkg_b.license_concluded if pkg_b.license_concluded else ""
+            
+            # 规范化许可证进行比较
+            normalized_license_a = self._normalize_license(license_a)
+            normalized_license_b = self._normalize_license(license_b)
+            
+            # 只有当规范化后的许可证不同时才记录变更
+            if normalized_license_a != normalized_license_b:
+                # 检查许可证兼容性
+                compatibility_issue = self._check_license_compatibility(license_a, license_b)
+                
+                # 添加到许可证变更列表
+                license_change = LicenseChange(
+                    pkg_name,
+                    license_a,
+                    license_b,
+                    compatibility_issue
+                )
+                result.license_changes.append(license_change)
+        
+        # 分析供应商变更
+        print("正在分析供应商变更...")
+        progress = tqdm(common_packages, desc="分析供应商变更", unit="包")
+        for pkg_name in progress:
+            pkg_a = self.sbom_a.get_package_by_name(pkg_name)
+            pkg_b = self.sbom_b.get_package_by_name(pkg_name)
+            
+            # 比较供应商
+            supplier_a = pkg_a.supplier if pkg_a.supplier else ""
+            supplier_b = pkg_b.supplier if pkg_b.supplier else ""
+            
+            if supplier_a != supplier_b:
+                # 添加到供应商变更列表
+                supplier_change = SupplierChange(
+                    pkg_name,
+                    supplier_a,
+                    supplier_b
+                )
+                result.supplier_changes.append(supplier_change)
+        
+        # 分析依赖关系变更
+        print("正在分析依赖关系变更...")
+        progress = tqdm(common_packages, desc="分析依赖关系变更", unit="包")
+        for pkg_name in progress:
+            # 获取包的依赖
+            deps_a = set(self.sbom_a.package_relationships.get(pkg_name, []))
+            deps_b = set(self.sbom_b.package_relationships.get(pkg_name, []))
+            
+            # 比较依赖关系
+            if deps_a != deps_b:
+                # 添加到依赖关系变更列表
+                dependency_change = DependencyChange(
+                    pkg_name,
+                    list(deps_b - deps_a),  # 新增依赖
+                    list(deps_a - deps_b)   # 移除依赖
+                )
+                result.dependency_changes.append(dependency_change)
+                
+        # 统计变更总数
+        total_changes = (
+            len(result.added_packages) + 
+            len(result.removed_packages) + 
+            len(result.version_changes) + 
+            len(result.license_changes) + 
+            len(result.supplier_changes) + 
+            len(result.dependency_changes)
+        )
+        
+        end_time = time.time()
+        elapsed = end_time - start_time
+        self.logger.info(f"SBOM比较完成，找到 {total_changes} 个变更，耗时 {elapsed:.2f} 秒")
+        print(f"SBOM比较分析完成，共发现 {total_changes} 个变更，耗时 {elapsed:.2f} 秒")
+        return result
     
     def _normalize_version(self, version: str) -> str:
         """规范化版本字符串，移除空格、前缀'v'和版本表达式前缀"""
-        if not version:
+        if not version or version == "NOASSERTION":
             return ""
             
         # 标准化版本前缀符号周围的空格，如">= 1.0.0" 变为 ">=1.0.0"
@@ -167,6 +229,12 @@ class SBOMComparator:
             version = version[1:]
             
         return version
+    
+    def _normalize_license(self, license_text: str) -> str:
+        """规范化许可证字符串，处理NOASSERTION等特殊情况"""
+        if not license_text or license_text == "NOASSERTION":
+            return ""
+        return license_text.strip()
     
     def _analyze_version_change(self, version_a: str, version_b: str) -> Tuple[bool, bool, bool]:
         """分析版本变更的类型 (主版本、次版本、补丁版本)"""
@@ -203,29 +271,7 @@ class SBOMComparator:
         # 默认为一般版本变更
         return False, False, False
     
-    def _compare_licenses(self) -> None:
-        """比较许可证变化"""
-        common_packages = set(self.sbom_a.package_map.keys()) & set(self.sbom_b.package_map.keys())
-        
-        for pkg_name in common_packages:
-            license_a = self.sbom_a.license_map.get(pkg_name)
-            license_b = self.sbom_b.license_map.get(pkg_name)
-            
-            if license_a and license_b and license_a != license_b:
-                # 检测许可证兼容性问题
-                compatibility_issue = self._detect_license_compatibility_issue(license_a, license_b)
-                
-                change = LicenseChange(
-                    package_name=pkg_name,
-                    old_license=license_a,
-                    new_license=license_b,
-                    compatibility_issue=compatibility_issue
-                )
-                self.result.license_changes.append(change)
-        
-        logger.debug(f"发现 {len(self.result.license_changes)} 个许可证变更")
-    
-    def _detect_license_compatibility_issue(self, license_a: str, license_b: str) -> bool:
+    def _check_license_compatibility(self, license_a: str, license_b: str) -> bool:
         """检测许可证变更是否存在兼容性问题"""
         # 定义常见的许可证兼容性问题组合
         incompatible_pairs = [
@@ -259,43 +305,4 @@ class SBOMComparator:
             if pair[0] in license_b and pair[1] in license_a:
                 return True   # 从严格到宽松
         
-        return False
-    
-    def _compare_suppliers(self) -> None:
-        """比较供应商变化"""
-        common_packages = set(self.sbom_a.package_map.keys()) & set(self.sbom_b.package_map.keys())
-        
-        for pkg_name in common_packages:
-            supplier_a = self.sbom_a.supplier_map.get(pkg_name)
-            supplier_b = self.sbom_b.supplier_map.get(pkg_name)
-            
-            if supplier_a and supplier_b and supplier_a != supplier_b:
-                change = SupplierChange(
-                    package_name=pkg_name,
-                    old_supplier=supplier_a,
-                    new_supplier=supplier_b
-                )
-                self.result.supplier_changes.append(change)
-        
-        logger.debug(f"发现 {len(self.result.supplier_changes)} 个供应商变更")
-    
-    def _compare_dependencies(self) -> None:
-        """比较依赖关系变化"""
-        common_packages = set(self.sbom_a.package_map.keys()) & set(self.sbom_b.package_map.keys())
-        
-        for pkg_name in common_packages:
-            deps_a = set(self.sbom_a.get_dependencies(pkg_name))
-            deps_b = set(self.sbom_b.get_dependencies(pkg_name))
-            
-            added_deps = deps_b - deps_a
-            removed_deps = deps_a - deps_b
-            
-            if added_deps or removed_deps:
-                change = DependencyChange(
-                    package_name=pkg_name,
-                    added_dependencies=sorted(list(added_deps)),
-                    removed_dependencies=sorted(list(removed_deps))
-                )
-                self.result.dependency_changes.append(change)
-        
-        logger.debug(f"发现 {len(self.result.dependency_changes)} 个依赖关系变更") 
+        return False 
