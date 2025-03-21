@@ -306,63 +306,102 @@ class ReportGenerator:
         return stage_names.get(stage, stage)
     
     def _fetch_vuln_info(self, vuln_id: str) -> Optional[Dict]:
-        """从OSV API获取漏洞信息
+        """从OSV API获取漏洞详细信息
         
         Args:
-            vuln_id: 漏洞ID，可能包含多个ID（用 / 分隔）
+            vuln_id: 漏洞ID
             
         Returns:
-            Optional[Dict]: 漏洞信息，如果获取失败则返回None
+            Optional[Dict]: 漏洞详细信息
         """
-        # 处理多个漏洞ID的情况
-        vuln_ids = [id.strip() for id in vuln_id.split('/')]
-        
-        for single_id in vuln_ids:
-            try:
-                # 移除前缀
-                if single_id.startswith("Warn: Project is vulnerable to: "):
-                    single_id = single_id[32:]
-                
-                response = requests.get(f"https://api.osv.dev/v1/vulns/{single_id}")
-                if response.status_code == 200:
-                    data = response.json()
-                    # 如果成功获取到信息，添加其他ID作为别名
-                    if "aliases" not in data:
-                        data["aliases"] = []
-                    # 将其他ID添加为别名，但不包括当前ID
-                    other_ids = [id for id in vuln_ids if id != single_id]
-                    if other_ids:
-                        data["aliases"].extend(other_ids)
-                    return data
-                else:
-                    print(f"Warning: Failed to fetch vulnerability info for {single_id}")
-            except Exception as e:
-                print(f"Error fetching vulnerability info for {single_id}: {str(e)}")
-                continue
-        
-        print(f"Warning: Failed to fetch vulnerability info for all IDs: {vuln_id}")
+        url = f"https://api.osv.dev/v1/vulns/{vuln_id}"
+        try:
+            response = requests.get(url, timeout=30)
+            if response.status_code == 200:
+                return response.json()
+        except Exception as e:
+            logger.error(f"获取漏洞 {vuln_id} 详细信息失败: {str(e)}")
         return None
+        
+    def _fetch_vuln_batch(self, vuln_ids: List[str]) -> Dict[str, Optional[Dict]]:
+        """
+        批量获取漏洞详细信息
+        
+        Args:
+            vuln_ids: 漏洞ID列表
+            
+        Returns:
+            Dict[str, Optional[Dict]]: 漏洞ID到详细信息的映射
+        """
+        results = {}
+        
+        # 创建进度条
+        with tqdm(total=len(vuln_ids), desc="获取漏洞详情", unit="个") as pbar:
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                future_to_id = {executor.submit(self._fetch_vuln_info, vuln_id): vuln_id for vuln_id in vuln_ids}
+                
+                for future in as_completed(future_to_id):
+                    vuln_id = future_to_id[future]
+                    try:
+                        vuln_data = future.result()
+                        results[vuln_id] = vuln_data
+                    except Exception as e:
+                        logger.error(f"获取漏洞 {vuln_id} 详细信息失败: {str(e)}")
+                        results[vuln_id] = None
+                    finally:
+                        pbar.update(1)
+        
+        return results
     
     def _fetch_cve_info(self, cve_id: str) -> Optional[Dict]:
-        """从CVE API获取漏洞详细信息
+        """从CVE API获取CVE详细信息
         
         Args:
-            cve_id: CVE标识符，如"CVE-2021-44716"
+            cve_id: CVE ID(如CVE-2021-44228)
             
         Returns:
-            Optional[Dict]: 包含CVE详细信息的字典，如果获取失败则返回None
+            Optional[Dict]: CVE详细信息，如果获取失败则返回None
         """
         url = f"https://cveawg.mitre.org/api/cve/{cve_id}"
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=30)
             if response.status_code == 200:
                 return response.json()
             else:
-                print(f"Warning: Failed to fetch CVE info for {cve_id} (Status code: {response.status_code})")
-                return None
+                logger.warning(f"获取CVE {cve_id} 信息失败，状态码: {response.status_code}")
         except Exception as e:
-            print(f"Error fetching CVE info for {cve_id}: {str(e)}")
-            return None
+            logger.error(f"获取CVE {cve_id} 信息时出错: {str(e)}")
+        return None
+    
+    def _fetch_cve_info_batch(self, cve_ids: List[str]) -> Dict[str, Optional[Dict]]:
+        """批量从CVE API获取漏洞详细信息
+        
+        Args:
+            cve_ids: CVE标识符列表
+            
+        Returns:
+            Dict[str, Optional[Dict]]: 包含CVE ID和对应详细信息的字典
+        """
+        results = {}
+        
+        # 创建进度条
+        with tqdm(total=len(cve_ids), desc="获取CVE详情", unit="个") as pbar:
+            # 使用线程池并行获取所有CVE信息
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                future_to_cve = {executor.submit(self._fetch_cve_info, cve_id): cve_id for cve_id in cve_ids}
+                
+                for future in as_completed(future_to_cve):
+                    cve_id = future_to_cve[future]
+                    try:
+                        cve_data = future.result()
+                        results[cve_id] = cve_data
+                    except Exception as e:
+                        print(f"Error fetching CVE info for {cve_id}: {str(e)}")
+                        results[cve_id] = None
+                    finally:
+                        pbar.update(1)
+        
+        return results
     
     def _enhance_with_cve_info(self, description: str, osv_data: Dict) -> str:
         """使用CVE信息增强漏洞描述
@@ -425,36 +464,6 @@ class ReportGenerator:
                 break
         
         return description
-
-    def _fetch_cve_info_batch(self, cve_ids: List[str]) -> Dict[str, Optional[Dict]]:
-        """批量从CVE API获取漏洞详细信息
-        
-        Args:
-            cve_ids: CVE标识符列表
-            
-        Returns:
-            Dict[str, Optional[Dict]]: 包含CVE ID和对应详细信息的字典
-        """
-        results = {}
-        
-        # 创建进度条
-        with tqdm(total=len(cve_ids), desc="获取CVE详情", unit="个") as pbar:
-            # 使用线程池并行获取所有CVE信息
-            with ThreadPoolExecutor(max_workers=10) as executor:
-                future_to_cve = {executor.submit(self._fetch_cve_info, cve_id): cve_id for cve_id in cve_ids}
-                
-                for future in as_completed(future_to_cve):
-                    cve_id = future_to_cve[future]
-                    try:
-                        cve_data = future.result()
-                        results[cve_id] = cve_data
-                    except Exception as e:
-                        print(f"Error fetching CVE info for {cve_id}: {str(e)}")
-                        results[cve_id] = None
-                    finally:
-                        pbar.update(1)
-        
-        return results
 
     def _process_vulnerabilities(self, scorecard_category) -> List[Dict]:
         """处理漏洞信息，使用多线程并行获取详细信息
@@ -1768,52 +1777,44 @@ class ReportGenerator:
         # 替换路径分隔符为URL友好格式
         clean_name = clean_name.replace('/', '%2F').replace('_', '%5F')
         
-        try:
-            # 查询OSV网站获取漏洞列表
-            url = f"https://osv.dev/list?q={clean_name}"
-            response = requests.get(url)
-            if response.status_code == 200:
-                # 解析HTML内容
-                tree = html.fromstring(response.content)
-                # 使用XPath获取漏洞ID
-                vuln_ids = tree.xpath('//div[@class="vuln-table-row mdc-data-table__row"]//a/text()')
-                return vuln_ids
-            else:
-                logger.warning(f"获取包 {package_name} 的漏洞信息失败，状态码: {response.status_code}")
-                return []
-        except Exception as e:
-            logger.error(f"获取包 {package_name} 的漏洞信息时出错: {str(e)}")
-            return []
-    
-    def _fetch_vuln_batch(self, vuln_ids: List[str]) -> Dict[str, Optional[Dict]]:
-        """
-        批量获取漏洞详细信息
+        # 重试参数
+        max_retries = 3
+        retry_delay = 2  # 初始延迟2秒
         
-        Args:
-            vuln_ids: 漏洞ID列表
-            
-        Returns:
-            Dict[str, Optional[Dict]]: 漏洞ID到详细信息的映射
-        """
-        results = {}
-        
-        # 创建进度条
-        with tqdm(total=len(vuln_ids), desc="获取漏洞详情", unit="个") as pbar:
-            with ThreadPoolExecutor(max_workers=10) as executor:
-                future_to_id = {executor.submit(self._fetch_vuln_info, vuln_id): vuln_id for vuln_id in vuln_ids}
+        for attempt in range(max_retries):
+            try:
+                # 查询OSV网站获取漏洞列表
+                url = f"https://osv.dev/list?q={clean_name}"
                 
-                for future in as_completed(future_to_id):
-                    vuln_id = future_to_id[future]
-                    try:
-                        vuln_data = future.result()
-                        results[vuln_id] = vuln_data
-                    except Exception as e:
-                        logger.error(f"获取漏洞 {vuln_id} 详细信息失败: {str(e)}")
-                        results[vuln_id] = None
-                    finally:
-                        pbar.update(1)
+                # 每次请求前增加延迟，避免频率限制
+                if attempt > 0:
+                    sleep_time = retry_delay * (2 ** (attempt - 1))  # 指数退避
+                    logger.info(f"重试获取 {package_name} 的漏洞信息 (第{attempt+1}次尝试)，等待 {sleep_time} 秒")
+                    time.sleep(sleep_time)
+                
+                response = requests.get(url, timeout=30)
+                
+                if response.status_code == 200:
+                    # 解析HTML内容
+                    tree = html.fromstring(response.content)
+                    # 使用XPath获取漏洞ID
+                    vuln_ids = tree.xpath('//div[@class="vuln-table-row mdc-data-table__row"]//a/text()')
+                    return vuln_ids
+                elif response.status_code == 429:  # Too Many Requests
+                    logger.warning(f"获取包 {package_name} 的漏洞信息被限制，状态码: {response.status_code}")
+                    # 请求被限制，稍后重试
+                    continue
+                else:
+                    logger.warning(f"获取包 {package_name} 的漏洞信息失败，状态码: {response.status_code}")
+                    if attempt == max_retries - 1:
+                        return []  # 最后一次尝试也失败
+                    continue  # 继续尝试
+            except Exception as e:
+                logger.error(f"获取包 {package_name} 的漏洞信息时出错: {str(e)}")
+                if attempt == max_retries - 1:
+                    return []  # 最后一次尝试也失败
         
-        return results
+        return []  # 所有重试都失败
     
     def _fetch_package_vulnerabilities_batch(self, packages: List[str]) -> Dict[str, List[Dict]]:
         """
