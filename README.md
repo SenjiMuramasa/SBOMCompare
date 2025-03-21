@@ -1,6 +1,6 @@
 # SBOM Compare
 
-SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，支持分析依赖包的变更、许可证合规性、供应链安全评分等。
+SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，支持分析依赖包的变更、许可证合规性、供应链安全评分和漏洞分析。
 
 ## 功能特点
 
@@ -10,6 +10,7 @@ SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，
 - 识别许可证变更和兼容性问题
 - 追踪供应商变更
 - 分析依赖关系变化
+- 智能版本比较，处理特殊前缀（v1.0.0、==1.0.0等）和Unicode转义符号
 
 ### 2. 安全评估
 - 软件供应链安全评分（满分10分）
@@ -21,8 +22,9 @@ SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，
 - 详细的评分解释和改进建议
 
 ### 3. 漏洞分析
-- 自动获取漏洞信息（通过OSV API）
+- 自动获取漏洞信息（通过OSV和CVE API）
 - 多线程并行处理提升性能
+- 请求频率限制和自动重试机制，避免API限制
 - 支持多种漏洞ID格式
 - 按严重程度分类统计
 - 提供漏洞详细信息
@@ -46,6 +48,7 @@ SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，
   - 红色：移除包
   - 橙色：版本变更
   - 蓝色：无变化
+- 进度条显示，实时展示处理进度
 
 ### 6. 多种报告格式
 - HTML格式（交互式）
@@ -53,6 +56,7 @@ SBOM Compare 是一个用于比较两个软件物料清单（SBOM）的工具，
   - 清晰的表格展示
   - 按严重程度着色
   - 响应式设计
+  - 新增包漏洞信息展示
 - 文本格式（命令行友好）
 - JSON格式（便于集成）
 
@@ -68,17 +72,19 @@ python sbom_compare.py <sbom_a.json> <sbom_b.json> [options]
 
 ### 命令行参数
 
-- `--format`: 指定输出格式（html/text/json），默认为text
-- `--output`: 指定输出文件路径
+- `--format, -f`: 指定输出格式（html/text/json），默认为text
+- `--output, -o`: 指定输出文件路径
 - `--github-org`: 指定GitHub组织名（用于安全评分）
 - `--github-repo`: 指定GitHub仓库名（用于安全评分）
-- `-t/--target`: 指定目标类型（source_to_ci/ci_to_container）
+- `--type, -t`: 指定目标类型（source_to_ci/ci_to_container/source_to_container/generic）
 
 ### 示例
 
 比较源代码和CI阶段的SBOM，生成HTML报告：
 ```bash
-python sbom_compare.py syft_sbom.json syft-build.spdx.json --github-org myorg --github-repo myrepo -t source_to_ci --format html
+python sbom_compare.py syft_sbom.json syft-build.spdx.json --github-org myorg --github-repo myrepo --type source_to_ci --format html
+```
+
 ```
 
 ## 报告内容
@@ -100,9 +106,10 @@ python sbom_compare.py syft_sbom.json syft-build.spdx.json --github-org myorg --
    - 漏洞总数统计
    - 按严重程度分布
    - 详细漏洞信息
+   - 官方CVE信息集成
 
 4. 变更详情
-   - 新增包列表
+   - 新增包列表（及其漏洞信息）
    - 移除包列表
    - 版本变更详情
    - 许可证变更信息
@@ -112,21 +119,45 @@ python sbom_compare.py syft_sbom.json syft-build.spdx.json --github-org myorg --
    - 可视化展示依赖变化
    - 清晰的颜色标识
 
+## 技术特性
+
+1. **多线程并行处理**：
+   - 使用线程池并行获取漏洞信息
+   - 高效处理大量包的依赖分析
+   - 显著提升大型SBOM处理性能
+
+2. **API请求优化**：
+   - 智能批处理API请求
+   - 自动重试机制（最多3次尝试）
+   - 指数退避策略（等待时间递增）
+   - 请求超时处理
+
+3. **版本比较增强**：
+   - 处理特殊版本格式（如"v1.0.0"和"1.0.0"视为相同）
+   - 识别版本表达式（如">=1.0.0"、"==2.0.0"）
+   - 支持Unicode转义序列（如"\u003e"和">"）
+
+4. **错误处理**：
+   - 全面的异常捕获和处理
+   - 详细日志记录
+   - 用户友好的错误提示
+
 ## 依赖要求
 
 - Python 3.7+
 - 主要依赖包：
-  - requests
-  - matplotlib
-  - networkx
-  - tabulate
-  - colorama
+  - requests>=2.31.0
+  - matplotlib==3.7.1
+  - networkx==3.1
+  - tabulate==0.9.0
+  - colorama==0.4.6
+  - tqdm (用于进度条显示)
 
 ## 安装
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/SenjiMuramasa/sbom-compare.git
+git clone https://github.com/yourusername/sbom-compare.git
 ```
 
 2. 安装依赖：
@@ -142,12 +173,15 @@ pip install -r requirements.txt
    - CycloneDX JSON
 
 2. 漏洞信息获取：
-   - 使用OSV API
+   - 使用OSV API和MITRE CVE API
    - 支持多线程并行处理
    - 自动处理多ID格式
+   - API请求有频率限制，工具已实现自动重试
 
 3. 性能考虑：
    - 大型SBOM比较可能需要较长时间
+   - 多线程并行处理可显著提高性能
+   - 进度条显示可实时了解处理进度
    - 建议使用SSD存储生成的报告
    - 注意网络连接状态（用于获取漏洞信息）
 

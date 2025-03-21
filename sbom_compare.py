@@ -2,7 +2,23 @@
 # -*- coding: utf-8 -*-
 
 """
-SBOM Comparator - 比较SPDX-2.3格式的SBOM文件并分析供应链风险
+SBOM Compare - 比较软件物料清单文件并分析供应链风险
+
+SBOM Compare 是一个命令行工具，用于：
+1. 比较两个SBOM文件，分析依赖包的变更
+2. 识别版本、许可证和供应商变更
+3. 计算软件供应链安全评分
+4. 获取漏洞信息（通过OSV和CVE API）
+5. 生成详细的安全风险分析报告
+
+支持的SBOM格式：
+- SPDX JSON
+- Syft JSON
+- CycloneDX JSON
+
+用法示例:
+    python sbom_compare.py sbom_a.json sbom_b.json --format html
+    python sbom_compare.py sbom_a.json sbom_b.json --github-org <org> --github-repo <repo> --type source_to_ci
 """
 
 import argparse
