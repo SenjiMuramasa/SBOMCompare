@@ -8,14 +8,16 @@ SBOM报告生成器 - 生成SBOM比较报告
 import os
 import json
 import logging
+import re
+import requests
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 import matplotlib.pyplot as plt
 import networkx as nx
 from tabulate import tabulate
 from colorama import Fore, Style, init
-import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from lxml import html
 
 from .comparator import ComparisonResult
 
@@ -906,6 +908,7 @@ class ReportGenerator:
                 {supplier_changes_section}
                 {dependency_graph_section}
                 {risk_analysis_section}
+                {added_pkg_vulnerabilities_section}
             </div>
             
             <script>
@@ -1310,7 +1313,131 @@ class ReportGenerator:
                     </div>
                     """
         
-        # 在HTML模板中添加漏洞信息部分和样式
+        # 添加新增包漏洞信息部分
+        added_pkg_vulnerabilities_section = ""
+        if self.result.added_packages:
+            # 获取新增包的漏洞信息
+            pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
+            
+            if pkg_vulns:
+                # 计算总漏洞数
+                total_vulns = sum(len(vulns) for vulns in pkg_vulns.values())
+                
+                # 生成漏洞表格
+                vuln_rows = []
+                
+                # 按包名处理所有漏洞
+                for pkg_name, vulns in pkg_vulns.items():
+                    for vuln in vulns:
+                        vuln_id = vuln["id"]
+                        vuln_data = vuln["data"]
+                        
+                        # 初始化所有字段
+                        severity = "未知"
+                        description = ""
+                        affected_versions = "所有版本"
+                        published_date = ""
+                        
+                        # 提取漏洞描述
+                        if "summary" in vuln_data:
+                            description = vuln_data["summary"]
+                        
+                        # 提取发布日期
+                        if "published" in vuln_data:
+                            try:
+                                published_date = vuln_data["published"][:10]  # 获取年月日部分
+                            except:
+                                published_date = ""
+                        
+                        # 提取相关CVE ID
+                        cve_ids = []
+                        if "upstream" in vuln_data:
+                            cve_ids = [cve for cve in vuln_data["upstream"] if cve.startswith("CVE-")]
+                        
+                        # 提取影响版本范围
+                        if "affected" in vuln_data:
+                            for affected in vuln_data["affected"]:
+                                if ("package" in affected and 
+                                    "name" in affected["package"] and 
+                                    affected["package"]["name"] == pkg_name):
+                                    if "ranges" in affected:
+                                        version_ranges = []
+                                        for range_info in affected["ranges"]:
+                                            if ("type" in range_info and 
+                                                "events" in range_info):
+                                                events = range_info["events"]
+                                                introduced = "0"
+                                                fixed = ""
+                                                
+                                                for event in events:
+                                                    if "introduced" in event:
+                                                        introduced = event["introduced"]
+                                                    if "fixed" in event:
+                                                        fixed = event["fixed"]
+                                                
+                                                if introduced and fixed:
+                                                    version_ranges.append(f"{introduced} 到 {fixed}")
+                                                elif introduced:
+                                                    version_ranges.append(f">= {introduced}")
+                                                elif fixed:
+                                                    version_ranges.append(f"< {fixed}")
+                                        
+                                        if version_ranges:
+                                            affected_versions = ", ".join(version_ranges)
+                                    break
+                        
+                        # 构建引用链接列表
+                        references = []
+                        if "references" in vuln_data:
+                            for ref in vuln_data["references"][:5]:  # 最多显示5个链接
+                                if "url" in ref:
+                                    references.append(ref["url"])
+                        
+                        # 添加到表格行
+                        cve_info = f"关联CVE: {', '.join(cve_ids)}" if cve_ids else ""
+                        refs_html = ""
+                        if references:
+                            refs_html = "<div class='vuln-refs'><strong>参考链接:</strong><br>" + "<br>".join([f"<a href='{url}' target='_blank'>{url}</a>" for url in references]) + "</div>"
+                        
+                        # 使用未知样式
+                        severity_class = "vuln-unknown"
+                        
+                        vuln_rows.append(f"""
+                        <tr>
+                            <td>{pkg_name}</td>
+                            <td>{vuln_id}<br>{cve_info}</td>
+                            <td>{affected_versions}</td>
+                            <td>{description}{refs_html}</td>
+                            <td>{published_date}</td>
+                        </tr>
+                        """)
+                
+                # 创建表格
+                if vuln_rows:
+                    added_pkg_vulnerabilities_section = f"""
+                    <button class="collapsible">
+                        <span style="flex-grow: 1;">新增包漏洞信息 ({total_vulns})</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {"".join(vuln_rows)}
+                            </tbody>
+                        </table>
+                    </div>
+                    """
+        
+        # 在HTML模板中添加新增包漏洞信息部分
         html_content = html_template.format(
             timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             sbom_a_path=self.sbom_a.file_path,
@@ -1328,6 +1455,7 @@ class ReportGenerator:
             risk_analysis_section=risk_analysis_section,
             security_score_section=security_score_section,
             vulnerability_section=vulnerability_section,
+            added_pkg_vulnerabilities_section=added_pkg_vulnerabilities_section,
             css_styles=css_styles
         )
         
@@ -1586,3 +1714,116 @@ class ReportGenerator:
             version = version[1:]
             
         return version
+
+    def _get_package_vulnerabilities(self, package_name: str) -> List[str]:
+        """
+        获取包的漏洞ID列表
+        
+        Args:
+            package_name: 包名
+            
+        Returns:
+            List[str]: 漏洞ID列表
+        """
+        # 处理包名，移除前缀和特殊字符
+        clean_name = package_name
+        # 移除常见前缀
+        prefixes = ['org.', 'com.', 'io.', 'net.']
+        for prefix in prefixes:
+            if clean_name.startswith(prefix):
+                clean_name = clean_name[len(prefix):]
+        # 替换路径分隔符为URL友好格式
+        clean_name = clean_name.replace('/', '%2F').replace('_', '%5F')
+        
+        try:
+            # 查询OSV网站获取漏洞列表
+            url = f"https://osv.dev/list?q={clean_name}"
+            response = requests.get(url)
+            if response.status_code == 200:
+                # 解析HTML内容
+                tree = html.fromstring(response.content)
+                # 使用XPath获取漏洞ID
+                vuln_ids = tree.xpath('//div[@class="vuln-table-row mdc-data-table__row"]//a/text()')
+                return vuln_ids
+            else:
+                logger.warning(f"获取包 {package_name} 的漏洞信息失败，状态码: {response.status_code}")
+                return []
+        except Exception as e:
+            logger.error(f"获取包 {package_name} 的漏洞信息时出错: {str(e)}")
+            return []
+    
+    def _fetch_vuln_batch(self, vuln_ids: List[str]) -> Dict[str, Optional[Dict]]:
+        """
+        批量获取漏洞详细信息
+        
+        Args:
+            vuln_ids: 漏洞ID列表
+            
+        Returns:
+            Dict[str, Optional[Dict]]: 漏洞ID到详细信息的映射
+        """
+        results = {}
+        
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            future_to_id = {executor.submit(self._fetch_vuln_info, vuln_id): vuln_id for vuln_id in vuln_ids}
+            
+            for future in as_completed(future_to_id):
+                vuln_id = future_to_id[future]
+                try:
+                    vuln_data = future.result()
+                    results[vuln_id] = vuln_data
+                except Exception as e:
+                    logger.error(f"获取漏洞 {vuln_id} 详细信息失败: {str(e)}")
+                    results[vuln_id] = None
+        
+        return results
+    
+    def _fetch_package_vulnerabilities_batch(self, packages: List[str]) -> Dict[str, List[Dict]]:
+        """
+        批量获取多个包的漏洞信息
+        
+        Args:
+            packages: 包名列表
+            
+        Returns:
+            Dict[str, List[Dict]]: 包名到漏洞信息列表的映射
+        """
+        result = {}
+        all_vuln_ids = {}  # 映射漏洞ID到包名
+        
+        # 第一阶段：并行获取每个包的漏洞ID列表
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            future_to_pkg = {executor.submit(self._get_package_vulnerabilities, pkg): pkg for pkg in packages}
+            
+            for future in as_completed(future_to_pkg):
+                pkg = future_to_pkg[future]
+                try:
+                    vuln_ids = future.result()
+                    if vuln_ids:
+                        for vuln_id in vuln_ids:
+                            if vuln_id not in all_vuln_ids:
+                                all_vuln_ids[vuln_id] = []
+                            all_vuln_ids[vuln_id].append(pkg)
+                except Exception as e:
+                    logger.error(f"处理包 {pkg} 的漏洞列表时出错: {str(e)}")
+        
+        # 如果没有找到任何漏洞，直接返回
+        if not all_vuln_ids:
+            return {}
+            
+        # 第二阶段：并行获取所有漏洞的详细信息
+        vuln_details = self._fetch_vuln_batch(list(all_vuln_ids.keys()))
+        
+        # 第三阶段：按包名组织漏洞信息
+        for vuln_id, pkg_list in all_vuln_ids.items():
+            vuln_data = vuln_details.get(vuln_id)
+            if vuln_data:
+                for pkg in pkg_list:
+                    if pkg not in result:
+                        result[pkg] = []
+                    result[pkg].append({
+                        "id": vuln_id,
+                        "data": vuln_data
+                    })
+        
+        return result
