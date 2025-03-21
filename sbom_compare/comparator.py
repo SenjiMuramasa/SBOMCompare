@@ -121,9 +121,9 @@ class SBOMComparator:
             version_b = self.sbom_b.version_map.get(pkg_name)
             
             if version_a and version_b:
-                # 规范化版本号，去掉前缀"v"
-                normalized_version_a = version_a[1:] if version_a.startswith('v') else version_a
-                normalized_version_b = version_b[1:] if version_b.startswith('v') else version_b
+                # 规范化版本号，去掉前缀"v"并移除空格
+                normalized_version_a = self._normalize_version(version_a)
+                normalized_version_b = self._normalize_version(version_b)
                 
                 # 只有当规范化后的版本号不同时才记录变更
                 if normalized_version_a != normalized_version_b:
@@ -141,6 +141,32 @@ class SBOMComparator:
                     self.result.version_changes.append(change)
         
         logger.debug(f"发现 {len(self.result.version_changes)} 个版本变更")
+    
+    def _normalize_version(self, version: str) -> str:
+        """规范化版本字符串，移除空格、前缀'v'和版本表达式前缀"""
+        if not version:
+            return ""
+            
+        # 标准化版本前缀符号周围的空格，如">= 1.0.0" 变为 ">=1.0.0"
+        for op in [">=", "<=", ">", "<", "==", "~=", "!="]:
+            if op in version:
+                # 去除操作符周围的空格
+                version = version.replace(f"{op} ", op).replace(f" {op}", op)
+        
+        # 移除版本号中的所有空格
+        version = version.replace(" ", "")
+        
+        # 去除版本表达式前缀（如 "==1.8.0" -> "1.8.0"）
+        for op in [">=", "<=", ">", "<", "==", "~=", "!="]:
+            if version.startswith(op):
+                version = version[len(op):]
+                break
+        
+        # 去除前缀"v"
+        if version.startswith('v'):
+            version = version[1:]
+            
+        return version
     
     def _analyze_version_change(self, version_a: str, version_b: str) -> Tuple[bool, bool, bool]:
         """分析版本变更的类型 (主版本、次版本、补丁版本)"""

@@ -141,8 +141,8 @@ class ReportGenerator:
             
             for change in self.result.version_changes:
                 # 规范化版本号进行比较
-                normalized_old = change.old_version[1:] if change.old_version.startswith('v') else change.old_version
-                normalized_new = change.new_version[1:] if change.new_version.startswith('v') else change.new_version
+                normalized_old = self._normalize_version(change.old_version)
+                normalized_new = self._normalize_version(change.new_version)
                 
                 # 当规范化后的版本相同时显示为"无变更"
                 if normalized_old == normalized_new:
@@ -986,14 +986,15 @@ class ReportGenerator:
             rows = []
             for change in self.result.version_changes:
                 # 规范化版本号进行比较
-                normalized_old = change.old_version[1:] if change.old_version.startswith('v') else change.old_version
-                normalized_new = change.new_version[1:] if change.new_version.startswith('v') else change.new_version
+                normalized_old = self._normalize_version(change.old_version)
+                normalized_new = self._normalize_version(change.new_version)
                 
                 # 当规范化后的版本相同时显示为"无变更"
                 if normalized_old == normalized_new:
                     change_type = "无变更"
                 else:
                     change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                
                 rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_version}</td><td>{change.new_version}</td><td>{change_type}</td></tr>")
             
             version_changes_section = f"""
@@ -1291,7 +1292,7 @@ class ReportGenerator:
                     
                     vulnerability_section = f"""
                     <button class="collapsible">
-                        <span style="flex-grow: 1;">漏洞信息（来源：OSV API） ({len(vulnerabilities)})</span>
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） ({len(vulnerabilities)})</span>
                         <span style="font-size:14px;color:#666">点击展开/收起</span>
                     </button>
                     <div class="content">
@@ -1559,3 +1560,29 @@ class ReportGenerator:
                         print(f"{level_color}  - {risk.category}: {risk.description}{Style.RESET_ALL}")
         
         print(f"\n{Fore.CYAN}{'=' * 80}{Style.RESET_ALL}")
+
+    def _normalize_version(self, version: str) -> str:
+        """规范化版本字符串，移除空格、前缀'v'和版本表达式前缀"""
+        if not version:
+            return ""
+            
+        # 标准化版本前缀符号周围的空格，如">= 1.0.0" 变为 ">=1.0.0"
+        for op in [">=", "<=", ">", "<", "==", "~=", "!="]:
+            if op in version:
+                # 去除操作符周围的空格
+                version = version.replace(f"{op} ", op).replace(f" {op}", op)
+        
+        # 移除版本号中的所有空格
+        version = version.replace(" ", "")
+        
+        # 去除版本表达式前缀（如 "==1.8.0" -> "1.8.0"）
+        for op in [">=", "<=", ">", "<", "==", "~=", "!="]:
+            if version.startswith(op):
+                version = version[len(op):]
+                break
+        
+        # 去除前缀"v"
+        if version.startswith('v'):
+            version = version[1:]
+            
+        return version
