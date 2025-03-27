@@ -94,11 +94,6 @@ def parse_args():
         action="store_true",
         help="显示详细输出",
     )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"%(prog)s {__version__}",
-    )
     return parser.parse_args()
 
 def validate_files(sbom_a_path, sbom_b_path):

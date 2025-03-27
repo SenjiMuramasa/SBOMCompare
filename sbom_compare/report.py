@@ -32,9 +32,20 @@ class ReportGenerator:
     """报告生成器类"""
     
     def __init__(self, comparison_result: ComparisonResult):
+        """
+        初始化报告生成器
+        
+        Args:
+            comparison_result: SBOM比较结果
+        """
         self.result = comparison_result
         self.sbom_a = comparison_result.sbom_a
         self.sbom_b = comparison_result.sbom_b
+        
+        # 缓存漏洞查询结果
+        self.vulnerability_cache = {}
+        # 新增包的漏洞信息缓存
+        self.added_packages_vulnerabilities = None
     
     def generate(self, output_path: str, format_type: str = "text") -> None:
         """生成报告
@@ -1247,6 +1258,65 @@ class ReportGenerator:
                 </div>
                 """)
             
+            # 检查是否因为漏洞严重程度限制了评分
+            vuln_limit_html = ""
+            
+            # 获取新增包的漏洞信息，使用已有缓存
+            if self.added_packages_vulnerabilities:
+                pkg_vulns = self.added_packages_vulnerabilities
+            else:
+                pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
+            
+            # 检查漏洞严重程度
+            has_critical = False
+            has_high = False
+            has_medium = False
+            
+            for pkg_name, vulns in pkg_vulns.items():
+                for vuln in vulns:
+                    # 获取漏洞严重程度
+                    severity = "unknown"
+                    if "database_specific" in vuln and "severity" in vuln["database_specific"]:
+                        severity = vuln["database_specific"]["severity"]
+                    elif "severity" in vuln:
+                        # 处理severity字段是列表的情况
+                        if isinstance(vuln["severity"], list):
+                            for sev_item in vuln["severity"]:
+                                if isinstance(sev_item, dict) and "type" in sev_item and sev_item.get("type") == "CVSS_V3":
+                                    severity = sev_item.get("score", "unknown")
+                                    break
+                        else:
+                            severity = vuln["severity"]
+                    
+                    # 根据严重程度调整评分上限
+                    if severity == "CRITICAL":
+                        has_critical = True
+                        break
+                    elif severity == "HIGH":
+                        has_high = True
+                    elif severity == "MEDIUM":
+                        has_medium = True
+            
+            # 显示漏洞限制评分的说明
+            if has_critical:
+                vuln_limit_html = """
+                <div class="vuln-critical" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #d32f2f;">
+                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在严重级别(CRITICAL)漏洞，评分被限制在4分以内。
+                </div>
+                """
+            elif has_high:
+                vuln_limit_html = """
+                <div class="vuln-high" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #f44336;">
+                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在高危级别(HIGH)漏洞，评分被限制在6分以内。
+                </div>
+                """
+            elif has_medium:
+                vuln_limit_html = """
+                <div class="vuln-medium" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #ff9800;">
+                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在中危级别(MEDIUM)漏洞，评分被限制在8分以内。
+                </div>
+                """
+            
             security_score_section = f"""
             <h2>软件供应链安全评分</h2>
             <div class="security-score">
@@ -1255,6 +1325,8 @@ class ReportGenerator:
                     <span class="score-percentage">({percentage:.1f}%)</span>
                     <span class="score-grade {grade_class}">{security_score.grade}</span>
                 </div>
+                
+                {vuln_limit_html}
                 
                 <div class="score-categories">
                     {"".join(category_items)}
@@ -1359,6 +1431,8 @@ class ReportGenerator:
         added_pkg_vulnerabilities_section = ""
         if self.result.added_packages:
             # 获取新增包的漏洞信息
+            if self.added_packages_vulnerabilities:
+                pkg_vulns = self.added_packages_vulnerabilities
             pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
             
             if pkg_vulns:
@@ -1372,82 +1446,101 @@ class ReportGenerator:
                 for pkg_name, vulns in pkg_vulns.items():
                     for vuln in vulns:
                         vuln_id = vuln["id"]
-                        vuln_data = vuln["data"]
                         
                         # 初始化所有字段
                         severity = "未知"
-                        description = ""
-                        affected_versions = "所有版本"
+                        description = vuln.get("summary", "")
+                        affected_versions = ""
                         published_date = ""
+                        cve_ids = []
+                        references = []
                         
-                        # 提取漏洞描述
-                        if "summary" in vuln_data:
-                            description = vuln_data["summary"]
+                        # 提取严重程度
+                        if "database_specific" in vuln and "severity" in vuln["database_specific"]:
+                            raw_severity = vuln["database_specific"]["severity"]
+                            severity_map = {
+                                "CRITICAL": "严重",
+                                "HIGH": "高危",
+                                "MEDIUM": "中危",
+                                "LOW": "低危"
+                            }
+                            severity = severity_map.get(raw_severity, "未知")
+                        
+                        # 提取详细描述
+                        if "details" in vuln:
+                            description = f"{description}<br><br>{vuln['details']}"
                         
                         # 提取发布日期
-                        if "published" in vuln_data:
+                        if "published" in vuln:
                             try:
-                                published_date = vuln_data["published"][:10]  # 获取年月日部分
+                                published_date = vuln["published"][:10]  # 获取年月日部分
                             except:
                                 published_date = ""
                         
                         # 提取相关CVE ID
-                        cve_ids = []
-                        if "upstream" in vuln_data:
-                            cve_ids = [cve for cve in vuln_data["upstream"] if cve.startswith("CVE-")]
+                        if "aliases" in vuln:
+                            cve_ids = [cve for cve in vuln["aliases"] if cve.startswith("CVE-")]
                         
-                        # 提取影响版本范围
-                        if "affected" in vuln_data:
-                            for affected in vuln_data["affected"]:
-                                if ("package" in affected and 
-                                    "name" in affected["package"] and 
-                                    affected["package"]["name"] == pkg_name):
+                        # 提取受影响的版本范围
+                        if "affected" in vuln:
+                            version_ranges = []
+                            for affected in vuln["affected"]:
+                                if "package" in affected and affected["package"].get("name") == pkg_name.split('@')[0]:
+                                    # 检查版本范围
                                     if "ranges" in affected:
-                                        version_ranges = []
                                         for range_info in affected["ranges"]:
-                                            if ("type" in range_info and 
-                                                "events" in range_info):
+                                            if range_info.get("type") == "SEMVER" and "events" in range_info:
                                                 events = range_info["events"]
-                                                introduced = "0"
-                                                fixed = ""
+                                                range_desc = []
                                                 
                                                 for event in events:
                                                     if "introduced" in event:
-                                                        introduced = event["introduced"]
+                                                        if event["introduced"] == "0":
+                                                            range_desc.append("所有版本")
+                                                        else:
+                                                            range_desc.append(f">= {event['introduced']}")
                                                     if "fixed" in event:
-                                                        fixed = event["fixed"]
+                                                        range_desc.append(f"< {event['fixed']}")
                                                 
-                                                if introduced and fixed:
-                                                    version_ranges.append(f"{introduced} 到 {fixed}")
-                                                elif introduced:
-                                                    version_ranges.append(f">= {introduced}")
-                                                elif fixed:
-                                                    version_ranges.append(f"< {fixed}")
-                                        
-                                        if version_ranges:
-                                            affected_versions = ", ".join(version_ranges)
-                                    break
+                                                if range_desc:
+                                                    version_ranges.append(" ".join(range_desc))
+                            
+                                    # 直接使用受影响的版本列表
+                                    if "versions" in affected and affected["versions"]:
+                                        version_ranges.append(f"具体受影响版本: {', '.join(affected['versions'])}")
                         
-                        # 构建引用链接列表
-                        references = []
-                        if "references" in vuln_data:
-                            for ref in vuln_data["references"][:5]:  # 最多显示5个链接
+                        if version_ranges:
+                            affected_versions = "<br>".join(version_ranges)
+                        else:
+                            affected_versions = "未指定"
+                        
+                        # 获取参考链接
+                        if "references" in vuln:
+                            for ref in vuln["references"][:5]:  # 最多显示5个链接
                                 if "url" in ref:
                                     references.append(ref["url"])
                         
-                        # 添加到表格行
+                        # 使用适当的严重等级样式
+                        severity_class = {
+                            "严重": "vuln-critical",
+                            "高危": "vuln-high",
+                            "中危": "vuln-medium",
+                            "低危": "vuln-low",
+                            "未知": "vuln-unknown"
+                        }.get(severity, "vuln-unknown")
+                        
+                        # 添加CVE信息
                         cve_info = f"关联CVE: {', '.join(cve_ids)}" if cve_ids else ""
+                        
+                        # 构建参考链接HTML
                         refs_html = ""
                         if references:
-                            refs_html = "<div class='vuln-refs'><strong>参考链接:</strong><br>" + "<br>".join([f"<a href='{url}' target='_blank'>{url}</a>" for url in references]) + "</div>"
-                        
-                        # 使用未知样式
-                        severity_class = "vuln-unknown"
+                            refs_html = "<div class='vuln-refs'><strong>参考链接:</strong><br>" + "<br>".join([f"<a href='{url}' target='_blank' class='vuln-link'>{url}</a>" for url in references]) + "</div>"
                         
                         vuln_rows.append(f"""
                         <tr>
                             <td>{pkg_name}</td>
-                            <td>{vuln_id}<br>{cve_info}</td>
+                            <td class="{severity_class}">{vuln_id}<br>{cve_info}</td>
                             <td>{affected_versions}</td>
                             <td>{description}{refs_html}</td>
                             <td>{published_date}</td>
@@ -1732,12 +1825,25 @@ class ReportGenerator:
         print(f"\n{Fore.CYAN}{'=' * 80}{Style.RESET_ALL}")
 
     def _normalize_version(self, version: str) -> str:
-        """规范化版本字符串，移除空格、前缀'v'和版本表达式前缀"""
+        """
+        规范化版本字符串，移除空格、前缀'v'和版本表达式前缀
+        
+        Args:
+            version: 原始版本字符串
+            
+        Returns:
+            str: 规范化后的版本字符串
+        """
         if not version:
             return ""
-            
+        
+        # 处理npm的范围表达式如 "1.0.0 - 2.0.0"
+        if " - " in version:
+            # 取表达式的第一部分
+            version = version.split(" - ")[0].strip()
+        
         # 标准化版本前缀符号周围的空格，如">= 1.0.0" 变为 ">=1.0.0"
-        for op in [">=", "<=", ">", "<", "==", "~=", "!="]:
+        for op in [">=", "<=", ">", "<", "==", "~=", "!=", "~", "^"]:
             if op in version:
                 # 去除操作符周围的空格
                 version = version.replace(f"{op} ", op).replace(f" {op}", op)
@@ -1746,7 +1852,7 @@ class ReportGenerator:
         version = version.replace(" ", "")
         
         # 去除版本表达式前缀（如 "==1.8.0" -> "1.8.0"）
-        for op in [">=", "<=", ">", "<", "==", "~=", "!="]:
+        for op in [">=", "<=", ">", "<", "==", "~=", "!=", "~", "^"]:
             if version.startswith(op):
                 version = version[len(op):]
                 break
@@ -1754,68 +1860,119 @@ class ReportGenerator:
         # 去除前缀"v"
         if version.startswith('v'):
             version = version[1:]
-            
+        
+        # 去除版本后的修饰符，如 "1.0.0-beta.1" -> "1.0.0"
+        if "-" in version:
+            parts = version.split("-")
+            if all(c.isdigit() or c == '.' for c in parts[0]):
+                version = parts[0]
+        
+        # 去除版本末尾的通配符
+        version = version.rstrip('.*').rstrip('*')
+        
+        # 确保版本号不为空
+        if not version and version != "0":
+            version = "0"
+        
         return version
 
-    def _get_package_vulnerabilities(self, package_name: str) -> List[str]:
+    def _get_package_vulnerabilities(self, package_name: str, package_version: str = None, ecosystem: str = None) -> List[Dict]:
         """
-        获取包的漏洞ID列表
+        使用OSV API查询包的漏洞信息
         
         Args:
             package_name: 包名
+            package_version: 包版本
+            ecosystem: 包的生态系统（npm, maven, PyPI, golang等）
             
         Returns:
-            List[str]: 漏洞ID列表
+            List[Dict]: 漏洞信息列表
         """
-        # 处理包名，移除前缀和特殊字符
-        clean_name = package_name
-        # 移除常见前缀
-        prefixes = ['org.', 'com.', 'io.', 'net.']
-        for prefix in prefixes:
-            if clean_name.startswith(prefix):
-                clean_name = clean_name[len(prefix):]
-        # 替换路径分隔符为URL友好格式
-        clean_name = clean_name.replace('/', '%2F').replace('_', '%5F')
-        
         # 重试参数
         max_retries = 3
         retry_delay = 2  # 初始延迟2秒
         
+        # 标准化版本号
+        if package_version:
+            package_version = self._normalize_version(package_version)
+        
+        # 标准化生态系统名称
+        if ecosystem:
+            # 生态系统名称映射
+            ecosystem_map = {
+                'python': 'PyPI',
+                'py': 'PyPI',
+                'javascript': 'npm',
+                'js': 'npm',
+                'node': 'npm',
+                'java': 'Maven',
+                'go': 'Go',
+                'golang': 'Go',
+                'ruby': 'RubyGems',
+                'rust': 'crates.io',
+                'php': 'Packagist',
+                'composer': 'Packagist',
+                'swift': 'Swift',
+                'dotnet': 'NuGet',
+                'csharp': 'NuGet',
+                'c#': 'NuGet'
+            }
+            ecosystem = ecosystem_map.get(ecosystem.lower(), ecosystem)
+        
         for attempt in range(max_retries):
             try:
-                # 查询OSV网站获取漏洞列表
-                url = f"https://osv.dev/list?q={clean_name}"
+                # 构建OSV API请求数据
+                # 按照样例 {"version": "0.1.0", "package": {"name": "flatmap-stream", "ecosystem": "npm"}}
+                request_data = {
+                    "package": {
+                        "name": package_name
+                    }
+                }
+                
+                # 添加生态系统（如果提供）
+                if ecosystem:
+                    request_data["package"]["ecosystem"] = ecosystem
+                    
+                # 添加包版本（如果提供）
+                if package_version:
+                    request_data["version"] = package_version
                 
                 # 每次请求前增加延迟，避免频率限制
                 if attempt > 0:
                     sleep_time = retry_delay * (2 ** (attempt - 1))  # 指数退避
-                    logger.info(f"重试获取 {package_name} 的漏洞信息 (第{attempt+1}次尝试)，等待 {sleep_time} 秒")
+                    logger.info(f"重试查询 {package_name} 的漏洞信息 (第{attempt+1}次尝试)，等待 {sleep_time} 秒")
                     time.sleep(sleep_time)
                 
-                response = requests.get(url, timeout=30)
+                logger.info(f"OSV API 请求体: {json.dumps(request_data)}")
+                # 发送POST请求到OSV API
+                response = requests.post(
+                    "https://api.osv.dev/v1/query",
+                    json=request_data,
+                    timeout=30
+                )
                 
                 if response.status_code == 200:
-                    # 解析HTML内容
-                    tree = html.fromstring(response.content)
-                    # 使用XPath获取漏洞ID
-                    vuln_ids = tree.xpath('//div[@class="vuln-table-row mdc-data-table__row"]//a/text()')
-                    return vuln_ids
+                    data = response.json()
+                    logger.info(f"OSV API响应: 发现 {len(data.get('vulns', []))} 个漏洞")
+                    if "vulns" in data and data["vulns"]:
+                        return data["vulns"]
+                    return []
                 elif response.status_code == 429:  # Too Many Requests
-                    logger.warning(f"获取包 {package_name} 的漏洞信息被限制，状态码: {response.status_code}")
+                    logger.warning(f"查询包 {package_name} 的漏洞信息被限制，状态码: {response.status_code}")
                     # 请求被限制，稍后重试
                     continue
                 else:
-                    logger.warning(f"获取包 {package_name} 的漏洞信息失败，状态码: {response.status_code}")
+                    logger.warning(f"查询包 {package_name} 的漏洞信息失败，状态码: {response.status_code}，响应: {response.text}")
                     if attempt == max_retries - 1:
                         return []  # 最后一次尝试也失败
                     continue  # 继续尝试
             except Exception as e:
-                logger.error(f"获取包 {package_name} 的漏洞信息时出错: {str(e)}")
+                logger.error(f"查询包 {package_name} 的漏洞信息时出错: {str(e)}")
                 if attempt == max_retries - 1:
                     return []  # 最后一次尝试也失败
         
         return []  # 所有重试都失败
-    
+
     def _fetch_package_vulnerabilities_batch(self, packages: List[str]) -> Dict[str, List[Dict]]:
         """
         批量获取多个包的漏洞信息
@@ -1826,48 +1983,214 @@ class ReportGenerator:
         Returns:
             Dict[str, List[Dict]]: 包名到漏洞信息列表的映射
         """
-        result = {}
-        all_vuln_ids = {}  # 映射漏洞ID到包名
+        # 检查是否已有缓存结果
+        if packages and all(pkg in self.vulnerability_cache for pkg in packages):
+            logger.info("使用缓存的漏洞信息")
+            # 构建结果字典，只包含请求的包
+            return {pkg: self.vulnerability_cache.get(pkg, []) for pkg in packages}
         
-        # 第一阶段：并行获取每个包的漏洞ID列表
-        with tqdm(total=len(packages), desc="检索包漏洞列表", unit="个") as pbar:
+        # 存储新增包的漏洞信息，便于后续复用
+        if packages == self.result.added_packages and self.added_packages_vulnerabilities is not None:
+            logger.info("使用已缓存的新增包漏洞信息")
+            return self.added_packages_vulnerabilities
+        
+        result = {}
+        package_details = []
+        
+        # 定义常见文件扩展名与生态系统的映射
+        extension_to_ecosystem = {
+            # Python
+            '.py': 'PyPI',
+            '.whl': 'PyPI',
+            '.egg': 'PyPI',
+            # JavaScript/Node.js
+            '.js': 'npm',
+            '.ts': 'npm',
+            '.jsx': 'npm',
+            '.tsx': 'npm',
+            '.mjs': 'npm',
+            '.cjs': 'npm',
+            # Java
+            '.jar': 'Maven',
+            '.java': 'Maven',
+            '.war': 'Maven',
+            '.ear': 'Maven',
+            '.pom': 'Maven',
+            # Go
+            '.go': 'Go',
+            # Ruby
+            '.rb': 'RubyGems',
+            '.gem': 'RubyGems',
+            # Rust
+            '.rs': 'crates.io',
+            # PHP
+            '.php': 'Packagist',
+            # .NET
+            '.dll': 'NuGet',
+            '.exe': 'NuGet',
+            '.cs': 'NuGet',
+            '.vb': 'NuGet',
+        }
+        
+        # 包名前缀与生态系统的映射
+        prefix_to_ecosystem = {
+            'py-': 'PyPI',
+            'python-': 'PyPI',
+            'node-': 'npm',
+            'js-': 'npm',
+            'npm-': 'npm',
+            'ruby-': 'RubyGems',
+            'gem-': 'RubyGems',
+            'go-': 'Go',
+            'rust-': 'crates.io',
+            'cargo-': 'crates.io',
+            'php-': 'Packagist',
+            'nuget-': 'NuGet',
+            'dotnet-': 'NuGet'
+        }
+        
+        # 从SBOM中提取更多信息的尝试
+        sbom_ecosystems = {
+            "javascript": "npm",
+            "node.js": "npm",
+            "nodejs": "npm",
+            "js": "npm",
+            "python": "PyPI",
+            "java": "Maven",
+            "golang": "Go",
+            "ruby": "RubyGems",
+            "rust": "crates.io",
+            "php": "Packagist",
+            ".net": "NuGet",
+            "dotnet": "NuGet",
+            "c#": "NuGet"
+        }
+        
+        # 检查是否可以从SBOM信息中获取编程语言
+        sbom_language = None
+        if hasattr(self.sbom_b, "metadata") and self.sbom_b.metadata:
+            if "programming_language" in self.sbom_b.metadata:
+                lang = self.sbom_b.metadata["programming_language"].lower()
+                sbom_language = sbom_ecosystems.get(lang)
+        
+        # 解析包名获取生态系统和版本信息
+        for pkg in packages:
+            # 如果已经在缓存中，跳过处理
+            if pkg in self.vulnerability_cache:
+                continue
+            
+            # 尝试从包名中提取生态系统和版本信息
+            # 常见格式: name@version, ecosystem:name:version, name:version
+            ecosystem = None
+            version = None
+            name = pkg
+            
+            # 从SBOM中查找包信息
+            pkg_obj = self.sbom_b.get_package_by_name(pkg)
+            if pkg_obj:
+                # 如果有版本信息，使用它
+                if hasattr(pkg_obj, "version") and pkg_obj.version:
+                    version = pkg_obj.version
+            
+            # 检查特定格式
+            if '@' in pkg:  # npm格式: name@version
+                name, version = pkg.split('@', 1)
+                ecosystem = 'npm'
+            elif ':' in pkg:  # Maven或其他格式
+                parts = pkg.split(':')
+                if len(parts) == 3:  # groupId:artifactId:version
+                    ecosystem = 'Maven'
+                    name = f"{parts[0]}:{parts[1]}"
+                    version = parts[2]
+                elif len(parts) == 2:  # name:version
+                    name = parts[0]
+                    version = parts[1]
+            
+            # 如果还没确定生态系统，尝试从名称或扩展名推断
+            if not ecosystem:
+                # 检查文件扩展名
+                for ext, eco in extension_to_ecosystem.items():
+                    if name.endswith(ext):
+                        ecosystem = eco
+                        # 移除扩展名
+                        name = name[:-len(ext)]
+                        break
+                
+                # 检查包名前缀
+                if not ecosystem:
+                    for prefix, eco in prefix_to_ecosystem.items():
+                        if name.startswith(prefix):
+                            ecosystem = eco
+                            break
+                
+                    # 如果仍未确定，使用SBOM中的编程语言
+                    if not ecosystem and sbom_language:
+                        ecosystem = sbom_language
+            
+            # 如果包名看起来像npm包（包含连字符），但未确定生态系统，默认为npm
+            if not ecosystem and ('-' in name or '/' in name) and not any(char.isupper() for char in name):
+                ecosystem = 'npm'
+            
+            # 标准化版本号
+            if version:
+                version = self._normalize_version(version)
+            
+            logger.info(f"解析包 {pkg} 得到: name={name}, version={version}, ecosystem={ecosystem}")
+            
+            package_details.append({
+                'name': name,
+                'version': version,
+                'ecosystem': ecosystem,
+                'original': pkg
+            })
+        
+        # 查找未在缓存中的包
+        uncached_packages = [pkg['original'] for pkg in package_details]
+        if not uncached_packages:
+            logger.info("所有包都已缓存")
+            return {pkg: self.vulnerability_cache.get(pkg, []) for pkg in packages}
+        
+        # 使用线程池并行查询每个包的漏洞信息
+        with tqdm(total=len(package_details), desc="查询包漏洞信息", unit="个") as pbar:
             with ThreadPoolExecutor(max_workers=10) as executor:
-                future_to_pkg = {executor.submit(self._get_package_vulnerabilities, pkg): pkg for pkg in packages}
+                future_to_pkg = {
+                    executor.submit(
+                        self._get_package_vulnerabilities, 
+                        pkg['name'],
+                        pkg['version'],
+                        pkg['ecosystem']
+                    ): pkg 
+                    for pkg in package_details
+                }
                 
                 for future in as_completed(future_to_pkg):
                     pkg = future_to_pkg[future]
                     try:
-                        vuln_ids = future.result()
-                        if vuln_ids:
-                            for vuln_id in vuln_ids:
-                                if vuln_id not in all_vuln_ids:
-                                    all_vuln_ids[vuln_id] = []
-                                all_vuln_ids[vuln_id].append(pkg)
+                        vulns = future.result()
+                        if vulns:
+                            result[pkg['original']] = vulns
+                            # 更新缓存
+                            self.vulnerability_cache[pkg['original']] = vulns
+                        else:
+                            # 没有漏洞也缓存空列表
+                            self.vulnerability_cache[pkg['original']] = []
                     except Exception as e:
-                        logger.error(f"处理包 {pkg} 的漏洞列表时出错: {str(e)}")
+                        logger.error(f"处理包 {pkg['original']} 的漏洞信息时出错: {str(e)}")
+                        # 出错时也缓存空列表，避免重复查询错误的包
+                        self.vulnerability_cache[pkg['original']] = []
                     finally:
                         pbar.update(1)
         
-        # 如果没有找到任何漏洞，直接返回
-        if not all_vuln_ids:
-            return {}
-            
-        # 第二阶段：并行获取所有漏洞的详细信息
-        print(f"发现 {len(all_vuln_ids)} 个漏洞需要获取详情")
-        vuln_details = self._fetch_vuln_batch(list(all_vuln_ids.keys()))
+        # 合并缓存结果
+        for pkg in packages:
+            if pkg not in result and pkg in self.vulnerability_cache:
+                result[pkg] = self.vulnerability_cache[pkg]
         
-        # 第三阶段：按包名组织漏洞信息
-        with tqdm(total=len(all_vuln_ids), desc="组织漏洞信息", unit="个") as pbar:
-            for vuln_id, pkg_list in all_vuln_ids.items():
-                vuln_data = vuln_details.get(vuln_id)
-                if vuln_data:
-                    for pkg in pkg_list:
-                        if pkg not in result:
-                            result[pkg] = []
-                        result[pkg].append({
-                            "id": vuln_id,
-                            "data": vuln_data
-                        })
-                pbar.update(1)
+        # 如果这是新增包的漏洞查询，保存结果以便复用
+        if packages == self.result.added_packages:
+            logger.info(f"缓存新增包的漏洞信息，共 {len(result)} 个包有漏洞")
+            self.added_packages_vulnerabilities = result
+            # 将漏洞信息添加到比较结果对象，方便评分计算器使用
+            setattr(self.result, 'added_packages_vulnerabilities', result)
         
         return result

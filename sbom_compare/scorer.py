@@ -145,6 +145,13 @@ class SecurityScoreCalculator:
         total_score = sum(cat.score for cat in categories.values())
         max_score = sum(cat.max_score for cat in categories.values())
         
+        # 评估新增包的漏洞严重程度
+        max_score_limit = self._evaluate_vulnerability_severity_cap()
+        if max_score_limit < 10.0:
+            old_score = total_score
+            total_score = min(total_score, max_score_limit)
+            logger.info(f"由于新增包中的高危漏洞，评分从 {old_score:.1f} 限制为 {total_score:.1f}")
+        
         # 计算等级
         grade = self._calculate_grade(total_score, max_score)
         
@@ -634,6 +641,16 @@ class SecurityScoreCalculator:
         
         summary = f"软件供应链{stage_desc}安全评分为 {total_score:.1f}/{max_score:.1f} ({percentage:.1f}%)，安全等级: {grade}。"
         
+        # 检查是否因为漏洞严重程度限制了评分
+        max_score_limit = self._evaluate_vulnerability_severity_cap()
+        if max_score_limit < 10.0:
+            if max_score_limit == 4.0:
+                summary += " 由于新增包中存在严重级别(CRITICAL)漏洞，评分被限制在4分以内。"
+            elif max_score_limit == 6.0:
+                summary += " 由于新增包中存在高危级别(HIGH)漏洞，评分被限制在6分以内。"
+            elif max_score_limit == 8.0:
+                summary += " 由于新增包中存在中危级别(MEDIUM)漏洞，评分被限制在8分以内。"
+        
         # 添加评分解释
         if percentage >= 80:
             summary += " 软件供应链保持了较高的完整性和一致性。"
@@ -647,3 +664,87 @@ class SecurityScoreCalculator:
             summary += f" 主要影响因素：{', '.join(main_factors)}。"
         
         return summary 
+
+    def _evaluate_vulnerability_severity_cap(self) -> float:
+        """
+        评估新增包中漏洞的严重程度，并决定评分上限
+        
+        根据规则：
+        - 若新增包引入了CRITICAL级别漏洞，最终评分不可超过4分
+        - 若新增包引入了HIGH级别漏洞，最终评分不可超过6分
+        - 若新增包引入了MEDIUM级别漏洞，最终评分不可超过8分
+        
+        Returns:
+            float: 最高评分上限
+        """
+        # 默认评分上限
+        max_score_cap = 10.0
+        
+        # 检查是否有添加的包
+        if not hasattr(self.result, "added_packages") or not self.result.added_packages:
+            return max_score_cap
+        
+        # 尝试获取新增包的漏洞信息
+        try:
+            # 如果我们已经有了漏洞信息，直接使用
+            if hasattr(self.result, "added_packages_vulnerabilities") and self.result.added_packages_vulnerabilities:
+                vulnerabilities = self.result.added_packages_vulnerabilities
+                logger.info("使用比较结果中已有的漏洞信息")
+            else:
+                # 否则调用方法获取漏洞信息
+                from sbom_compare.report import ReportGenerator
+                report_generator = ReportGenerator(self.result)
+                vulnerabilities = report_generator._fetch_package_vulnerabilities_batch(self.result.added_packages)
+                # 保存结果到比较结果对象，避免重复查询
+                setattr(self.result, 'added_packages_vulnerabilities', vulnerabilities)
+            
+            # 检查漏洞严重程度
+            has_critical = False
+            has_high = False
+            has_medium = False
+            vulnerability_check_done = False
+            
+            for pkg_vulns in vulnerabilities.values():
+                if vulnerability_check_done:
+                    break
+                
+                for vuln in pkg_vulns:
+                    # 获取漏洞严重程度
+                    severity = "unknown"
+                    if "database_specific" in vuln and "severity" in vuln["database_specific"]:
+                        severity = vuln["database_specific"]["severity"]
+                    elif "severity" in vuln:
+                        # 处理severity字段是列表的情况
+                        if isinstance(vuln["severity"], list):
+                            for sev_item in vuln["severity"]:
+                                if isinstance(sev_item, dict) and "type" in sev_item and sev_item.get("type") == "CVSS_V3":
+                                    severity = sev_item.get("score", "unknown")
+                                    break
+                        else:
+                            severity = vuln["severity"]
+                    
+                    # 根据严重程度调整评分上限
+                    if severity == "CRITICAL":
+                        has_critical = True
+                        vulnerability_check_done = True
+                        break
+                    elif severity == "HIGH":
+                        has_high = True
+                    elif severity == "MEDIUM":
+                        has_medium = True
+            
+            # 应用评分上限规则
+            if has_critical:
+                max_score_cap = 4.0
+                logger.warning("新增包中存在严重(CRITICAL)漏洞，评分上限设为4分")
+            elif has_high:
+                max_score_cap = 6.0
+                logger.warning("新增包中存在高危(HIGH)漏洞，评分上限设为6分")
+            elif has_medium:
+                max_score_cap = 8.0
+                logger.warning("新增包中存在中危(MEDIUM)漏洞，评分上限设为8分")
+        
+        except Exception as e:
+            logger.error(f"评估漏洞严重程度时出错: {str(e)}")
+        
+        return max_score_cap 
