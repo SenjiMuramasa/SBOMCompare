@@ -96,6 +96,12 @@ class SecurityScoreCalculator:
             self.max_scores["supply_chain_integrity"] = 3.5
             self.max_scores["risk_assessment"] = 2.5
             self.max_scores["license_compliance"] = 1.5
+        elif self.source_type == "version_to_version":
+            # 版本比较更关注版本一致性和风险评估
+            self.max_scores["version_consistency"] = 4.0
+            self.max_scores["risk_assessment"] = 3.0
+            self.max_scores["supply_chain_integrity"] = 2.0
+            self.max_scores["license_compliance"] = 1.0
         
         # 确保总分为10
         self._normalize_max_scores()

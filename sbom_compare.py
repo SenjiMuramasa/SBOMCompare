@@ -28,6 +28,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from colorama import Fore, Style, init
+import textwrap
 
 from sbom_compare.parser import SBOMParser
 from sbom_compare.comparator import SBOMComparator
@@ -47,17 +48,57 @@ logger = logging.getLogger("sbom-compare")
 
 def parse_args():
     """解析命令行参数"""
-    parser = argparse.ArgumentParser(description="比较两个SBOM文件的差异")
+    parser = argparse.ArgumentParser(
+        description="比较两个SBOM文件并分析供应链风险",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent("""
+            比较类型说明:
+            - source_to_ci: 源代码到CI构建的SBOM比较
+            - ci_to_container: CI构建到容器镜像的SBOM比较
+            - source_to_container: 源代码到容器镜像的端到端SBOM比较
+            - version_to_version: 同一软件包不同版本的SBOM比较
+            """)
+    )
+    
     parser.add_argument("sbom_a", help="第一个SBOM文件路径")
     parser.add_argument("sbom_b", help="第二个SBOM文件路径")
-    parser.add_argument("--format", "-f", choices=["text", "html", "json"], default="text",
-                      help="输出格式: text, html, json (默认: text)")
-    parser.add_argument("--output", "-o", help="输出文件路径")
-    parser.add_argument("--type", "-t", choices=["source_to_ci", "ci_to_container", 
-                                               "source_to_container", "generic"],
-                      default="generic", help="SBOM比较类型")
-    parser.add_argument("--github-org", help="GitHub组织名称（用于获取Scorecard评分）")
-    parser.add_argument("--github-repo", help="GitHub仓库名称（用于获取Scorecard评分）")
+    parser.add_argument(
+        "--type",
+        choices=["source_to_ci", "ci_to_container", "source_to_container", "version_to_version"],
+        default="source_to_container",
+        help="比较类型 (默认: source_to_container)",
+    )
+    parser.add_argument(
+        "--github-org",
+        help="GitHub组织名称，用于计算安全评分",
+    )
+    parser.add_argument(
+        "--github-repo",
+        help="GitHub仓库名称，用于计算安全评分",
+    )
+    parser.add_argument(
+        "--format",
+        "-f",
+        choices=["text", "html", "json"],
+        default="text",
+        help="输出格式 (默认: text)",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        help="输出文件路径 (默认: 根据格式自动生成)",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="显示详细输出",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+    )
     return parser.parse_args()
 
 def validate_files(sbom_a_path, sbom_b_path):
@@ -94,8 +135,54 @@ def ensure_report_dir():
 
 def main():
     """主函数"""
-    # 解析命令行参数
-    args = parse_args()
+    parser = argparse.ArgumentParser(
+        description="比较两个SBOM文件并分析供应链风险",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent("""
+            比较类型说明:
+            - source_to_ci: 源代码到CI构建的SBOM比较
+            - ci_to_container: CI构建到容器镜像的SBOM比较
+            - source_to_container: 源代码到容器镜像的端到端SBOM比较
+            - version_to_version: 同一软件包不同版本的SBOM比较
+            """)
+    )
+    
+    parser.add_argument("sbom_a", help="第一个SBOM文件路径")
+    parser.add_argument("sbom_b", help="第二个SBOM文件路径")
+    parser.add_argument(
+        "--type",
+        choices=["source_to_ci", "ci_to_container", "source_to_container", "version_to_version"],
+        default="source_to_container",
+        help="比较类型 (默认: source_to_container)",
+    )
+    parser.add_argument(
+        "--github-org",
+        help="GitHub组织名称，用于计算安全评分",
+    )
+    parser.add_argument(
+        "--github-repo",
+        help="GitHub仓库名称，用于计算安全评分",
+    )
+    parser.add_argument(
+        "--format",
+        "-f",
+        choices=["text", "html", "json"],
+        default="text",
+        help="输出格式 (默认: text)",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        help="输出文件路径 (默认: 根据格式自动生成)",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="显示详细输出",
+    )
+    
+    args = parser.parse_args()
     
     try:
         # 读取SBOM文件
