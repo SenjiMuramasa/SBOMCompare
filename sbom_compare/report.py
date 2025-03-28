@@ -11,7 +11,7 @@ import logging
 import re
 import requests
 import time
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Set
 from datetime import datetime
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -317,23 +317,52 @@ class ReportGenerator:
         return stage_names.get(stage, stage)
     
     def _fetch_vuln_info(self, vuln_id: str) -> Optional[Dict]:
-        """从OSV API获取漏洞详细信息
+        """
+        获取漏洞详细信息
         
         Args:
             vuln_id: 漏洞ID
             
         Returns:
-            Optional[Dict]: 漏洞详细信息
+            Optional[Dict]: 漏洞详细信息，如果获取失败返回None
         """
-        url = f"https://api.osv.dev/v1/vulns/{vuln_id}"
-        try:
-            response = requests.get(url, timeout=30)
-            if response.status_code == 200:
-                return response.json()
-        except Exception as e:
-            logger.error(f"获取漏洞 {vuln_id} 详细信息失败: {str(e)}")
-        return None
+        # 重试参数
+        max_retries = 3
+        retry_delay = 2  # 初始延迟2秒
         
+        # 处理复合ID
+        if "/" in vuln_id:
+            vuln_id = vuln_id.split(" / ")[0]
+
+        for attempt in range(max_retries):
+            try:
+                # 每次请求前增加延迟，避免频率限制
+                if attempt > 0:
+                    sleep_time = retry_delay * (2 ** (attempt - 1))  # 指数退避
+                    logger.info(f"重试获取漏洞 {vuln_id} 的详细信息 (第{attempt+1}次尝试)，等待 {sleep_time} 秒")
+                    time.sleep(sleep_time)
+                
+                url = f"https://api.osv.dev/v1/vulns/{vuln_id}"
+                response = requests.get(url, timeout=30)
+                
+                if response.status_code == 200:
+                    return response.json()
+                elif response.status_code == 429:  # Too Many Requests
+                    logger.warning(f"获取漏洞 {vuln_id} 详细信息被限制，状态码: {response.status_code}")
+                    # 请求被限制，稍后重试
+                    continue
+                else:
+                    logger.warning(f"获取漏洞 {vuln_id} 详细信息失败，状态码: {response.status_code}")
+                    if attempt == max_retries - 1:
+                        return None  # 最后一次尝试也失败
+                    continue  # 继续尝试
+            except Exception as e:
+                logger.error(f"获取漏洞 {vuln_id} 详细信息时出错: {str(e)}")
+                if attempt == max_retries - 1:
+                    return None  # 最后一次尝试也失败
+        
+        return None  # 所有重试都失败
+    
     def _fetch_vuln_batch(self, vuln_ids: List[str]) -> Dict[str, Optional[Dict]]:
         """
         批量获取漏洞详细信息
@@ -414,26 +443,57 @@ class ReportGenerator:
         
         return results
     
-    def _enhance_with_cve_info(self, description: str, osv_data: Dict) -> str:
+    def _enhance_with_cve_info(self, description: str, osv_data: Dict, cve_cache: Dict = None) -> str:
         """使用CVE信息增强漏洞描述
         
         Args:
             description: 原始漏洞描述
             osv_data: OSV API返回的漏洞信息
+            cve_cache: CVE信息缓存字典，避免重复查询
             
         Returns:
             str: 增强后的漏洞描述
         """
         # 检查是否包含CVE ID
         cve_ids = []
+        
+        # 从aliases字段获取CVE ID
         if "aliases" in osv_data:
             for alias in osv_data["aliases"]:
                 if alias.startswith("CVE-"):
                     cve_ids.append(alias)
         
+        # 如果没有aliases字段，尝试从其他字段获取CVE ID
+        elif "id" in osv_data:
+            vuln_id = osv_data["id"]
+            # 检查ID本身是否为CVE格式
+            if vuln_id.startswith("CVE-"):
+                cve_ids.append(vuln_id)
+            # 从详细信息中尝试提取CVE ID
+            elif "details" in osv_data:
+                details_text = osv_data["details"]
+                # 使用正则表达式从详情中提取CVE ID
+                cve_pattern = r'CVE-\d{4}-\d{4,7}'
+                found_cves = re.findall(cve_pattern, details_text)
+                if found_cves:
+                    cve_ids.extend(found_cves)
+            # 从summary字段中尝试提取
+            elif "summary" in osv_data:
+                summary_text = osv_data["summary"]
+                cve_pattern = r'CVE-\d{4}-\d{4,7}'
+                found_cves = re.findall(cve_pattern, summary_text)
+                if found_cves:
+                    cve_ids.extend(found_cves)
+        
         # 如果找到CVE ID，获取详细信息
         for cve_id in cve_ids:
-            cve_data = self._fetch_cve_info(cve_id)
+            # 优先使用缓存
+            cve_data = None
+            if cve_cache and cve_id in cve_cache:
+                cve_data = cve_cache.get(cve_id)
+            # 如果没有缓存，才调用API获取
+            if not cve_data:
+                cve_data = self._fetch_cve_info(cve_id)
             
             if cve_data:
                 # 添加CVE信息标题
@@ -471,8 +531,41 @@ class ReportGenerator:
                 except (KeyError, IndexError):
                     pass
                 
-                # 只处理第一个CVE ID
                 break
+        
+        # 添加漏洞基本信息
+        # 添加别名信息（如果有）
+        if "aliases" in osv_data and osv_data["aliases"]:
+            description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
+        elif cve_ids:
+            description += f"\n\n相关漏洞ID: {', '.join(cve_ids)}"
+        
+        # 添加发布日期
+        if "published" in osv_data:
+            try:
+                published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
+                description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
+            except Exception:
+                pass
+        
+        # 添加参考链接
+        if "references" in osv_data:
+            description += "\n\n参考链接:"
+            for ref in osv_data["references"]:
+                description += f"\n- {ref.get('url', '')}"
+        
+        # 添加漏洞类型
+        if "type" in osv_data:
+            description += f"\n\n漏洞类型: {osv_data['type']}"
+        
+        # 添加影响范围
+        if "affected" in osv_data:
+            description += "\n\n影响范围:"
+            for affected in osv_data["affected"]:
+                if "package" in affected:
+                    description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
+                    if "ecosystem" in affected["package"]:
+                        description += f" ({affected['package']['ecosystem']})"
         
         return description
 
@@ -501,8 +594,13 @@ class ReportGenerator:
                     if len(severity_desc) == 2:
                         severity = severity_desc[0]
                         description = severity_desc[1]
+                        
+                        # 预处理漏洞ID
+                        clean_vuln_id = self._clean_vulnerability_id(vuln_id)
+                        
                         vuln_details.append({
-                            "id": vuln_id,
+                            "id": clean_vuln_id,
+                            "raw_id": vuln_id,  # 保存原始ID
                             "severity": severity,
                             "description": description
                         })
@@ -521,7 +619,7 @@ class ReportGenerator:
             with ThreadPoolExecutor(max_workers=10) as executor:
                 # 提交所有OSV API查询任务
                 future_to_vuln = {
-                    executor.submit(self._fetch_vuln_info, vuln["id"]): vuln 
+                    executor.submit(self._fetch_vuln_with_fallback, vuln["id"], vuln.get("raw_id")): vuln 
                     for vuln in vuln_details
                 }
                 
@@ -536,11 +634,42 @@ class ReportGenerator:
                         }
                         
                         # 收集所有需要查询的CVE ID
+                        cve_ids = []
+                        
+                        # 从aliases字段获取CVE ID
                         if osv_data and "aliases" in osv_data:
                             for alias in osv_data["aliases"]:
                                 if alias.startswith("CVE-"):
+                                    cve_ids.append(alias)
                                     all_cve_ids.add(alias)
-                                    break  # 每个漏洞只处理第一个CVE ID
+                        
+                        # 如果没有aliases字段，尝试从其他字段获取CVE ID
+                        elif osv_data and "id" in osv_data:
+                            vuln_id = osv_data["id"]
+                            # 检查ID本身是否为CVE格式
+                            if vuln_id.startswith("CVE-"):
+                                cve_ids.append(vuln_id)
+                                all_cve_ids.add(vuln_id)
+                            # 从详细信息中尝试提取CVE ID
+                            elif "details" in osv_data:
+                                details_text = osv_data["details"]
+                                # 使用正则表达式从详情中提取CVE ID
+                                cve_pattern = r'CVE-\d{4}-\d{4,7}'
+                                found_cves = re.findall(cve_pattern, details_text)
+                                if found_cves:
+                                    for cve in found_cves:
+                                        cve_ids.append(cve)
+                                        all_cve_ids.add(cve)
+                            # 从summary字段中尝试提取
+                            elif "summary" in osv_data:
+                                summary_text = osv_data["summary"]
+                                cve_pattern = r'CVE-\d{4}-\d{4,7}'
+                                found_cves = re.findall(cve_pattern, summary_text)
+                                if found_cves:
+                                    for cve in found_cves:
+                                        cve_ids.append(cve)
+                                        all_cve_ids.add(cve)
+                    
                     except Exception as e:
                         print(f"Error processing vulnerability {vuln['id']}: {str(e)}")
                         osv_results[vuln["id"]] = {
@@ -556,115 +685,131 @@ class ReportGenerator:
             print(f"发现 {len(all_cve_ids)} 个CVE ID需要获取详情")
             cve_results = self._fetch_cve_info_batch(list(all_cve_ids))
         
-        # 整合OSV和CVE信息
-        print("整合漏洞信息...")
+        # 使用多线程并行整合OSV和CVE信息
+        print("并行整合漏洞信息...")
         with tqdm(total=len(osv_results), desc="整合漏洞信息", unit="个") as pbar:
-            for vuln_id, result in osv_results.items():
-                vuln = result["vuln"]
-                osv_data = result["osv_data"]
-                description = vuln["description"]
+            with ThreadPoolExecutor(max_workers=min(20, len(osv_results))) as executor:
+                # 定义处理单个漏洞的函数
+                def process_single_vuln(vuln_id, result):
+                    try:
+                        vuln = result["vuln"]
+                        osv_data = result["osv_data"]
+                        description = vuln["description"]
+                        
+                        if osv_data:
+                            # 使用增强的描述方法处理漏洞信息，传入CVE缓存
+                            description = self._enhance_with_cve_info(description, osv_data, cve_results)
+                        else:
+                            # 如果OSV API获取失败，仍然添加原始漏洞ID作为相关漏洞ID
+                            if "raw_id" in vuln and "/" in vuln["raw_id"]:
+                                related_ids = [id.strip() for id in vuln["raw_id"].split("/")]
+                                description += f"\n\n相关漏洞ID: {', '.join(related_ids)}"
+                            description += "\n\n获取漏洞详细信息失败"
+                        
+                        # 处理漏洞ID格式，使用已清理的ID
+                        processed_vuln_id = vuln["id"]
+                        
+                        return {
+                            "id": processed_vuln_id,
+                            "severity": vuln["severity"],
+                            "description": description
+                        }
+                    except Exception as e:
+                        logger.error(f"处理漏洞 {vuln_id} 时出错: {str(e)}")
+                        # 出错时返回基本信息
+                        return {
+                            "id": vuln_id,
+                            "severity": result["vuln"]["severity"] if "vuln" in result else "未知",
+                            "description": f"处理漏洞信息时出错: {str(e)}"
+                        }
                 
-                if osv_data:
-                    # 添加别名信息
-                    if "aliases" in osv_data:
-                        description += f"\n\n相关漏洞ID: {', '.join(osv_data['aliases'])}"
-                    
-                    # 添加发布日期
-                    if "published" in osv_data:
-                        try:
-                            published_date = datetime.fromisoformat(osv_data["published"].replace('Z', '+00:00'))
-                            description += f"\n\n发布日期: {published_date.strftime('%Y-%m-%d')}"
-                        except Exception:
-                            pass
-                    
-                    # 添加参考链接
-                    if "references" in osv_data:
-                        description += "\n\n参考链接:"
-                        for ref in osv_data["references"]:
-                            description += f"\n- {ref.get('url', '')}"
-                    
-                    # 添加漏洞类型
-                    if "type" in osv_data:
-                        description += f"\n\n漏洞类型: {osv_data['type']}"
-                    
-                    # 添加影响范围
-                    if "affected" in osv_data:
-                        description += "\n\n影响范围:"
-                        for affected in osv_data["affected"]:
-                            if "package" in affected:
-                                description += f"\n- 包名: {affected['package'].get('name', 'N/A')}"
-                                if "ecosystem" in affected["package"]:
-                                    description += f" ({affected['package']['ecosystem']})"
-                    
-                    # 添加CVE信息
-                    if "aliases" in osv_data:
-                        for alias in osv_data["aliases"]:
-                            if alias.startswith("CVE-") and alias in cve_results and cve_results[alias]:
-                                cve_data = cve_results[alias]
-                                
-                                # 添加CVE信息标题
-                                description += f"\n\n来自 {alias} 的附加信息:"
-                                
-                                # 提取CVE描述
-                                try:
-                                    cve_descriptions = cve_data["containers"]["cna"]["descriptions"]
-                                    for desc in cve_descriptions:
-                                        if desc["lang"] == "en":
-                                            cve_description = desc["value"]
-                                            description += f"\n描述: {cve_description}"
-                                            break
-                                except (KeyError, IndexError):
-                                    pass
-                                
-                                # 提取发布和更新日期
-                                try:
-                                    published = cve_data["cveMetadata"]["datePublished"]
-                                    updated = cve_data["cveMetadata"]["dateUpdated"]
-                                    description += f"\n发布日期: {published[:10]}"
-                                    description += f"\n最后更新: {updated[:10]}"
-                                except (KeyError, IndexError):
-                                    pass
-                                
-                                # 提取参考链接
-                                try:
-                                    references = cve_data["containers"]["cna"]["references"]
-                                    if references:
-                                        description += "\nCVE参考链接:"
-                                        for ref in references[:5]:  # 最多显示5个链接
-                                            url = ref.get("url")
-                                            if url:
-                                                description += f"\n- {url}"
-                                except (KeyError, IndexError):
-                                    pass
-                                
-                                # 只处理第一个CVE ID
-                                break
-                else:
-                    # 如果OSV API获取失败，仍然添加原始漏洞ID作为相关漏洞ID
-                    if "/" in vuln["id"]:
-                        related_ids = [id.strip() for id in vuln["id"].split("/")]
-                        description += f"\n\n相关漏洞ID: {', '.join(related_ids)}"
-                    description += "\n\n获取漏洞详细信息失败"
+                # 提交所有漏洞处理任务
+                future_to_vuln_id = {
+                    executor.submit(process_single_vuln, vuln_id, result): vuln_id
+                    for vuln_id, result in osv_results.items()
+                }
                 
-                # 处理漏洞ID格式
-                processed_vuln_id = vuln["id"]
-                prefixes_to_remove = [
-                    "Warn: Project is vulnerable to: "
-                ]
-                for prefix in prefixes_to_remove:
-                    if processed_vuln_id.startswith(prefix):
-                        processed_vuln_id = processed_vuln_id[len(prefix):]
-                
-                vulnerabilities.append({
-                    "id": processed_vuln_id,
-                    "severity": vuln["severity"],
-                    "description": description
-                })
-                pbar.update(1)
+                # 获取所有处理结果
+                for future in as_completed(future_to_vuln_id):
+                    try:
+                        vuln_data = future.result()
+                        if vuln_data:
+                            vulnerabilities.append(vuln_data)
+                    except Exception as e:
+                        vuln_id = future_to_vuln_id[future]
+                        logger.error(f"获取漏洞 {vuln_id} 的处理结果时出错: {str(e)}")
+                    finally:
+                        pbar.update(1)
+        
+        # 按ID排序，保持一致的输出顺序
+        vulnerabilities.sort(key=lambda x: x["id"])
         
         end_time = time.time()
-        print(f"处理 {len(vulnerabilities)} 个漏洞完成，耗时 {end_time - start_time:.2f} 秒")
+        print(f"并行处理 {len(vulnerabilities)} 个漏洞完成，耗时 {end_time - start_time:.2f} 秒")
         return vulnerabilities
+    
+    def _clean_vulnerability_id(self, vuln_id: str) -> str:
+        """
+        清理漏洞ID，移除前缀并处理复合ID
+        
+        Args:
+            vuln_id: 原始漏洞ID
+            
+        Returns:
+            str: 清理后的漏洞ID
+        """
+        # 移除常见前缀
+        prefixes_to_remove = [
+            "Warn: Project is vulnerable to: "
+        ]
+        
+        clean_id = vuln_id
+        for prefix in prefixes_to_remove:
+            if clean_id.startswith(prefix):
+                clean_id = clean_id[len(prefix):]
+                break
+        
+        # 此时不处理复合ID，在查询时处理
+        return clean_id.strip()
+    
+    def _fetch_vuln_with_fallback(self, vuln_id: str, raw_id: str = None) -> Optional[Dict]:
+        """
+        获取漏洞详细信息，支持复合ID回退
+        
+        如果是复合ID（如"GHSA-qxp5-gwg8-xv66 / GO-2025-3503"），
+        先尝试第一个ID，失败时再尝试第二个ID
+        
+        Args:
+            vuln_id: 已清理的漏洞ID
+            raw_id: 原始漏洞ID，可能包含多个ID
+            
+        Returns:
+            Optional[Dict]: 漏洞详细信息，如果获取失败返回None
+        """
+        # 先尝试使用提供的ID查询
+        result = self._fetch_vuln_info(vuln_id)
+        if result:
+            return result
+        
+        # 如果有原始ID且包含"/"，表示可能是复合ID
+        if raw_id and "/" in raw_id:
+            # 去除前缀
+            clean_raw_id = self._clean_vulnerability_id(raw_id)
+            
+            # 分割多个ID
+            ids = [id.strip() for id in clean_raw_id.split("/")]
+            logger.info(f"检测到复合ID: {ids}, 正在尝试替代查询...")
+            
+            # 已经尝试过第一个ID（如果它与vuln_id相同），现在尝试其他ID
+            for id in ids:
+                if id != vuln_id:  # 避免重复查询
+                    logger.info(f"尝试使用替代ID查询: {id}")
+                    result = self._fetch_vuln_info(id)
+                    if result:
+                        return result
+        
+        # 所有尝试都失败
+        return None
     
     def _generate_html_report(self, output_path: str) -> None:
         """生成HTML格式的报告"""
@@ -965,9 +1110,19 @@ class ReportGenerator:
             </div>
             
             <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {{
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {{
+                        contents[i].style.display = "none";
+                    }}
+                }});
+                
                 var coll = document.getElementsByClassName("collapsible");
                 for (var i = 0; i < coll.length; i++) {{
-                    coll[i].addEventListener("click", function() {{
+                    coll[i].addEventListener("click", function(e) {{
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
                         this.classList.toggle("active");
                         var content = this.nextElementSibling;
                         if (content.style.display === "block") {{
@@ -993,7 +1148,7 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{pkg_name}</td><td>{version}</td><td>{license_name}</td></tr>")
             
             added_packages_section = f"""
-            <button class="collapsible">
+            <button type="button" class="collapsible">
                 <span style="flex-grow: 1;">新增包 ({len(self.result.added_packages)})</span>
                 <span style="font-size:14px;color:#666">点击展开/收起</span>
             </button>
@@ -1020,7 +1175,7 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{pkg_name}</td><td>{version}</td><td>{license_name}</td></tr>")
             
             removed_packages_section = f"""
-            <button class="collapsible">
+            <button type="button" class="collapsible">
                 <span style="flex-grow: 1;">移除包 ({len(self.result.removed_packages)})</span>
                 <span style="font-size:14px;color:#666">点击展开/收起</span>
             </button>
@@ -1054,7 +1209,7 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_version}</td><td>{change.new_version}</td><td>{change_type}</td></tr>")
             
             version_changes_section = f"""
-            <button class="collapsible">
+            <button type="button" class="collapsible">
                 <span style="flex-grow: 1;">版本变更 ({len(self.result.version_changes)})</span>
                 <span style="font-size:14px;color:#666">点击展开/收起</span>
             </button>
@@ -1081,7 +1236,7 @@ class ReportGenerator:
                 rows.append(f"<tr{row_class}><td>{change.package_name}</td><td>{change.old_license}</td><td>{change.new_license}</td><td>{compatibility}</td></tr>")
             
             license_changes_section = f"""
-            <button class="collapsible">
+            <button type="button" class="collapsible">
                 <span style="flex-grow: 1;">许可证变更 ({len(self.result.license_changes)})</span>
                 <span style="font-size:14px;color:#666">点击展开/收起</span>
             </button>
@@ -1106,7 +1261,7 @@ class ReportGenerator:
                 rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_supplier}</td><td>{change.new_supplier}</td></tr>")
             
             supplier_changes_section = f"""
-            <button class="collapsible">
+            <button type="button" class="collapsible">
                 <span style="flex-grow: 1;">供应商变更 ({len(self.result.supplier_changes)})</span>
                 <span style="font-size:14px;color:#666">点击展开/收起</span>
             </button>
@@ -1203,7 +1358,7 @@ class ReportGenerator:
             
             if risk_items:
                 risk_analysis_section = f"""
-                <button class="collapsible">
+                <button type="button" class="collapsible">
                     <span style="flex-grow: 1;">风险分析 ({total_risks})</span>
                     <span style="font-size:14px;color:#666">点击展开/收起</span>
                 </button>
@@ -1408,7 +1563,7 @@ class ReportGenerator:
                         """)
                     
                     vulnerability_section = f"""
-                    <button class="collapsible">
+                    <button type="button" class="collapsible">
                         <span style="flex-grow: 1;">漏洞信息（来源：OSV） ({len(vulnerabilities)})</span>
                         <span style="font-size:14px;color:#666">点击展开/收起</span>
                     </button>
@@ -1433,7 +1588,8 @@ class ReportGenerator:
             # 获取新增包的漏洞信息
             if self.added_packages_vulnerabilities:
                 pkg_vulns = self.added_packages_vulnerabilities
-            pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
+            else:
+                pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
             
             if pkg_vulns:
                 # 计算总漏洞数
@@ -1550,7 +1706,7 @@ class ReportGenerator:
                 # 创建表格
                 if vuln_rows:
                     added_pkg_vulnerabilities_section = f"""
-                    <button class="collapsible">
+                    <button type="button" class="collapsible">
                         <span style="flex-grow: 1;">新增包漏洞信息 ({total_vulns})</span>
                         <span style="font-size:14px;color:#666">点击展开/收起</span>
                     </button>
@@ -1826,55 +1982,117 @@ class ReportGenerator:
 
     def _normalize_version(self, version: str) -> str:
         """
-        规范化版本字符串，移除空格、前缀'v'和版本表达式前缀
+        标准化版本号，去除前缀v等
         
         Args:
-            version: 原始版本字符串
+            version: 原始版本号
             
         Returns:
-            str: 规范化后的版本字符串
+            str: 标准化后的版本号
         """
         if not version:
             return ""
-        
-        # 处理npm的范围表达式如 "1.0.0 - 2.0.0"
-        if " - " in version:
-            # 取表达式的第一部分
-            version = version.split(" - ")[0].strip()
-        
-        # 标准化版本前缀符号周围的空格，如">= 1.0.0" 变为 ">=1.0.0"
-        for op in [">=", "<=", ">", "<", "==", "~=", "!=", "~", "^"]:
-            if op in version:
-                # 去除操作符周围的空格
-                version = version.replace(f"{op} ", op).replace(f" {op}", op)
-        
-        # 移除版本号中的所有空格
-        version = version.replace(" ", "")
-        
-        # 去除版本表达式前缀（如 "==1.8.0" -> "1.8.0"）
-        for op in [">=", "<=", ">", "<", "==", "~=", "!=", "~", "^"]:
-            if version.startswith(op):
-                version = version[len(op):]
-                break
-        
-        # 去除前缀"v"
+            
+        # 移除版本号中可能的前缀v
         if version.startswith('v'):
             version = version[1:]
         
-        # 去除版本后的修饰符，如 "1.0.0-beta.1" -> "1.0.0"
-        if "-" in version:
-            parts = version.split("-")
-            if all(c.isdigit() or c == '.' for c in parts[0]):
-                version = parts[0]
+        # 移除版本范围符号
+        version = re.sub(r'[<>=~^]', '', version)
         
-        # 去除版本末尾的通配符
-        version = version.rstrip('.*').rstrip('*')
+        # 移除注释部分
+        if ' ' in version:
+            version = version.split(' ')[0]
+            
+        return version.strip()
         
-        # 确保版本号不为空
-        if not version and version != "0":
-            version = "0"
+    def _get_project_ecosystem(self) -> str:
+        """
+        根据项目信息确定默认的生态系统
         
-        return version
+        Returns:
+            str: 项目的生态系统名称
+        """
+        # 尝试从SBOM元数据中获取编程语言
+        if hasattr(self, 'sbom_b'):
+            sbom = self.sbom_b
+            if hasattr(sbom, 'metadata'):
+                if hasattr(sbom.metadata, 'tools'):
+                    for tool in sbom.metadata.tools:
+                        if hasattr(tool, 'language') and tool.language:
+                            return self._map_language_to_ecosystem(tool.language)
+        
+        # 检查项目文件类型判断编程语言
+        file_extensions = self._get_project_file_extensions()
+        if 'js' in file_extensions or 'jsx' in file_extensions or 'json' in file_extensions:
+            return 'npm'
+        elif 'py' in file_extensions:
+            return 'PyPI'
+        elif 'java' in file_extensions:
+            return 'Maven'
+        elif 'go' in file_extensions:
+            return 'Go'
+        elif 'rb' in file_extensions:
+            return 'RubyGems'
+        elif 'rs' in file_extensions:
+            return 'crates.io'
+        elif 'php' in file_extensions:
+            return 'Packagist'
+        elif 'swift' in file_extensions:
+            return 'Swift'
+        elif 'cs' in file_extensions:
+            return 'NuGet'
+        
+        # 默认返回npm作为最常见的生态系统
+        logger.warning("无法确定项目生态系统，默认使用npm")
+        return 'npm'
+    
+    def _map_language_to_ecosystem(self, language: str) -> str:
+        """
+        将编程语言映射到对应的包管理生态系统
+        
+        Args:
+            language: 编程语言名称
+            
+        Returns:
+            str: 对应的生态系统名称
+        """
+        language_ecosystem_map = {
+            'python': 'PyPI',
+            'javascript': 'npm',
+            'java': 'Maven',
+            'go': 'Go',
+            'ruby': 'RubyGems',
+            'rust': 'crates.io',
+            'php': 'Packagist',
+            'swift': 'Swift',
+            'csharp': 'NuGet',
+            'c#': 'NuGet',
+            'typescript': 'npm'
+        }
+        
+        return language_ecosystem_map.get(language.lower(), 'npm')
+    
+    def _get_project_file_extensions(self) -> Set[str]:
+        """
+        获取项目中的文件扩展名集合
+        
+        Returns:
+            Set[str]: 文件扩展名集合
+        """
+        extensions = set()
+        
+        # 当前目录为项目根目录
+        project_dir = os.getcwd()
+        
+        # 扫描项目根目录下的文件
+        for root, _, files in os.walk(project_dir):
+            for file in files:
+                _, ext = os.path.splitext(file)
+                if ext and len(ext) > 1:
+                    extensions.add(ext[1:])  # 移除点号
+        
+        return extensions
 
     def _get_package_vulnerabilities(self, package_name: str, package_version: str = None, ecosystem: str = None) -> List[Dict]:
         """
@@ -1888,17 +2106,104 @@ class ReportGenerator:
         Returns:
             List[Dict]: 漏洞信息列表
         """
-        # 重试参数
-        max_retries = 3
-        retry_delay = 2  # 初始延迟2秒
-        
-        # 标准化版本号
-        if package_version:
-            package_version = self._normalize_version(package_version)
-        
-        # 标准化生态系统名称
-        if ecosystem:
-            # 生态系统名称映射
+        try:
+            # 重试参数
+            max_retries = 3
+            retry_delay = 2  # 初始延迟2秒
+            
+            # 标准化版本号
+            if package_version:
+                package_version = self._normalize_version(package_version)
+            
+            # 确保ecosystem参数存在
+            if not ecosystem:
+                # 尝试从SBOM中获取包信息
+                pkg_obj = None
+                if hasattr(self, 'sbom_b'):
+                    pkg_obj = self.sbom_b.get_package_by_name(package_name)
+                
+                if pkg_obj:
+                    # 检查downloadLocation字段
+                    download_location = None
+                    if hasattr(pkg_obj, "download_location"):
+                        download_location = pkg_obj.download_location
+                    elif hasattr(pkg_obj, "downloadLocation"):
+                        download_location = pkg_obj.downloadLocation
+                    
+                    # 使用downloadLocation判断平台
+                    if download_location:
+                        download_url = str(download_location).lower()
+                        logger.info(f"包 {package_name} 的下载地址: {download_url}")
+                        
+                        # 判断平台
+                        if "npmjs.com" in download_url or "npm.js" in download_url or "npm/package" in download_url:
+                            ecosystem = "npm"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为npm包")
+                        elif "pypi.org" in download_url or "python.org" in download_url:
+                            ecosystem = "PyPI"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为PyPI包")
+                        elif "maven" in download_url or "mvnrepository" in download_url:
+                            ecosystem = "Maven"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为Maven包")
+                        elif "golang.org" in download_url or "go.dev" in download_url or "go-lang" in download_url:
+                            ecosystem = "Go"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为Go包")
+                        elif "rubygems" in download_url or "ruby-lang" in download_url:
+                            ecosystem = "RubyGems"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为RubyGems包")
+                        elif "crates.io" in download_url or "rust-lang" in download_url:
+                            ecosystem = "crates.io"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为Rust包")
+                        elif "packagist" in download_url or "composer" in download_url:
+                            ecosystem = "Packagist"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为PHP包")
+                        elif "nuget" in download_url:
+                            ecosystem = "NuGet"
+                            logger.info(f"通过downloadLocation识别包 {package_name} 为.NET包")
+                    
+                    # 从purl字段判断
+                    if not ecosystem and hasattr(pkg_obj, "purl") and pkg_obj.purl:
+                        purl = str(pkg_obj.purl).lower()
+                        if "pkg:npm" in purl:
+                            ecosystem = "npm"
+                            logger.info(f"通过purl识别包 {package_name} 为npm包: {purl}")
+                        elif "pkg:pypi" in purl:
+                            ecosystem = "PyPI"
+                            logger.info(f"通过purl识别包 {package_name} 为PyPI包: {purl}")
+                        elif "pkg:maven" in purl:
+                            ecosystem = "Maven"
+                            logger.info(f"通过purl识别包 {package_name} 为Maven包: {purl}")
+                        elif "pkg:golang" in purl:
+                            ecosystem = "Go"
+                            logger.info(f"通过purl识别包 {package_name} 为Go包: {purl}")
+            
+                # 检查特定格式
+                if not ecosystem:
+                    if '@' in package_name:  # npm格式: name@version
+                        ecosystem = 'npm'
+                        logger.info(f"通过@符号识别包 {package_name} 为npm包")
+                    elif ':' in package_name:  # Maven或其他格式
+                        parts = package_name.split(':')
+                        if len(parts) == 3:  # groupId:artifactId:version
+                            ecosystem = 'Maven'
+                            logger.info(f"通过冒号格式识别包 {package_name} 为Maven包")
+                            
+                # 检查已知的npm包
+                if not ecosystem and package_name in {'flatmap-stream', 'event-stream'}:
+                    logger.info(f"包 {package_name} 被识别为已知的npm包")
+                    ecosystem = 'npm'
+                    
+                # 如果还没确定生态系统，使用默认生态系统
+                if not ecosystem:
+                    ecosystem = self._get_project_ecosystem()
+                    logger.info(f"未指定生态系统，使用项目默认生态系统: {ecosystem}")
+            
+            # 特殊处理flatmap-stream
+            if package_name == 'flatmap-stream':
+                logger.info("特殊处理flatmap-stream包为npm生态系统")
+                ecosystem = 'npm'
+            
+            # 标准化生态系统名称
             ecosystem_map = {
                 'python': 'PyPI',
                 'py': 'PyPI',
@@ -1918,61 +2223,204 @@ class ReportGenerator:
                 'c#': 'NuGet'
             }
             ecosystem = ecosystem_map.get(ecosystem.lower(), ecosystem)
+            
+            # 构建请求数据
+            request_data = {
+                "package": {
+                    "name": package_name,
+                    "ecosystem": ecosystem
+                }
+            }
+            
+            # 如果有版本，添加到请求数据中
+            if package_version:
+                request_data["version"] = package_version
+            else:
+                # 如果没有版本，发送空字符串
+                request_data["version"] = ""
+            
+            # 记录当前请求数据，便于调试
+            logger.info(f"OSV API请求数据: {request_data}")
+            
+            # 执行API请求，带重试
+            for attempt in range(max_retries):
+                try:
+                    response = requests.post(
+                        "https://api.osv.dev/v1/query",
+                        json=request_data,
+                        timeout=30
+                    )
+                    
+                    # 检查响应状态码
+                    if response.status_code == 200:
+                        data = response.json()
+                        
+                        # 如果vulns字段存在且不为空
+                        if "vulns" in data and data["vulns"]:
+                            # 处理每个漏洞，确保ID正确处理
+                            vulns = []
+                            for vuln in data["vulns"]:
+                                if "/" in vuln.get("id", ""):
+                                    # 记录原始复合ID
+                                    vuln["original_id"] = vuln["id"]
+                                    # 使用第一个ID作为主ID
+                                    first_id = vuln["id"].split("/")[0].strip()
+                                    vuln["id"] = first_id
+                                    logger.info(f"检测到复合ID: {vuln['original_id']}, 使用第一个ID作为主ID: {first_id}")
+                                
+                                # 添加到结果列表
+                                vulns.append(vuln)
+                            
+                            # 丰富漏洞信息
+                            return self._enrich_vulnerability_info(vulns)
+                        
+                        return []
+                    
+                    # 处理API错误
+                    logger.warning(f"OSV API请求失败 (尝试 {attempt+1}/{max_retries}): 状态码 {response.status_code}, 请求体：{request_data}, 响应: {response.text}")
+                    
+                    # 如果是最后一次尝试，记录更详细的错误日志
+                    if attempt == max_retries - 1:
+                        logger.error(f"OSV API请求最终失败: 状态码 {response.status_code}, 请求体: {request_data}, 响应: {response.text}")
+                    
+                    # 指数退避重试
+                    time.sleep(retry_delay * (2 ** attempt))
+                    
+                except Exception as e:
+                    logger.warning(f"OSV API请求出现异常 (尝试 {attempt+1}/{max_retries}): {str(e)}")
+                    
+                    # 如果是最后一次尝试，记录更详细的错误日志
+                    if attempt == max_retries - 1:
+                        logger.error(f"OSV API请求最终失败，异常: {str(e)}")
+                    
+                    # 指数退避重试
+                    time.sleep(retry_delay * (2 ** attempt))
+            
+            # 所有重试都失败，返回空列表
+            logger.error(f"在多次尝试后未能从OSV API获取 {package_name} 的漏洞信息")
+            return []
         
+        except Exception as e:
+            logger.error(f"处理包 {package_name} 的漏洞信息时出错: {str(e)}")
+            return []
+    
+    def _enrich_vulnerability_info(self, vulns: List[Dict]) -> List[Dict]:
+        """
+        使用旧接口补充漏洞信息中缺少的字段，使用多线程并行处理提高效率
+        
+        Args:
+            vulns: 来自新API的漏洞信息列表
+            
+        Returns:
+            List[Dict]: 补充完整后的漏洞信息列表
+        """
+        if not vulns:
+            return []
+            
+        # 使用多线程并行补充漏洞信息
+        with ThreadPoolExecutor(max_workers=min(20, len(vulns))) as executor:
+            # 定义处理单个漏洞的函数
+            def enrich_single_vuln(vuln):
+                # 如果不包含aliases字段，尝试通过旧接口获取
+                if "id" in vuln and "aliases" not in vuln:
+                    try:
+                        # 处理可能的复合ID
+                        vuln_id = vuln["id"]
+                        
+                        # 先使用漏洞ID通过旧接口获取完整信息
+                        detailed_info = self._fetch_vuln_info(vuln_id)
+                        
+                        # 如果获取失败且ID有原始复合形式，尝试使用其他ID
+                        if not detailed_info and "original_id" in vuln and "/" in vuln["original_id"]:
+                            clean_ids = [id.strip() for id in vuln["original_id"].split("/")]
+                            logger.info(f"在补充信息时检测到复合ID: {clean_ids}, 正在尝试替代查询...")
+                            
+                            # 尝试每个ID
+                            for id in clean_ids:
+                                if id != vuln_id:  # 避免重复查询第一个ID
+                                    logger.info(f"补充信息时尝试使用替代ID查询: {id}")
+                                    detailed_info = self._fetch_vuln_info(id)
+                                    if detailed_info:
+                                        break
+                        
+                        # 创建副本，避免修改原始数据
+                        enriched_vuln = vuln.copy()
+                        
+                        # 合并详细信息，保留原始信息中的字段
+                        if detailed_info:
+                            for key, value in detailed_info.items():
+                                if key not in enriched_vuln or not enriched_vuln[key]:  # 如果不存在或为空，则使用新值
+                                    enriched_vuln[key] = value
+                        
+                        return enriched_vuln
+                    except Exception as e:
+                        logger.error(f"补充漏洞 {vuln['id']} 的信息时出错: {str(e)}")
+                
+                # 如果不需要补充或出错，返回原始数据
+                return vuln
+            
+            # 提交所有任务
+            enriched_vulns = list(executor.map(enrich_single_vuln, vulns))
+        
+        return enriched_vulns
+        
+    def _fetch_vuln_info(self, vuln_id: str) -> Dict:
+        """
+        通过旧的OSV API获取漏洞详细信息
+        
+        Args:
+            vuln_id: 漏洞ID
+            
+        Returns:
+            Dict: 漏洞详细信息，如果查询失败返回空字典
+        """
+        # 清理ID，确保没有前缀
+        vuln_id = self._clean_vulnerability_id(vuln_id)
+
+        # 如果包含/，则使用第一个ID作为主ID
+        if "/" in vuln_id:
+            vuln_id = vuln_id.split(" / ")[0].strip()
+        
+        # 重试参数
+        max_retries = 3
+        retry_delay = 2  # 初始延迟2秒
+        
+        # 带重试的API请求
         for attempt in range(max_retries):
             try:
-                # 构建OSV API请求数据
-                # 按照样例 {"version": "0.1.0", "package": {"name": "flatmap-stream", "ecosystem": "npm"}}
-                request_data = {
-                    "package": {
-                        "name": package_name
-                    }
-                }
+                # 构建OSV API查询URL
+                url = f"https://api.osv.dev/v1/vulns/{vuln_id}"
                 
-                # 添加生态系统（如果提供）
-                if ecosystem:
-                    request_data["package"]["ecosystem"] = ecosystem
-                    
-                # 添加包版本（如果提供）
-                if package_version:
-                    request_data["version"] = package_version
-                
-                # 每次请求前增加延迟，避免频率限制
+                # 如果不是第一次尝试，添加延迟
                 if attempt > 0:
-                    sleep_time = retry_delay * (2 ** (attempt - 1))  # 指数退避
-                    logger.info(f"重试查询 {package_name} 的漏洞信息 (第{attempt+1}次尝试)，等待 {sleep_time} 秒")
+                    sleep_time = retry_delay * (2 ** (attempt - 1))
+                    logger.info(f"重试查询漏洞 {vuln_id} 的详细信息 (第{attempt+1}次尝试)，等待 {sleep_time} 秒")
                     time.sleep(sleep_time)
                 
-                logger.info(f"OSV API 请求体: {json.dumps(request_data)}")
-                # 发送POST请求到OSV API
-                response = requests.post(
-                    "https://api.osv.dev/v1/query",
-                    json=request_data,
-                    timeout=30
-                )
+                # 发送GET请求
+                response = requests.get(url, timeout=15)
                 
+                # 检查响应
                 if response.status_code == 200:
-                    data = response.json()
-                    logger.info(f"OSV API响应: 发现 {len(data.get('vulns', []))} 个漏洞")
-                    if "vulns" in data and data["vulns"]:
-                        return data["vulns"]
-                    return []
-                elif response.status_code == 429:  # Too Many Requests
-                    logger.warning(f"查询包 {package_name} 的漏洞信息被限制，状态码: {response.status_code}")
-                    # 请求被限制，稍后重试
-                    continue
+                    return response.json()
+                elif response.status_code == 404:
+                    logger.warning(f"未找到漏洞 {vuln_id} 的详细信息")
+                    return {}
                 else:
-                    logger.warning(f"查询包 {package_name} 的漏洞信息失败，状态码: {response.status_code}，响应: {response.text}")
+                    logger.warning(f"查询漏洞 {vuln_id} 详细信息失败，状态码: {response.status_code}")
+                    
+                    # 如果是最后一次尝试，放弃并返回空字典
                     if attempt == max_retries - 1:
-                        return []  # 最后一次尝试也失败
-                    continue  # 继续尝试
+                        return {}
             except Exception as e:
-                logger.error(f"查询包 {package_name} 的漏洞信息时出错: {str(e)}")
+                logger.error(f"查询漏洞 {vuln_id} 详细信息时出错: {str(e)}")
+                
+                # 如果是最后一次尝试，放弃并返回空字典
                 if attempt == max_retries - 1:
-                    return []  # 最后一次尝试也失败
+                    return {}
         
-        return []  # 所有重试都失败
-
+        return {}
+        
     def _fetch_package_vulnerabilities_batch(self, packages: List[str]) -> Dict[str, List[Dict]]:
         """
         批量获取多个包的漏洞信息
@@ -1984,94 +2432,19 @@ class ReportGenerator:
             Dict[str, List[Dict]]: 包名到漏洞信息列表的映射
         """
         # 检查是否已有缓存结果
+        # 1. 如果是查询新增包且已有新增包缓存，直接返回缓存
+        if packages == self.result.added_packages and self.added_packages_vulnerabilities is not None:
+            logger.info("使用已缓存的新增包漏洞信息")
+            return self.added_packages_vulnerabilities
+            
+        # 2. 检查是否所有包名都在漏洞缓存中
         if packages and all(pkg in self.vulnerability_cache for pkg in packages):
             logger.info("使用缓存的漏洞信息")
             # 构建结果字典，只包含请求的包
             return {pkg: self.vulnerability_cache.get(pkg, []) for pkg in packages}
         
-        # 存储新增包的漏洞信息，便于后续复用
-        if packages == self.result.added_packages and self.added_packages_vulnerabilities is not None:
-            logger.info("使用已缓存的新增包漏洞信息")
-            return self.added_packages_vulnerabilities
-        
         result = {}
         package_details = []
-        
-        # 定义常见文件扩展名与生态系统的映射
-        extension_to_ecosystem = {
-            # Python
-            '.py': 'PyPI',
-            '.whl': 'PyPI',
-            '.egg': 'PyPI',
-            # JavaScript/Node.js
-            '.js': 'npm',
-            '.ts': 'npm',
-            '.jsx': 'npm',
-            '.tsx': 'npm',
-            '.mjs': 'npm',
-            '.cjs': 'npm',
-            # Java
-            '.jar': 'Maven',
-            '.java': 'Maven',
-            '.war': 'Maven',
-            '.ear': 'Maven',
-            '.pom': 'Maven',
-            # Go
-            '.go': 'Go',
-            # Ruby
-            '.rb': 'RubyGems',
-            '.gem': 'RubyGems',
-            # Rust
-            '.rs': 'crates.io',
-            # PHP
-            '.php': 'Packagist',
-            # .NET
-            '.dll': 'NuGet',
-            '.exe': 'NuGet',
-            '.cs': 'NuGet',
-            '.vb': 'NuGet',
-        }
-        
-        # 包名前缀与生态系统的映射
-        prefix_to_ecosystem = {
-            'py-': 'PyPI',
-            'python-': 'PyPI',
-            'node-': 'npm',
-            'js-': 'npm',
-            'npm-': 'npm',
-            'ruby-': 'RubyGems',
-            'gem-': 'RubyGems',
-            'go-': 'Go',
-            'rust-': 'crates.io',
-            'cargo-': 'crates.io',
-            'php-': 'Packagist',
-            'nuget-': 'NuGet',
-            'dotnet-': 'NuGet'
-        }
-        
-        # 从SBOM中提取更多信息的尝试
-        sbom_ecosystems = {
-            "javascript": "npm",
-            "node.js": "npm",
-            "nodejs": "npm",
-            "js": "npm",
-            "python": "PyPI",
-            "java": "Maven",
-            "golang": "Go",
-            "ruby": "RubyGems",
-            "rust": "crates.io",
-            "php": "Packagist",
-            ".net": "NuGet",
-            "dotnet": "NuGet",
-            "c#": "NuGet"
-        }
-        
-        # 检查是否可以从SBOM信息中获取编程语言
-        sbom_language = None
-        if hasattr(self.sbom_b, "metadata") and self.sbom_b.metadata:
-            if "programming_language" in self.sbom_b.metadata:
-                lang = self.sbom_b.metadata["programming_language"].lower()
-                sbom_language = sbom_ecosystems.get(lang)
         
         # 解析包名获取生态系统和版本信息
         for pkg in packages:
@@ -2091,51 +2464,102 @@ class ReportGenerator:
                 # 如果有版本信息，使用它
                 if hasattr(pkg_obj, "version") and pkg_obj.version:
                     version = pkg_obj.version
+                
+                # 检查downloadLocation字段
+                download_location = None
+                if hasattr(pkg_obj, "download_location"):
+                    download_location = pkg_obj.download_location
+                elif hasattr(pkg_obj, "downloadLocation"):
+                    download_location = pkg_obj.downloadLocation
+                
+                # 使用downloadLocation判断平台
+                if download_location:
+                    download_url = download_location.lower()
+                    logger.info(f"包 {pkg} 的下载地址: {download_url}")
+                    
+                    # 判断平台
+                    if "npmjs.com" in download_url or "npm.js" in download_url or "npm/package" in download_url:
+                        ecosystem = "npm"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为npm包")
+                    elif "pypi.org" in download_url or "python.org" in download_url:
+                        ecosystem = "PyPI"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为PyPI包")
+                    elif "maven" in download_url or "mvnrepository" in download_url:
+                        ecosystem = "Maven"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为Maven包")
+                    elif "golang.org" in download_url or "go.dev" in download_url or "go-lang" in download_url:
+                        ecosystem = "Go"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为Go包")
+                    elif "rubygems" in download_url or "ruby-lang" in download_url:
+                        ecosystem = "RubyGems"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为RubyGems包")
+                    elif "crates.io" in download_url or "rust-lang" in download_url:
+                        ecosystem = "crates.io"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为Rust包")
+                    elif "packagist" in download_url or "composer" in download_url:
+                        ecosystem = "Packagist"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为PHP包")
+                    elif "nuget" in download_url:
+                        ecosystem = "NuGet"
+                        logger.info(f"通过downloadLocation识别包 {pkg} 为.NET包")
             
             # 检查特定格式
             if '@' in pkg:  # npm格式: name@version
-                name, version = pkg.split('@', 1)
                 ecosystem = 'npm'
             elif ':' in pkg:  # Maven或其他格式
                 parts = pkg.split(':')
                 if len(parts) == 3:  # groupId:artifactId:version
                     ecosystem = 'Maven'
-                    name = f"{parts[0]}:{parts[1]}"
-                    version = parts[2]
-                elif len(parts) == 2:  # name:version
-                    name = parts[0]
-                    version = parts[1]
             
-            # 如果还没确定生态系统，尝试从名称或扩展名推断
-            if not ecosystem:
-                # 检查文件扩展名
-                for ext, eco in extension_to_ecosystem.items():
-                    if name.endswith(ext):
-                        ecosystem = eco
-                        # 移除扩展名
-                        name = name[:-len(ext)]
-                        break
-                
-                # 检查包名前缀
-                if not ecosystem:
-                    for prefix, eco in prefix_to_ecosystem.items():
-                        if name.startswith(prefix):
-                            ecosystem = eco
-                            break
-                
-                    # 如果仍未确定，使用SBOM中的编程语言
-                    if not ecosystem and sbom_language:
-                        ecosystem = sbom_language
+            # 检查已知的npm包
+            known_npm_packages = {
+                'flatmap-stream', 'event-stream', 'express', 'lodash', 'react', 'jquery', 'angular',
+                'vue', 'moment', 'request', 'webpack', 'babel', 'eslint', 'mocha', 'jest',
+                'chalk', 'commander', 'axios', 'underscore', 'minimist', 'yargs', 'inquirer',
+                'ws', 'uuid', 'dotenv', 'bluebird', 'fs-extra', 'body-parser', 'rimraf',
+                'cheerio', 'debug', 'semver', 'glob', 'mkdirp', 'async', 'socket.io', 'typescript'
+            }
             
-            # 如果包名看起来像npm包（包含连字符），但未确定生态系统，默认为npm
-            if not ecosystem and ('-' in name or '/' in name) and not any(char.isupper() for char in name):
+            if not ecosystem and name in known_npm_packages:
+                logger.info(f"包 {name} 被识别为已知的npm包")
                 ecosystem = 'npm'
+            
+            # 检查包对象中的其他信息来判断生态系统
+            if not ecosystem and pkg_obj:
+                # 从purl字段判断
+                if hasattr(pkg_obj, 'purl') and pkg_obj.purl:
+                    purl = pkg_obj.purl
+                    if 'pkg:npm' in purl:
+                        ecosystem = 'npm'
+                    elif 'pkg:pypi' in purl:
+                        ecosystem = 'PyPI'
+                    elif 'pkg:maven' in purl:
+                        ecosystem = 'Maven'
+                    elif 'pkg:golang' in purl:
+                        ecosystem = 'Go'
+                
+                # 从许可证信息判断
+                if not ecosystem and hasattr(pkg_obj, 'license_concluded'):
+                    license_text = pkg_obj.license_concluded
+                    if license_text and ('MIT' in license_text or 'Apache' in license_text or 'ISC' in license_text):
+                        # 这些许可证在npm包中很常见
+                        ecosystem = 'npm'
+            
+            # 从文件名判断
+            if not ecosystem:
+                # 检查是否是常见的JavaScript/Node.js模式
+                js_patterns = ['-js-', '-node-', '.js.', '.jsx.', '.ts.', '.tsx.', '.mjs.', 'node_modules']
+                if any(pattern in name.lower() for pattern in js_patterns):
+                    logger.info(f"包 {name} 由于命名模式被识别为npm包")
+                    ecosystem = 'npm'
+            
+            # 如果还没确定生态系统，使用默认生态系统
+            if not ecosystem:
+                ecosystem = self._get_project_ecosystem()
             
             # 标准化版本号
             if version:
                 version = self._normalize_version(version)
-            
-            logger.info(f"解析包 {pkg} 得到: name={name}, version={version}, ecosystem={ecosystem}")
             
             package_details.append({
                 'name': name,

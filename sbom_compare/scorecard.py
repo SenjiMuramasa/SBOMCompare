@@ -126,6 +126,9 @@ class ScorecardAPI:
         for check in data["checks"]:
             if check.get("name") == "Vulnerabilities":
                 details = check.get("details", [])
+                # 对details判空
+                if not details:
+                    continue
                 for detail in details:
                     # 检查detail是否为字符串（CVE ID）
                     if isinstance(detail, str):
