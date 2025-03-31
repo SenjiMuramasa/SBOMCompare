@@ -1,0 +1,556 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-29 13:51:32</p>
+                <p>SBOM A: sample_data\photoprism_b79d219.json</p>
+                <p>SBOM B: sample_data\photoprism_now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>35</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>115</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>4</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">7.1/10</span>
+                    <span class="score-percentage">(70.6%)</span>
+                    <span class="score-grade grade-b">B</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 1.7/1.7 (98.2%)</h3>
+                    <p><strong>详情:</strong> 2个包的供应商发生变更; 新增了10个包; 大量移除包(35个)可能影响功能稳定性</p>
+                    <p><strong>影响因素:</strong> 大量移除依赖</p>
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>版本一致性: 2.2/3.5 (62.9%)</h3>
+                    <p><strong>详情:</strong> 16个包发生主版本变更，可能存在API不兼容; 28个包发生次版本变更; 38个包发生补丁版本变更; 33个包发生其他版本变更; 2个包发生版本降级，可能丢失安全修复</p>
+                    <p><strong>影响因素:</strong> 主版本变更, 大量次版本变更, 版本降级</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 0.9/0.9 (99.7%)</h3>
+                    <p><strong>详情:</strong> 4个包发生许可证变更; 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>风险评估: 1.6/2.6 (61.0%)</h3>
+                    <p><strong>详情:</strong> 存在1个高风险项; 存在3个中风险项</p>
+                    <p><strong>影响因素:</strong> 版本降级</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.7/1.3 (54.0%)</h3>
+                    <p><strong>详情:</strong> CII-Best-Practices需要改进; 以下项目风险较高: Vulnerabilities, Branch-Protection, Code-Review; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> Vulnerabilities风险, Branch-Protection风险, Code-Review风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链安全评分为 7.1/10.0 (70.6%)，安全等级: B。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：大量移除依赖, 主版本变更, 大量次版本变更, 版本降级, 版本降级。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (13)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-76p3-8jx3-jpfq</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-76p3-8jx3-jpfq<br><br><div class="cve-header">来自 CVE-2022-37601 的附加信息:</div><br><div class="section-header">描述: Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils via the name variable in parseQuery.js. This affects all versions prior to 1.4.1 and 2.0.3.</div><br><div class="section-header">发布日期: 2022-10-12</div><br><div class="section-header">最后更新: 2024-10-28</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/issues/212</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/issues/212#issuecomment-1319192884</span><br><span class="vuln-link">https://dl.acm.org/doi/abs/10.1145/3488932.3497769</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-37601</div><br><br><div class="section-header">发布日期: 2022-10-13</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-37601</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/issues/212</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/issues/212#issuecomment-1319192884</span><br><span class="vuln-link">https://github.com/xmldom/xmldom/issues/436#issuecomment-1319412826</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/pull/217</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/pull/220</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/commit/4504e34c4796a5836ef70458327351675aed48a5</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/commit/a93cf6f4702012030f6b5ee8340d5c95ec1c7d4c</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/commit/f4e48a232fae900237c3e5ff7b57ce9e1c734de1</span><br><span class="vuln-link">https://dl.acm.org/doi/abs/10.1145/3488932.3497769</span><br><span class="vuln-link">https://dl.acm.org/doi/pdf/10.1145/3488932.3497769</span><br><span class="vuln-link">https://github.com/webpack/loader-utils</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/releases/tag/v1.4.1</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/releases/tag/v2.0.3</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/12/msg00044.html</span><br><span class="vuln-link">http://users.encs.concordia.ca/~mmannan/publications/JS-vulnerability-aisaccs2022.pdf</span><br><br><div class="section-header">影响范围:</div><br>包名: loader-utils (npm)<br>包名: loader-utils (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-9c47-m6qq-7p4h</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-9c47-m6qq-7p4h<br><br><div class="cve-header">来自 CVE-2022-46175 的附加信息:</div><br><div class="section-header">描述: JSON5 is an extension to the popular JSON file format that aims to be easier to write and maintain by hand (e.g. for config files). The `parse` method of the JSON5 library before and including versions 1.0.1 and 2.2.1 does not restrict parsing of keys named `__proto__`, allowing specially crafted strings to pollute the prototype of the resulting object. This vulnerability pollutes the prototype of the object returned by `JSON5.parse` and not the global Object prototype, which is the commonly understood definition of Prototype Pollution. However, polluting the prototype of a single object can have significant security impact for an application if the object is later used in trusted operations. This vulnerability could allow an attacker to set arbitrary and unexpected keys on the object returned from `JSON5.parse`. The actual impact will depend on how applications utilize the returned object and how they filter unwanted keys, but could include denial of service, cross-site scripting, elevation of privilege, and in extreme cases, remote code execution. `JSON5.parse` should restrict parsing of `__proto__` keys when parsing JSON strings to objects. As a point of reference, the `JSON.parse` method included in JavaScript ignores `__proto__` keys. Simply changing `JSON5.parse` to `JSON.parse` in the examples above mitigates this vulnerability. This vulnerability is patched in json5 versions 1.0.2, 2.2.2, and later.</div><br><div class="section-header">发布日期: 2022-12-24</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/json5/json5/security/advisories/GHSA-9c47-m6qq-7p4h</span><br><span class="vuln-link">https://github.com/json5/json5/issues/199</span><br><span class="vuln-link">https://github.com/json5/json5/issues/295</span><br><span class="vuln-link">https://github.com/json5/json5/pull/298</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3S26TLPLVFAJTUN3VIXFDEBEXDYO22CE/</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-46175</div><br><br><div class="section-header">发布日期: 2022-12-29</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/json5/json5/security/advisories/GHSA-9c47-m6qq-7p4h</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-46175</span><br><span class="vuln-link">https://github.com/json5/json5/issues/199</span><br><span class="vuln-link">https://github.com/json5/json5/issues/295</span><br><span class="vuln-link">https://github.com/json5/json5/pull/298</span><br><span class="vuln-link">https://github.com/json5/json5/commit/62a65408408d40aeea14c7869ed327acead12972</span><br><span class="vuln-link">https://github.com/json5/json5/commit/7774c1097993bc3ce9f0ac4b722a32bf7d6871c8</span><br><span class="vuln-link">https://github.com/json5/json5</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/11/msg00021.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3S26TLPLVFAJTUN3VIXFDEBEXDYO22CE</span><br><br><div class="section-header">影响范围:</div><br>包名: json5 (npm)<br>包名: json5 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-pxg6-pf52-xh8x</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x<br><br><div class="cve-header">来自 CVE-2024-47764 的附加信息:</div><br><div class="section-header">描述: cookie is a basic HTTP cookie parser and serializer for HTTP servers. The cookie name could be used to set other fields of the cookie, resulting in an unexpected cookie value. A similar escape can be used for path and domain, which could be abused to alter other fields of the cookie. Upgrade to 0.7.0, which updates the validation for name, path, and domain.</div><br><div class="section-header">发布日期: 2024-10-04</div><br><div class="section-header">最后更新: 2024-10-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x</span><br><span class="vuln-link">https://github.com/jshttp/cookie/pull/167</span><br><span class="vuln-link">https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-47764</div><br><br><div class="section-header">发布日期: 2024-10-04</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x</span><br><span class="vuln-link">https://github.com/jshttp/cookie/pull/167</span><br><span class="vuln-link">https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c</span><br><span class="vuln-link">https://github.com/jshttp/cookie</span><br><br><div class="section-header">影响范围:</div><br>包名: cookie (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-q7pp-wcgr-pffx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-q7pp-wcgr-pffx<br><br><div class="cve-header">来自 CVE-2023-36308 的附加信息:</div><br><div class="section-header">描述: disintegration Imaging 1.6.2 allows attackers to cause a panic (because of an integer index out of range during a Grayscale call) via a crafted TIFF file to the scan function of scanner.go. NOTE: it is unclear whether there are common use cases in which this panic could have any security consequence</div><br><div class="section-header">发布日期: 2023-09-05</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/disintegration/imaging/releases/tag/v1.6.2</span><br><span class="vuln-link">https://github.com/disintegration/imaging/issues/165</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3GX2SYGRCNFUAGELLDOBIERCSCYSGKFY/</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-36308</div><br><br><div class="section-header">发布日期: 2023-09-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-36308</span><br><span class="vuln-link">https://github.com/disintegration/imaging/issues/165</span><br><span class="vuln-link">https://github.com/disintegration/imaging/releases/tag/v1.6.2</span><br>github.com/disintegration/imaging<br><br><div class="section-header">影响范围:</div><br>包名: github.com/disintegration/imaging (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-2611 / GHSA-8r3f-844c-mc37</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-2611 / GHSA-8r3f-844c-mc37<br><br><div class="cve-header">来自 CVE-2024-24786 的附加信息:</div><br><div class="section-header">描述: The protojson.Unmarshal function can enter an infinite loop when unmarshaling certain forms of invalid JSON. This condition can occur when unmarshaling into a message which contains a google.protobuf.Any value, or when the UnmarshalOptions.DiscardUnknown option is set.</div><br><div class="section-header">发布日期: 2024-03-05</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/569356</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2024-2611</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/JDMBHAVSDU2FBDZ45U3A2VLSM35OJ2HU/</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2024/03/08/4</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240517-0002/</span><br><br><div class="section-header">相关漏洞ID: CGA-2vgr-6mqh-4r48, CGA-v9cm-f6x8-5vj7, CVE-2024-24786, GHSA-8r3f-844c-mc37</div><br><br><div class="section-header">发布日期: 2024-03-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/569356</span><br><br><div class="section-header">影响范围:</div><br>包名: google.golang.org/protobuf (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g<br><br><div class="cve-header">来自 CVE-2024-28180 的附加信息:</div><br><div class="section-header">描述: Package jose aims to provide an implementation of the Javascript Object Signing and Encryption set of standards. An attacker could send a JWE containing compressed data that used large amounts of memory and CPU when decompressed by Decrypt or DecryptMulti. Those functions now return an error if the decompressed data would exceed 250kB or 10x the compressed size (whichever is larger). This vulnerability has been patched in versions 4.0.1, 3.0.3 and 2.6.3.</div><br><div class="section-header">发布日期: 2024-03-09</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/go-jose/go-jose/security/advisories/GHSA-c5q2-7r4c-mv6g</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/0dd4dd541c665fb292d664f77604ba694726f298</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/add6a284ea0f844fd6628cba637be5451fe4b28a</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/f4c051a0653d78199a053892f7619ebf96339502</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/XJDO5VSIAOGT2WP63AXAAWNRSVJCNCRH/</span><br><br><div class="section-header">相关漏洞ID: CGA-9vf9-m4f8-6392, CGA-9vg5-h493-cxr7, CGA-chh8-vhg4-2qj7, CGA-g5hx-8r47-pf39, CGA-hmfp-f3v3-528v, CGA-hrqx-74pg-5m88, CGA-m474-c57g-8945, CGA-r356-23m2-5p37, CGA-v3wf-pwmr-vcw5, CGA-w52c-j6q8-cf23, CGA-w7jq-8v28-882j, CVE-2024-28180, GHSA-c5q2-7r4c-mv6g</div><br><br><div class="section-header">发布日期: 2024-03-15</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/go-jose/go-jose/security/advisories/GHSA-c5q2-7r4c-mv6g</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/0dd4dd541c665fb292d664f77604ba694726f298</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/add6a284ea0f844fd6628cba637be5451fe4b28a</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/f4c051a0653d78199a053892f7619ebf96339502</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/go-jose/go-jose/v4 (Go)<br>包名: github.com/go-jose/go-jose/v3 (Go)<br>包名: gopkg.in/go-jose/go-jose.v2 (Go)<br>包名: gopkg.in/square/go-jose.v2 (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-2687 / GHSA-4v7x-pqxf-cx7m</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-2687 / GHSA-4v7x-pqxf-cx7m<br><br><div class="cve-header">来自 CVE-2023-45288 的附加信息:</div><br><div class="section-header">描述: An attacker may cause an HTTP/2 endpoint to read arbitrary amounts of header data by sending an excessive number of CONTINUATION frames. Maintaining HPACK state requires parsing and processing all HEADERS and CONTINUATION frames on a connection. When a request's headers exceed MaxHeaderBytes, no memory is allocated to store the excess headers, but they are still parsed. This permits an attacker to cause an HTTP/2 endpoint to read arbitrary amounts of header data, all associated with a request which is going to be rejected. These headers can include Huffman-encoded data which is significantly more expensive for the receiver to decode than for an attacker to send. The fix sets a limit on the amount of excess header frames we will process before closing a connection.</div><br><div class="section-header">发布日期: 2024-04-04</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/issue/65051</span><br><span class="vuln-link">https://go.dev/cl/576155</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2024-2687</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240419-0009/</span><br><br><div class="section-header">相关漏洞ID: BIT-golang-2023-45288, CGA-8q47-wf6v-wqg5, CGA-c6f9-jh7g-69mj, CGA-grww-v9jg-rhw2, CVE-2023-45288, GHSA-4v7x-pqxf-cx7m</div><br><br><div class="section-header">发布日期: 2024-04-03</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/issue/65051</span><br><span class="vuln-link">https://go.dev/cl/576155</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M</span><br><br><div class="section-header">影响范围:</div><br>包名: stdlib (Go)<br>包名: golang.org/x/net (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-2958 / GHSA-3669-72x9-r9p3</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-2958 / GHSA-3669-72x9-r9p3<br><br><div class="cve-header">来自 CVE-2024-37298 的附加信息:</div><br><div class="section-header">描述: gorilla/schema converts structs to and from form values. Prior to version 1.4.1 Running `schema.Decoder.Decode()` on a struct that has a field of type `[]struct{...}` opens it up to malicious attacks regarding memory allocations, taking advantage of the sparse slice functionality. Any use of `schema.Decoder.Decode()` on a struct with arrays of other structs could be vulnerable to this memory exhaustion vulnerability. Version 1.4.1 contains a patch for the issue.</div><br><div class="section-header">发布日期: 2024-07-01</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/gorilla/schema/security/advisories/GHSA-3669-72x9-r9p3</span><br><span class="vuln-link">https://github.com/gorilla/schema/commit/cd59f2f12cbdfa9c06aa63e425d1fe4a806967ff</span><br><span class="vuln-link">https://github.com/gorilla/schema/blob/main/decoder.go#L223</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-37298, GHSA-3669-72x9-r9p3</div><br><br><div class="section-header">发布日期: 2024-07-02</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/gorilla/schema/security/advisories/GHSA-3669-72x9-r9p3</span><br><span class="vuln-link">https://github.com/gorilla/schema/commit/cd59f2f12cbdfa9c06aa63e425d1fe4a806967ff</span><br><span class="vuln-link">https://github.com/gorilla/schema/blob/main/decoder.go#L223</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/gorilla/schema (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-3321 / GHSA-v778-237x-gjrc</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc<br><br><div class="cve-header">来自 CVE-2024-45337 的附加信息:</div><br><div class="section-header">描述: Applications and libraries which misuse connection.serverAuthenticate (via callback field ServerConfig.PublicKeyCallback) may be susceptible to an authorization bypass. The documentation for ServerConfig.PublicKeyCallback says that "A call to this function does not guarantee that the key offered is in fact used to authenticate." Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallback may be called with multiple keys, and the order in which the keys were provided cannot be used to infer which key the client successfully authenticated with, if any. Some applications, which store the key(s) passed to PublicKeyCallback (or derived information) and make security relevant determinations based on it once the connection is established, may make incorrect assumptions. For example, an attacker may send public keys A and B, and then authenticate with A. PublicKeyCallback would be called only twice, first with A and then with B. A vulnerable application may then make authorization decisions based on key B for which the attacker does not actually control the private key. Since this API is widely misused, as a partial mitigation golang.org/x/cry...@v0.31.0 enforces the property that, when successfully authenticating via public key, the last key passed to ServerConfig.PublicKeyCallback will be the key used to authenticate the connection. PublicKeyCallback will now be called multiple times with the same key, if necessary. Note that the client may still not control the last key passed to PublicKeyCallback if the connection is then authenticated with a different method, such as PasswordCallback, KeyboardInteractiveCallback, or NoClientAuth. Users should be using the Extensions field of the Permissions return value from the various authentication callbacks to record data associated with the authentication attempt instead of referencing external state. Once the connection is established the state corresponding to the successful authentication attempt can be retrieved via the ServerConn.Permissions field. Note that some third-party libraries misuse the Permissions type by sharing it across authentication attempts; users of third-party libraries should refer to the relevant projects for guidance.</div><br><div class="section-header">发布日期: 2024-12-11</div><br><div class="section-header">最后更新: 2025-02-18</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</span><br><span class="vuln-link">https://go.dev/cl/635315</span><br><span class="vuln-link">https://go.dev/issue/70779</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2024-3321</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-45337, GHSA-v778-237x-gjrc</div><br><br><div class="section-header">发布日期: 2024-12-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</span><br><span class="vuln-link">https://go.dev/cl/635315</span><br><span class="vuln-link">https://go.dev/issue/70779</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/crypto (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-3333</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-3333<br><br><div class="cve-header">来自 CVE-2024-45338 的附加信息:</div><br><div class="section-header">描述: An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.</div><br><div class="section-header">发布日期: 2024-12-18</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/637536</span><br><span class="vuln-link">https://go.dev/issue/70906</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2024-3333</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-45338, GHSA-w32m-9786-jp63</div><br><br><div class="section-header">发布日期: 2024-12-18</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/637536</span><br><span class="vuln-link">https://go.dev/issue/70906</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/net (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2025-3487</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3487<br><br><div class="cve-header">来自 CVE-2025-22869 的附加信息:</div><br><div class="section-header">描述: SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.</div><br><div class="section-header">发布日期: 2025-02-26</div><br><div class="section-header">最后更新: 2025-02-26</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3487</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22869</div><br><br><div class="section-header">发布日期: 2025-02-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/crypto (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2025-3488</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3488<br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div><br><div class="section-header">描述: An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.</div><br><div class="section-header">发布日期: 2025-02-26</div><br><div class="section-header">最后更新: 2025-02-26</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3488</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22868</div><br><br><div class="section-header">发布日期: 2025-02-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/oauth2 (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2025-3503 / GHSA-qxp5-gwg8-xv66</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66<br><br><div class="cve-header">来自 CVE-2025-22870 的附加信息:</div><br><div class="section-header">描述: Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to "*.example.com", a request to "[::1%25.example.com]:80` will incorrectly match and not be proxied.</div><br><div class="section-header">发布日期: 2025-03-12</div><br><div class="section-header">最后更新: 2025-03-18</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3503</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22870, GHSA-qxp5-gwg8-xv66</div><br><br><div class="section-header">发布日期: 2025-03-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/net (Go)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (10)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/ugjka/go-tz/v2</td><td>v2.2.6</td><td>GPL-3.0-or-later</td></tr><tr><td>golang.org/x/mod</td><td>v0.24.0</td><td>GPL-3.0-or-later</td></tr><tr><td>@eslint/eslintrc</td><td>^3.3.1</td><td>AGPL-3.0</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/rogpeppe/go-internal</td><td>v1.14.1</td><td>GPL-3.0-or-later</td></tr><tr><td>@eslint/js</td><td>^9.23.0</td><td>AGPL-3.0</td></tr><tr><td>filippo.io/edwards25519</td><td>v1.1.0</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/IGLOU-EU/go-wildcard</td><td>v1.0.3</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.18.0</td><td>GPL-3.0-or-later</td></tr><tr><td>@humanfs</td><td>0.19.1</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (35)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>load-json-file</td><td>5.3.0</td><td>MIT</td></tr><tr><td>json-parse-better-errors</td><td>1.0.2</td><td>MIT</td></tr><tr><td>prop-types</td><td>15.8.1</td><td>MIT</td></tr><tr><td>eslint-config-standard-jsx</td><td>11.0.0</td><td>MIT</td></tr><tr><td>gopkg.in/photoprism/go-tz.v2</td><td>v2.1.3</td><td>GPL-3.0-or-later</td></tr><tr><td>iterator.prototype</td><td>1.1.5</td><td>MIT</td></tr><tr><td>es-iterator-helpers</td><td>1.2.1</td><td>MIT</td></tr><tr><td>string.prototype.matchall</td><td>4.0.12</td><td>MIT</td></tr><tr><td>jsx-ast-utils</td><td>3.3.5</td><td>MIT</td></tr><tr><td>react-is</td><td>16.13.1</td><td>MIT</td></tr><tr><td>eslint-plugin-react</td><td>7.37.4</td><td>MIT</td></tr><tr><td>object.entries</td><td>1.1.8</td><td>MIT</td></tr><tr><td>array.prototype.tosorted</td><td>1.1.4</td><td>MIT</td></tr><tr><td>@nodelib</td><td>2.1.5</td><td>MIT</td></tr><tr><td>pkg-conf</td><td>3.1.0</td><td>MIT</td></tr><tr><td>queue-microtask</td><td>1.2.3</td><td>MIT</td></tr><tr><td>array.prototype.findlast</td><td>1.2.5</td><td>MIT</td></tr><tr><td>reusify</td><td>1.0.4</td><td>MIT</td></tr><tr><td>builtins</td><td>5.1.0</td><td>MIT</td></tr><tr><td>eslint-plugin-n</td><td>15.7.0</td><td>MIT</td></tr><tr><td>run-parallel</td><td>1.2.0</td><td>MIT</td></tr><tr><td>get-stdin</td><td>8.0.0</td><td>MIT</td></tr><tr><td>loose-envify</td><td>1.4.0</td><td>MIT</td></tr><tr><td>version-guard</td><td>1.1.3</td><td>0BSD</td></tr><tr><td>fastq</td><td>1.19.0</td><td>ISC</td></tr><tr><td>@ungap</td><td>1.3.0</td><td>ISC</td></tr><tr><td>xdg-basedir</td><td>4.0.0</td><td>MIT</td></tr><tr><td>type-fest</td><td>0.3.1</td><td>(MIT OR CC0-1.0)</td></tr><tr><td>golang.org/x/exp</td><td>v0.0.0-20250106191152-7588d65b2ba8</td><td>GPL-3.0-or-later</td></tr><tr><td>standard-engine</td><td>15.1.0</td><td>MIT</td></tr><tr><td>standard</td><td>^17.1.2</td><td>AGPL-3.0</td></tr><tr><td>is-path-inside</td><td>3.0.3</td><td>MIT</td></tr><tr><td>graphemer</td><td>1.4.0</td><td>MIT</td></tr><tr><td>text-table</td><td>0.2.0</td><td>MIT</td></tr><tr><td>string.prototype.repeat</td><td>1.0.0</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (115)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>yocto-queue</td><td>1.1.1</td><td>0.1.0</td><td>主版本</td></tr><tr><td>html-entities</td><td>2.5.2</td><td>2.5.5</td><td>补丁版本</td></tr><tr><td>github.com/go-openapi/swag</td><td>v0.23.0</td><td>v0.23.1</td><td>补丁版本</td></tr><tr><td>postcss-logical</td><td>8.0.0</td><td>8.1.0</td><td>次版本</td></tr><tr><td>nanoid</td><td>3.3.8</td><td>3.3.11</td><td>补丁版本</td></tr><tr><td>eslint-config-prettier</td><td>^10.0.1</td><td>^10.1.1</td><td>一般变更</td></tr><tr><td>@humanwhocodes</td><td>0.13.0</td><td>1.0.1</td><td>主版本</td></tr><tr><td>postcss-lab-function</td><td>7.0.7</td><td>7.0.8</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/google/open-location-code/go</td><td>v0.0.0-20250131120908-b46335afbc82</td><td>v0.0.0-20250307090349-1695db3c3b15</td><td>一般变更</td></tr><tr><td>github.com/go-co-op/gocron/v2</td><td>v2.15.0</td><td>v2.16.1</td><td>次版本</td></tr><tr><td>github.com/mattn/go-sqlite3</td><td>v1.14.22</td><td>v1.14.24</td><td>补丁版本</td></tr><tr><td>eslint-scope</td><td>7.2.2</td><td>8.3.0</td><td>主版本</td></tr><tr><td>github.com/prometheus/client_golang</td><td>v1.21.0</td><td>v1.21.1</td><td>补丁版本</td></tr><tr><td>core-js-compat</td><td>3.40.0</td><td>3.41.0</td><td>次版本</td></tr><tr><td>postcss</td><td>^8.5.2</td><td>^8.5.3</td><td>一般变更</td></tr><tr><td>eslint</td><td>>=8.57.0</td><td>^9.23.0</td><td>一般变更</td></tr><tr><td>array.prototype.findlastindex</td><td>1.2.5</td><td>1.2.6</td><td>补丁版本</td></tr><tr><td>autoprefixer</td><td>10.4.20</td><td>10.4.21</td><td>补丁版本</td></tr><tr><td>globals</td><td>11.12.0</td><td>^16.0.0</td><td>一般变更</td></tr><tr><td>synckit</td><td>0.9.2</td><td>0.10.3</td><td>次版本</td></tr><tr><td>vue-eslint-parser</td><td>9.4.3</td><td>10.1.1</td><td>主版本</td></tr><tr><td>chai</td><td>^5.1.2</td><td>^5.2.0</td><td>一般变更</td></tr><tr><td>github.com/bytedance/sonic</td><td>v1.12.8</td><td>v1.13.2</td><td>次版本</td></tr><tr><td>file-entry-cache</td><td>6.0.1</td><td>8.0.0</td><td>主版本</td></tr><tr><td>call-bound</td><td>1.0.3</td><td>1.0.4</td><td>补丁版本</td></tr><tr><td>@vue/language-server</td><td>^2.2.0</td><td>^2.2.8</td><td>一般变更</td></tr><tr><td>@babel/preset-env</td><td>^7.26.8</td><td>^7.26.9</td><td>一般变更</td></tr><tr><td>github.com/rivo/uniseg</td><td>v0.4.6</td><td>v0.4.7</td><td>补丁版本</td></tr><tr><td>babel-plugin-polyfill-corejs2</td><td>0.4.12</td><td>0.4.13</td><td>补丁版本</td></tr><tr><td>ioredis</td><td>5.5.0</td><td>5.6.0</td><td>次版本</td></tr><tr><td>github.com/go-sql-driver/mysql</td><td>v1.7.1</td><td>v1.9.0</td><td>次版本</td></tr><tr><td>maplibre-gl</td><td>^5.1.0</td><td>^5.3.0</td><td>一般变更</td></tr><tr><td>get-intrinsic</td><td>1.2.7</td><td>1.3.0</td><td>次版本</td></tr><tr><td>webpack</td><td>^5.97.1</td><td>^5.98.0</td><td>一般变更</td></tr><tr><td>p-locate</td><td>4.1.0</td><td>5.0.0</td><td>主版本</td></tr><tr><td>flat-cache</td><td>3.2.0</td><td>4.0.1</td><td>主版本</td></tr><tr><td>prettier</td><td>^3.5.0</td><td>^3.5.3</td><td>一般变更</td></tr><tr><td>github.com/golang/geo</td><td>v0.0.0-20230421003525-6adc56603217</td><td>v0.0.0-20250328065203-0b6e08c212fb</td><td>一般变更</td></tr><tr><td>find-up</td><td>4.1.0</td><td>5.0.0</td><td>主版本</td></tr><tr><td>eslint-plugin-prettier</td><td>^5.2.3</td><td>^5.2.5</td><td>一般变更</td></tr><tr><td>github.com/go-jose/go-jose/v4</td><td>v4.0.4</td><td>v4.0.5</td><td>补丁版本</td></tr><tr><td>luxon</td><td>^3.5.0</td><td>^3.6.0</td><td>一般变更</td></tr><tr><td>sass-loader</td><td>^16.0.4</td><td>^16.0.5</td><td>一般变更</td></tr><tr><td>caniuse-lite</td><td>1.0.30001700</td><td>1.0.30001707</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>eslint-plugin-vue</td><td>^9.32.0</td><td>^10.0.0</td><td>一般变更</td></tr><tr><td>github.com/prometheus/common</td><td>v0.62.0</td><td>v0.63.0</td><td>次版本</td></tr><tr><td>immutable</td><td>5.0.3</td><td>5.1.1</td><td>次版本</td></tr><tr><td>@pkgr</td><td>0.1.1</td><td>0.2.0</td><td>次版本</td></tr><tr><td>core-js</td><td>^3.40.0</td><td>^3.41.0</td><td>一般变更</td></tr><tr><td>babel-loader</td><td>^9.2.1</td><td>^10.0.0</td><td>一般变更</td></tr><tr><td>github.com/zitadel/logging</td><td>v0.6.1</td><td>v0.6.2</td><td>补丁版本</td></tr><tr><td>typescript</td><td>5.7.3</td><td>5.8.2</td><td>次版本</td></tr><tr><td>github.com/mattn/go-runewidth</td><td>v0.0.15</td><td>v0.0.16</td><td>补丁版本</td></tr><tr><td>vscode-css-languageservice</td><td>6.3.2</td><td>6.3.3</td><td>补丁版本</td></tr><tr><td>axios</td><td>^1.7.9</td><td>^1.8.4</td><td>一般变更</td></tr><tr><td>github.com/go-openapi/jsonpointer</td><td>v0.21.0</td><td>v0.21.1</td><td>补丁版本</td></tr><tr><td>which-typed-array</td><td>1.1.18</td><td>1.1.19</td><td>补丁版本</td></tr><tr><td>github.com/goccy/go-json</td><td>v0.10.4</td><td>v0.10.5</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.10.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>github.com/bytedance/sonic/loader</td><td>v0.2.3</td><td>v0.2.4</td><td>补丁版本</td></tr><tr><td>golang.org/x/image</td><td>v0.24.0</td><td>v0.25.0</td><td>次版本</td></tr><tr><td>eslint-visitor-keys</td><td>3.4.3</td><td>4.2.0</td><td>主版本</td></tr><tr><td>terser-webpack-plugin</td><td>5.3.11</td><td>5.3.14</td><td>补丁版本</td></tr><tr><td>babel-plugin-polyfill-regenerator</td><td>0.6.3</td><td>0.6.4</td><td>补丁版本</td></tr><tr><td>sanitize-html</td><td>^2.14.0</td><td>^2.15.0</td><td>一般变更</td></tr><tr><td>webpack-cli</td><td>^5.1.4</td><td>^6.0.1</td><td>一般变更</td></tr><tr><td>gonum.org/v1/gonum</td><td>v0.15.1</td><td>v0.16.0</td><td>次版本</td></tr><tr><td>github.com/prometheus/procfs</td><td>v0.15.1</td><td>v0.16.0</td><td>次版本</td></tr><tr><td>github.com/mailru/easyjson</td><td>v0.7.7</td><td>v0.9.0</td><td>次版本</td></tr><tr><td>@babel/core</td><td>^7.26.8</td><td>^7.26.10</td><td>一般变更</td></tr><tr><td>@babel/runtime</td><td>^7.26.7</td><td>^7.27.0</td><td>一般变更</td></tr><tr><td>@babel/plugin-transform-runtime</td><td>^7.26.8</td><td>^7.26.10</td><td>一般变更</td></tr><tr><td>babel-plugin-polyfill-corejs3</td><td>0.10.6</td><td>^0.12.0</td><td>一般变更</td></tr><tr><td>flow-remove-types</td><td>2.261.2</td><td>2.266.0</td><td>次版本</td></tr><tr><td>github.com/klauspost/cpuid/v2</td><td>v2.2.9</td><td>v2.2.10</td><td>补丁版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.30.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>@babel</td><td>7.26.4</td><td>7.27.0</td><td>次版本</td></tr><tr><td>js-yaml</td><td>3.14.1</td><td>4.1.0</td><td>主版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.11.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>@eslint-community</td><td>4.4.1</td><td>4.5.1</td><td>次版本</td></tr><tr><td>sass</td><td>^1.84.0</td><td>^1.86.0</td><td>一般变更</td></tr><tr><td>@eslint</td><td>2.1.4</td><td>0.19.2</td><td>主版本</td></tr><tr><td>update-browserslist-db</td><td>1.1.2</td><td>1.1.3</td><td>补丁版本</td></tr><tr><td>github.com/swaggo/swag</td><td>v1.16.3</td><td>v1.16.4</td><td>补丁版本</td></tr><tr><td>github.com/go-playground/validator/v10</td><td>v10.24.0</td><td>v10.25.0</td><td>次版本</td></tr><tr><td>foreground-child</td><td>3.3.0</td><td>3.3.1</td><td>补丁版本</td></tr><tr><td>golang.org/x/arch</td><td>v0.13.0</td><td>v0.15.0</td><td>次版本</td></tr><tr><td>postcss-preset-env</td><td>^10.1.3</td><td>^10.1.5</td><td>一般变更</td></tr><tr><td>github.com/zitadel/schema</td><td>v1.3.0</td><td>v1.3.1</td><td>补丁版本</td></tr><tr><td>github.com/boombuler/barcode</td><td>v1.0.1</td><td>v1.0.2</td><td>补丁版本</td></tr><tr><td>espree</td><td>9.6.1</td><td>10.3.0</td><td>主版本</td></tr><tr><td>eslint-webpack-plugin</td><td>^4.2.0</td><td>^5.0.0</td><td>一般变更</td></tr><tr><td>electron-to-chromium</td><td>1.5.103</td><td>1.5.128</td><td>补丁版本</td></tr><tr><td>pirates</td><td>4.0.6</td><td>4.0.7</td><td>补丁版本</td></tr><tr><td>vuetify</td><td>^3.7.11</td><td>^3.7.19</td><td>一般变更</td></tr><tr><td>@babel/cli</td><td>^7.26.4</td><td>^7.27.0</td><td>一般变更</td></tr><tr><td>@webpack-cli</td><td>2.1.1</td><td>3.0.1</td><td>主版本</td></tr><tr><td>webpack-manifest-plugin</td><td>^5.0.0</td><td>^5.0.1</td><td>一般变更</td></tr><tr><td>github.com/cpuguy83/go-md2man/v2</td><td>v2.0.5</td><td>v2.0.6</td><td>补丁版本</td></tr><tr><td>alien-signals</td><td>1.0.4</td><td>1.0.10</td><td>补丁版本</td></tr><tr><td>p-limit</td><td>2.3.0</td><td>3.1.0</td><td>主版本</td></tr><tr><td>argparse</td><td>1.0.10</td><td>2.0.1</td><td>主版本</td></tr><tr><td>hls.js</td><td>^1.5.20</td><td>^1.6.0</td><td>一般变更</td></tr><tr><td>@volar</td><td>2.4.11</td><td>2.4.12</td><td>补丁版本</td></tr><tr><td>github.com/zitadel/oidc/v3</td><td>v3.34.2</td><td>v3.37.0</td><td>次版本</td></tr><tr><td>vscode-json-languageservice</td><td>5.4.3</td><td>5.4.4</td><td>补丁版本</td></tr><tr><td>postcss-color-functional-notation</td><td>7.0.7</td><td>7.0.8</td><td>补丁版本</td></tr><tr><td>eslint-plugin-vuetify</td><td>^2.5.1</td><td>^2.5.2</td><td>一般变更</td></tr><tr><td>cssdb</td><td>8.2.3</td><td>8.2.4</td><td>补丁版本</td></tr><tr><td>vscode-html-languageservice</td><td>5.3.1</td><td>5.3.3</td><td>补丁版本</td></tr><tr><td>locate-path</td><td>5.0.0</td><td>6.0.0</td><td>主版本</td></tr><tr><td>github.com/urfave/cli/v2</td><td>v2.27.5</td><td>v2.27.6</td><td>补丁版本</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (4)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>globals</td><td>MIT</td><td>AGPL-3.0</td><td>否</td></tr><tr><td>babel-plugin-polyfill-corejs3</td><td>MIT</td><td>AGPL-3.0</td><td>否</td></tr><tr><td>@eslint</td><td>MIT</td><td>Apache-2.0</td><td>否</td></tr><tr><td>argparse</td><td>MIT</td><td>Python-2.0</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">供应商变更 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧供应商</th>
+                        <th>新供应商</th>
+                    </tr>
+                    <tr><td>globals</td><td>Organization: npm</td><td>Person: PhotoPrism UG</td></tr><tr><td>babel-plugin-polyfill-corejs3</td><td>Organization: npm</td><td>Person: PhotoPrism UG</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (4)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-high">
+                        <div class="risk-category">版本降级</div>
+                        <div class="risk-description">2个包的版本被降级，可能丢失安全修复或功能</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> yocto-queue, @eslint</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 调查版本降级的原因，确认是否有意为之，以及是否丢失了重要的安全修复</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖变更</div>
+                        <div class="risk-description">移除了大量包（35个），可能表明软件架构发生了重大变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> load-json-file, json-parse-better-errors, prop-types, eslint-config-standard-jsx, gopkg.in/photoprism/go-tz.v2... 等共35个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 确认所有被移除的依赖项功能都已经被适当替代或不再需要</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">重大版本变更</div>
+                        <div class="risk-description">16个包进行了主版本升级，可能包含不兼容的API变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> yocto-queue, @humanwhocodes, eslint-scope, vue-eslint-parser, file-entry-cache... 等共16个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查主版本变更的包的变更日志，确认API兼容性，并进行全面测试</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">供应链变更</div>
+                        <div class="risk-description">2个包变更了供应商，可能表明供应链被重定向</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> globals, babel-plugin-polyfill-corejs3</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 验证新供应商的可信度，并确认变更是有意的而非供应链攻击</div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

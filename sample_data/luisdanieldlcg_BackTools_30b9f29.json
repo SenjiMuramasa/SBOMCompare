@@ -1,0 +1,339 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "luisdanieldlcg/BackTools SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/luisdanieldlcg/BackTools-3d8444c0-bf73-48c2-9af1-2d95045b9bdc",
+  "creationInfo": {
+    "created": "2025-03-30T06:31:54.031730Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "BackTools",
+      "SPDXID": "SPDXRef-Package-BackTools",
+      "downloadLocation": "https://github.com/luisdanieldlcg/BackTools.git",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "mit",
+      "copyrightText": "NOASSERTION",
+      "description": "BackTools for Fabric. Shows the last used tool on the player's back. Purely aesthetic.",
+      "comment": "Primary languages: Java, JSON, Markdown, YAML",
+      "versionInfo": "commit-main",
+      "supplier": "Organization: luisdanieldlcg",
+      "homepage": "https://github.com/luisdanieldlcg/BackTools"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1f96ac1288f5932482f2d3a03f0617684b6f1059"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "482c83cf0066bf1ed7d32d157d71f159c0c36a66c4a72432fa3e0f31464cb39f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "38835384f1617e345bcfb13c14352ab5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\build.yml",
+      "SPDXID": "SPDXRef-File-334463a26a4e87f6befa54a7b5a27639",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "62c740c63b3c92b467403814706628ac60a8ae85"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b02d65360cdd6a00a743fc4e5a8d049dbf3fb0dcb742309398ad67bffd754e52"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8f7496f98d031080b7d0f0c6e57e0374"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\BackToolFeatureRenderer.java",
+      "SPDXID": "SPDXRef-File-bf21a7d6638845575557c7edba324e02",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "723294f431039bc1444f2b3de3c9614e970816c4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "78994fe3f767c5ca64703ea7e3ee4f867fd58e163a48eb50fc9cbf2017b5b299"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "910f47182dcd7698997bdeed265c8536"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\BackTools.java",
+      "SPDXID": "SPDXRef-File-8517bd6933150f09955d52509d5280ee",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e24feebdd56d5194df4f30af063d70391fe299eb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "63e5f6f333254d117bb193f1972b4e4e52ef84f5827106cbeca631b07e524ef4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "049734052e9c278dc91d927519f1895b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\BackToolsConfig.java",
+      "SPDXID": "SPDXRef-File-228bcda851f584ab006cf96748cfbb8f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "446cda55f036779baaa97663f13473e121c73283"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "23ff0119679ea248b5467a77d7f0c8cad0f6328fd99b0297891743716cd57a7f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a9b3fe51591c95324af01a8684346720"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\ClientSetup.java",
+      "SPDXID": "SPDXRef-File-bc1d32396be31a7ebb5fcfb60c61cf27",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8cc362c9900945b4e9c3c4c5e2b2219350aeeea5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7b1b07ccc8a1df78fcad1db22c7b5d86c50b5af3e40834031050c4e183a76c0b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "50d701fddf2643a3a7c9f8855f869890"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\ConfigHandler.java",
+      "SPDXID": "SPDXRef-File-fdd8542120adad85ca01b572efe5a8de",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1acf5efc57679dfe57c3b11ed9e82a125f2a4431"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "026b035f937e0553940dca9714b6e6cb2aacfb5db2b474b2f0d20c0034e099ed"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3de6bfc549593f7a87625168d250c027"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\HeldItemContext.java",
+      "SPDXID": "SPDXRef-File-7f5a91c0a367f15549f7694a52e62d0d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d886bdf9bca933e64e17f6ac32fd1769c38a3bf7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8c472045c31a9b65e257ed6ea82b55970e72acdc2d642e5f59b1e968b8030730"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ba5a9d9f70a554489ae529f25cb60ba2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\mixin\\ClientWorldMixin.java",
+      "SPDXID": "SPDXRef-File-12b046e60f8b04f9049919f325d64987",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ba34f403d0d0d6ab322f319dbeb8b7ef3fe3c481"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d12323e03a26f42c68f81eea21c5129d56a79ae39f2cae584c3cdbb85118e82d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cdbbfe4b18fcf196834640dc7e81f455"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\mixin\\PlayerEntityRendererMixin.java",
+      "SPDXID": "SPDXRef-File-0a2fdda4e2c240747367017897f890e4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f96f1aae1365625fab565f6e4e7419778218162a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "67457770e715b43c83f0af22c145a8830c5f2eb7b38bbce3592b0a9103203eb5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ac6560c2ac15497154fa1a6a9b9d4996"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\java\\com\\daniking\\backtools\\mixin\\PlayerEntityTickMixin.java",
+      "SPDXID": "SPDXRef-File-13066dd7bd2aa57069544c8db7447a0c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "be04812db944bc1cd09c7ee2a0461d2141a6c8ab"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3862d3067543511398baf3c7041bfb6f713549d18241115844bb34822e499f17"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "47110eeafdb2bd36818aae153c18ded3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\resources\\backtools.mixins.json",
+      "SPDXID": "SPDXRef-File-48e26824f64543ee282ff97ee8320795",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f4bcee1f6c4aa9e0c779688917aa96744a8be335"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7005b393fbcbb054d3bc8dabf3bf29aafba16bf90d9a0b96207ad96197bf6c29"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4b71ed57963fa63a8d73b97f33407784"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main\\resources\\fabric.mod.json",
+      "SPDXID": "SPDXRef-File-00dcc4e44e0f3dbaf5ff480e53c29d16",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "523c71f85003f89525c064ebf05814d84dda48f9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4b447a09496c6f0e03f1f2e5d7f2115e806e12b5fd0f8dee186018884008130c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "167a774284a60a5dc4f34b99524cf386"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-BackTools",
+      "relationshipType": "DESCRIBES"
+    }
+  ]
+}

@@ -1,0 +1,648 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-28 17:09:03</p>
+                <p>SBOM A: sample_data\yolov5_source.json</p>
+                <p>SBOM B: sample_data\yolov5_build.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>14</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>23</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>22</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">5.4/10</span>
+                    <span class="score-percentage">(54.0%)</span>
+                    <span class="score-grade grade-c">C-</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-low">
+                    <h3>供应链完整性: 1.8/3.4 (53.1%)</h3>
+                    <p><strong>详情:</strong> 大量供应商变更(22个)可能表明供应链重定向; CI阶段新增了14个在源代码中未定义的包</p>
+                    <p><strong>影响因素:</strong> 供应链重定向, CI阶段引入未授权包</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 2.1/2.4 (88.8%)</h3>
+                    <p><strong>详情:</strong> 1个包发生主版本变更，可能存在API不兼容; 5个包发生次版本变更; 1个包发生其他版本变更</p>
+                    <p><strong>影响因素:</strong> 主版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>许可证合规性: 0.4/1.4 (26.2%)</h3>
+                    <p><strong>详情:</strong> 22个包发生许可证变更; 13个新增包缺少许可证信息</p>
+                    <p><strong>影响因素:</strong> 缺少许可证信息</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>风险评估: 0.4/1.4 (32.0%)</h3>
+                    <p><strong>详情:</strong> 存在1个高风险项; 存在6个中风险项; 存在1个低风险项</p>
+                    <p><strong>影响因素:</strong> CI阶段新增包</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.6/1.4 (46.0%)</h3>
+                    <p><strong>详情:</strong> Code-Review需要改进; 以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Token-Permissions; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链源代码到CI阶段安全评分为 5.4/10.0 (54.0%)，安全等级: C-。 软件供应链安全风险较高，需要采取措施改进。 主要影响因素：供应链重定向, CI阶段引入未授权包, 主版本变更, 缺少许可证信息, CI阶段新增包。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (25)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>PYSEC-2023-161 / GHSA-wfm5-v35h-vwf4</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-161 / GHSA-wfm5-v35h-vwf4<br><br><div class="cve-header">来自 CVE-2023-40590 的附加信息:</div><br><div class="section-header">描述:  GitPython is a python library used to interact with Git repositories. When resolving a program, Python/Windows look for the current working directory, and after that the PATH environment. GitPython defaults to use the `git` command, if a user runs GitPython from a repo has a `git.exe` or `git` executable, that program will be run instead of the one in the user's `PATH`. This is more of a problem on how Python interacts with Windows systems, Linux and any other OS aren't affected by this. But probably people using GitPython usually run it from the CWD of a repo. An attacker can trick a user to download a repository with a malicious `git` executable, if the user runs/imports GitPython from that directory, it allows the attacker to run any arbitrary commands. There is no fix currently available for windows users, however there are a few mitigations. 1: Default to an absolute path for the git program on Windows, like `C:\\Program Files\\Git\\cmd\\git.EXE` (default git path installation). 2: Require users to set the `GIT_PYTHON_GIT_EXECUTABLE` environment variable on Windows systems. 3: Make this problem prominent in the documentation and advise users to never run GitPython from an untrusted repo, or set the `GIT_PYTHON_GIT_EXECUTABLE` env var to an absolute path. 4: Resolve the executable manually by only looking into the `PATH` environment variable.</div><br><div class="section-header">发布日期: 2023-08-28</div><br><div class="section-header">最后更新: 2024-10-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-wfm5-v35h-vwf4</span><br><span class="vuln-link">https://docs.python.org/3/library/subprocess.html#popen-constructor</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-40590, GHSA-wfm5-v35h-vwf4</div><br><br><div class="section-header">发布日期: 2023-08-28</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://docs.python.org/3/library/subprocess.html#popen-constructor</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-wfm5-v35h-vwf4</span><br><br><div class="section-header">影响范围:</div><br>包名: gitpython (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-q799-q27x-vp7w</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-q799-q27x-vp7w<br><br><div class="cve-header">来自 CVE-2019-5064 的附加信息:</div><br><div class="section-header">描述: An exploitable heap buffer overflow vulnerability exists in the data structure persistence functionality of OpenCV, before version 4.2.0. A specially crafted JSON file can cause a buffer overflow, resulting in multiple heap corruptions and potentially code execution. An attacker can provide a specially crafted file to trigger this vulnerability.</div><br><div class="section-header">发布日期: 2020-01-03</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuApr2021.html</span><br><span class="vuln-link">https://talosintelligence.com/vulnerability_reports/TALOS-2019-0853</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15857</span><br><span class="vuln-link">https://www.oracle.com//security-alerts/cpujul2021.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-5064</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-5064</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15857</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://github.com/opencv/opencv-python/releases/tag/32</span><br><span class="vuln-link">https://github.com/opencv/opencv/releases/tag/4.2.0</span><br><span class="vuln-link">https://talosintelligence.com/vulnerability_reports/TALOS-2019-0853</span><br><span class="vuln-link">https://www.oracle.com//security-alerts/cpujul2021.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuApr2021.html</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2023-165 / GHSA-cwvm-v4w8-q58c</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-165 / GHSA-cwvm-v4w8-q58c<br><br><div class="cve-header">来自 CVE-2023-41040 的附加信息:</div><br><div class="section-header">描述: GitPython is a python library used to interact with Git repositories. In order to resolve some git references, GitPython reads files from the `.git` directory, in some places the name of the file being read is provided by the user, GitPython doesn't check if this file is located outside the `.git` directory. This allows an attacker to make GitPython read any file from the system. This vulnerability is present in https://github.com/gitpython-developers/GitPython/blob/1c8310d7cae144f74a671cbe17e51f63a830adbf/git/refs/symbolic.py#L174-L175. That code joins the base directory with a user given string without checking if the final path is located outside the base directory. This vulnerability cannot be used to read the contents of files but could in theory be used to trigger a denial of service for the program. This issue has been addressed in version 3.1.37.</div><br><div class="section-header">发布日期: 2023-08-30</div><br><div class="section-header">最后更新: 2024-11-19</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-cwvm-v4w8-q58c</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/pull/1672</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/commit/74e55ee4544867e1bd976b7df5a45869ee397b0b</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/commit/e98f57b81f792f0f5e18d33ee658ae395f9aa3c4</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/blob/1c8310d7cae144f74a671cbe17e51f63a830adbf/git/refs/symbolic.py#L174-L175</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-41040, GHSA-cwvm-v4w8-q58c</div><br><br><div class="section-header">发布日期: 2023-08-30</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-cwvm-v4w8-q58c</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/blob/1c8310d7cae144f74a671cbe17e51f63a830adbf/git/refs/symbolic.py#L174-L175</span><br><br><div class="section-header">影响范围:</div><br>包名: gitpython (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-fm39-cw8h-3p63</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-fm39-cw8h-3p63<br><br><div class="cve-header">来自 CVE-2019-14491 的附加信息:</div><br><div class="section-header">描述: An issue was discovered in OpenCV before 3.4.7 and 4.x before 4.1.1. There is an out of bounds read in the function cv::predictOrdered<cv::HaarEvaluator> in modules/objdetect/src/cascadedetect.hpp, which leads to denial of service.</div><br><div class="section-header">发布日期: 2019-08-01</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15125</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/33b765d...4a7ca5a</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/371bba8...ddbd10c</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HPFLN6QAX6SUA4XR4NMKKXX26H3TYCVQ/</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-12/msg00025.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-14491</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-14491</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15125</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/33b765d...4a7ca5a</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/371bba8...ddbd10c</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HPFLN6QAX6SUA4XR4NMKKXX26H3TYCVQ</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-3448-vrgh-85xr</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-3448-vrgh-85xr<br><br><div class="cve-header">来自 CVE-2019-14493 的附加信息:</div><br><div class="section-header">描述: An issue was discovered in OpenCV before 4.1.1. There is a NULL pointer dereference in the function cv::XMLParser::parse at modules/core/src/persistence.cpp.</div><br><div class="section-header">发布日期: 2019-08-01</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/opencv/opencv/compare/371bba8...ddbd10c</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15127</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2021/10/msg00028.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-14493</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-14493</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15127</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/371bba8...ddbd10c</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2021/10/msg00028.html</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2023-137 / GHSA-pr76-5cm5-w9cj</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-137 / GHSA-pr76-5cm5-w9cj<br><br><div class="cve-header">来自 CVE-2023-40267 的附加信息:</div><br><div class="section-header">描述: GitPython before 3.1.32 does not block insecure non-multi options in clone and clone_from. NOTE: this issue exists because of an incomplete fix for CVE-2022-24439.</div><br><div class="section-header">发布日期: 2023-08-11</div><br><div class="section-header">最后更新: 2024-10-10</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/pull/1609</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/commit/ca965ecc81853bca7675261729143f54e5bf4cdd</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/PF6AXUTC5BO7L2SBJMCVKJSPKWY52I5R/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AV5DV7GBLMOZT7U3Q4TDOJO5R6G3V6GH/</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-40267, GHSA-pr76-5cm5-w9cj</div><br><br><div class="section-header">发布日期: 2023-08-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/commit/ca965ecc81853bca7675261729143f54e5bf4cdd</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/pull/1609</span><br><br><div class="section-header">影响范围:</div><br>包名: gitpython (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-fw99-f933-rgh8</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-fw99-f933-rgh8<br><br><div class="cve-header">来自 CVE-2019-14492 的附加信息:</div><br><div class="section-header">描述: An issue was discovered in OpenCV before 3.4.7 and 4.x before 4.1.1. There is an out of bounds read/write in the function HaarEvaluator::OptFeature::calc in modules/objdetect/src/cascadedetect.hpp, which leads to denial of service.</div><br><div class="section-header">发布日期: 2019-08-01</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/opencv/opencv/compare/33b765d...4a7ca5a</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/371bba8...ddbd10c</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15124</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-12/msg00025.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-14492</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-14492</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15124</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/33b765d...4a7ca5a</span><br><span class="vuln-link">https://github.com/opencv/opencv/compare/371bba8...ddbd10c</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-12/msg00025.html</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-hxfw-jm98-v4mq</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-hxfw-jm98-v4mq<br><br><div class="cve-header">来自 CVE-2019-15939 的附加信息:</div><br><div class="section-header">描述: An issue was discovered in OpenCV 4.1.0. There is a divide-by-zero error in cv::HOGDescriptor::getDescriptorSize in modules/objdetect/src/hog.cpp.</div><br><div class="section-header">发布日期: 2019-09-05</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/OpenCV/opencv/issues/15287</span><br><span class="vuln-link">https://github.com/opencv/opencv/pull/15382</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-12/msg00025.html</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2021/10/msg00028.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-15939</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-15939</span><br><span class="vuln-link">https://github.com/OpenCV/opencv/issues/15287</span><br><span class="vuln-link">https://github.com/opencv/opencv/pull/15382</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2021/10/msg00028.html</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-12/msg00025.html</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-8849-5h85-98qw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-8849-5h85-98qw<br><br><div class="cve-header">来自 CVE-2019-9423 的附加信息:</div><br><div class="section-header">描述: In opencv calls that use libpng, there is a possible out of bounds write due to a missing bounds check. This could lead to local escalation of privilege with no additional execution privileges required. User interaction is not required for exploitation. Product: AndroidVersions: Android-10Android ID: A-110986616</div><br><div class="section-header">发布日期: 2019-09-27</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://source.android.com/security/bulletin/android-10</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2019/10/25/17</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2019/10/27/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2019/11/07/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2020/12/05/1</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-9423</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-9423</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://source.android.com/security/bulletin/android-10</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2019/10/25/17</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2019/10/27/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2019/11/07/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2020/12/05/1</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2024-4 / GHSA-2mqj-m65w-jghx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2024-4 / GHSA-2mqj-m65w-jghx<br><br><div class="cve-header">来自 CVE-2024-22190 的附加信息:</div><br><div class="section-header">描述: GitPython is a python library used to interact with Git repositories. There is an incomplete fix for CVE-2023-40590. On Windows, GitPython uses an untrusted search path if it uses a shell to run `git`, as well as when it runs `bash.exe` to interpret hooks. If either of those features are used on Windows, a malicious `git.exe` or `bash.exe` may be run from an untrusted repository. This issue has been patched in version 3.1.41.</div><br><div class="section-header">发布日期: 2024-01-11</div><br><div class="section-header">最后更新: 2024-09-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-2mqj-m65w-jghx</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/pull/1792</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/commit/ef3192cc414f2fd9978908454f6fd95243784c7f</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-22190, GHSA-2mqj-m65w-jghx</div><br><br><div class="section-header">发布日期: 2024-01-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-2mqj-m65w-jghx</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/pull/1792</span><br><span class="vuln-link">https://github.com/gitpython-developers/GitPython/commit/ef3192cc414f2fd9978908454f6fd95243784c7f</span><br><br><div class="section-header">影响范围:</div><br>包名: gitpython (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2021-142 / GHSA-8q59-q68h-6hv4</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4<br><br><div class="cve-header">来自 CVE-2020-14343 的附加信息:</div><br><div class="section-header">描述: A vulnerability was discovered in the PyYAML library in versions before 5.4, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vulnerable to this flaw. This flaw allows an attacker to execute arbitrary code on the system by abusing the python/object/new constructor. This flaw is due to an incomplete fix for CVE-2020-1747.</div><br><div class="section-header">发布日期: 2021-02-09</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/yaml/pyyaml/issues/420</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuapr2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujul2022.html</span><br><span class="vuln-link">https://github.com/SeldonIO/seldon-core/issues/2252</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-14343, GHSA-8q59-q68h-6hv4</div><br><br><div class="section-header">发布日期: 2021-02-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8q59-q68h-6hv4</span><br><br><div class="section-header">影响范围:</div><br>包名: pyyaml (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2023-183</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-183<br><br><div class="cve-header">来自 CVE-2023-4863 的附加信息:</div><br><div class="section-header">描述: Heap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allowed a remote attacker to perform an out of bounds memory write via a crafted HTML page. (Chromium security severity: Critical)</div><br><div class="section-header">发布日期: 2023-09-12</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://chromereleases.googleblog.com/2023/09/stable-channel-update-for-desktop_11.html</span><br><span class="vuln-link">https://crbug.com/1479274</span><br><span class="vuln-link">https://en.bandisoft.com/honeyview/history/</span><br><span class="vuln-link">https://stackdiary.com/critical-vulnerability-in-webp-codec-cve-2023-4863/</span><br><span class="vuln-link">https://www.mozilla.org/en-US/security/advisories/mfsa2023-40/</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-4863</div><br><br><div class="section-header">发布日期: 2023-09-29</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-4863</span><br><span class="vuln-link">https://github.com/opencv/opencv/wiki/ChangeLog#version481</span><br><span class="vuln-link">https://github.com/opencv/opencv/pull/24274</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-qr4w-53vh-m672</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-qr4w-53vh-m672<br><br><div class="cve-header">来自 CVE-2023-4863 的附加信息:</div><br><div class="section-header">描述: Heap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allowed a remote attacker to perform an out of bounds memory write via a crafted HTML page. (Chromium security severity: Critical)</div><br><div class="section-header">发布日期: 2023-09-12</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://chromereleases.googleblog.com/2023/09/stable-channel-update-for-desktop_11.html</span><br><span class="vuln-link">https://crbug.com/1479274</span><br><span class="vuln-link">https://en.bandisoft.com/honeyview/history/</span><br><span class="vuln-link">https://stackdiary.com/critical-vulnerability-in-webp-codec-cve-2023-4863/</span><br><span class="vuln-link">https://www.mozilla.org/en-US/security/advisories/mfsa2023-40/</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-4863</div><br><br><div class="section-header">发布日期: 2024-08-30</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-4863</span><br><span class="vuln-link">https://github.com/opencv/opencv/pull/24274</span><br><span class="vuln-link">https://github.com/opencv/opencv/commit/687fc11626901cff09d2b3b5f331fd59190ad4c7</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://github.com/opencv/opencv/wiki/ChangeLog#version481</span><br><span class="vuln-link">https://github.com/pypa/advisory-database/tree/main/vulns/opencv-python/PYSEC-2023-183.yaml</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2023-102</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-102<br><br><div class="cve-header">来自 CVE-2023-25399 的附加信息:</div><br><div class="section-header">描述: A refcounting issue which leads to potential memory leak was discovered in scipy commit 8627df31ab in Py_FindObjects() function. Note: This is disputed as a bug and not a vulnerability. SciPy is not designed to be exposed to untrusted users or data directly.</div><br><div class="section-header">发布日期: 2023-07-05</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/scipy/scipy/issues/16235</span><br><span class="vuln-link">https://github.com/scipy/scipy/pull/16397</span><br><span class="vuln-link">http://www.square16.org/achievement/cve-2023-25399/</span><br><span class="vuln-link">https://github.com/scipy/scipy/issues/16235#issuecomment-1625361328</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-25399</div><br><br><div class="section-header">发布日期: 2023-07-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/scipy/scipy/issues/16235</span><br><span class="vuln-link">https://github.com/scipy/scipy/pull/16397</span><br><span class="vuln-link">http://www.square16.org/achievement/cve-2023-25399/</span><br><br><div class="section-header">影响范围:</div><br>包名: scipy (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2019-41 / GHSA-qfc5-mcwq-26q8</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2019-41 / GHSA-qfc5-mcwq-26q8<br><br><div class="cve-header">来自 CVE-2019-18874 的附加信息:</div><br><div class="section-header">描述: psutil (aka python-psutil) through 5.6.5 can have a double free. This occurs because of refcount mishandling within a while or for loop that converts system data into a Python object.</div><br><div class="section-header">发布日期: 2019-11-12</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/giampaolo/psutil/pull/1616</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2019/11/msg00018.html</span><br><span class="vuln-link">https://usn.ubuntu.com/4204-1/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/2P7QI7MOTZTFXQYU23CP3RAWXCERMOAS/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OLETTJYZL2SMBUI4Q2NGBMGPDPP54SRG/</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-18874, GHSA-qfc5-mcwq-26q8</div><br><br><div class="section-header">发布日期: 2019-11-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/giampaolo/psutil/pull/1616</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2019/11/msg00018.html</span><br><span class="vuln-link">https://usn.ubuntu.com/4204-1/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/2P7QI7MOTZTFXQYU23CP3RAWXCERMOAS/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OLETTJYZL2SMBUI4Q2NGBMGPDPP54SRG/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-qfc5-mcwq-26q8</span><br><br><div class="section-header">影响范围:</div><br>包名: psutil (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-x3rm-644h-67m8</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-x3rm-644h-67m8<br><br><div class="cve-header">来自 CVE-2019-16249 的附加信息:</div><br><div class="section-header">描述: OpenCV 4.1.1 has an out-of-bounds read in hal_baseline::v_load in core/hal/intrin_sse.hpp when called from computeSSDMeanNorm in modules/video/src/dis_flow.cpp.</div><br><div class="section-header">发布日期: 2019-09-11</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15481</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-16249</div><br><br><div class="section-header">发布日期: 2021-10-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2019-16249</span><br><span class="vuln-link">https://github.com/opencv/opencv/issues/15481</span><br><span class="vuln-link">https://github.com/opencv/opencv/pull/15531</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1752702</span><br><span class="vuln-link">https://github.com/opencv/opencv-python</span><br><span class="vuln-link">https://github.com/opencv/opencv-python/releases/tag/30</span><br><br><div class="section-header">影响范围:</div><br>包名: opencv-python (PyPI)<br>包名: opencv-python-headless (PyPI)<br>包名: opencv-contrib-python (PyPI)<br>包名: opencv-contrib-python-headless (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-4vmg-rw8f-92f9</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-4vmg-rw8f-92f9<br><br><div class="cve-header">来自 CVE-2024-7804 的附加信息:</div><br><div class="section-header">描述: A deserialization vulnerability exists in the Pytorch RPC framework (torch.distributed.rpc) in pytorch/pytorch versions <=2.3.1. The vulnerability arises from the lack of security verification during the deserialization process of PythonUDF objects in pytorch/torch/distributed/rpc/internal.py. This flaw allows an attacker to execute arbitrary code remotely by sending a malicious serialized PythonUDF object, leading to remote code execution (RCE) on the master node.</div><br><div class="section-header">发布日期: 2025-03-20</div><br><div class="section-header">最后更新: 2025-03-20</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://huntr.com/bounties/0e870eeb-f924-4054-8fac-d926b1fb7259</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-7804</div><br><br><div class="section-header">发布日期: 2025-03-20</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-7804</span><br><span class="vuln-link">https://github.com/pytorch/pytorch</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/blob/27a14405d3b996d572ba18339410e29ec005c775/torch/distributed/rpc/internal.py#L162</span><br><span class="vuln-link">https://huntr.com/bounties/0e870eeb-f924-4054-8fac-d926b1fb7259</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2022-43015 / GHSA-47fc-vmwq-366v</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-43015 / GHSA-47fc-vmwq-366v<br><br><div class="cve-header">来自 CVE-2022-45907 的附加信息:</div><br><div class="section-header">描述: In PyTorch before trunk/89695, torch.jit.annotations.parse_type_line can cause arbitrary code execution because eval is used unsafely.</div><br><div class="section-header">发布日期: 2022-11-26</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/issues/88868</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/767f6aa49fe20a2766b9843d01e3b7f7793df6a3</span><br><br><div class="section-header">相关漏洞ID: BIT-pytorch-2022-45907, CVE-2022-45907, GHSA-47fc-vmwq-366v</div><br><br><div class="section-header">发布日期: 2022-11-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/767f6aa49fe20a2766b9843d01e3b7f7793df6a3</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/issues/88868</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2023-114</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-114<br><br><div class="cve-header">来自 CVE-2023-29824 的附加信息:</div><br><div class="section-header">描述: A use-after-free issue was discovered in Py_FindObjects() function in SciPy versions prior to 1.8.0. NOTE: the vendor and discoverer indicate that this is not a security issue.</div><br><div class="section-header">发布日期: 2023-07-06</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/scipy/scipy/issues/14713</span><br><span class="vuln-link">https://github.com/scipy/scipy/pull/15013</span><br><span class="vuln-link">http://www.square16.org/achievement/cve-2023-29824/</span><br><span class="vuln-link">https://github.com/scipy/scipy/issues/14713#issuecomment-1629468565</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-29824</div><br><br><div class="section-header">发布日期: 2023-07-06</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/scipy/scipy/issues/14713</span><br><span class="vuln-link">http://www.square16.org/achievement/cve-2023-29824/</span><br><span class="vuln-link">https://github.com/scipy/scipy/pull/15013</span><br><span class="vuln-link">https://github.com/scipy/scipy/issues/14713#issuecomment-1629468565</span><br><br><div class="section-header">影响范围:</div><br>包名: scipy (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-hc5x-x2vx-497g</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-hc5x-x2vx-497g<br><br><div class="cve-header">来自 CVE-2024-6827 的附加信息:</div><br><div class="section-header">描述: Gunicorn version 21.2.0 does not properly validate the value of the 'Transfer-Encoding' header as specified in the RFC standards, which leads to the default fallback method of 'Content-Length,' making it vulnerable to TE.CL request smuggling. This vulnerability can lead to cache poisoning, data exposure, session manipulation, SSRF, XSS, DoS, data integrity compromise, security bypass, information leakage, and business logic abuse.</div><br><div class="section-header">发布日期: 2025-03-20</div><br><div class="section-header">最后更新: 2025-03-20</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://huntr.com/bounties/1b4f8f38-39da-44b6-9f98-f618639d0dd7</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-6827</div><br><br><div class="section-header">发布日期: 2025-03-20</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-6827</span><br><span class="vuln-link">https://github.com/benoitc/gunicorn/issues/3278</span><br><span class="vuln-link">https://github.com/benoitc/gunicorn</span><br><span class="vuln-link">https://huntr.com/bounties/1b4f8f38-39da-44b6-9f98-f618639d0dd7</span><br><br><div class="section-header">影响范围:</div><br>包名: gunicorn (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-5pcm-hx3q-hm94</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-5pcm-hx3q-hm94<br><br><div class="cve-header">来自 CVE-2024-31580 的附加信息:</div><br><div class="section-header">描述: PyTorch before v2.2.0 was discovered to contain a heap buffer overflow vulnerability in the component /runtime/vararg_functions.cpp. This vulnerability allows attackers to cause a Denial of Service (DoS) via a crafted input.</div><br><div class="section-header">发布日期: 2024-04-17</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/b5c3a17c2c207ebefcb85043f0cf94be9b2fef81</span><br><span class="vuln-link">https://gist.github.com/1047524396/038c78f2f007345e6f497698ace2aa3d</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-31580</div><br><br><div class="section-header">发布日期: 2024-04-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-31580</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/b5c3a17c2c207ebefcb85043f0cf94be9b2fef81</span><br><span class="vuln-link">https://gist.github.com/1047524396/038c78f2f007345e6f497698ace2aa3d</span><br><span class="vuln-link">https://github.com/pytorch/pytorch</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-PYTHON-TORCH-6649934</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-pg7h-5qx3-wjr3</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-pg7h-5qx3-wjr3<br><br><div class="cve-header">来自 CVE-2024-31583 的附加信息:</div><br><div class="section-header">描述: Pytorch before version v2.2.0 was discovered to contain a use-after-free vulnerability in torch/csrc/jit/mobile/interpreter.cpp.</div><br><div class="section-header">发布日期: 2024-04-17</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/9c7071b0e324f9fb68ab881283d6b8d388a4bcd2</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/blob/v2.1.2/torch/csrc/jit/mobile/interpreter.cpp#L132</span><br><span class="vuln-link">https://gist.github.com/1047524396/43e19a41f2b36503a4a228c32cdbc176</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-31583</div><br><br><div class="section-header">发布日期: 2024-04-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-31583</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/9c7071b0e324f9fb68ab881283d6b8d388a4bcd2</span><br><span class="vuln-link">https://gist.github.com/1047524396/43e19a41f2b36503a4a228c32cdbc176</span><br><span class="vuln-link">https://github.com/pytorch/pytorch</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/blob/v2.1.2/torch/csrc/jit/mobile/interpreter.cpp#L132</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-PYTHON-TORCH-6619806</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-2g68-c3qc-8985</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-2g68-c3qc-8985<br><br><div class="cve-header">来自 CVE-2024-34069 的附加信息:</div><br><div class="section-header">描述: Werkzeug is a comprehensive WSGI web application library. The debugger in affected versions of Werkzeug can allow an attacker to execute code on a developer's machine under some circumstances. This requires the attacker to get the developer to interact with a domain and subdomain they control, and enter the debugger PIN, but if they are successful it allows access to the debugger even if it is only running on localhost. This also requires the attacker to guess a URL in the developer's application that will trigger the debugger. This vulnerability is fixed in 3.0.3.</div><br><div class="section-header">发布日期: 2024-05-06</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-2g68-c3qc-8985</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/3386395b24c7371db11a5b8eaac0c91da5362692</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HFERFN7PINV4MOGMGA3DPIXJPDCYOEJZ/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/H4SH32AM3CTPMAAEOIDAN7VU565LO4IR/</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240614-0004/</span><br><br><div class="section-header">相关漏洞ID: CGA-4f6v-wx38-68gq, CVE-2024-34069</div><br><br><div class="section-header">发布日期: 2024-05-06</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-2g68-c3qc-8985</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-34069</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/3386395b24c7371db11a5b8eaac0c91da5362692</span><br><span class="vuln-link">https://github.com/pallets/werkzeug</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2025/02/msg00026.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/H4SH32AM3CTPMAAEOIDAN7VU565LO4IR</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HFERFN7PINV4MOGMGA3DPIXJPDCYOEJZ</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240614-0004</span><br><br><div class="section-header">影响范围:</div><br>包名: werkzeug (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-q34m-jh98-gwm2</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-q34m-jh98-gwm2<br><br><div class="cve-header">来自 CVE-2024-49767 的附加信息:</div><br><div class="section-header">描述: Werkzeug is a Web Server Gateway Interface web application library. Applications using `werkzeug.formparser.MultiPartParser` corresponding to a version of Werkzeug prior to 3.0.6 to parse `multipart/form-data` requests (e.g. all flask applications) are vulnerable to a relatively simple but effective resource exhaustion (denial of service) attack. A specifically crafted form submission request can cause the parser to allocate and block 3 to 8 times the upload size in main memory. There is no upper limit; a single upload at 1 Gbit/s can exhaust 32 GB of RAM in less than 60 seconds. Werkzeug version 3.0.6 fixes this issue.</div><br><div class="section-header">发布日期: 2024-10-25</div><br><div class="section-header">最后更新: 2025-01-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-q34m-jh98-gwm2</span><br><span class="vuln-link">https://github.com/pallets/quart/commit/5e78c4169b8eb66b91ead3e62d44721b9e1644ee</span><br><span class="vuln-link">https://github.com/pallets/quart/commit/abb04a512496206de279225340ed022852fbf51f</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/50cfeebcb0727e18cc52ffbeb125f4a66551179b</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/releases/tag/3.0.6</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-49767</div><br><br><div class="section-header">发布日期: 2024-10-25</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-q34m-jh98-gwm2</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-49767</span><br><span class="vuln-link">https://github.com/pallets/quart/commit/5e78c4169b8eb66b91ead3e62d44721b9e1644ee</span><br><span class="vuln-link">https://github.com/pallets/quart/commit/abb04a512496206de279225340ed022852fbf51f</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/50cfeebcb0727e18cc52ffbeb125f4a66551179b</span><br><span class="vuln-link">https://github.com/pallets/werkzeug</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/releases/tag/3.0.6</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250103-0007</span><br><br><div class="section-header">影响范围:</div><br>包名: werkzeug (PyPI)<br>包名: quart (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-f9vj-2wh5-fj8j</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-f9vj-2wh5-fj8j<br><br><div class="cve-header">来自 CVE-2024-49766 的附加信息:</div><br><div class="section-header">描述: Werkzeug is a Web Server Gateway Interface web application library. On Python < 3.11 on Windows, os.path.isabs() does not catch UNC paths like //server/share. Werkzeug's safe_join() relies on this check, and so can produce a path that is not safe, potentially allowing unintended access to data. Applications using Python >= 3.11, or not using Windows, are not vulnerable. Werkzeug version 3.0.6 contains a patch.</div><br><div class="section-header">发布日期: 2024-10-25</div><br><div class="section-header">最后更新: 2025-01-31</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-f9vj-2wh5-fj8j</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/2767bcb10a7dd1c297d812cc5e6d11a474c1f092</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/releases/tag/3.0.6</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-49766</div><br><br><div class="section-header">发布日期: 2024-10-25</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-f9vj-2wh5-fj8j</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-49766</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/2767bcb10a7dd1c297d812cc5e6d11a474c1f092</span><br><span class="vuln-link">https://github.com/pallets/werkzeug</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/releases/tag/3.0.6</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250131-0005</span><br><br><div class="section-header">影响范围:</div><br>包名: werkzeug (PyPI)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (14)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>docker/setup-buildx-action</td><td>3.*.*</td><td>未知</td></tr><tr><td>docker/setup-qemu-action</td><td>3.*.*</td><td>未知</td></tr><tr><td>contributor-assistant/github-action</td><td>2.6.1</td><td>未知</td></tr><tr><td>ultralytics/actions</td><td>main</td><td>未知</td></tr><tr><td>aquasecurity/trivy-action</td><td>0.28.0</td><td>未知</td></tr><tr><td>com.github.SenjiMuramasa/yolov5</td><td>master</td><td>未知</td></tr><tr><td>ultralytics/actions/retry</td><td>main</td><td>未知</td></tr><tr><td>slackapi/slack-github-action</td><td>2.0.0</td><td>未知</td></tr><tr><td>actions/checkout</td><td>4.*.*</td><td>未知</td></tr><tr><td>docker/build-push-action</td><td>6.*.*</td><td>未知</td></tr><tr><td>flask</td><td>2.3.2</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>docker/login-action</td><td>3.*.*</td><td>未知</td></tr><tr><td>actions/setup-python</td><td>5.*.*</td><td>未知</td></tr><tr><td>actions/stale</td><td>9.*.*</td><td>未知</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (23)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>openvino-dev</td><td>>=2023.0</td><td>OSI Approved :: Apache Software License</td></tr><tr><td>coremltools</td><td>>=7.0 ; platform_system != 'Windows'</td><td>BSD</td></tr><tr><td>comet</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>mkdocs-redirects</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>Flask</td><td>==2.3.2</td><td>BSD License</td></tr><tr><td>check-manifest</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>pytest</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>dvclive</td><td>>=2.12.0</td><td>Apache License 2.0</td></tr><tr><td>pre-commit</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>tensorboard</td><td>>=2.13.0</td><td>Apache Software License</td></tr><tr><td>mkdocs-ultralytics-plugin</td><td>>=0.0.34</td><td>GNU Affero General Public License v3 or later (AGPLv3+)</td></tr><tr><td>yolov5</td><td>commit-master</td><td>NOASSERTION</td></tr><tr><td>pytest-cov</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>pycocotools</td><td>>=2.0.6</td><td>FreeBSD</td></tr><tr><td>albumentations</td><td>>=1.0.3</td><td>MIT License</td></tr><tr><td>onnx</td><td>>=1.12.0</td><td>Apache License v2.0</td></tr><tr><td>PyYAML</td><td>>=5.3.1</td><td>MIT License</td></tr><tr><td>ipython</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>mkdocs-material</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>mkdocstrings[python]</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>tensorflowjs</td><td>>=3.9.0</td><td>Apache Software License</td></tr><tr><td>coverage[toml]</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>tensorflow</td><td>>=2.0.0</td><td>Apache Software License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (7)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>tqdm</td><td>>=4.66.3</td><td>>= 4.64.0</td><td>次版本</td></tr><tr><td>matplotlib</td><td>>=3.3</td><td>>= 3.3.0</td><td>一般变更</td></tr><tr><td>pillow</td><td>>=10.3.0</td><td>>= 7.1.2</td><td>主版本</td></tr><tr><td>numpy</td><td>>=1.23.5</td><td>>= 1.22.2</td><td>次版本</td></tr><tr><td>opencv-python</td><td>>=4.1.1</td><td>>= 4.6.0</td><td>次版本</td></tr><tr><td>requests</td><td>>=2.32.2</td><td>>= 2.23.0</td><td>次版本</td></tr><tr><td>ultralytics</td><td>>=8.2.34</td><td>>= 8.1.47</td><td>次版本</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (22)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>tqdm</td><td>Mozilla Public License 2.0 (MPL 2.0)</td><td></td><td>否</td></tr><tr><td>pip</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>setuptools</td><td>MIT License</td><td></td><td>否</td></tr><tr><td>seaborn</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>matplotlib</td><td>Python Software Foundation License</td><td></td><td>否</td></tr><tr><td>torchvision</td><td>BSD</td><td></td><td>否</td></tr><tr><td>scipy</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>zipp</td><td>MIT License</td><td></td><td>否</td></tr><tr><td>pandas</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>pillow</td><td>CMU License (MIT-CMU)</td><td></td><td>否</td></tr><tr><td>pyyaml</td><td>MIT License</td><td></td><td>否</td></tr><tr><td>psutil</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>torch</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>py-cpuinfo</td><td>MIT License</td><td></td><td>否</td></tr><tr><td>numpy</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>opencv-python</td><td>Apache Software License</td><td></td><td>否</td></tr><tr><td>gitpython</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>werkzeug</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>requests</td><td>Apache Software License</td><td></td><td>否</td></tr><tr><td>gunicorn</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>thop</td><td>MIT</td><td></td><td>否</td></tr><tr><td>ultralytics</td><td>GNU Affero General Public License v3 or later (AGPLv3+)</td><td></td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">供应商变更 (22)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧供应商</th>
+                        <th>新供应商</th>
+                    </tr>
+                    <tr><td>tqdm</td><td>Organization: PyPI</td><td></td></tr><tr><td>pip</td><td>Organization: PyPI</td><td></td></tr><tr><td>setuptools</td><td>Organization: PyPI</td><td></td></tr><tr><td>seaborn</td><td>Organization: PyPI</td><td></td></tr><tr><td>matplotlib</td><td>Person: John D. Hunter, Michael Droettboom</td><td></td></tr><tr><td>torchvision</td><td>Person: PyTorch Core Team</td><td></td></tr><tr><td>scipy</td><td>Organization: PyPI</td><td></td></tr><tr><td>zipp</td><td>Organization: PyPI</td><td></td></tr><tr><td>pandas</td><td>Organization: PyPI</td><td></td></tr><tr><td>pillow</td><td>Organization: PyPI</td><td></td></tr><tr><td>pyyaml</td><td>Person: Kirill Simonov</td><td></td></tr><tr><td>psutil</td><td>Person: Giampaolo Rodola</td><td></td></tr><tr><td>torch</td><td>Person: PyTorch Team</td><td></td></tr><tr><td>py-cpuinfo</td><td>Person: Matthew Brennan Jones</td><td></td></tr><tr><td>numpy</td><td>Person: Travis E. Oliphant et al.</td><td></td></tr><tr><td>opencv-python</td><td>Person: OpenCV Team</td><td></td></tr><tr><td>gitpython</td><td>Person: Sebastian Thiel, Michael Trier</td><td></td></tr><tr><td>werkzeug</td><td>Organization: PyPI</td><td></td></tr><tr><td>requests</td><td>Person: Kenneth Reitz</td><td></td></tr><tr><td>gunicorn</td><td>Organization: PyPI</td><td></td></tr><tr><td>thop</td><td>Person: Ligeng Zhu</td><td></td></tr><tr><td>ultralytics</td><td>Organization: PyPI</td><td></td></tr>
+                </table>
+            </div>
+            
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (8)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖扩张</div>
+                        <div class="risk-description">新增了大量包（14个），可能增加软件供应链的复杂性和攻击面</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> docker/setup-buildx-action, docker/setup-qemu-action, contributor-assistant/github-action, ultralytics/actions, aquasecurity/trivy-action... 等共14个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查新增包的必要性，尤其是那些不直接支持核心功能的包</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">许可证合规</div>
+                        <div class="risk-description">13个新增包缺少明确的许可证信息</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> docker/setup-buildx-action, docker/setup-qemu-action, contributor-assistant/github-action, ultralytics/actions, aquasecurity/trivy-action... 等共13个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 确保所有新增包都有明确的许可证信息，以避免潜在的法律风险</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖变更</div>
+                        <div class="risk-description">移除了大量包（23个），可能表明软件架构发生了重大变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> openvino-dev, coremltools, comet, mkdocs-redirects, Flask... 等共23个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 确认所有被移除的依赖项功能都已经被适当替代或不再需要</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">重大版本变更</div>
+                        <div class="risk-description">1个包进行了主版本升级，可能包含不兼容的API变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> pillow</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查主版本变更的包的变更日志，确认API兼容性，并进行全面测试</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">供应链变更</div>
+                        <div class="risk-description">22个包变更了供应商，可能表明供应链被重定向</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> tqdm, pip, setuptools, seaborn, matplotlib... 等共22个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 验证新供应商的可信度，并确认变更是有意的而非供应链攻击</div>
+                    </div>
+                    
+                    <div class="risk-low">
+                        <div class="risk-category">供应链透明度</div>
+                        <div class="risk-description">14个新增包缺少供应商信息</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> docker/setup-buildx-action, docker/setup-qemu-action, contributor-assistant/github-action, ultralytics/actions, aquasecurity/trivy-action... 等共14个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 完善包的供应商信息，提高供应链透明度</div>
+                    </div>
+                    
+                    <div class="stage-header">
+                        <span>【CI/CD阶段】</span>
+                    </div>
+                    
+                        <div class="risk-high">
+                            <div class="risk-category">CI阶段新增包</div>
+                            <div class="risk-description">在CI阶段新增了14个包，这些包在源代码中未定义</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> docker/setup-buildx-action, docker/setup-qemu-action, contributor-assistant/github-action, ultralytics/actions, aquasecurity/trivy-action... 等共14个包</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 审核CI配置，确保所有依赖都在源代码中明确定义，避免CI过程中引入未授权的包</div>
+                        </div>
+                        
+                        <div class="risk-medium">
+                            <div class="risk-category">CI阶段版本变更</div>
+                            <div class="risk-description">在CI阶段，7个包的版本发生了变更</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> tqdm, matplotlib, pillow, numpy, opencv-python... 等共7个包</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 检查CI配置，确保依赖版本锁定，防止自动更新引入未测试的版本</div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

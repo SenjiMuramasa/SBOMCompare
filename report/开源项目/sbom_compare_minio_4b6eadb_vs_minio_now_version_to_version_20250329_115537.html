@@ -1,0 +1,465 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-29 11:55:40</p>
+                <p>SBOM A: sample_data\minio_4b6eadb.json</p>
+                <p>SBOM B: sample_data\minio_now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>79</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>7</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">8.6/10</span>
+                    <span class="score-percentage">(86.1%)</span>
+                    <span class="score-grade grade-a">A</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 1.7/1.7 (98.9%)</h3>
+                    <p><strong>详情:</strong> 新增了3个包; 移除了4个包; 供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 2.8/3.5 (80.3%)</h3>
+                    <p><strong>详情:</strong> 1个包发生主版本变更，可能存在API不兼容; 44个包发生次版本变更; 25个包发生补丁版本变更; 9个包发生其他版本变更</p>
+                    <p><strong>影响因素:</strong> 主版本变更, 大量次版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 0.9/0.9 (98.0%)</h3>
+                    <p><strong>详情:</strong> 7个包发生许可证变更; 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>风险评估: 2.4/2.6 (92.0%)</h3>
+                    <p><strong>详情:</strong> 存在1个中风险项</p>
+                    <p><strong>影响因素:</strong> 重大版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>Scorecard评估: 0.8/1.3 (65.0%)</h3>
+                    <p><strong>详情:</strong> 以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions; 
+已知漏洞信息:; 项目安全实践有待改进</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链安全评分为 8.6/10.0 (86.1%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 大量次版本变更, 重大版本变更, CII-Best-Practices风险, Branch-Protection风险。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (2)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GO-2025-3487</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3487<br><br><div class="cve-header">来自 CVE-2025-22869 的附加信息:</div><br><div class="section-header">描述: SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.</div><br><div class="section-header">发布日期: 2025-02-26</div><br><div class="section-header">最后更新: 2025-02-26</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3487</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22869</div><br><br><div class="section-header">发布日期: 2025-02-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/crypto (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2025-3503 / GHSA-qxp5-gwg8-xv66</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66<br><br><div class="cve-header">来自 CVE-2025-22870 的附加信息:</div><br><div class="section-header">描述: Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to "*.example.com", a request to "[::1%25.example.com]:80` will incorrectly match and not be proxied.</div><br><div class="section-header">发布日期: 2025-03-12</div><br><div class="section-header">最后更新: 2025-03-18</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3503</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22870, GHSA-qxp5-gwg8-xv66</div><br><br><div class="section-header">发布日期: 2025-03-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/net (Go)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (3)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/minio/crc64nvme</td><td>v1.0.1</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/envoyproxy/go-control-plane/envoy</td><td>v1.32.4</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/gorilla/mux</td><td>v1.8.1</td><td>GPL-3.0-or-later</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (4)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/census-instrumentation/opencensus-proto</td><td>v0.4.1</td><td>GPL-3.0-or-later</td></tr><tr><td>go.opencensus.io</td><td>v0.24.0</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/montanaflynn/stats</td><td>v0.7.1</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/envoyproxy/go-control-plane</td><td>v0.13.1</td><td>GPL-3.0-or-later</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (79)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>google.golang.org/genproto</td><td>v0.0.0-20241113202542-65e8d215514f</td><td>v0.0.0-20250106144421-5f5ef82da422</td><td>一般变更</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.58.0</td><td>v0.60.0</td><td>次版本</td></tr><tr><td>github.com/pkg/sftp</td><td>v1.13.7</td><td>v1.13.8</td><td>补丁版本</td></tr><tr><td>github.com/nats-io/nats.go</td><td>v1.37.0</td><td>v1.39.1</td><td>次版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.28.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go</td><td>v0.116.0</td><td>v0.118.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.33.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>v0.2.6</td><td>v0.2.7</td><td>补丁版本</td></tr><tr><td>github.com/puzpuzpuz/xsync/v3</td><td>v3.4.0</td><td>v3.5.1</td><td>次版本</td></tr><tr><td>github.com/charmbracelet/x/ansi</td><td>v0.6.0</td><td>v0.8.0</td><td>次版本</td></tr><tr><td>github.com/muesli/termenv</td><td>v0.15.2</td><td>v0.16.0</td><td>次版本</td></tr><tr><td>github.com/lithammer/shortuuid/v4</td><td>v4.0.0</td><td>v4.2.0</td><td>次版本</td></tr><tr><td>google.golang.org/api</td><td>v0.213.0</td><td>v0.224.0</td><td>次版本</td></tr><tr><td>github.com/vbauerster/mpb/v8</td><td>v8.8.3</td><td>v8.9.3</td><td>次版本</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp</td><td>v1.25.0</td><td>v1.27.0</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20241230172942-26aa7a208def</td><td>v0.0.0-20250311190419-81fb87f6b8bf</td><td>一般变更</td></tr><tr><td>go.opentelemetry.io/otel/sdk/metric</td><td>v1.32.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>go.mongodb.org/mongo-driver</td><td>v1.17.1</td><td>v1.17.3</td><td>补丁版本</td></tr><tr><td>github.com/coreos/go-oidc/v3</td><td>v3.11.0</td><td>v3.12.0</td><td>次版本</td></tr><tr><td>github.com/golang-jwt/jwt/v4</td><td>v4.5.1</td><td>v4.5.2</td><td>补丁版本</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping</td><td>v0.49.0</td><td>v0.51.0</td><td>次版本</td></tr><tr><td>go.etcd.io/etcd/client/v3</td><td>v3.5.17</td><td>v3.5.19</td><td>补丁版本</td></tr><tr><td>golang.org/x/term</td><td>v0.28.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azidentity</td><td>v1.8.0</td><td>v1.8.2</td><td>补丁版本</td></tr><tr><td>github.com/miekg/dns</td><td>v1.1.62</td><td>v1.1.63</td><td>补丁版本</td></tr><tr><td>github.com/nats-io/nkeys</td><td>v0.4.7</td><td>v0.4.10</td><td>补丁版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.22.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>github.com/cncf/xds/go</td><td>v0.0.0-20240905190251-b4127c9b8d78</td><td>v0.0.0-20250121191232-2f005788dc42</td><td>一般变更</td></tr><tr><td>github.com/google/pprof</td><td>v0.0.0-20241210010833-40e02aabc2ad</td><td>v0.0.0-20250302191652-9094ed2288e7</td><td>一般变更</td></tr><tr><td>github.com/prometheus/common</td><td>v0.61.0</td><td>v0.62.0</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.8.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.33.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/minio/console</td><td>v1.7.6-0.20250114035017-b45e11ce7f1d</td><td>v1.7.6</td><td>一般变更</td></tr><tr><td>github.com/minio/mc</td><td>v0.0.0-20250116095217-95e1f70eb5c3</td><td>v0.0.0-20250312172924-c1d5d4cbb4ca</td><td>一般变更</td></tr><tr><td>github.com/tklauser/go-sysconf</td><td>v0.3.14</td><td>v0.3.15</td><td>补丁版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.14.0</td><td>v2.14.1</td><td>补丁版本</td></tr><tr><td>github.com/mailru/easyjson</td><td>v0.7.7</td><td>v0.9.0</td><td>次版本</td></tr><tr><td>google.golang.org/grpc</td><td>v1.69.2</td><td>v1.71.0</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20241230172942-26aa7a208def</td><td>v0.0.0-20250311190419-81fb87f6b8bf</td><td>一般变更</td></tr><tr><td>github.com/golang/snappy</td><td>v0.0.4</td><td>v1.0.0</td><td>主版本</td></tr><tr><td>github.com/lestrrat-go/jwx/v2</td><td>v2.1.3</td><td>v2.1.4</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>v0.57.0</td><td>v0.59.0</td><td>次版本</td></tr><tr><td>github.com/pierrec/lz4/v4</td><td>v4.1.21</td><td>v4.1.22</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/iam</td><td>v1.2.2</td><td>v1.3.1</td><td>次版本</td></tr><tr><td>cloud.google.com/go/monitoring</td><td>v1.21.2</td><td>v1.23.0</td><td>次版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.8</td><td>v0.1.9</td><td>补丁版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/storage/azblob</td><td>v1.5.0</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>github.com/tklauser/numcpus</td><td>v0.9.0</td><td>v0.10.0</td><td>次版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.36.1</td><td>v1.36.5</td><td>补丁版本</td></tr><tr><td>github.com/envoyproxy/protoc-gen-validate</td><td>v1.1.0</td><td>v1.2.1</td><td>次版本</td></tr><tr><td>github.com/safchain/ethtool</td><td>v0.5.9</td><td>v0.5.10</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/contrib/detectors/gcp</td><td>v1.32.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/go-openapi/swag</td><td>v0.23.0</td><td>v0.23.1</td><td>补丁版本</td></tr><tr><td>github.com/prometheus/prometheus</td><td>v0.301.0</td><td>v0.302.1</td><td>次版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.24.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>github.com/AzureAD/microsoft-authentication-library-for-go</td><td>v1.3.1</td><td>v1.4.1</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.33.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/charmbracelet/bubbletea</td><td>v1.2.4</td><td>v1.3.4</td><td>次版本</td></tr><tr><td>github.com/googleapis/enterprise-certificate-proxy</td><td>v0.3.4</td><td>v0.3.5</td><td>补丁版本</td></tr><tr><td>github.com/jedib0t/go-pretty/v6</td><td>v6.6.5</td><td>v6.6.7</td><td>补丁版本</td></tr><tr><td>github.com/go-sql-driver/mysql</td><td>v1.8.1</td><td>v1.9.0</td><td>次版本</td></tr><tr><td>go.etcd.io/etcd/api/v3</td><td>v3.5.17</td><td>v3.5.19</td><td>补丁版本</td></tr><tr><td>github.com/prometheus/client_golang</td><td>v1.20.5</td><td>v1.21.1</td><td>次版本</td></tr><tr><td>github.com/decred/dcrd/dcrec/secp256k1/v4</td><td>v4.3.0</td><td>v4.4.0</td><td>次版本</td></tr><tr><td>github.com/go-jose/go-jose/v4</td><td>v4.0.4</td><td>v4.0.5</td><td>补丁版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.10.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/minio/mux</td><td>v1.9.0</td><td>v1.9.2</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.33.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/go-openapi/jsonpointer</td><td>v0.21.0</td><td>v0.21.1</td><td>补丁版本</td></tr><tr><td>github.com/go-ldap/ldap/v3</td><td>v3.4.8</td><td>v3.4.10</td><td>补丁版本</td></tr><tr><td>cel.dev/expr</td><td>v0.18.0</td><td>v0.22.0</td><td>次版本</td></tr><tr><td>github.com/IBM/sarama</td><td>v1.43.3</td><td>v1.45.1</td><td>次版本</td></tr><tr><td>go.etcd.io/etcd/client/pkg/v3</td><td>v3.5.17</td><td>v3.5.19</td><td>补丁版本</td></tr><tr><td>github.com/golang-jwt/jwt/v5</td><td>v5.2.1</td><td>v5.2.2</td><td>补丁版本</td></tr><tr><td>github.com/golang/groupcache</td><td>v0.0.0-20210331224755-41bb18bfe9da</td><td>v0.0.0-20241129210726-2c02b8208cf8</td><td>一般变更</td></tr><tr><td>cloud.google.com/go/auth</td><td>v0.13.0</td><td>v0.15.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azcore</td><td>v1.16.0</td><td>v1.17.0</td><td>次版本</td></tr><tr><td>github.com/lufia/plan9stats</td><td>v0.0.0-20240909124753-873cd0166683</td><td>v0.0.0-20250303091104-876f3ea5145d</td><td>一般变更</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric</td><td>v0.49.0</td><td>v0.51.0</td><td>次版本</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (7)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>github.com/mattn/go-colorable</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>golang.org/x/net</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/crypto</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/text</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/klauspost/cpuid/v2</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/goccy/go-json</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/klauspost/compress</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (1)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">重大版本变更</div>
+                        <div class="risk-description">1个包进行了主版本升级，可能包含不兼容的API变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> github.com/golang/snappy</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查主版本变更的包的变更日志，确认API兼容性，并进行全面测试</div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

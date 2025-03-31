@@ -1,0 +1,526 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-28 20:25:21</p>
+                <p>SBOM A: sample_data\locust_2330.json</p>
+                <p>SBOM B: sample_data\locust_now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>43</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>1</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">8.7/10</span>
+                    <span class="score-percentage">(87.3%)</span>
+                    <span class="score-grade grade-a">A</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 1.7/1.7 (99.2%)</h3>
+                    <p><strong>详情:</strong> 1个包的供应商发生变更; 新增了9个包; 移除了6个包; 供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 3.4/3.5 (95.8%)</h3>
+                    <p><strong>详情:</strong> 11个包发生主版本变更，可能存在API不兼容; 29个包发生次版本变更; 2个包发生补丁版本变更; 1个包发生其他版本变更</p>
+                    <p><strong>影响因素:</strong> 主版本变更, 大量次版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 0.9/0.9 (99.9%)</h3>
+                    <p><strong>详情:</strong> 1个包发生许可证变更; 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>风险评估: 2.2/2.6 (84.0%)</h3>
+                    <p><strong>详情:</strong> 存在2个中风险项</p>
+                    <p><strong>影响因素:</strong> 重大版本变更, 供应链变更</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.6/1.3 (47.0%)</h3>
+                    <p><strong>详情:</strong> Vulnerabilities需要改进; 以下项目风险较高: CII-Best-Practices, Branch-Protection, Code-Review, Dangerous-Workflow, Security-Policy; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Code-Review风险, Dangerous-Workflow风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链安全评分为 8.7/10.0 (87.3%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 大量次版本变更, 重大版本变更, 供应链变更, CII-Best-Practices风险。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (3)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-3xgq-45jj-v275</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275<br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div><br><div class="section-header">描述: Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.</div><br><div class="section-header">发布日期: 2024-11-08</div><br><div class="section-header">最后更新: 2025-01-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21538</div><br><br><div class="section-header">发布日期: 2024-11-08</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围:</div><br>包名: cross-spawn (npm)<br>包名: cross-spawn (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-952p-6rrq-rcjv</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv<br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div><br><div class="section-header">描述: The NPM package `micromatch` prior to 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn't find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persists. This issue should be mitigated by using a safe pattern that won't start backtracking the regular expression due to greedy matching. This issue was fixed in version 4.0.8.</div><br><div class="section-header">发布日期: 2024-05-13</div><br><div class="section-header">最后更新: 2024-09-17</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067/</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067/</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-4067</div><br><br><div class="section-header">发布日期: 2024-05-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围:</div><br>包名: micromatch (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-x574-m823-4x7w</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-x574-m823-4x7w<br><br><div class="cve-header">来自 CVE-2025-30208 的附加信息:</div><br><div class="section-header">描述: Vite, a provider of frontend development tooling, has a vulnerability in versions prior to 6.2.3, 6.1.2, 6.0.12, 5.4.15, and 4.5.10. `@fs` denies access to files outside of Vite serving allow list. Adding `?raw??` or `?import&raw??` to the URL bypasses this limitation and returns the file content if it exists. This bypass exists because trailing separators such as `?` are removed in several places, but are not accounted for in query string regexes. The contents of arbitrary files can be returned to the browser. Only apps explicitly exposing the Vite dev server to the network (using `--host` or `server.host` config option) are affected. Versions 6.2.3, 6.1.2, 6.0.12, 5.4.15, and 4.5.10 fix the issue.</div><br><div class="section-header">发布日期: 2025-03-24</div><br><div class="section-header">最后更新: 2025-03-24</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-x574-m823-4x7w</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/315695e9d97cc6cfa7e6d9e0229fb50cdae3d9f4</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/80381c38d6f068b12e6e928cd3c616bd1d64803c</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/807d7f06d33ab49c48a2a3501da3eea1906c0d41</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/92ca12dc79118bf66f2b32ff81ed09e0d0bd07ca</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-30208</div><br><br><div class="section-header">发布日期: 2025-03-25</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-x574-m823-4x7w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-30208</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/315695e9d97cc6cfa7e6d9e0229fb50cdae3d9f4</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/80381c38d6f068b12e6e928cd3c616bd1d64803c</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/807d7f06d33ab49c48a2a3501da3eea1906c0d41</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/92ca12dc79118bf66f2b32ff81ed09e0d0bd07ca</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/f234b5744d8b74c95535a7b82cc88ed2144263c1</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><br><div class="section-header">影响范围:</div><br>包名: vite (npm)<br>包名: vite (npm)<br>包名: vite (npm)<br>包名: vite (npm)<br>包名: vite (npm)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (9)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>integrity sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==
+
+pathe</td><td>2.0.3</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==
+
+pathval</td><td>2.0.0</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-23I4pFZHmAemUnz8WZXbYRSKYj801VDaNv9ETuMh7IrMc7VuVVSo+Z9iLE3ni30+U48iDWfi30d3twAXBYmnCg==
+
+loupe</td><td>3.1.3</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-kkIp7XSkP78ZxJEsSxW3712C6teJVoeHHwgo9zJ380de7IYyJ2ISlxojcH2pC5OFLewESmnRi/+XCDIEEVyoug==
+
+lru-cache</td><td>11.0.0</td><td>NOASSERTION</td></tr><tr><td>magic-string</td><td>0.30.17</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-qqnD1yMU6tk/jnaMosogGySTZP8YtUgAffA9nMN+E/rjxcfRQ6IEk7IiozUjgxKoFHBGjTLnrHB/YC45r/59EQ==
+
+es-object-atoms</td><td>1.0.0</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==
+
+tinyspy</td><td>3.0.2</td><td>NOASSERTION</td></tr><tr><td>, vite</td><td>6.2.1</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==
+
+tinypool</td><td>1.0.2</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (6)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>postcss</td><td>8.5.3</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==
+
+pathval</td><td>2.0.0</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-weEDEq7Z5eTHPDh4xjX789+fHfF+P8boiFB+0vbWzpbnbsEr/GRaohi/uMKxg8RZMXnl1ItAi/IUHWMsjDV7kQ==
+
+tinyspy</td><td>3.0.2</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-MVNK56NiMrOwitFB7cqDwq0CQutbw+0BvLshJSse0MUNU+y1FC3bUS/AQg7oUng+/wKrrki7JfmwtVHkVfPLlw==
+
+es-object-atoms</td><td>1.0.0</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-WiCJLEECkO18gwqIp6+hJg0//p23HXp4S+gGtAKu3mI2F2/sXC4FvHvXvB0zJVVaTPhx1/tOwdbRsa1sOBIKqQ==
+
+tinypool</td><td>1.0.2</td><td>NOASSERTION</td></tr><tr><td>integrity sha512-23I4pFZHmAemUnz8WZXbYRSKYj801VDaNv9ETuMh7IrMc7VuVVSo+Z9iLE3ni30+U48iDWfi30d3twAXBYmnCg==
+
+lru-cache</td><td>11.0.0</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (43)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>integrity sha512-al6n+QEANGFOMf/dmUMsuS5/r9B06uwlyNjZZql/zv8J7ybHCgoihBNORZCY2mzUuAnomQa2JdhyHKzZxPCrFA==
+
+tinyrainbow</td><td>1.2.0</td><td>2.0.0</td><td>主版本</td></tr><tr><td>esbuild/win32-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/linux-riscv64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vitest/spy</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild/android-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vitest/expect</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>es-module-lexer</td><td>1.5.4</td><td>1.6.0</td><td>次版本</td></tr><tr><td>esbuild/linux-loong64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/android-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/win32-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/linux-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/linux-ia32</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vitest/pretty-format</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>vitest/snapshot</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild/linux-ppc64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
+
+chai</td><td>5.1.2</td><td>5.2.0</td><td>次版本</td></tr><tr><td>esbuild/win32-ia32</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/linux-s390x</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vite-node</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild/openbsd-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/android-arm</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>babel/runtime</td><td>7.25.0</td><td>7.26.10</td><td>次版本</td></tr><tr><td>integrity sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==
+
+tinyexec</td><td>0.3.1</td><td>0.3.2</td><td>补丁版本</td></tr><tr><td>esbuild/darwin-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/netbsd-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/netbsd-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vitest/mocker</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vitest/utils</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild/freebsd-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/darwin-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>integrity sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==
+
+postcss</td><td>8.5.2</td><td>8.5.3</td><td>补丁版本</td></tr><tr><td>esbuild/aix-ppc64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>vite</td><td>6.1.1</td><td>^6.2.1</td><td>一般变更</td></tr><tr><td>vitest/runner</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild/linux-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/linux-arm</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/linux-mips64el</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/openbsd-arm64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>debug</td><td>3.2.7</td><td>4.4.0</td><td>主版本</td></tr><tr><td>vitest</td><td>2.1.9</td><td>3.0.8</td><td>主版本</td></tr><tr><td>esbuild/sunos-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr><tr><td>esbuild/freebsd-x64</td><td>0.24.2</td><td>0.25.1</td><td>次版本</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>vite</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">供应商变更 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧供应商</th>
+                        <th>新供应商</th>
+                    </tr>
+                    <tr><td>vite</td><td>Organization: npm</td><td>Person: NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (2)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">重大版本变更</div>
+                        <div class="risk-description">11个包进行了主版本升级，可能包含不兼容的API变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> integrity sha512-al6n+QEANGFOMf/dmUMsuS5/r9B06uwlyNjZZql/zv8J7ybHCgoihBNORZCY2mzUuAnomQa2JdhyHKzZxPCrFA==
+
+tinyrainbow, vitest/spy, vitest/expect, vitest/pretty-format, vitest/snapshot... 等共11个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查主版本变更的包的变更日志，确认API兼容性，并进行全面测试</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">供应链变更</div>
+                        <div class="risk-description">1个包变更了供应商，可能表明供应链被重定向</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> vite</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 验证新供应商的可信度，并确认变更是有意的而非供应链攻击</div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,555 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-28 15:33:55</p>
+                <p>SBOM A: sample_data\pytorch_source.json</p>
+                <p>SBOM B: sample_data\pytorch_build.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>91</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>19</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>35</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">4.7/10</span>
+                    <span class="score-percentage">(47.5%)</span>
+                    <span class="score-grade grade-f">D</span>
+                </div>
+                
+                
+                <div class="vuln-high" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #f44336;">
+                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在高危级别(HIGH)漏洞，评分被限制在6分以内。
+                </div>
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-low">
+                    <h3>供应链完整性: 1.0/3.4 (30.0%)</h3>
+                    <p><strong>详情:</strong> 大量供应商变更(36个)可能表明供应链重定向; CI阶段新增了91个在源代码中未定义的包</p>
+                    <p><strong>影响因素:</strong> 供应链重定向, CI阶段引入未授权包</p>
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>版本一致性: 1.9/2.4 (78.2%)</h3>
+                    <p><strong>详情:</strong> 4个包发生次版本变更; 15个包发生其他版本变更</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>许可证合规性: 0.3/1.4 (20.0%)</h3>
+                    <p><strong>详情:</strong> 35个包发生许可证变更; 53个新增包缺少许可证信息</p>
+                    <p><strong>影响因素:</strong> 缺少许可证信息</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>风险评估: 0.7/1.4 (48.0%)</h3>
+                    <p><strong>详情:</strong> 存在1个高风险项; 存在4个中风险项; 存在1个低风险项</p>
+                    <p><strong>影响因素:</strong> CI阶段新增包</p>
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>Scorecard评估: 0.9/1.4 (64.0%)</h3>
+                    <p><strong>详情:</strong> 以下项目风险较高: Dependency-Update-Tool, CII-Best-Practices, Branch-Protection, Token-Permissions; 项目安全实践有待改进</p>
+                    <p><strong>影响因素:</strong> Dependency-Update-Tool风险, CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链源代码到CI阶段安全评分为 4.7/10.0 (47.5%)，安全等级: D。 由于新增包中存在高危级别(HIGH)漏洞，评分被限制在6分以内。 软件供应链安全风险较高，需要采取措施改进。 主要影响因素：供应链重定向, CI阶段引入未授权包, 缺少许可证信息, CI阶段新增包, Dependency-Update-Tool风险。</p>
+                </div>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (91)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>rich</td><td>10.9.0</td><td>MIT</td></tr><tr><td>boto3</td><td>1.35.42</td><td>Apache-2.0</td></tr><tr><td>pyzstd</td><td>未知</td><td>未知</td></tr><tr><td>pytest-subtests</td><td>0.13.1</td><td>MIT</td></tr><tr><td>ossf/scorecard-action</td><td>865b4092859256271290c77adbd10a43f4779972</td><td>未知</td></tr><tr><td>aws-actions/amazon-ecr-login</td><td>2.*.*</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/workflows/validate-docker-images.yml</td><td>main</td><td>未知</td></tr><tr><td>seemethere/upload-artifact-s3</td><td>5.*.*</td><td>未知</td></tr><tr><td>fbscribelogger</td><td>0.1.7</td><td>未知</td></tr><tr><td>ilammy/msvc-dev-cmd</td><td>dd5e2fa0a7de1e7929605d9ecc020e749d9856a3</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/actions/update-commit-hash</td><td>main</td><td>未知</td></tr><tr><td>necojackarc/auto-request-review</td><td>e08cdffa277d50854744de3f76230260e61c67f4</td><td>未知</td></tr><tr><td>numba</td><td>0.55.2</td><td>BSD-2-Clause</td></tr><tr><td>pytest-flakefinder</td><td>1.1.0</td><td>Apache-2.0</td></tr><tr><td>exhale</td><td>0.2.3</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>flatbuffers</td><td>未知</td><td>未知</td></tr><tr><td>octokit/request-action</td><td>main</td><td>未知</td></tr><tr><td>myst-nb</td><td>0.17.2</td><td>BSD-3-Clause AND MIT</td></tr><tr><td>pulp</td><td>2.9.0</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>github/codeql-action/upload-sarif</td><td>5f532563584d71fdef14ee64d17bafb34f751ce5</td><td>未知</td></tr><tr><td>actions/setup-python</td><td>5.*.*</td><td>未知</td></tr><tr><td>xdoctest</td><td>1.1.0</td><td>Apache-2.0</td></tr><tr><td>tb-nightly</td><td>2.13.0a20230426</td><td>未知</td></tr><tr><td>lark</td><td>0.12.0</td><td>MIT</td></tr><tr><td>sphinxcontrib-katex</td><td>0.8.6</td><td>BSD-2-Clause AND MIT</td></tr><tr><td>pytorch/test-infra/.github/actions/pull-docker-image</td><td>main</td><td>未知</td></tr><tr><td>pwlf</td><td>2.2.1</td><td>MIT</td></tr><tr><td>lxml</td><td>5.3.0</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>actions/checkout</td><td>4.*.*</td><td>未知</td></tr><tr><td>parkerbxyz/suggest-changes</td><td>1.*.*</td><td>未知</td></tr><tr><td>pytorch/pytorch/.github/workflows/_runner-determinator.yml</td><td>main</td><td>未知</td></tr><tr><td>pytest</td><td>7.3.2</td><td>MIT</td></tr><tr><td>actions/github-script</td><td>7.*.*</td><td>未知</td></tr><tr><td>com.github.SenjiMuramasa/pytorch</td><td>main</td><td>未知</td></tr><tr><td>unittest-xml-reporting</td><td><= 3.2.0,>= 2.0.0</td><td>未知</td></tr><tr><td>ethanis/nitpicker</td><td>1.*.*</td><td>未知</td></tr><tr><td>aquasecurity/trivy-action</td><td>0.28.0</td><td>未知</td></tr><tr><td>bs4</td><td>0.0.1</td><td>MIT</td></tr><tr><td>actions/upload-artifact</td><td>4.*.*</td><td>未知</td></tr><tr><td>dill</td><td>0.3.7</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>onnxscript</td><td>0.2.2</td><td>LicenseRef-scancode-generic-cla AND MIT</td></tr><tr><td>blas</td><td>1.0</td><td>未知</td></tr><tr><td>ipython</td><td>8.12.0</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>pytorch/test-infra/.github/actions/check-disk-space</td><td>main</td><td>未知</td></tr><tr><td>junitparser</td><td>2.1.1</td><td>Apache-2.0</td></tr><tr><td>pytorch/test-infra/.github/workflows/linux_job_v2.yml</td><td>main</td><td>未知</td></tr><tr><td>docker/login-action</td><td>3.*.*</td><td>未知</td></tr><tr><td>seemethere/download-artifact-s3</td><td>4.*.*</td><td>未知</td></tr><tr><td>pygments</td><td>2.15.0</td><td>BSD-2-Clause</td></tr><tr><td>parameterized</td><td>0.8.1</td><td>BSD-2-Clause</td></tr><tr><td>dataclasses-json</td><td>0.6.7</td><td>MIT</td></tr><tr><td>pytorch/test-infra/.github/actions/update-viablestrict</td><td>main</td><td>未知</td></tr><tr><td>docker/setup-qemu-action</td><td>3.*.*</td><td>未知</td></tr><tr><td>pytorch/pytorch/.github/actions/checkout-pytorch</td><td>main</td><td>未知</td></tr><tr><td>ghstack</td><td>0.8.0</td><td>MIT</td></tr><tr><td>pytorch/test-infra/.github/actions/upload-benchmark-results</td><td>main</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/actions/calculate-docker-image</td><td>main</td><td>未知</td></tr><tr><td>breathe</td><td>4.34.0</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>nick-fields/retry</td><td>3.0.0</td><td>未知</td></tr><tr><td>scipy</td><td>1.14.1</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>opt-einsum</td><td>>= 3.3</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/actions/cleanup-runner</td><td>main</td><td>未知</td></tr><tr><td>pytest-rerunfailures</td><td>>= 10.3</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/actions/bc-lint</td><td>main</td><td>未知</td></tr><tr><td>aws-actions/configure-aws-credentials</td><td>4.*.*</td><td>未知</td></tr><tr><td>pytest-cpp</td><td>2.3.0</td><td>MIT</td></tr><tr><td>actions/download-artifact</td><td>4.*.*</td><td>未知</td></tr><tr><td>docutils</td><td>0.16</td><td>BSD-2-Clause</td></tr><tr><td>onnx</td><td>1.17.0</td><td>Apache-2.0</td></tr><tr><td>pytorch/test-infra/.github/actions/setup-ssh</td><td>main</td><td>未知</td></tr><tr><td>scons</td><td>4.5.2</td><td>MIT</td></tr><tr><td>redis</td><td>>= 4.0.0</td><td>未知</td></tr><tr><td>docker/setup-buildx-action</td><td>3.*.*</td><td>未知</td></tr><tr><td>pygithub</td><td>未知</td><td>未知</td></tr><tr><td>pytest-xdist</td><td>3.3.1</td><td>MIT</td></tr><tr><td>scikit-image</td><td>0.19.3</td><td>BSD-2-Clause AND BSD-3-Clause</td></tr><tr><td>mkl-include</td><td>2022.1.0</td><td>未知</td></tr><tr><td>mypy</td><td>1.14.0</td><td>MIT AND Python-2.0.1</td></tr><tr><td>pytorch/test-infra/.github/actions/teardown-linux</td><td>main</td><td>未知</td></tr><tr><td>protobuf</td><td>3.20.2</td><td>BSD-3-Clause</td></tr><tr><td>click</td><td>未知</td><td>未知</td></tr><tr><td>z3-solver</td><td>4.12.6.0</td><td>MIT</td></tr><tr><td>nvidia-ml-py</td><td>11.525.84</td><td>BSD-2-Clause</td></tr><tr><td>pillow</td><td>11.0.0</td><td>MIT-CMU</td></tr><tr><td>pywavelets</td><td>1.7.0</td><td>MIT</td></tr><tr><td>librosa</td><td>>= 0.6.2</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/actions/setup-nvidia</td><td>main</td><td>未知</td></tr><tr><td>pytorch/test-infra/.github/actions/setup-miniconda</td><td>main</td><td>未知</td></tr><tr><td>coremltools</td><td>5.0b5</td><td>BSD-3-Clause</td></tr><tr><td>mkl</td><td>2022.1.0</td><td>未知</td></tr><tr><td>softprops/action-gh-release</td><td>2.*.*</td><td>未知</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (9)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>androidx.test:core</td><td>未知</td><td>NOASSERTION</td></tr><tr><td>com.facebook.fbjni:fbjni-java-only</td><td>0.2.2</td><td>NOASSERTION</td></tr><tr><td>sphinxcontrib.katex</td><td>==0.8.6</td><td>MIT License</td></tr><tr><td>com.android.support:appcompat-v7</td><td>28.0.0</td><td>NOASSERTION</td></tr><tr><td>com.facebook.soloader:nativeloader</td><td>0.10.5</td><td>NOASSERTION</td></tr><tr><td>junit:junit</td><td>4.12</td><td>NOASSERTION</td></tr><tr><td>pytorch</td><td>commit-main</td><td>NOASSERTION</td></tr><tr><td>PyGithub</td><td>NOASSERTION</td><td>GNU Library or Lesser General Public License (LGPL)</td></tr><tr><td>com.google.code.findbugs:jsr305</td><td>3.0.1</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (19)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>idna</td><td>==3.7 \</td><td>3.7</td><td>无变更</td></tr><tr><td>matplotlib</td><td>==3.6.0</td><td>3.5.3</td><td>次版本</td></tr><tr><td>jinja2</td><td>NOASSERTION</td><td>3.1.6</td><td>一般变更</td></tr><tr><td>numpy</td><td>==1.26.4 \</td><td>1.22.4</td><td>次版本</td></tr><tr><td>hypothesis</td><td>NOASSERTION</td><td>6.56.4</td><td>一般变更</td></tr><tr><td>requests</td><td>==2.32.2 \</td><td>2.32.2</td><td>无变更</td></tr><tr><td>lintrunner</td><td>NOASSERTION ; platform_machine != "s390x"</td><td></td><td>一般变更</td></tr><tr><td>filelock</td><td>NOASSERTION</td><td>3.6.0</td><td>一般变更</td></tr><tr><td>setuptools</td><td>==70.0.0 \</td><td>70.0.0</td><td>无变更</td></tr><tr><td>sympy</td><td>==1.12 \</td><td>>= 1.13.3</td><td>一般变更</td></tr><tr><td>tensorboard</td><td>==2.10.0</td><td>2.18.0</td><td>次版本</td></tr><tr><td>pyyaml</td><td>==6.0.1 \</td><td></td><td>一般变更</td></tr><tr><td>mpmath</td><td>==1.3.0 \</td><td>1.3.0</td><td>无变更</td></tr><tr><td>networkx</td><td>==2.8.8 \</td><td></td><td>一般变更</td></tr><tr><td>ninja</td><td>NOASSERTION</td><td>1.10.0.post1</td><td>一般变更</td></tr><tr><td>urllib3</td><td>==2.2.2 \</td><td>2.2.2</td><td>无变更</td></tr><tr><td>charset-normalizer</td><td>==3.3.2 \</td><td>3.3.2</td><td>无变更</td></tr><tr><td>certifi</td><td>==2024.7.4 \</td><td>2024.7.4</td><td>无变更</td></tr><tr><td>typing-extensions</td><td>==4.11.0 \</td><td>>= 4.8.0</td><td>次版本</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (35)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>astunparse</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>idna</td><td>BSD License</td><td>BSD-2-Clause AND BSD-3-Clause</td><td>否</td></tr><tr><td>types-dataclasses</td><td>Apache Software License</td><td></td><td>否</td></tr><tr><td>matplotlib</td><td>Python Software Foundation License</td><td>PSF-2.0</td><td>否</td></tr><tr><td>cmake</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>jinja2</td><td>BSD License</td><td>BSD-2-Clause AND BSD-3-Clause</td><td>否</td></tr><tr><td>numpy</td><td>BSD License</td><td>BSD-2-Clause</td><td>否</td></tr><tr><td>hypothesis</td><td>Mozilla Public License 2.0 (MPL 2.0)</td><td>MPL-2.0</td><td>否</td></tr><tr><td>pandas</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>requests</td><td>Apache Software License</td><td>Apache-2.0</td><td>否</td></tr><tr><td>lintrunner</td><td>BSD-3-Clause</td><td></td><td>否</td></tr><tr><td>packaging</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>filelock</td><td>The Unlicense (Unlicense)</td><td>Unlicense</td><td>否</td></tr><tr><td>optree</td><td>Apache Software License</td><td>Apache-2.0</td><td>否</td></tr><tr><td>setuptools</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>sphinx-copybutton</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>sphinx</td><td>NOASSERTION</td><td>BSD-2-Clause</td><td>否</td></tr><tr><td>myst-parser</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>python-etcd</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>fsspec</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>sympy</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>tensorboard</td><td>Apache Software License</td><td></td><td>否</td></tr><tr><td>pyyaml</td><td>MIT License</td><td></td><td>否</td></tr><tr><td>expecttest</td><td>MIT License</td><td></td><td>否</td></tr><tr><td>sphinx-panels</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>tqdm</td><td>Mozilla Public License 2.0 (MPL 2.0)</td><td></td><td>否</td></tr><tr><td>mpmath</td><td>BSD License</td><td>BSD-2-Clause AND BSD-3-Clause</td><td>否</td></tr><tr><td>networkx</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>ninja</td><td>BSD License</td><td>Apache-2.0</td><td>否</td></tr><tr><td>psutil</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>torch</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>urllib3</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>scikit-learn</td><td>BSD License</td><td></td><td>否</td></tr><tr><td>charset-normalizer</td><td>MIT License</td><td>MIT</td><td>否</td></tr><tr><td>certifi</td><td>Mozilla Public License 2.0 (MPL 2.0)</td><td>MPL-2.0</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">供应商变更 (36)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧供应商</th>
+                        <th>新供应商</th>
+                    </tr>
+                    <tr><td>astunparse</td><td>Person: Simon Percivall</td><td></td></tr><tr><td>idna</td><td>Organization: PyPI</td><td></td></tr><tr><td>types-dataclasses</td><td>Organization: PyPI</td><td></td></tr><tr><td>matplotlib</td><td>Person: John D. Hunter, Michael Droettboom</td><td></td></tr><tr><td>cmake</td><td>Organization: PyPI</td><td></td></tr><tr><td>jinja2</td><td>Organization: PyPI</td><td></td></tr><tr><td>numpy</td><td>Person: Travis E. Oliphant et al.</td><td></td></tr><tr><td>hypothesis</td><td>Person: David R. MacIver and Zac Hatfield-Dodds</td><td></td></tr><tr><td>pandas</td><td>Organization: PyPI</td><td></td></tr><tr><td>requests</td><td>Person: Kenneth Reitz</td><td></td></tr><tr><td>lintrunner</td><td>Person: Michael Suo <suo@fb.com></td><td></td></tr><tr><td>packaging</td><td>Organization: PyPI</td><td></td></tr><tr><td>filelock</td><td>Organization: PyPI</td><td></td></tr><tr><td>optree</td><td>Person: OpTree Contributors</td><td></td></tr><tr><td>setuptools</td><td>Organization: PyPI</td><td></td></tr><tr><td>sphinx-copybutton</td><td>Person: Executable Book Project</td><td></td></tr><tr><td>sphinx</td><td>Organization: PyPI</td><td></td></tr><tr><td>myst-parser</td><td>Organization: PyPI</td><td></td></tr><tr><td>python-etcd</td><td>Person: Jose Plana</td><td></td></tr><tr><td>fsspec</td><td>Organization: PyPI</td><td></td></tr><tr><td>sympy</td><td>Person: SymPy development team</td><td></td></tr><tr><td>tensorboard</td><td>Person: Google Inc.</td><td></td></tr><tr><td>pyyaml</td><td>Person: Kirill Simonov</td><td></td></tr><tr><td>expecttest</td><td>Person: Edward Z. Yang</td><td></td></tr><tr><td>sphinx-panels</td><td>Person: Chris Sewell</td><td></td></tr><tr><td>tqdm</td><td>Organization: PyPI</td><td></td></tr><tr><td>mpmath</td><td>Person: Fredrik Johansson</td><td></td></tr><tr><td>networkx</td><td>Organization: PyPI</td><td></td></tr><tr><td>ninja</td><td>Organization: PyPI</td><td></td></tr><tr><td>psutil</td><td>Person: Giampaolo Rodola</td><td></td></tr><tr><td>torch</td><td>Person: PyTorch Team</td><td></td></tr><tr><td>urllib3</td><td>Organization: PyPI</td><td></td></tr><tr><td>scikit-learn</td><td>Organization: PyPI</td><td></td></tr><tr><td>charset-normalizer</td><td>Organization: PyPI</td><td></td></tr><tr><td>certifi</td><td>Person: Kenneth Reitz</td><td></td></tr><tr><td>typing-extensions</td><td>Organization: PyPI</td><td></td></tr>
+                </table>
+            </div>
+            
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (6)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖扩张</div>
+                        <div class="risk-description">新增了大量包（91个），可能增加软件供应链的复杂性和攻击面</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> rich, boto3, pyzstd, pytest-subtests, ossf/scorecard-action... 等共91个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查新增包的必要性，尤其是那些不直接支持核心功能的包</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">许可证合规</div>
+                        <div class="risk-description">53个新增包缺少明确的许可证信息</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> pyzstd, ossf/scorecard-action, aws-actions/amazon-ecr-login, pytorch/test-infra/.github/workflows/validate-docker-images.yml, seemethere/upload-artifact-s3... 等共53个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 确保所有新增包都有明确的许可证信息，以避免潜在的法律风险</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">供应链变更</div>
+                        <div class="risk-description">36个包变更了供应商，可能表明供应链被重定向</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> astunparse, idna, types-dataclasses, matplotlib, cmake... 等共36个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 验证新供应商的可信度，并确认变更是有意的而非供应链攻击</div>
+                    </div>
+                    
+                    <div class="risk-low">
+                        <div class="risk-category">供应链透明度</div>
+                        <div class="risk-description">91个新增包缺少供应商信息</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> rich, boto3, pyzstd, pytest-subtests, ossf/scorecard-action... 等共91个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 完善包的供应商信息，提高供应链透明度</div>
+                    </div>
+                    
+                    <div class="stage-header">
+                        <span>【CI/CD阶段】</span>
+                    </div>
+                    
+                        <div class="risk-high">
+                            <div class="risk-category">CI阶段新增包</div>
+                            <div class="risk-description">在CI阶段新增了91个包，这些包在源代码中未定义</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> rich, boto3, pyzstd, pytest-subtests, ossf/scorecard-action... 等共91个包</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 审核CI配置，确保所有依赖都在源代码中明确定义，避免CI过程中引入未授权的包</div>
+                        </div>
+                        
+                        <div class="risk-medium">
+                            <div class="risk-category">CI阶段版本变更</div>
+                            <div class="risk-description">在CI阶段，19个包的版本发生了变更</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> idna, matplotlib, jinja2, numpy, hypothesis... 等共19个包</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 检查CI配置，确保依赖版本锁定，防止自动更新引入未测试的版本</div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">新增包漏洞信息 (5)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>pygments</td>
+                            <td class="vuln-unknown">PYSEC-2023-117<br>关联CVE: CVE-2022-40896</td>
+                            <td>具体受影响版本: 0.10, 0.11, 0.11.1, 0.5, 0.5.1, 0.6, 0.7, 0.7.1, 0.8, 0.8.1, 0.9, 1.0, 1.1, 1.1.1, 1.2, 1.2.1, 1.2.2, 1.3, 1.3.1, 1.4, 1.5, 1.6, 1.6rc1, 2.0, 2.0.1, 2.0.2, 2.0rc1, 2.1, 2.1.1, 2.1.2, 2.1.3, 2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.12.0, 2.13.0, 2.14.0, 2.15.0, 2.2.0, 2.3.0, 2.3.1, 2.4.0, 2.4.1, 2.4.2, 2.5.1, 2.5.2, 2.6.0, 2.6.1, 2.7.0, 2.7.1, 2.7.2, 2.7.3, 2.7.4, 2.8.0, 2.8.1, 2.9.0</td>
+                            <td><br><br>A ReDoS issue was discovered in pygments/lexers/smithy.py in pygments through 2.15.0 via SmithyLexer.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://pypi.org/project/Pygments/' target='_blank' class='vuln-link'>https://pypi.org/project/Pygments/</a><br><a href='https://pyup.io/posts/pyup-discovers-redos-vulnerabilities-in-top-python-packages-part-2/' target='_blank' class='vuln-link'>https://pyup.io/posts/pyup-discovers-redos-vulnerabilities-in-top-python-packages-part-2/</a><br><a href='https://github.com/pygments/pygments/blob/master/pygments/lexers/smithy.py#L61' target='_blank' class='vuln-link'>https://github.com/pygments/pygments/blob/master/pygments/lexers/smithy.py#L61</a></div></td>
+                            <td>2023-07-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>redis</td>
+                            <td class="vuln-unknown">GHSA-24wv-mv5m-xv4h<br>关联CVE: CVE-2023-28858</td>
+                            <td>具体受影响版本: 4.4.0, 4.4.1, 4.4.2<br>具体受影响版本: 4.5.0, 4.5.1, 4.5.2<br>具体受影响版本: 4.2.0, 4.2.1, 4.2.2, 4.3.0, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5</td>
+                            <td>redis-py Race Condition vulnerability<br><br>redis-py before 4.5.3, as used in ChatGPT and other products, leaves a connection open after canceling an async Redis command at an inopportune time (in the case of a pipeline operation), and can send response data to the client of an unrelated request in an off-by-one manner. The fixed versions for this CVE Record are 4.3.6, 4.4.3, and 4.5.3, but [are believed to be incomplete](https://github.com/redis/redis-py/issues/2665). CVE-2023-28859 has been assigned the issues caused by the incomplete fixes.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-28858' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-28858</a><br><a href='https://github.com/redis/redis-py/issues/2624' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/issues/2624</a><br><a href='https://github.com/redis/redis-py/pull/2641' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/pull/2641</a><br><a href='https://github.com/redis/redis-py/commit/d56baeb683fc1935cfa343fa2eeb0fa9bd955283' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/commit/d56baeb683fc1935cfa343fa2eeb0fa9bd955283</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/redis/PYSEC-2023-45.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/redis/PYSEC-2023-45.yaml</a></div></td>
+                            <td>2023-03-26</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>redis</td>
+                            <td class="vuln-high">GHSA-8fww-64cx-x8p5<br>关联CVE: CVE-2023-28859</td>
+                            <td>具体受影响版本: 4.5.0, 4.5.1, 4.5.2, 4.5.3<br>具体受影响版本: 4.2.0, 4.2.1, 4.2.2, 4.3.0, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5, 4.3.6, 4.4.0, 4.4.0rc1, 4.4.0rc2, 4.4.0rc3, 4.4.0rc4, 4.4.1, 4.4.2, 4.4.3</td>
+                            <td>redis-py Race Condition due to incomplete fix<br><br>redis-py through 4.5.3 and 4.4.3 leaves a connection open after canceling an async Redis command at an inopportune time (in the case of a non-pipeline operation), and can send response data to the client of an unrelated request. NOTE: this issue exists because of an incomplete fix for CVE-2023-28858.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-28859' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-28859</a><br><a href='https://github.com/redis/redis-py/issues/2665' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/issues/2665</a><br><a href='https://github.com/redis/redis-py/pull/1899' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/pull/1899</a><br><a href='https://github.com/redis/redis-py/pull/2641' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/pull/2641</a><br><a href='https://github.com/redis/redis-py/pull/2666' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/pull/2666</a></div></td>
+                            <td>2023-03-26</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>redis</td>
+                            <td class="vuln-unknown">PYSEC-2023-45<br>关联CVE: CVE-2023-28858</td>
+                            <td>具体受影响版本: 4.2.0, 4.2.1, 4.2.2, 4.3.0, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5, 4.4.0, 4.4.1, 4.4.2, 4.5.0, 4.5.1, 4.5.2</td>
+                            <td><br><br>redis-py before 4.5.3, as used in ChatGPT and other products, leaves a connection open after canceling an async Redis command at an inopportune time (in the case of a pipeline operation), and can send response data to the client of an unrelated request in an off-by-one manner. The fixed versions for this CVE Record are 4.3.6, 4.4.3, and 4.5.3; however, CVE-2023-28859 is a separate vulnerability.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/redis/redis-py/compare/v4.3.5...v4.3.6' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/compare/v4.3.5...v4.3.6</a><br><a href='https://github.com/redis/redis-py/pull/2641' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/pull/2641</a><br><a href='https://openai.com/blog/march-20-chatgpt-outage' target='_blank' class='vuln-link'>https://openai.com/blog/march-20-chatgpt-outage</a><br><a href='https://github.com/redis/redis-py/issues/2624' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/issues/2624</a><br><a href='https://github.com/redis/redis-py/compare/v4.4.2...v4.4.3' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/compare/v4.4.2...v4.4.3</a></div></td>
+                            <td>2023-03-26</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>redis</td>
+                            <td class="vuln-unknown">PYSEC-2023-46<br>关联CVE: CVE-2023-28859</td>
+                            <td>具体受影响版本: 4.2.0, 4.2.1, 4.2.2, 4.3.0, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5, 4.3.6, 4.4.0, 4.4.0rc1, 4.4.0rc2, 4.4.0rc3, 4.4.0rc4, 4.4.1, 4.4.2, 4.4.3, 4.5.0, 4.5.1, 4.5.2, 4.5.3</td>
+                            <td><br><br>redis-py through 4.5.3 leaves a connection open after canceling an async Redis command at an inopportune time (in the case of a non-pipeline operation), and can send response data to the client of an unrelated request. NOTE: this issue exists because of an incomplete fix for CVE-2023-28858.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/redis/redis-py/pull/2641' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/pull/2641</a><br><a href='https://github.com/redis/redis-py/issues/2665' target='_blank' class='vuln-link'>https://github.com/redis/redis-py/issues/2665</a></div></td>
+                            <td>2023-03-26</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

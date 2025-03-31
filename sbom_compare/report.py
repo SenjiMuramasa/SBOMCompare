@@ -2133,33 +2133,32 @@ class ReportGenerator:
                     # 使用downloadLocation判断平台
                     if download_location:
                         download_url = str(download_location).lower()
-                        logger.info(f"包 {package_name} 的下载地址: {download_url}")
                         
                         # 判断平台
                         if "npmjs.com" in download_url or "npm.js" in download_url or "npm/package" in download_url:
                             ecosystem = "npm"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为npm包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为npm包")
                         elif "pypi.org" in download_url or "python.org" in download_url:
                             ecosystem = "PyPI"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为PyPI包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为PyPI包")
                         elif "maven" in download_url or "mvnrepository" in download_url:
                             ecosystem = "Maven"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为Maven包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为Maven包")
                         elif "golang.org" in download_url or "go.dev" in download_url or "go-lang" in download_url:
                             ecosystem = "Go"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为Go包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为Go包")
                         elif "rubygems" in download_url or "ruby-lang" in download_url:
                             ecosystem = "RubyGems"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为RubyGems包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为RubyGems包")
                         elif "crates.io" in download_url or "rust-lang" in download_url:
                             ecosystem = "crates.io"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为Rust包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为Rust包")
                         elif "packagist" in download_url or "composer" in download_url:
                             ecosystem = "Packagist"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为PHP包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为PHP包")
                         elif "nuget" in download_url:
                             ecosystem = "NuGet"
-                            logger.info(f"通过downloadLocation识别包 {package_name} 为.NET包")
+                            # logger.info(f"通过downloadLocation识别包 {package_name} 为.NET包")
                     
                     # 从purl字段判断
                     if not ecosystem and hasattr(pkg_obj, "purl") and pkg_obj.purl:
@@ -2240,7 +2239,7 @@ class ReportGenerator:
                 request_data["version"] = ""
             
             # 记录当前请求数据，便于调试
-            logger.info(f"OSV API请求数据: {request_data}")
+            # logger.info(f"OSV API请求数据: {request_data}")
             
             # 执行API请求，带重试
             for attempt in range(max_retries):
@@ -2475,33 +2474,32 @@ class ReportGenerator:
                 # 使用downloadLocation判断平台
                 if download_location:
                     download_url = download_location.lower()
-                    logger.info(f"包 {pkg} 的下载地址: {download_url}")
                     
                     # 判断平台
                     if "npmjs.com" in download_url or "npm.js" in download_url or "npm/package" in download_url:
                         ecosystem = "npm"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为npm包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为npm包")
                     elif "pypi.org" in download_url or "python.org" in download_url:
                         ecosystem = "PyPI"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为PyPI包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为PyPI包")
                     elif "maven" in download_url or "mvnrepository" in download_url:
                         ecosystem = "Maven"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为Maven包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为Maven包")
                     elif "golang.org" in download_url or "go.dev" in download_url or "go-lang" in download_url:
                         ecosystem = "Go"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为Go包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为Go包")
                     elif "rubygems" in download_url or "ruby-lang" in download_url:
                         ecosystem = "RubyGems"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为RubyGems包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为RubyGems包")
                     elif "crates.io" in download_url or "rust-lang" in download_url:
                         ecosystem = "crates.io"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为Rust包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为Rust包")
                     elif "packagist" in download_url or "composer" in download_url:
                         ecosystem = "Packagist"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为PHP包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为PHP包")
                     elif "nuget" in download_url:
                         ecosystem = "NuGet"
-                        logger.info(f"通过downloadLocation识别包 {pkg} 为.NET包")
+                        # logger.info(f"通过downloadLocation识别包 {pkg} 为.NET包")
             
             # 检查特定格式
             if '@' in pkg:  # npm格式: name@version

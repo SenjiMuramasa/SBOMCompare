@@ -41,6 +41,5 @@ Temp/
 *.bak
 *.swp
 *~
-sample_data/*
-report/*
+
 /osv_sample

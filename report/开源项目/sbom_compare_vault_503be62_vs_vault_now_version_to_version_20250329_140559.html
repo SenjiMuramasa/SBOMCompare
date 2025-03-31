@@ -1,0 +1,614 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-29 14:06:16</p>
+                <p>SBOM A: sample_data\vault_503be62.json</p>
+                <p>SBOM B: sample_data\vault_now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>78</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>27</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>152</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>48</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">8.9/10</span>
+                    <span class="score-percentage">(88.5%)</span>
+                    <span class="score-grade grade-a">A</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 1.7/1.7 (98.4%)</h3>
+                    <p><strong>详情:</strong> 大量新增包(78个)可能增加攻击面; 大量移除包(27个)可能影响功能稳定性</p>
+                    <p><strong>影响因素:</strong> 大量新增依赖, 大量移除依赖</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 3.4/3.5 (96.6%)</h3>
+                    <p><strong>详情:</strong> 3个包发生主版本变更，可能存在API不兼容; 96个包发生次版本变更; 43个包发生补丁版本变更; 10个包发生其他版本变更</p>
+                    <p><strong>影响因素:</strong> 主版本变更, 大量次版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 0.9/0.9 (98.8%)</h3>
+                    <p><strong>详情:</strong> 48个包发生许可证变更; 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>风险评估: 2.0/2.6 (76.0%)</h3>
+                    <p><strong>详情:</strong> 存在3个中风险项</p>
+                    <p><strong>影响因素:</strong> 依赖扩张, 重大版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>Scorecard评估: 0.9/1.3 (72.0%)</h3>
+                    <p><strong>详情:</strong> 以下项目风险较高: CII-Best-Practices, Vulnerabilities, Token-Permissions; 
+已知漏洞信息:; 项目安全实践有待改进</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链安全评分为 8.9/10.0 (88.5%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量新增依赖, 大量移除依赖, 主版本变更, 大量次版本变更, 依赖扩张。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (29)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-3h5v-q93c-6h6q</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-3h5v-q93c-6h6q<br><br><div class="cve-header">来自 CVE-2024-37890 的附加信息:</div><br><div class="section-header">描述: ws is an open source WebSocket client and server for Node.js. A request with a number of headers exceeding theserver.maxHeadersCount threshold could be used to crash a ws server. The vulnerability was fixed in ws@8.17.1 (e55e510) and backported to ws@7.5.10 (22c2876), ws@6.2.3 (eeb76d3), and ws@5.2.4 (4abd8f6). In vulnerable versions of ws, the issue can be mitigated in the following ways: 1. Reduce the maximum allowed length of the request headers using the --max-http-header-size=size and/or the maxHeaderSize options so that no more headers than the server.maxHeadersCount limit can be sent. 2. Set server.maxHeadersCount to 0 so that no limit is applied.</div><br><div class="section-header">发布日期: 2024-06-17</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q</span><br><span class="vuln-link">https://github.com/websockets/ws/issues/2230</span><br><span class="vuln-link">https://github.com/websockets/ws/pull/2231</span><br><span class="vuln-link">https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f</span><br><span class="vuln-link">https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-37890</div><br><br><div class="section-header">发布日期: 2024-06-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q</span><br><span class="vuln-link">https://github.com/websockets/ws/issues/2230</span><br><span class="vuln-link">https://github.com/websockets/ws/pull/2231</span><br><span class="vuln-link">https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f</span><br><span class="vuln-link">https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e</span><br><span class="vuln-link">https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c</span><br><span class="vuln-link">https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63</span><br><span class="vuln-link">https://github.com/websockets/ws</span><br><br><div class="section-header">影响范围:</div><br>包名: ws (npm)<br>包名: ws (npm)<br>包名: ws (npm)<br>包名: ws (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-3xgq-45jj-v275</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275<br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div><br><div class="section-header">描述: Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.</div><br><div class="section-header">发布日期: 2024-11-08</div><br><div class="section-header">最后更新: 2025-01-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21538</div><br><br><div class="section-header">发布日期: 2024-11-08</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围:</div><br>包名: cross-spawn (npm)<br>包名: cross-spawn (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-7fh5-64p2-3v2j</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j<br><br><div class="cve-header">来自 CVE-2023-44270 的附加信息:</div><br><div class="section-header">描述: An issue was discovered in PostCSS before 8.4.31. The vulnerability affects linters using PostCSS to parse external untrusted CSS. An attacker can prepare CSS in such a way that it will contains parts parsed by PostCSS as a CSS comment. After processing by PostCSS, it will be included in the PostCSS output in CSS nodes (rules, properties) despite being included in a comment.</div><br><div class="section-header">发布日期: 2023-09-29</div><br><div class="section-header">最后更新: 2024-09-23</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-44270</div><br><br><div class="section-header">发布日期: 2023-09-30</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-44270</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/postcss/postcss</span><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><br><div class="section-header">影响范围:</div><br>包名: postcss (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-7gc6-qh9x-w6h8</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-7gc6-qh9x-w6h8<br><br><div class="cve-header">来自 CVE-2022-1365 的附加信息:</div><br><div class="section-header">描述: Exposure of Private Personal Information to an Unauthorized Actor in GitHub repository lquixada/cross-fetch prior to 3.1.5.</div><br><div class="section-header">发布日期: 2022-04-15</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://huntr.dev/bounties/ab55dfdd-2a60-437a-a832-e3efe3d264ac</span><br><span class="vuln-link">https://github.com/lquixada/cross-fetch/commit/a3b3a9481091ddd06b8f83784ba9c4e034dc912a</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-1365</div><br><br><div class="section-header">发布日期: 2022-04-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-1365</span><br><span class="vuln-link">https://github.com/lquixada/cross-fetch/pull/135</span><br><span class="vuln-link">https://github.com/lquixada/cross-fetch/commit/a3b3a9481091ddd06b8f83784ba9c4e034dc912a</span><br><span class="vuln-link">https://github.com/lquixada/cross-fetch</span><br><span class="vuln-link">https://huntr.dev/bounties/ab55dfdd-2a60-437a-a832-e3efe3d264ac</span><br><br><div class="section-header">影响范围:</div><br>包名: cross-fetch (npm)<br>包名: cross-fetch (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-7gfc-8cq8-jh5f</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-7gfc-8cq8-jh5f<br><br><div class="cve-header">来自 CVE-2024-51479 的附加信息:</div><br><div class="section-header">描述: Next.js is a React framework for building full-stack web applications. In affected versions if a Next.js application is performing authorization in middleware based on pathname, it was possible for this authorization to be bypassed for pages directly under the application's root directory. For example: * [Not affected] `https://example.com/` * [Affected] `https://example.com/foo` * [Not affected] `https://example.com/foo/bar`. This issue is patched in Next.js `14.2.15` and later. If your Next.js application is hosted on Vercel, this vulnerability has been automatically mitigated, regardless of Next.js version. There are no official workarounds for this vulnerability.</div><br><div class="section-header">发布日期: 2024-12-17</div><br><div class="section-header">最后更新: 2024-12-17</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-7gfc-8cq8-jh5f</span><br><span class="vuln-link">https://github.com/vercel/next.js/releases/tag/v14.2.15</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-51479</div><br><br><div class="section-header">发布日期: 2024-12-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-7gfc-8cq8-jh5f</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-51479</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/1c8234eb20bc8afd396b89999a00f06b61d72d7b</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><span class="vuln-link">https://github.com/vercel/next.js/releases/tag/v14.2.15</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-7m27-7ghc-44w9</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-7m27-7ghc-44w9<br><br><div class="cve-header">来自 CVE-2024-56332 的附加信息:</div><br><div class="section-header">描述: Next.js is a React framework for building full-stack web applications. Starting in version 13.0.0 and prior to versions 13.5.8, 14.2.21, and 15.1.2, Next.js is vulnerable to a Denial of Service (DoS) attack that allows attackers to construct requests that leaves requests to Server Actions hanging until the hosting provider cancels the function execution. This vulnerability can also be used as a Denial of Wallet (DoW) attack when deployed in providers billing by response times. (Note: Next.js server is idle during that time and only keeps the connection open. CPU and memory footprint are low during that time.). Deployments without any protection against long running Server Action invocations are especially vulnerable. Hosting providers like Vercel or Netlify set a default maximum duration on function execution to reduce the risk of excessive billing. This is the same issue as if the incoming HTTP request has an invalid `Content-Length` header or never closes. If the host has no other mitigations to those then this vulnerability is novel. This vulnerability affects only Next.js deployments using Server Actions. The issue was resolved in Next.js 13.5.8, 14.2.21, and 15.1.2. We recommend that users upgrade to a safe version. There are no official workarounds.</div><br><div class="section-header">发布日期: 2025-01-03</div><br><div class="section-header">最后更新: 2025-01-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-7m27-7ghc-44w9</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-56332</div><br><br><div class="section-header">发布日期: 2025-01-03</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-7m27-7ghc-44w9</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56332</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)<br>包名: next (npm)<br>包名: next (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-952p-6rrq-rcjv</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv<br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div><br><div class="section-header">描述: The NPM package `micromatch` prior to 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn't find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persists. This issue should be mitigated by using a safe pattern that won't start backtracking the regular expression due to greedy matching. This issue was fixed in version 4.0.8.</div><br><div class="section-header">发布日期: 2024-05-13</div><br><div class="section-header">最后更新: 2024-09-17</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067/</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067/</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-4067</div><br><br><div class="section-header">发布日期: 2024-05-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围:</div><br>包名: micromatch (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-968p-4wvh-cqc8</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8<br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div><br><div class="section-header">描述: Babel is a compiler for writing next generation JavaScript. When using versions of Babel prior to 7.26.10 and 8.0.0-alpha.17 to compile regular expression named capturing groups, Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`). Generated code is vulnerable if all the following conditions are true: Using Babel to compile regular expression named capturing groups, using the `.replace` method on a regular expression that contains named capturing groups, and the code using untrusted strings as the second argument of `.replace`. This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17. It's likely that individual users do not directly depend on `@babel/helpers`, and instead depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees use of a new enough `@babel/helpers` version. Note that just updating Babel dependencies is not enough; one will also need to re-compile the code. No known workarounds are available.</div><br><div class="section-header">发布日期: 2025-03-11</div><br><div class="section-header">最后更新: 2025-03-11</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-27789</div><br><br><div class="section-header">发布日期: 2025-03-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围:</div><br>包名: @babel/helpers (npm)<br>包名: @babel/runtime (npm)<br>包名: @babel/runtime-corejs2 (npm)<br>包名: @babel/runtime-corejs3 (npm)<br>包名: @babel/helpers (npm)<br>包名: @babel/runtime (npm)<br>包名: @babel/runtime-corejs2 (npm)<br>包名: @babel/runtime-corejs3 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-c2qf-rxjj-qqgw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-c2qf-rxjj-qqgw<br><br><div class="cve-header">来自 CVE-2022-25883 的附加信息:</div><br><div class="section-header">描述: Versions of the package semver before 7.5.2 are vulnerable to Regular Expression Denial of Service (ReDoS) via the function new Range, when untrusted user data is provided as a range.</div><br><div class="section-header">发布日期: 2023-06-21</div><br><div class="section-header">最后更新: 2024-12-06</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js%23L160</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js%23L138</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/classes/range.js%23L97-L104</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/564</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-25883</div><br><br><div class="section-header">发布日期: 2023-06-21</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-25883</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/564</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/585</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/593</span><br><span class="vuln-link">https://github.com/npm/node-semver/commit/2f8fd41487acf380194579ecb6f8b1bbfe116be0</span><br><span class="vuln-link">https://github.com/npm/node-semver/commit/717534ee353682f3bcf33e60a8af4292626d4441</span><br><span class="vuln-link">https://github.com/npm/node-semver/commit/928e56d21150da0413a3333a3148b20e741a920c</span><br><span class="vuln-link">https://github.com/npm/node-semver</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/classes/range.js#L97-L104</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/classes/range.js%23L97-L104</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js#L138</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js#L160</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js%23L138</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js%23L160</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20241025-0004</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795</span><br><br><div class="section-header">影响范围:</div><br>包名: semver (npm)<br>包名: semver (npm)<br>包名: semver (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-f82v-jwr5-mffw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-f82v-jwr5-mffw<br><br><div class="cve-header">来自 CVE-2025-29927 的附加信息:</div><br><div class="section-header">描述: Next.js is a React framework for building full-stack web applications. Prior to 14.2.25 and 15.2.3, it is possible to bypass authorization checks within a Next.js application, if the authorization check occurs in middleware. If patching to a safe version is infeasible, it is recommend that you prevent external user requests which contain the x-middleware-subrequest header from reaching your Next.js application. This vulnerability is fixed in 14.2.25 and 15.2.3.</div><br><div class="section-header">发布日期: 2025-03-21</div><br><div class="section-header">最后更新: 2025-03-28</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-f82v-jwr5-mffw</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-29927</div><br><br><div class="section-header">发布日期: 2025-03-21</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-f82v-jwr5-mffw</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-29927</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/52a078da3884efe6501613c7834a3d02a91676d2</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/5fd3ae8f8542677c6294f32d18022731eab6fe48</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><span class="vuln-link">https://github.com/vercel/next.js/releases/tag/v12.3.5</span><br><span class="vuln-link">https://github.com/vercel/next.js/releases/tag/v13.5.9</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250328-0002</span><br><span class="vuln-link">https://vercel.com/changelog/vercel-firewall-proactively-protects-against-vulnerability-with-middleware</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/23/3</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/23/4</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)<br>包名: next (npm)<br>包名: next (npm)<br>包名: next (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-f9xv-q969-pqx4</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-f9xv-q969-pqx4<br><br><div class="cve-header">来自 CVE-2023-2251 的附加信息:</div><br><div class="section-header">描述: Uncaught Exception in GitHub repository eemeli/yaml prior to 2.0.0-5.</div><br><div class="section-header">发布日期: 2023-04-24</div><br><div class="section-header">最后更新: 2025-02-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://huntr.dev/bounties/4b494e99-5a3e-40d9-8678-277f3060e96c</span><br><span class="vuln-link">https://github.com/eemeli/yaml/commit/984f5781ffd807e58cad3b5c8da1f940dab75fba</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-2251</div><br><br><div class="section-header">发布日期: 2023-04-24</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-2251</span><br><span class="vuln-link">https://github.com/eemeli/yaml/commit/984f5781ffd807e58cad3b5c8da1f940dab75fba</span><br><span class="vuln-link">https://github.com/eemeli/yaml</span><br><span class="vuln-link">https://huntr.dev/bounties/4b494e99-5a3e-40d9-8678-277f3060e96c</span><br><br><div class="section-header">影响范围:</div><br>包名: yaml (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-fr5h-rqp8-mj6g</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-fr5h-rqp8-mj6g<br><br><div class="cve-header">来自 CVE-2024-34351 的附加信息:</div><br><div class="section-header">描述: Next.js is a React framework that can provide building blocks to create web applications. A Server-Side Request Forgery (SSRF) vulnerability was identified in Next.js Server Actions. If the `Host` header is modified, and the below conditions are also met, an attacker may be able to make requests that appear to be originating from the Next.js application server itself. The required conditions are 1) Next.js is running in a self-hosted manner; 2) the Next.js application makes use of Server Actions; and 3) the Server Action performs a redirect to a relative path which starts with a `/`. This vulnerability was fixed in Next.js `14.1.1`.</div><br><div class="section-header">发布日期: 2024-05-09</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-fr5h-rqp8-mj6g</span><br><span class="vuln-link">https://github.com/vercel/next.js/pull/62561</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/8f7a6ca7d21a97bc9f7a1bbe10427b5ad74b9085</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-34351</div><br><br><div class="section-header">发布日期: 2024-05-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-fr5h-rqp8-mj6g</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-34351</span><br><span class="vuln-link">https://github.com/vercel/next.js/pull/62561</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/8f7a6ca7d21a97bc9f7a1bbe10427b5ad74b9085</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-g77x-44xx-532m</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-g77x-44xx-532m<br><br><div class="cve-header">来自 CVE-2024-47831 的附加信息:</div><br><div class="section-header">描述: Next.js is a React Framework for the Web. Cersions on the 10.x, 11.x, 12.x, 13.x, and 14.x branches before version 14.2.7 contain a vulnerability in the image optimization feature which allows for a potential Denial of Service (DoS) condition which could lead to excessive CPU consumption. Neither the `next.config.js` file that is configured with `images.unoptimized` set to `true` or `images.loader` set to a non-default value nor the Next.js application that is hosted on Vercel are affected. This issue was fully patched in Next.js `14.2.7`. As a workaround, ensure that the `next.config.js` file has either `images.unoptimized`, `images.loader` or `images.loaderFile` assigned.</div><br><div class="section-header">发布日期: 2024-10-14</div><br><div class="section-header">最后更新: 2024-10-15</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-g77x-44xx-532m</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/d11cbc9ff0b1aaefabcba9afe1e562e0b1fde65a</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-47831</div><br><br><div class="section-header">发布日期: 2024-10-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-g77x-44xx-532m</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-47831</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/d11cbc9ff0b1aaefabcba9afe1e562e0b1fde65a</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-ghr5-ch3p-vcr6</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-ghr5-ch3p-vcr6<br><br><div class="cve-header">来自 CVE-2024-33883 的附加信息:</div><br><div class="section-header">描述: The ejs (aka Embedded JavaScript templates) package before 3.1.10 for Node.js lacks certain pollution protection.</div><br><div class="section-header">发布日期: 2024-04-28</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/mde/ejs/commit/e469741dca7df2eb400199e1cdb74621e3f89aa5</span><br><span class="vuln-link">https://github.com/mde/ejs/compare/v3.1.9...v3.1.10</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240605-0003/</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-33883</div><br><br><div class="section-header">发布日期: 2024-04-28</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-33883</span><br><span class="vuln-link">https://github.com/mde/ejs/commit/e469741dca7df2eb400199e1cdb74621e3f89aa5</span><br><span class="vuln-link">https://github.com/mde/ejs</span><br><span class="vuln-link">https://github.com/mde/ejs/compare/v3.1.9...v3.1.10</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240605-0003</span><br><br><div class="section-header">影响范围:</div><br>包名: ejs (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-gp8f-8m3g-qvj9</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-gp8f-8m3g-qvj9<br><br><div class="cve-header">来自 CVE-2024-46982 的附加信息:</div><br><div class="section-header">描述: Next.js is a React framework for building full-stack web applications. By sending a crafted HTTP request, it is possible to poison the cache of a non-dynamic server-side rendered route in the pages router (this does not affect the app router). When this crafted request is sent it could coerce Next.js to cache a route that is meant to not be cached and send a `Cache-Control: s-maxage=1, stale-while-revalidate` header which some upstream CDNs may cache as well. To be potentially affected all of the following must apply: 1. Next.js between 13.5.1 and 14.2.9, 2. Using pages router, & 3. Using non-dynamic server-side rendered routes e.g. `pages/dashboard.tsx` not `pages/blog/[slug].tsx`. This vulnerability was resolved in Next.js v13.5.7, v14.2.10, and later. We recommend upgrading regardless of whether you can reproduce the issue or not. There are no official or recommended workarounds for this issue, we recommend that users patch to a safe version.</div><br><div class="section-header">发布日期: 2024-09-17</div><br><div class="section-header">最后更新: 2024-09-18</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-gp8f-8m3g-qvj9</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/7ed7f125e07ef0517a331009ed7e32691ba403d3</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/bd164d53af259c05f1ab434004bcfdd3837d7cda</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-46982</div><br><br><div class="section-header">发布日期: 2024-09-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-gp8f-8m3g-qvj9</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-46982</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/7ed7f125e07ef0517a331009ed7e32691ba403d3</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/bd164d53af259c05f1ab434004bcfdd3837d7cda</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)<br>包名: next (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-grv7-fg5c-xmjg</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg<br><br><div class="cve-header">来自 CVE-2024-4068 的附加信息:</div><br><div class="section-header">描述: The NPM package `braces`, versions prior to 3.0.3, fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends "imbalanced braces" as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.</div><br><div class="section-header">发布日期: 2024-05-13</div><br><div class="section-header">最后更新: 2024-11-06</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/micromatch/braces/issues/35</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4068/</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/37</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/40</span><br><span class="vuln-link">https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-4068</div><br><br><div class="section-header">发布日期: 2024-05-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces/issues/35</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/37</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/40</span><br><span class="vuln-link">https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces</span><br><span class="vuln-link">https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308</span><br><br><div class="section-header">影响范围:</div><br>包名: braces (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-m95q-7qp3-xv42</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-m95q-7qp3-xv42<br><br><div class="cve-header">来自 CVE-2023-4316 的附加信息:</div><br><div class="section-header">描述: Zod in versions 3.21.0 up to and including 3.22.3 allows an attacker to perform a denial of service while validating emails.</div><br><div class="section-header">发布日期: 2023-09-28</div><br><div class="section-header">最后更新: 2024-09-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://fluidattacks.com/advisories/swift</span><br><span class="vuln-link">https://www.npmjs.com/package/zod</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-4316</div><br><br><div class="section-header">发布日期: 2023-09-28</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-4316</span><br><span class="vuln-link">https://github.com/colinhacks/zod/issues/2609</span><br><span class="vuln-link">https://github.com/colinhacks/zod/pull/2824</span><br><span class="vuln-link">https://github.com/colinhacks/zod/commit/2ba00fe2377f4d53947a84b8cdb314a63bbd6dd4</span><br><span class="vuln-link">https://fluidattacks.com/advisories/swift</span><br><span class="vuln-link">https://github.com/colinhacks/zod</span><br><span class="vuln-link">https://github.com/colinhacks/zod/releases/tag/v3.22.3</span><br><span class="vuln-link">https://www.npmjs.com/package/zod</span><br><br><div class="section-header">影响范围:</div><br>包名: zod (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-mwcw-c2x4-8c55</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55<br><br><div class="cve-header">来自 CVE-2024-55565 的附加信息:</div><br><div class="section-header">描述: nanoid (aka Nano ID) before 5.0.9 mishandles non-integer values. 3.3.8 is also a fixed version.</div><br><div class="section-header">发布日期: 2024-12-09</div><br><div class="section-header">最后更新: 2024-12-12</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/ai/nanoid/pull/510</span><br><span class="vuln-link">https://github.com/ai/nanoid/releases/tag/5.0.9</span><br><span class="vuln-link">https://github.com/ai/nanoid/compare/3.3.7...3.3.8</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-55565</div><br><br><div class="section-header">发布日期: 2024-12-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-55565</span><br><span class="vuln-link">https://github.com/ai/nanoid/pull/510</span><br><span class="vuln-link">https://github.com/ai/nanoid</span><br><span class="vuln-link">https://github.com/ai/nanoid/compare/3.3.7...3.3.8</span><br><span class="vuln-link">https://github.com/ai/nanoid/releases/tag/5.0.9</span><br><br><div class="section-header">影响范围:</div><br>包名: nanoid (npm)<br>包名: nanoid (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-phwq-j96m-2c2q</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-phwq-j96m-2c2q<br><br><div class="cve-header">来自 CVE-2022-29078 的附加信息:</div><br><div class="section-header">描述: The ejs (aka Embedded JavaScript templates) package 3.1.6 for Node.js allows server-side template injection in settings[view options][outputFunctionName]. This is parsed as an internal option, and overwrites the outputFunctionName option with an arbitrary OS command (which is executed upon template compilation).</div><br><div class="section-header">发布日期: 2022-04-25</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/mde/ejs/releases</span><br><span class="vuln-link">https://eslam.io/posts/ejs-server-side-template-injection-rce/</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20220804-0001/</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-29078</div><br><br><div class="section-header">发布日期: 2022-04-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-29078</span><br><span class="vuln-link">https://github.com/mde/ejs/commit/15ee698583c98dadc456639d6245580d17a24baf</span><br><span class="vuln-link">https://eslam.io/posts/ejs-server-side-template-injection-rce</span><br><span class="vuln-link">https://github.com/mde/ejs</span><br><span class="vuln-link">https://github.com/mde/ejs/releases</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20220804-0001</span><br><br><div class="section-header">影响范围:</div><br>包名: ejs (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-r683-j2x4-v87g</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-r683-j2x4-v87g<br><br><div class="cve-header">来自 CVE-2022-0235 的附加信息:</div><br><div class="section-header">描述: node-fetch is vulnerable to Exposure of Sensitive Information to an Unauthorized Actor</div><br><div class="section-header">发布日期: 2022-01-16</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://huntr.dev/bounties/d26ab655-38d6-48b3-be15-f9ad6b6ae6f7</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch/commit/36e47e8a6406185921e4985dcbeff140d73eaa10</span><br><span class="vuln-link">https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/12/msg00007.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-0235</div><br><br><div class="section-header">发布日期: 2022-01-21</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-0235</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch/pull/1449/commits/5c32f002fdd65b1c6a8f1e3620210813d45c7e60</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch/pull/1453</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch/commit/1ef4b560a17e644a02a3bfdea7631ffeee578b35</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch/commit/36e47e8a6406185921e4985dcbeff140d73eaa10</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch/commit/5c32f002fdd65b1c6a8f1e3620210813d45c7e60</span><br><span class="vuln-link">https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf</span><br><span class="vuln-link">https://github.com/node-fetch/node-fetch</span><br><span class="vuln-link">https://huntr.dev/bounties/d26ab655-38d6-48b3-be15-f9ad6b6ae6f7</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/12/msg00007.html</span><br><br><div class="section-header">影响范围:</div><br>包名: node-fetch (npm)<br>包名: node-fetch (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-v4rh-8p82-6h5w</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-v4rh-8p82-6h5w<br><br><div class="cve-header">来自 CVE-2020-7661 的附加信息:</div><br><div class="section-header">描述: all versions of url-regex are vulnerable to Regular Expression Denial of Service. An attacker providing a very long string in String.test can cause a Denial of Service.</div><br><div class="section-header">发布日期: 2020-06-04</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/kevva/url-regex/issues/70</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-URLREGEX-569472</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-7661</div><br><br><div class="section-header">发布日期: 2020-06-22</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-7661</span><br><span class="vuln-link">https://github.com/kevva/url-regex/issues/70</span><br><span class="vuln-link">https://github.com/kevva/url-regex</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-URLREGEX-569472</span><br><br><div class="section-header">影响范围:</div><br>包名: url-regex (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-w573-4hg7-7wgq</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-w573-4hg7-7wgq<br><br><div class="cve-header">来自 CVE-2022-38900 的附加信息:</div><br><div class="section-header">描述: decode-uri-component 0.2.0 is vulnerable to Improper Input Validation resulting in DoS.</div><br><div class="section-header">发布日期: 2022-11-28</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/SamVerschueren/decode-uri-component/issues/5</span><br><span class="vuln-link">https://github.com/sindresorhus/query-string/issues/345</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KAC5KQ2SEWAMQ6UZAUBZ5KXKEOESH375/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ERN6YE3DS7NBW7UH44SCJBMNC2NWQ7SM/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VNV2GNZXOTEDAJRFH3ZYWRUBGIVL7BSU/</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-38900</div><br><br><div class="section-header">发布日期: 2022-11-28</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-38900</span><br><span class="vuln-link">https://github.com/SamVerschueren/decode-uri-component/issues/5</span><br><span class="vuln-link">https://github.com/sindresorhus/query-string/issues/345</span><br><span class="vuln-link">https://github.com/SamVerschueren/decode-uri-component/commit/746ca5dcb6667c5d364e782d53c542830e4c10b9</span><br><span class="vuln-link">https://github.com/SamVerschueren/decode-uri-component</span><br><span class="vuln-link">https://github.com/SamVerschueren/decode-uri-component/releases/tag/v0.2.1</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ERN6YE3DS7NBW7UH44SCJBMNC2NWQ7SM</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/KAC5KQ2SEWAMQ6UZAUBZ5KXKEOESH375</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QABOUA2I542UTANVZIVFKWMRYVHLV32D</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UW4SCMT3SEUFVIL7YIADQ5K36GJEO6I5</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/VNV2GNZXOTEDAJRFH3ZYWRUBGIVL7BSU</span><br><br><div class="section-header">影响范围:</div><br>包名: decode-uri-component (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-w5p7-h5w8-2hfq</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-w5p7-h5w8-2hfq<br><br><div class="cve-header">来自 CVE-2020-7753 的附加信息:</div><br><div class="section-header">描述: All versions of package trim are vulnerable to Regular Expression Denial of Service (ReDoS) via trim().</div><br><div class="section-header">发布日期: 2020-10-27</div><br><div class="section-header">最后更新: 2024-09-16</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-TRIM-1017038</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1022132</span><br><span class="vuln-link">https://github.com/component/trim/blob/master/index.js%23L6</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r75b8d0b88833d7d96afcdce3ead65e212572ead4e7a9f34d21040196%40%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r10faad1ef9166d37a1a5c9142b1af7099b8ecdc5ad05c51b8ea993d9%40%3Ccommits.airflow.apache.org%3E</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-7753</div><br><br><div class="section-header">发布日期: 2021-05-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-7753</span><br><span class="vuln-link">https://github.com/component/trim/pull/8</span><br><span class="vuln-link">https://github.com/component/trim</span><br><span class="vuln-link">https://github.com/component/trim/blob/master/index.js</span><br><span class="vuln-link">https://github.com/component/trim/blob/master/index.js%23L6</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r10faad1ef9166d37a1a5c9142b1af7099b8ecdc5ad05c51b8ea993d9@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r51ff3c2a4c7b8402f321eae7e624672cc2295c7bc8c12c8b871f6b0b@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r75b8d0b88833d7d96afcdce3ead65e212572ead4e7a9f34d21040196@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb8462df3b6484e778905c09cd49a8912e1a302659860017ebe36da03@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rcc7c2865a52b544a8e49386c6880e9b9ab29bfce1052b5569d09ee4a@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1022132</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-TRIM-1017038</span><br><br><div class="section-header">影响范围:</div><br>包名: trim (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-wxhq-pm8v-cw75</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-wxhq-pm8v-cw75<br><br><div class="section-header">发布日期: 2019-06-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jakubpawlowicz/clean-css/commit/2929bafbf8cdf7dccb24e0949c70833764fa87e3</span><br><span class="vuln-link">https://www.npmjs.com/advisories/785</span><br><br><div class="section-header">影响范围:</div><br>包名: clean-css (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-x7hr-w5r2-h6wg</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-x7hr-w5r2-h6wg<br><br><div class="cve-header">来自 CVE-2024-53382 的附加信息:</div><br><div class="section-header">描述: Prism (aka PrismJS) through 1.29.0 allows DOM Clobbering (with resultant XSS for untrusted input that contains HTML but does not directly contain JavaScript), because document.currentScript lookup can be shadowed by attacker-injected HTML elements.</div><br><div class="section-header">发布日期: 2025-03-03</div><br><div class="section-header">最后更新: 2025-03-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://gist.github.com/jackfromeast/aeb128e44f05f95828a1a824708df660</span><br><span class="vuln-link">https://github.com/PrismJS/prism/blob/59e5a3471377057de1f401ba38337aca27b80e03/prism.js#L226-L259</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-53382</div><br><br><div class="section-header">发布日期: 2025-03-03</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-53382</span><br><span class="vuln-link">https://github.com/PrismJS/prism/pull/3863</span><br><span class="vuln-link">https://github.com/PrismJS/prism/commit/8e8b9352dac64457194dd9e51096b4772532e53d</span><br><span class="vuln-link">https://gist.github.com/jackfromeast/aeb128e44f05f95828a1a824708df660</span><br><span class="vuln-link">https://github.com/PrismJS/prism</span><br><span class="vuln-link">https://github.com/PrismJS/prism/blob/59e5a3471377057de1f401ba38337aca27b80e03/prism.js#L226-L259</span><br><br><div class="section-header">影响范围:</div><br>包名: prismjs (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2022-0635</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2022-0635<br><br><div class="cve-header">来自 CVE-2020-8912 的附加信息:</div><br><div class="section-header">描述: A vulnerability in the in-band key negotiation exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. An attacker with write access to the targeted bucket can change the encryption algorithm of an object in the bucket, which can then allow them to change AES-GCM to AES-CTR. Using this in combination with a decryption oracle can reveal the authentication key used by AES-GCM as decrypting the GMAC tag leaves the authentication key recoverable as an algebraic equation. It is recommended to update your SDK to V2 or later, and re-encrypt your files.</div><br><div class="section-header">发布日期: 2020-08-11</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-8912, GHSA-7f33-f4f5-xwgw</div><br><br><div class="section-header">发布日期: 2024-12-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869801</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/aws/aws-sdk-go (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2022-0646</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2022-0646<br><br><div class="cve-header">来自 CVE-2020-8911 的附加信息:</div><br><div class="section-header">描述: A padding oracle vulnerability exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. The SDK allows users to encrypt files with AES-CBC without computing a Message Authentication Code (MAC), which then allows an attacker who has write access to the target's S3 bucket and can observe whether or not an endpoint with access to the key can decrypt a file, they can reconstruct the plaintext with (on average) 128*length (plaintext) queries to the endpoint, by exploiting CBC's ability to manipulate the bytes of the next block and PKCS5 padding errors. It is recommended to update your SDK to V2 or later, and re-encrypt your files.</div><br><div class="section-header">发布日期: 2020-08-11</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-8911, GHSA-f5pg-7wfw-84q9</div><br><br><div class="section-header">发布日期: 2022-02-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869800</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/aws/aws-sdk-go (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2024-3110 / GHSA-jfvp-7x6p-h2pv</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2024-3110 / GHSA-jfvp-7x6p-h2pv<br><br><div class="cve-header">来自 CVE-2024-45310 的附加信息:</div><br><div class="section-header">描述: runc is a CLI tool for spawning and running containers according to the OCI specification. runc 1.1.13 and earlier, as well as 1.2.0-rc2 and earlier, can be tricked into creating empty files or directories in arbitrary locations in the host filesystem by sharing a volume between two containers and exploiting a race with `os.MkdirAll`. While this could be used to create empty files, existing files would not be truncated. An attacker must have the ability to start containers using some kind of custom volume configuration. Containers using user namespaces are still affected, but the scope of places an attacker can create inodes can be significantly reduced. Sufficiently strict LSM policies (SELinux/Apparmor) can also in principle block this attack -- we suspect the industry standard SELinux policy may restrict this attack's scope but the exact scope of protection hasn't been analysed. This is exploitable using runc directly as well as through Docker and Kubernetes. The issue is fixed in runc v1.1.14 and v1.2.0-rc3.</div><br><br>Some workarounds are available. Using user namespaces restricts this attack fairly significantly such that the attacker can only create inodes in directories that the remapped root user/group has write access to. Unless the root user is remapped to an actual<br>user on the host (such as with rootless containers that don't use `/etc/sub[ug]id`), this in practice means that an attacker would only be able to create inodes in world-writable directories. A strict enough SELinux or AppArmor policy could in principle also restrict the scope if a specific label is applied to the runc runtime, though neither the extent to which the standard existing policies block this attack nor what exact policies are needed to sufficiently restrict this attack have been thoroughly tested.<br><div class="section-header">发布日期: 2024-09-03</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/opencontainers/runc/security/advisories/GHSA-jfvp-7x6p-h2pv</span><br><span class="vuln-link">https://github.com/opencontainers/runc/pull/4359</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/63c2908164f3a1daea455bf5bcd8d363d70328c7</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/8781993968fd964ac723ff5f360b6f259e809a3e</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/f0b652ea61ff6750a8fcc69865d45a7abf37accf</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-45310, GHSA-jfvp-7x6p-h2pv</div><br><br><div class="section-header">发布日期: 2024-09-06</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/opencontainers/runc/security/advisories/GHSA-jfvp-7x6p-h2pv</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45310</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/63c2908164f3a1daea455bf5bcd8d363d70328c7</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/8781993968fd964ac723ff5f360b6f259e809a3e</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/f0b652ea61ff6750a8fcc69865d45a7abf37accf</span><br><span class="vuln-link">https://github.com/opencontainers/runc/pull/4359</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/opencontainers/runc (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2025-3488</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3488<br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div><br><div class="section-header">描述: An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.</div><br><div class="section-header">发布日期: 2025-02-26</div><br><div class="section-header">最后更新: 2025-02-26</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3488</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22868</div><br><br><div class="section-header">发布日期: 2025-02-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/oauth2 (Go)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (78)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>@hashicorp/vault-client-typescript</td><td>portal:./api-client</td><td>NOASSERTION</td></tr><tr><td>lezer/highlight</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/lang-sql</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/apache/arrow/go/v16</td><td>v16.0.0</td><td>NOASSERTION</td></tr><tr><td>lezer/yaml</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__component</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror-lang-hcl</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/legacy-modes</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__owner</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>style-mod</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/lang-json</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/google/go-github/v68</td><td>v68.0.0</td><td>NOASSERTION</td></tr><tr><td>marijn/find-cluster-break</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__template</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/coder/websocket</td><td>v1.8.12</td><td>NOASSERTION</td></tr><tr><td>gopkg.in/evanphx/json-patch.v4</td><td>v4.12.0</td><td>NOASSERTION</td></tr><tr><td>side-channel-map</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>NOASSERTION</td></tr><tr><td>own-keys</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/oklog/ulid/v2</td><td>v2.1.0</td><td>NOASSERTION</td></tr><tr><td>types/ember__test</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__application</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>content-tag</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__utils</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>w3c-keyname</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__object</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-secure-stdlib/permitpool</td><td>v1.0.0</td><td>NOASSERTION</td></tr><tr><td>warp-drive/core-types</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>get-proto</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__polyfills</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>call-bound</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/std-uritemplate/std-uritemplate/go/v2</td><td>v2.0.1</td><td>NOASSERTION</td></tr><tr><td>lezer/json</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-metrics</td><td>v0.5.4</td><td>NOASSERTION</td></tr><tr><td>hashicorp/vault-client-typescript</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>isaacs/fs-minipass</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>glimmer/debug</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>warp-drive/build-config</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>set-proto</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>side-channel-list</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/tern</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>side-channel-weakmap</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>lezer/go</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>safe-push-apply</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>dunder-proto</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__engine</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/lang-yaml</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>lezer/common</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>async-function</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/state</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__routing</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>clipboard-polyfill</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/lang-go</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>ember-data/request-utils</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/mattn/go-runewidth</td><td>v0.0.16</td><td>NOASSERTION</td></tr><tr><td>types/ember</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/commands</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>call-bind-apply-helpers</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember-data</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/jedib0t/go-pretty/v6</td><td>v6.6.7</td><td>NOASSERTION</td></tr><tr><td>types/ember__array</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>lezer/lr</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/autocomplete</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/language</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/codemirror</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__controller</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-hmac-drbg</td><td>v0.0.0-20210916214228-a6e5a68489f6</td><td>NOASSERTION</td></tr><tr><td>luxon</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__runloop</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-secure-stdlib/cryptoutil</td><td>v0.1.1</td><td>NOASSERTION</td></tr><tr><td>types/ember__string</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__service</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>codemirror/view</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/rivo/uniseg</td><td>v0.4.7</td><td>NOASSERTION</td></tr><tr><td>types/ember__error</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/ember__debug</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>math-intrinsics</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>@types/codemirror</td><td>^5.60.15</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (27)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>is-lambda</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/std-uritemplate/std-uritemplate/go</td><td>v0.0.57</td><td>NOASSERTION</td></tr><tr><td>string.prototype.endswith</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>ember-decorators/component</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/cookie</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>babel/helper-simple-access</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>@ember-data/legacy-compat</td><td>~4.12.4</td><td>NOASSERTION</td></tr><tr><td>ember-destroyable-polyfill</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>ember-keyboard</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/matttproud/golang_protobuf_extensions</td><td>v1.0.4</td><td>GPL-3.0-or-later</td></tr><tr><td>ember-decorators/utils</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/proto/otlp</td><td>v1.0.0</td><td>GPL-3.0-or-later</td></tr><tr><td>gopkg.in/check.v1</td><td>v1.0.0-20201130134442-10cb98267c6c</td><td>GPL-3.0-or-later</td></tr><tr><td>string.prototype.startswith</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>nhooyr.io/websocket</td><td>v1.8.11</td><td>NOASSERTION</td></tr><tr><td>ember-data/private-build-infra</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>types/broccoli-plugin</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>ember-decorators</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlptrace</td><td>v1.19.0</td><td>GPL-3.0-or-later</td></tr><tr><td>babel/helper-builder-binary-assignment-operator-visitor</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>github.com/apache/arrow/go/v15</td><td>v15.0.0</td><td>NOASSERTION</td></tr><tr><td>glimmer/low-level</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>hashicorp/ember-flight-icons</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>npm-git-info</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>babel6-plugin-strip-class-callcheck</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>ember-decorators/object</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>@hashicorp/ember-flight-icons</td><td>*</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (152)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/microsoft/kiota-serialization-json-go</td><td>v1.0.8</td><td>v1.0.9</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/raft</td><td>v1.7.1</td><td>v1.7.3</td><td>补丁版本</td></tr><tr><td>github.com/youmark/pkcs8</td><td>v0.0.0-20181117223130-1be2e3e5546d</td><td>v0.0.0-20240726163527-a2c0da244d78</td><td>一般变更</td></tr><tr><td>github.com/envoyproxy/go-control-plane</td><td>v0.13.0</td><td>v0.13.1</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-azure</td><td>v0.19.2</td><td>v0.20.3</td><td>次版本</td></tr><tr><td>github.com/ProtonMail/go-crypto</td><td>v0.0.0-20230828082145-3c4c8a2d2371</td><td>v1.1.5</td><td>主版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-kubernetes</td><td>v0.20.0</td><td>v0.21.0</td><td>次版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.20.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/go-openapi/jsonpointer</td><td>v0.21.0</td><td>v0.21.1</td><td>补丁版本</td></tr><tr><td>github.com/microsoftgraph/msgraph-sdk-go</td><td>v1.47.0</td><td>v1.61.0</td><td>次版本</td></tr><tr><td>github.com/skeema/knownhosts</td><td>v1.2.1</td><td>v1.3.1</td><td>次版本</td></tr><tr><td>github.com/couchbase/gocb/v2</td><td>v2.9.1</td><td>v2.9.3</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/spanner</td><td>v1.72.0</td><td>v1.73.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-ad</td><td>v0.19.0</td><td>v0.20.1</td><td>次版本</td></tr><tr><td>github.com/hashicorp/cap/ldap</td><td>v0.0.0-20240328153749-fcfe271d0227</td><td>v0.0.0-20250106213447-9047b8b3240f</td><td>一般变更</td></tr><tr><td>github.com/ory/dockertest/v3</td><td>v3.10.0</td><td>v3.11.1-0.20250102095203-4b59dd3f56ac</td><td>次版本</td></tr><tr><td>github.com/google/flatbuffers</td><td>v23.5.26+incompatible</td><td>v24.3.25+incompatible</td><td>主版本</td></tr><tr><td>github.com/hashicorp/raft-autopilot</td><td>v0.2.0</td><td>v0.3.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-database-redis</td><td>v0.4.0</td><td>v0.5.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/awskms/v2</td><td>v2.0.9</td><td>v2.0.11</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-database-redis-elasticache</td><td>v0.5.0</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/zclconf/go-cty</td><td>v1.15.0</td><td>v1.16.2</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/entropy/v2</td><td>v2.0.0</td><td>v2.0.1</td><td>补丁版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.8.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/pjbgf/sha1cd</td><td>v0.3.0</td><td>v0.3.2</td><td>补丁版本</td></tr><tr><td>k8s.io/api</td><td>v0.31.0</td><td>v0.32.1</td><td>次版本</td></tr><tr><td>github.com/hashicorp/hcp-sdk-go</td><td>v0.101.0</td><td>v0.138.0</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.5.0</td><td>v0.9.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault/sdk</td><td>v0.14.0</td><td>v0.15.2</td><td>次版本</td></tr><tr><td>github.com/gabriel-vasile/mimetype</td><td>v1.4.2</td><td>v1.4.7</td><td>补丁版本</td></tr><tr><td>github.com/golang-jwt/jwt/v5</td><td>v5.2.1</td><td>v5.2.2</td><td>补丁版本</td></tr><tr><td>github.com/cyphar/filepath-securejoin</td><td>v0.2.4</td><td>v0.4.1</td><td>次版本</td></tr><tr><td>google.golang.org/api</td><td>v0.169.0</td><td>v0.214.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-version</td><td>v1.6.0</td><td>v1.7.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.51.0</td><td>v0.54.0</td><td>次版本</td></tr><tr><td>github.com/google/certificate-transparency-go</td><td>v1.3.0</td><td>v1.3.1</td><td>补丁版本</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp</td><td>v1.24.1</td><td>v1.25.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/ocikms/v2</td><td>v2.0.7</td><td>v2.0.9</td><td>补丁版本</td></tr><tr><td>k8s.io/apimachinery</td><td>v0.31.0</td><td>v0.32.1</td><td>次版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.12.2</td><td>v2.14.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/releases-api</td><td>v0.1.23</td><td>v0.2.1</td><td>次版本</td></tr><tr><td>github.com/mailru/easyjson</td><td>v0.7.7</td><td>v0.9.0</td><td>次版本</td></tr><tr><td>github.com/stretchr/testify</td><td>v1.8.4</td><td>v1.10.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/aead/v2</td><td>v2.0.9</td><td>v2.0.10</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-tfe</td><td>v1.64.2</td><td>v1.74.1</td><td>次版本</td></tr><tr><td>github.com/prometheus/common</td><td>v0.37.0</td><td>v0.55.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.20.0</td><td>v1.31.0</td><td>次版本</td></tr><tr><td>k8s.io/client-go</td><td>v0.31.0</td><td>v0.32.1</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-kv</td><td>v0.20.0</td><td>v0.21.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-kerberos</td><td>v0.13.0</td><td>v0.14.0</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.28.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>github.com/spf13/cast</td><td>v1.6.0</td><td>v1.7.1</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-mongodbatlas</td><td>v0.13.0</td><td>v0.14.0</td><td>次版本</td></tr><tr><td>github.com/cenkalti/backoff/v4</td><td>v4.2.1</td><td>v4.3.0</td><td>次版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.26.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-database-couchbase</td><td>v0.12.0</td><td>v0.13.0</td><td>次版本</td></tr><tr><td>github.com/spf13/pflag</td><td>v1.0.5</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>github.com/go-viper/mapstructure/v2</td><td>v2.2.1</td><td>v2.1.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-azure</td><td>v0.20.1</td><td>v0.21.3</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/contrib/detectors/gcp</td><td>v1.29.0</td><td>v1.32.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-sockaddr</td><td>v1.0.2</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>github.com/go-ldap/ldap/v3</td><td>v3.4.6</td><td>v3.4.8</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.20.0</td><td>v1.31.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-cf</td><td>v0.19.1</td><td>v0.20.0</td><td>次版本</td></tr><tr><td>github.com/sergi/go-diff</td><td>v1.3.1</td><td>v1.3.2-0.20230802210424-5b0b94c5c0d3</td><td>补丁版本</td></tr><tr><td>github.com/petermattis/goid</td><td>v0.0.0-20180202154549-b0b1615b78e5</td><td>v0.0.0-20240813172612-4fcff4a6cae7</td><td>一般变更</td></tr><tr><td>github.com/golang-jwt/jwt/v4</td><td>v4.5.1</td><td>v4.5.2</td><td>补丁版本</td></tr><tr><td>github.com/klauspost/cpuid/v2</td><td>v2.2.5</td><td>v2.2.7</td><td>补丁版本</td></tr><tr><td>github.com/go-jose/go-jose/v4</td><td>v4.0.1</td><td>v4.0.5</td><td>补丁版本</td></tr><tr><td>github.com/prometheus/procfs</td><td>v0.8.0</td><td>v0.15.1</td><td>次版本</td></tr><tr><td>github.com/Masterminds/sprig/v3</td><td>v3.2.3</td><td>v3.3.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-database-mongodbatlas</td><td>v0.13.0</td><td>v0.14.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.30.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/AzureAD/microsoft-authentication-library-for-go</td><td>v1.2.2</td><td>v1.3.3</td><td>次版本</td></tr><tr><td>github.com/sasha-s/go-deadlock</td><td>v0.2.0</td><td>v0.3.5</td><td>次版本</td></tr><tr><td>github.com/prometheus/client_golang</td><td>v1.14.0</td><td>v1.20.5</td><td>次版本</td></tr><tr><td>github.com/aliyun/alibaba-cloud-sdk-go</td><td>v1.63.12</td><td>v1.63.84</td><td>补丁版本</td></tr><tr><td>golang.org/x/text</td><td>v0.15.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>github.com/pierrec/lz4/v4</td><td>v4.1.18</td><td>v4.1.21</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-database-elasticsearch</td><td>v0.16.0</td><td>v0.17.0</td><td>次版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.7</td><td>v0.1.8</td><td>补丁版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.21.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>github.com/go-openapi/swag</td><td>v0.23.0</td><td>v0.23.1</td><td>补丁版本</td></tr><tr><td>github.com/go-openapi/errors</td><td>v0.22.0</td><td>v0.22.1</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/transit/v2</td><td>v2.0.12</td><td>v2.0.13</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.20.0</td><td>v1.31.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azidentity</td><td>v1.7.0</td><td>v1.8.2</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/azurekeyvault/v2</td><td>v2.0.11</td><td>v2.0.14</td><td>补丁版本</td></tr><tr><td>github.com/microsoft/kiota-abstractions-go</td><td>v1.6.1</td><td>v1.8.1</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-gcp</td><td>v0.20.1</td><td>v0.21.3</td><td>次版本</td></tr><tr><td>github.com/opencontainers/image-spec</td><td>v1.1.0-rc2.0.20221005185240-3a7f492d3f1b</td><td>v1.1.0</td><td>一般变更</td></tr><tr><td>github.com/hashicorp/vault/api</td><td>v1.14.0</td><td>v1.15.0</td><td>次版本</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.16.5</td><td>v1.17.11</td><td>次版本</td></tr><tr><td>github.com/couchbase/gocbcore/v10</td><td>v10.5.1</td><td>v10.5.3</td><td>补丁版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azcore</td><td>v1.14.0</td><td>v1.17.0</td><td>次版本</td></tr><tr><td>github.com/docker/go-connections</td><td>v0.4.0</td><td>v0.5.0</td><td>次版本</td></tr><tr><td>github.com/google/go-cmp</td><td>v0.6.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-database-snowflake</td><td>v0.12.0</td><td>v0.13.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/alicloudkms/v2</td><td>v2.0.3</td><td>v2.0.4</td><td>补丁版本</td></tr><tr><td>github.com/go-git/go-billy/v5</td><td>v5.5.0</td><td>v5.6.2</td><td>次版本</td></tr><tr><td>github.com/fatih/color</td><td>v1.16.0</td><td>v1.17.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk/metric</td><td>v1.29.0</td><td>v1.32.0</td><td>次版本</td></tr><tr><td>go.uber.org/atomic</td><td>v1.9.0</td><td>v1.11.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-secure-stdlib/mlock</td><td>v0.1.2</td><td>v0.1.3</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-hcp-lib</td><td>v0.0.0-20240704151836-a5c058ac604c</td><td>v0.0.0-20250306185756-615fe2449b16</td><td>一般变更</td></tr><tr><td>github.com/spf13/cobra</td><td>v1.8.1</td><td>v1.9.1</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-oci</td><td>v0.17.0</td><td>v0.18.0</td><td>次版本</td></tr><tr><td>github.com/imdario/mergo</td><td>v0.3.15</td><td>v0.3.16</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/cli</td><td>v1.1.6</td><td>v1.1.7</td><td>补丁版本</td></tr><tr><td>github.com/moby/sys/user</td><td>v0.1.0</td><td>v0.2.0</td><td>次版本</td></tr><tr><td>github.com/Microsoft/go-winio</td><td>v0.6.1</td><td>v0.6.2</td><td>补丁版本</td></tr><tr><td>go.mongodb.org/mongo-driver</td><td>v1.14.0</td><td>v1.17.3</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/wrappers/gcpckms/v2</td><td>v2.0.12</td><td>v2.0.13</td><td>补丁版本</td></tr><tr><td>github.com/go-jose/go-jose/v3</td><td>v3.0.3</td><td>v3.0.4</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/v2</td><td>v2.0.8</td><td>v2.0.18</td><td>补丁版本</td></tr><tr><td>sigs.k8s.io/structured-merge-diff/v4</td><td>v4.4.1</td><td>v4.4.2</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/golang-lru</td><td>v0.5.4</td><td>v1.0.2</td><td>主版本</td></tr><tr><td>github.com/hashicorp/hcl/v2</td><td>v2.22.0</td><td>v2.23.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-gcp</td><td>v0.19.1</td><td>v0.20.2</td><td>次版本</td></tr><tr><td>github.com/hashicorp/go-gcp-common</td><td>v0.9.1</td><td>v0.9.2</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>v0.2.2</td><td>v0.2.6</td><td>补丁版本</td></tr><tr><td>k8s.io/utils</td><td>v0.0.0-20240711033017-18e509b52bc8</td><td>v0.0.0-20241104100929-3ea5e8cea738</td><td>一般变更</td></tr><tr><td>golang.org/x/mod</td><td>v0.21.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.34.2</td><td>v1.34.1</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-terraform</td><td>v0.10.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>github.com/snowflakedb/gosnowflake</td><td>v1.11.0</td><td>v1.13.0</td><td>次版本</td></tr><tr><td>github.com/docker/cli</td><td>v27.2.1+incompatible</td><td>v27.4.1+incompatible</td><td>次版本</td></tr><tr><td>sigs.k8s.io/json</td><td>v0.0.0-20221116044647-bc3834ca7abd</td><td>v0.0.0-20241010143419-9aa6b5e7a4b3</td><td>一般变更</td></tr><tr><td>github.com/prometheus/client_model</td><td>v0.3.0</td><td>v0.6.1</td><td>次版本</td></tr><tr><td>github.com/jackc/pgservicefile</td><td>v0.0.0-20221227161230-091c0ba34f0a</td><td>v0.0.0-20240606120523-5a60cdf6a761</td><td>一般变更</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-alicloud</td><td>v0.18.0</td><td>v0.19.0</td><td>次版本</td></tr><tr><td>github.com/rogpeppe/go-internal</td><td>v1.10.0</td><td>v1.12.0</td><td>次版本</td></tr><tr><td>github.com/opencontainers/runc</td><td>v1.2.0-rc.1</td><td>v1.2.3</td><td>补丁版本</td></tr><tr><td>github.com/go-test/deep</td><td>v1.1.0</td><td>v1.0.2</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-gcpkms</td><td>v0.19.0</td><td>v0.20.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-kubernetes</td><td>v0.9.0</td><td>v0.10.0</td><td>次版本</td></tr><tr><td>cel.dev/expr</td><td>v0.16.1</td><td>v0.19.0</td><td>次版本</td></tr><tr><td>github.com/cloudflare/circl</td><td>v1.3.7</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/auth</td><td>v0.3.0</td><td>v0.13.0</td><td>次版本</td></tr><tr><td>github.com/go-openapi/runtime</td><td>v0.26.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>k8s.io/kube-openapi</td><td>v0.0.0-20240228011516-70dd3763d340</td><td>v0.0.0-20241105132330-32ad38e42d3f</td><td>一般变更</td></tr><tr><td>github.com/Azure/go-ansiterm</td><td>v0.0.0-20210617225240-d185dfc1b5a1</td><td>v0.0.0-20230124172434-306776ec8161</td><td>一般变更</td></tr><tr><td>github.com/BurntSushi/toml</td><td>v1.3.2</td><td>v1.4.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.32.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-alicloud</td><td>v0.19.0</td><td>v0.20.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/cap</td><td>v0.7.0</td><td>v0.8.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/jsonapi</td><td>v1.3.1</td><td>v1.3.2</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-secrets-openldap</td><td>v0.14.4</td><td>v0.15.2</td><td>次版本</td></tr><tr><td>github.com/go-git/go-git/v5</td><td>v5.11.0</td><td>v5.14.0</td><td>次版本</td></tr><tr><td>github.com/jackc/pgtype</td><td>v1.14.0</td><td>v1.14.3</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/vault-plugin-auth-jwt</td><td>v0.22.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.25.0</td><td>v0.37.0</td><td>次版本</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (48)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>github.com/mattn/go-colorable</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/go-asn1-ber/asn1-ber</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/hashicorp/cap/ldap</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/golang/groupcache</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/entropy/v2</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/time</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/hashicorp/go-version</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/stretchr/testify</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/hashicorp/go-uuid</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/hashicorp/go-secure-stdlib/awsutil</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/prometheus/common</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>go.opentelemetry.io/otel</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>golang.org/x/exp</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/cenkalti/backoff/v4</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/petermattis/goid</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/go-jose/go-jose/v4</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/Masterminds/semver/v3</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/prometheus/procfs</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/sasha-s/go-deadlock</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/prometheus/client_golang</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/jmespath/go-jmespath</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/google/s2a-go</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/opencontainers/image-spec</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/klauspost/compress</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/docker/go-connections</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/aws/aws-sdk-go</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>google.golang.org/genproto</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>go.uber.org/atomic</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/hashicorp/go-secure-stdlib/mlock</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/googleapis/enterprise-certificate-proxy</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/Microsoft/go-winio</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/hashicorp/go-kms-wrapping/v2</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/hashicorp/golang-lru</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>cloud.google.com/go/iam</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/prometheus/client_model</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/jackc/pgservicefile</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/hashicorp/yamux</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/go-logr/logr</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/gofrs/uuid</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>cloud.google.com/go/auth</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr><tr><td>github.com/jackc/pgtype</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/net</td><td>NOASSERTION</td><td>GPL-3.0-or-later</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (3)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖扩张</div>
+                        <div class="risk-description">新增了大量包（78个），可能增加软件供应链的复杂性和攻击面</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> @hashicorp/vault-client-typescript, lezer/highlight, codemirror/lang-sql, github.com/apache/arrow/go/v16, lezer/yaml... 等共78个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查新增包的必要性，尤其是那些不直接支持核心功能的包</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖变更</div>
+                        <div class="risk-description">移除了大量包（27个），可能表明软件架构发生了重大变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> is-lambda, github.com/std-uritemplate/std-uritemplate/go, string.prototype.endswith, ember-decorators/component, types/cookie... 等共27个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 确认所有被移除的依赖项功能都已经被适当替代或不再需要</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">重大版本变更</div>
+                        <div class="risk-description">3个包进行了主版本升级，可能包含不兼容的API变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> github.com/ProtonMail/go-crypto, github.com/google/flatbuffers, github.com/hashicorp/golang-lru</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查主版本变更的包的变更日志，确认API兼容性，并进行全面测试</div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

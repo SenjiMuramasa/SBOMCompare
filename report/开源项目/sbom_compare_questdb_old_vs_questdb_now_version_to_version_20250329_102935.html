@@ -1,0 +1,504 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-29 10:29:41</p>
+                <p>SBOM A: sample_data\questdb_old.json</p>
+                <p>SBOM B: sample_data\questdb_now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">9.0/10</span>
+                    <span class="score-percentage">(89.6%)</span>
+                    <span class="score-grade grade-a">A</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 1.7/1.7 (97.8%)</h3>
+                    <p><strong>详情:</strong> 大量新增包(21个)可能增加攻击面</p>
+                    <p><strong>影响因素:</strong> 大量新增依赖</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 3.5/3.5 (99.6%)</h3>
+                    <p><strong>详情:</strong> 1个包发生次版本变更; 1个包发生补丁版本变更; 1个包发生其他版本变更; 版本变更合理，主要是补丁和小版本更新</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 0.9/0.9 (100.0%)</h3>
+                    <p><strong>详情:</strong> 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>风险评估: 2.4/2.6 (92.0%)</h3>
+                    <p><strong>详情:</strong> 存在1个中风险项</p>
+                    <p><strong>影响因素:</strong> 依赖扩张</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.5/1.3 (40.0%)</h3>
+                    <p><strong>详情:</strong> 以下项目风险较高: CII-Best-Practices, Vulnerabilities, Binary-Artifacts, Branch-Protection, Token-Permissions; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Binary-Artifacts风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链安全评分为 9.0/10.0 (89.6%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量新增依赖, 依赖扩张, CII-Best-Practices风险, Vulnerabilities风险, Binary-Artifacts风险。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (16)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-2326-pfpj-vx3h</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-2326-pfpj-vx3h<br><br><div class="section-header">发布日期: 2024-09-16</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/101</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/102</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/104</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/126</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/95</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical</span><br><span class="vuln-link">https://github.com/advisories/GHSA-c2hm-mjxv-89r4</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2023-0055</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2023-0086.html</span><br><br><div class="section-header">影响范围:</div><br>包名: lexical-core (crates.io)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-389x-839f-4rhx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-389x-839f-4rhx<br><br><div class="cve-header">来自 CVE-2025-25193 的附加信息:</div><br><div class="section-header">描述: Netty, an asynchronous, event-driven network application framework, has a vulnerability in versions up to and including 4.1.118.Final. An unsafe reading of environment file could potentially cause a denial of service in Netty. When loaded on an Windows application, Netty attempts to load a file that does not exist. If an attacker creates such a large file, the Netty application crash. A similar issue was previously reported as CVE-2024-47535. This issue was fixed, but the fix was incomplete in that null-bytes were not counted against the input limit. Commit d1fbda62d3a47835d3fb35db8bd42ecc205a5386 contains an updated fix.</div><br><div class="section-header">发布日期: 2025-02-10</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-389x-839f-4rhx</span><br><span class="vuln-link">https://github.com/netty/netty/commit/d1fbda62d3a47835d3fb35db8bd42ecc205a5386</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-25193</div><br><br><div class="section-header">发布日期: 2025-02-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-389x-839f-4rhx</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-25193</span><br><span class="vuln-link">https://github.com/netty/netty/commit/d1fbda62d3a47835d3fb35db8bd42ecc205a5386</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250221-0006</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-common (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-4g8c-wm8x-jfhw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-4g8c-wm8x-jfhw<br><br><div class="cve-header">来自 CVE-2025-24970 的附加信息:</div><br><div class="section-header">描述: Netty, an asynchronous, event-driven network application framework, has a vulnerability starting in version 4.1.91.Final and prior to version 4.1.118.Final. When a special crafted packet is received via SslHandler it doesn't correctly handle validation of such a packet in all cases which can lead to a native crash. Version 4.1.118.Final contains a patch. As workaround its possible to either disable the usage of the native SSLEngine or change the code manually.</div><br><div class="section-header">发布日期: 2025-02-10</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-4g8c-wm8x-jfhw</span><br><span class="vuln-link">https://github.com/netty/netty/commit/87f40725155b2f89adfde68c7732f97c153676c4</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-24970</div><br><br><div class="section-header">发布日期: 2025-02-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-4g8c-wm8x-jfhw</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-24970</span><br><span class="vuln-link">https://github.com/netty/netty/commit/87f40725155b2f89adfde68c7732f97c153676c4</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250221-0005</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-handler (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-5jpm-x58v-624v</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-5jpm-x58v-624v<br><br><div class="cve-header">来自 CVE-2024-29025 的附加信息:</div><br><div class="section-header">描述: Netty is an asynchronous event-driven network application framework for rapid development of maintainable high performance protocol servers & clients. The `HttpPostRequestDecoder` can be tricked to accumulate data. While the decoder can store items on the disk if configured so, there are no limits to the number of fields the form can have, an attacher can send a chunked post consisting of many small fields that will be accumulated in the `bodyListHttpData` list. The decoder cumulates bytes in the `undecodedChunk` buffer until it can decode a field, this field can cumulate data without limits. This vulnerability is fixed in 4.1.108.Final.</div><br><div class="section-header">发布日期: 2024-03-25</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-5jpm-x58v-624v</span><br><span class="vuln-link">https://github.com/netty/netty/commit/0d0c6ed782d13d423586ad0c71737b2c7d02058c</span><br><span class="vuln-link">https://gist.github.com/vietj/f558b8ea81ec6505f1e9a6ca283c9ae3</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/06/msg00015.html</span><br><br><div class="section-header">相关漏洞ID: CGA-4f97-xch2-fqp3, CGA-cvrj-h7rr-r975, CVE-2024-29025</div><br><br><div class="section-header">发布日期: 2024-03-25</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-5jpm-x58v-624v</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-29025</span><br><span class="vuln-link">https://github.com/netty/netty/commit/0d0c6ed782d13d423586ad0c71737b2c7d02058c</span><br><span class="vuln-link">https://gist.github.com/vietj/f558b8ea81ec6505f1e9a6ca283c9ae3</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><span class="vuln-link">https://github.com/vietj/netty/tree/post-request-decoder</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/06/msg00015.html</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-codec-http (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-5mg8-w23w-74h3</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-5mg8-w23w-74h3<br><br><div class="cve-header">来自 CVE-2020-8908 的附加信息:</div><br><div class="section-header">描述: A temp directory creation vulnerability exists in all versions of Guava, allowing an attacker with access to the machine to potentially access data in a temporary directory created by the Guava API com.google.common.io.Files.createTempDir(). By default, on unix-like systems, the created directory is world-readable (readable by an attacker with access to the system). The method in question has been marked @Deprecated in versions 30.0 and later and should not be used. For Android developers, we recommend choosing a temporary directory API provided by Android, such as context.getCacheDir(). For other Java developers, we recommend migrating to the Java 7 API java.nio.file.Files.createTempDirectory() which explicitly configures permissions of 700, or configuring the Java runtime's java.io.tmpdir system property to point to a location whose permissions are appropriately configured.</div><br><br><br><div class="section-header">发布日期: 2020-12-10</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/google/guava/issues/4011</span><br><span class="vuln-link">https://github.com/google/guava/commit/fec0dbc4634006a6162cfd4d0d09c962073ddf40</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222%40%3Ccommits.ws.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e%40%3Ccommits.ws.apache.org%3E</span><br><br><div class="section-header">相关漏洞ID: CGA-7rjh-334q-pq8g, CVE-2020-8908</div><br><br><div class="section-header">发布日期: 2021-03-25</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-8908</span><br><span class="vuln-link">https://github.com/google/guava/issues/4011</span><br><span class="vuln-link">https://github.com/google/guava/issues/4011#issuecomment-1578991974</span><br><span class="vuln-link">https://github.com/google/guava/commit/feb83a1c8fd2e7670b244d5afd23cba5aca43284</span><br><span class="vuln-link">https://github.com/google/guava/commit/fec0dbc4634006a6162cfd4d0d09c962073ddf40</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd5d58088812cf8e677d99b07f73c654014c524c94e7fedbdee047604@%3Ctorque-dev.db.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd5d58088812cf8e677d99b07f73c654014c524c94e7fedbdee047604%40%3Ctorque-dev.db.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd2704306ec729ccac726e50339b8a8f079515cc29ccb77713b16e7c5@%3Cissues.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd2704306ec729ccac726e50339b8a8f079515cc29ccb77713b16e7c5%40%3Cissues.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd01f5ff0164c468ec7abc96ff7646cea3cce6378da2e4aa29c6bcb95@%3Cgithub.arrow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd01f5ff0164c468ec7abc96ff7646cea3cce6378da2e4aa29c6bcb95%40%3Cgithub.arrow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rcafc3a637d82bdc9a24036b2ddcad1e519dd0e6f848fcc3d606fd78f@%3Cdev.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rcafc3a637d82bdc9a24036b2ddcad1e519dd0e6f848fcc3d606fd78f%40%3Cdev.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rc607bc52f3507b8b9c28c6a747c3122f51ac24afe80af2a670785b97@%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rc607bc52f3507b8b9c28c6a747c3122f51ac24afe80af2a670785b97%40%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rc2dbc4633a6eea1fcbce6831876cfa17b73759a98c65326d1896cb1a@%3Ctorque-dev.db.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rc2dbc4633a6eea1fcbce6831876cfa17b73759a98c65326d1896cb1a%40%3Ctorque-dev.db.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rbc7642b9800249553f13457e46b813bea1aec99d2bc9106510e00ff3@%3Ctorque-dev.db.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rbc7642b9800249553f13457e46b813bea1aec99d2bc9106510e00ff3%40%3Ctorque-dev.db.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb8c0f1b7589864396690fe42a91a71dea9412e86eec66dc85bbacaaf@%3Ccommits.cxf.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb8c0f1b7589864396690fe42a91a71dea9412e86eec66dc85bbacaaf%40%3Ccommits.cxf.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb2364f4cf4d274eab5a7ecfaf64bf575cedf8b0173551997c749d322@%3Cgitbox.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb2364f4cf4d274eab5a7ecfaf64bf575cedf8b0173551997c749d322%40%3Cgitbox.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/ra7ab308481ee729f998691e8e3e02e93b1dedfc98f6b1cd3d86923b3@%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuoct2021.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujan2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuapr2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuApr2021.html</span><br><span class="vuln-link">https://www.oracle.com//security-alerts/cpujul2021.html</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20220210-0003</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rfc27e2727a20a574f39273e0432aa97486a332f9b3068f6ac1346594@%3Cdev.myfaces.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rfc27e2727a20a574f39273e0432aa97486a332f9b3068f6ac1346594%40%3Cdev.myfaces.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rf9f0fa84b8ae1a285f0210bafec6de2a9eba083007d04640b82aa625@%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rf9f0fa84b8ae1a285f0210bafec6de2a9eba083007d04640b82aa625%40%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rf00b688ffa620c990597f829ff85fdbba8bf73ee7bfb34783e1f0d4e@%3Cyarn-dev.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rf00b688ffa620c990597f829ff85fdbba8bf73ee7bfb34783e1f0d4e%40%3Cyarn-dev.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/reebbd63c25bc1a946caa419cec2be78079f8449d1af48e52d47c9e85@%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/reebbd63c25bc1a946caa419cec2be78079f8449d1af48e52d47c9e85%40%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/re120f6b3d2f8222121080342c5801fdafca2f5188ceeb3b49c8a1d27@%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/re120f6b3d2f8222121080342c5801fdafca2f5188ceeb3b49c8a1d27%40%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd7e12d56d49d73e2b8549694974b07561b79b05455f7f781954231bf@%3Cdev.pig.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rd7e12d56d49d73e2b8549694974b07561b79b05455f7f781954231bf%40%3Cdev.pig.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/ra7ab308481ee729f998691e8e3e02e93b1dedfc98f6b1cd3d86923b3%40%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r4776f62dfae4a0006658542f43034a7fc199350e35a66d4e18164ee6%40%3Ccommits.cxf.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r3dd8881de891598d622227e9840dd7c2ef1d08abbb49e9690c7ae1bc@%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r3dd8881de891598d622227e9840dd7c2ef1d08abbb49e9690c7ae1bc%40%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r3c3b33ee5bef0c67391d27a97cbfd89d44f328cf072b601b58d4e748@%3Ccommits.pulsar.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r3c3b33ee5bef0c67391d27a97cbfd89d44f328cf072b601b58d4e748%40%3Ccommits.pulsar.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r2fe45d96eea8434b91592ca08109118f6308d60f6d0e21d52438cfb4@%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r2fe45d96eea8434b91592ca08109118f6308d60f6d0e21d52438cfb4%40%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r294be9d31c0312d2c0837087204b5d4bf49d0552890e6eec716fa6a6@%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r294be9d31c0312d2c0837087204b5d4bf49d0552890e6eec716fa6a6%40%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e@%3Ccommits.ws.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e%40%3Ccommits.ws.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r161b87f8037bbaff400194a63cd2016c9a69f5949f06dcc79beeab54@%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r161b87f8037bbaff400194a63cd2016c9a69f5949f06dcc79beeab54%40%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r07ed3e4417ad043a27bee7bb33322e9bfc7d7e6d1719b8e3dfd95c14@%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r07ed3e4417ad043a27bee7bb33322e9bfc7d7e6d1719b8e3dfd95c14%40%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r037fed1d0ebde50c9caf8d99815db3093c344c3f651c5a49a09824ce@%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r007add131977f4f576c232b25e024249a3d16f66aad14a4b52819d21@%3Ccommon-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r007add131977f4f576c232b25e024249a3d16f66aad14a4b52819d21%40%3Ccommon-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://github.com/google/guava</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r841c5e14e1b55281523ebcde661ece00b38a0569e00ef5e12bd5f6ba@%3Cissues.maven.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r841c5e14e1b55281523ebcde661ece00b38a0569e00ef5e12bd5f6ba%40%3Cissues.maven.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r7b0e81d8367264d6cad98766a469d64d11248eb654417809bfdacf09@%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r7b0e81d8367264d6cad98766a469d64d11248eb654417809bfdacf09%40%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r79e47ed555bdb1180e528420a7a2bb898541367a29a3bc6bbf0baf2c@%3Cissues.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r79e47ed555bdb1180e528420a7a2bb898541367a29a3bc6bbf0baf2c%40%3Cissues.hive.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222@%3Ccommits.ws.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222%40%3Ccommits.ws.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r6874dfe26eefc41b7c9a5e4a0487846fc4accf8c78ff948b24a1104a@%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r6874dfe26eefc41b7c9a5e4a0487846fc4accf8c78ff948b24a1104a%40%3Cdev.drill.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r5d61b98ceb7bba939a651de5900dbd67be3817db6bfcc41c6e04e199@%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r5d61b98ceb7bba939a651de5900dbd67be3817db6bfcc41c6e04e199%40%3Cyarn-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r5b3d93dfdfb7708e796e8762ab40edbde8ff8add48aba53e5ea26f44@%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r5b3d93dfdfb7708e796e8762ab40edbde8ff8add48aba53e5ea26f44%40%3Cissues.geode.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r58a8775205ab1839dba43054b09a9ab3b25b423a4170b2413c4067ac@%3Ccommon-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r58a8775205ab1839dba43054b09a9ab3b25b423a4170b2413c4067ac%40%3Ccommon-issues.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r49549a8322f62cd3acfa4490d25bfba0be04f3f9ff4d14fe36199d27@%3Cyarn-dev.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r49549a8322f62cd3acfa4490d25bfba0be04f3f9ff4d14fe36199d27%40%3Cyarn-dev.hadoop.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r4776f62dfae4a0006658542f43034a7fc199350e35a66d4e18164ee6@%3Ccommits.cxf.apache.org%3E</span><br><br><div class="section-header">影响范围:</div><br>包名: com.google.guava:guava (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-7g45-4rm6-3mm3</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-7g45-4rm6-3mm3<br><br><div class="cve-header">来自 CVE-2023-2976 的附加信息:</div><br><div class="section-header">描述: Use of Java's default temporary directory for file creation in `FileBackedOutputStream` in Google Guava versions 1.0 to 31.1 on Unix systems and Android Ice Cream Sandwich allows other users and apps on the machine with access to the default Java temporary directory to be able to access the files created by the class.</div><br><br>Even though the security vulnerability is fixed in version 32.0.0, we recommend using version 32.0.1 as version 32.0.0 breaks some functionality under Windows.<br><div class="section-header">发布日期: 2023-06-14</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/google/guava/issues/2575</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20230818-0008/</span><br><span class="vuln-link">https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-01006.html</span><br><br><div class="section-header">相关漏洞ID: CGA-g8pm-vcpp-9jxq, CVE-2023-2976</div><br><br><div class="section-header">发布日期: 2023-06-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-2976</span><br><span class="vuln-link">https://github.com/google/guava/issues/2575</span><br><span class="vuln-link">https://github.com/google/guava/issues/6532</span><br><span class="vuln-link">https://github.com/google/guava/commit/feb83a1c8fd2e7670b244d5afd23cba5aca43284</span><br><span class="vuln-link">https://github.com/google/guava</span><br><span class="vuln-link">https://github.com/google/guava/releases/tag/v32.0.0</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20230818-0008</span><br><span class="vuln-link">https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-01006.html</span><br><br><div class="section-header">影响范围:</div><br>包名: com.google.guava:guava (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-qh8g-58pp-2wxh</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-qh8g-58pp-2wxh<br><br><div class="cve-header">来自 CVE-2024-6763 的附加信息:</div><br><div class="section-header">描述: Eclipse Jetty is a lightweight, highly scalable, Java-based web server and Servlet engine . It includes a utility class, HttpURI, for URI/URL parsing.</div><br><br>The HttpURI class does insufficient validation on the authority segment of a URI.  However the behaviour of HttpURI<br> differs from the common browsers in how it handles a URI that would be <br>considered invalid if fully validated against the RRC.  Specifically HttpURI<br> and the browser may differ on the value of the host extracted from an <br>invalid URI and thus a combination of Jetty and a vulnerable browser may<br> be vulnerable to a open redirect attack or to a SSRF attack if the URI <br>is used after passing validation checks.<br><div class="section-header">发布日期: 2024-10-14</div><br><div class="section-header">最后更新: 2025-03-07</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/jetty/jetty.project/security/advisories/GHSA-qh8g-58pp-2wxh</span><br><span class="vuln-link">https://gitlab.eclipse.org/security/cve-assignement/-/issues/25</span><br><span class="vuln-link">https://github.com/jetty/jetty.project/pull/12012</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-6763</div><br><br><div class="section-header">发布日期: 2024-10-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jetty/jetty.project/security/advisories/GHSA-qh8g-58pp-2wxh</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-6763</span><br><span class="vuln-link">https://github.com/jetty/jetty.project/pull/12012</span><br><span class="vuln-link">https://github.com/jetty/jetty.project</span><br><span class="vuln-link">https://gitlab.eclipse.org/security/cve-assignement/-/issues/25</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250306-0005</span><br><br><div class="section-header">影响范围:</div><br>包名: org.eclipse.jetty:jetty-http (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-xq3w-v528-46rv</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-xq3w-v528-46rv<br><br><div class="cve-header">来自 CVE-2024-47535 的附加信息:</div><br><div class="section-header">描述: Netty is an asynchronous event-driven network application framework for rapid development of maintainable high performance protocol servers & clients. An unsafe reading of environment file could potentially cause a denial of service in Netty. When loaded on an Windows application, Netty attempts to load a file that does not exist. If an attacker creates such a large file, the Netty application crashes. This vulnerability is fixed in 4.1.115.</div><br><div class="section-header">发布日期: 2024-11-12</div><br><div class="section-header">最后更新: 2024-11-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-xq3w-v528-46rv</span><br><span class="vuln-link">https://github.com/netty/netty/commit/fbf7a704a82e7449b48bd0bbb679f5661c6d61a3</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-47535</div><br><br><div class="section-header">发布日期: 2024-11-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-xq3w-v528-46rv</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-47535</span><br><span class="vuln-link">https://github.com/netty/netty/commit/fbf7a704a82e7449b48bd0bbb679f5661c6d61a3</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-common (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2018-49 / GHSA-rprw-h62v-c2w7</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2018-49 / GHSA-rprw-h62v-c2w7<br><br><div class="cve-header">来自 CVE-2017-18342 的附加信息:</div><br><div class="section-header">描述: In PyYAML before 5.1, the yaml.load() API could execute arbitrary code if used with untrusted data. The load() function has been deprecated in version 5.1 and the 'UnsafeLoader' has been introduced for backward compatibility with the function.</div><br><div class="section-header">发布日期: 2018-06-27</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/yaml/pyyaml/pull/74</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/blob/master/CHANGES</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/M6JCFGEIEOFMWWIXGHSELMKQDD4CV2BA/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KSQQMRUQSXBSUXLCRD3TSZYQ7SEZRKCE/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/JEX7IPV5P2QJITAMA5Z63GQCZA5I6NVZ/</span><br><br><div class="section-header">相关漏洞ID: CVE-2017-18342, GHSA-rprw-h62v-c2w7</div><br><br><div class="section-header">发布日期: 2018-06-27</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/yaml/pyyaml/pull/74</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/blob/master/CHANGES</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/M6JCFGEIEOFMWWIXGHSELMKQDD4CV2BA/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/KSQQMRUQSXBSUXLCRD3TSZYQ7SEZRKCE/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/JEX7IPV5P2QJITAMA5Z63GQCZA5I6NVZ/</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation</span><br><span class="vuln-link">https://github.com/marshmallow-code/apispec/issues/278</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/issues/193</span><br><span class="vuln-link">https://security.gentoo.org/glsa/202003-45</span><br><span class="vuln-link">https://github.com/advisories/GHSA-rprw-h62v-c2w7</span><br><br><div class="section-header">影响范围:</div><br>包名: pyyaml (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2020-24 / GHSA-2xpj-f5g2-8p7m</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-24 / GHSA-2xpj-f5g2-8p7m<br><br><div class="cve-header">来自 CVE-2020-17446 的附加信息:</div><br><div class="section-header">描述: asyncpg before 0.21.0 allows a malicious PostgreSQL server to trigger a crash or execute arbitrary code (on a database client) via a crafted server response, because of access to an uninitialized pointer in the array data decoder.</div><br><div class="section-header">发布日期: 2020-08-12</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/MagicStack/asyncpg/releases/tag/v0.21.0</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2020/09/msg00002.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-17446, GHSA-2xpj-f5g2-8p7m</div><br><br><div class="section-header">发布日期: 2020-08-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/MagicStack/asyncpg/releases/tag/v0.21.0</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2020/09/msg00002.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-2xpj-f5g2-8p7m</span><br><br><div class="section-header">影响范围:</div><br>包名: asyncpg (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2021-142 / GHSA-8q59-q68h-6hv4</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4<br><br><div class="cve-header">来自 CVE-2020-14343 的附加信息:</div><br><div class="section-header">描述: A vulnerability was discovered in the PyYAML library in versions before 5.4, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vulnerable to this flaw. This flaw allows an attacker to execute arbitrary code on the system by abusing the python/object/new constructor. This flaw is due to an incomplete fix for CVE-2020-1747.</div><br><div class="section-header">发布日期: 2021-02-09</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/yaml/pyyaml/issues/420</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuapr2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujul2022.html</span><br><span class="vuln-link">https://github.com/SeldonIO/seldon-core/issues/2252</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-14343, GHSA-8q59-q68h-6hv4</div><br><br><div class="section-header">发布日期: 2021-02-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8q59-q68h-6hv4</span><br><br><div class="section-header">影响范围:</div><br>包名: pyyaml (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>RUSTSEC-2021-0145 / GHSA-g98v-hv3f-hcfr</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: RUSTSEC-2021-0145 / GHSA-g98v-hv3f-hcfr<br><br><div class="section-header">相关漏洞ID: GHSA-g98v-hv3f-hcfr</div><br><br><div class="section-header">发布日期: 2021-07-04</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://crates.io/crates/atty</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2021-0145.html</span><br><span class="vuln-link">https://github.com/softprops/atty/issues/50</span><br><span class="vuln-link">https://github.com/softprops/atty/pull/51</span><br><span class="vuln-link">https://github.com/softprops/atty/issues/57</span><br><br><div class="section-header">影响范围:</div><br>包名: atty (crates.io)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>RUSTSEC-2023-0086</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: RUSTSEC-2023-0086<br><br><div class="section-header">发布日期: 2023-09-03</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://crates.io/crates/lexical-core</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2023-0086.html</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/102</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/101</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/95</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/104</span><br><span class="vuln-link">https://github.com/Alexhuszagh/rust-lexical/issues/126</span><br><br><div class="section-header">影响范围:</div><br>包名: lexical-core (crates.io)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>RUSTSEC-2024-0370</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: RUSTSEC-2024-0370<br><br><div class="section-header">发布日期: 2024-09-01</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://crates.io/crates/proc-macro-error</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2024-0370.html</span><br><span class="vuln-link">https://gitlab.com/CreepySkeleton/proc-macro-error/-/issues/20</span><br><br><div class="section-header">影响范围:</div><br>包名: proc-macro-error (crates.io)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>RUSTSEC-2024-0375</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: RUSTSEC-2024-0375<br><br><div class="section-header">发布日期: 2024-09-25</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://crates.io/crates/atty</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2024-0375.html</span><br><span class="vuln-link">https://github.com/softprops/atty/issues/57</span><br><br><div class="section-header">影响范围:</div><br>包名: atty (crates.io)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>RUSTSEC-2024-0436</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: RUSTSEC-2024-0436<br><br><div class="section-header">发布日期: 2024-10-07</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://crates.io/crates/paste</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2024-0436.html</span><br><span class="vuln-link">https://github.com/dtolnay/paste</span><br><br><div class="section-header">影响范围:</div><br>包名: paste (crates.io)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (21)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>pg-protocol</td><td>1.7.1</td><td>MIT</td></tr><tr><td>memmap2</td><td>0.9.5</td><td>NOASSERTION</td></tr><tr><td>pg-int8</td><td>1.0.1</td><td>ISC</td></tr><tr><td>postgres-array</td><td>2.0.0</td><td>MIT</td></tr><tr><td>js-yaml</td><td>^4.1.0</td><td>ISC</td></tr><tr><td>postgres-bytea</td><td>1.0.0</td><td>MIT</td></tr><tr><td>pgpass</td><td>1.0.5</td><td>MIT</td></tr><tr><td>org.postgresql:r2dbc-postgresql</td><td>1.0.7.RELEASE</td><td>NOASSERTION</td></tr><tr><td>symfony/yaml</td><td>^6.0</td><td>NOASSERTION</td></tr><tr><td>io.projectreactor:reactor-test</td><td>3.7.3</td><td>NOASSERTION</td></tr><tr><td>qdb-core</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>pg-cloudflare</td><td>1.1.1</td><td>MIT</td></tr><tr><td>postgres-date</td><td>1.0.7</td><td>MIT</td></tr><tr><td>pg-types</td><td>2.2.0</td><td>MIT</td></tr><tr><td>split2</td><td>4.2.0</td><td>ISC</td></tr><tr><td>pg</td><td>^8.13.3</td><td>ISC</td></tr><tr><td>postgres-interval</td><td>1.2.0</td><td>MIT</td></tr><tr><td>pg-pool</td><td>3.7.1</td><td>MIT</td></tr><tr><td>argparse</td><td>2.0.1</td><td>Python-2.0</td></tr><tr><td>xtend</td><td>4.0.2</td><td>MIT</td></tr><tr><td>pg-connection-string</td><td>2.7.0</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (3)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>asyncpg</td><td>==0.29.0</td><td>==0.30.0</td><td>次版本</td></tr><tr><td>serde_json</td><td>1.0.128</td><td>1</td><td>一般变更</td></tr><tr><td>psycopg2-binary</td><td>==2.9.9</td><td>==2.9.10</td><td>补丁版本</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (1)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖扩张</div>
+                        <div class="risk-description">新增了大量包（21个），可能增加软件供应链的复杂性和攻击面</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> pg-protocol, memmap2, pg-int8, postgres-array, js-yaml... 等共21个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查新增包的必要性，尤其是那些不直接支持核心功能的包</div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,496 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-03-29 11:01:34</p>
+                <p>SBOM A: sample_data\supertokens-core_old.json</p>
+                <p>SBOM B: sample_data\supertokens-core_now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">9.1/10</span>
+                    <span class="score-percentage">(91.3%)</span>
+                    <span class="score-grade grade-a">A+</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 1.7/1.7 (99.9%)</h3>
+                    <p><strong>详情:</strong> 新增了2个包; 供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 3.5/3.5 (100.0%)</h3>
+                    <p><strong>详情:</strong> 版本变更合理，主要是补丁和小版本更新</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 0.9/0.9 (100.0%)</h3>
+                    <p><strong>详情:</strong> 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>风险评估: 2.6/2.6 (100.0%)</h3>
+                    <p><strong>详情:</strong> 风险分析未发现明显的安全问题</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.4/1.3 (33.0%)</h3>
+                    <p><strong>详情:</strong> Binary-Artifacts需要改进; Code-Review需要改进; 以下项目风险较高: CII-Best-Practices, Vulnerabilities, Dangerous-Workflow, Token-Permissions, Security-Policy; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Dangerous-Workflow风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链安全评分为 9.1/10.0 (91.3%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Vulnerabilities风险, Dangerous-Workflow风险, Token-Permissions风险, Security-Policy风险。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (21)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-3xgq-45jj-v275</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275<br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div><br><div class="section-header">描述: Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.</div><br><div class="section-header">发布日期: 2024-11-08</div><br><div class="section-header">最后更新: 2025-01-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21538</div><br><br><div class="section-header">发布日期: 2024-11-08</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围:</div><br>包名: cross-spawn (npm)<br>包名: cross-spawn (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-49j4-86m8-q2jw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-49j4-86m8-q2jw<br><br><div class="cve-header">来自 CVE-2024-21509 的附加信息:</div><br><div class="section-header">描述: Versions of the package mysql2 before 3.9.4 are vulnerable to Prototype Poisoning due to insecure results object creation and improper user input sanitization passed through parserFn in text_parser.js and binary_parser.js.</div><br><div class="section-header">发布日期: 2024-04-10</div><br><div class="section-header">最后更新: 2024-08-22</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591084</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration/</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/blob/fd3d117da82cc5c5fa5a3701d7b33ca77691bc61/lib/parsers/text_parser.js%23L134</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/4a964a3910a4b8de008696c554ab1b492e9b4691</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2574</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21509</div><br><br><div class="section-header">发布日期: 2024-04-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21509</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2574</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/4a964a3910a4b8de008696c554ab1b492e9b4691</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/blob/fd3d117da82cc5c5fa5a3701d7b33ca77691bc61/lib/parsers/text_parser.js%23L134</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.4</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591084</span><br><br><div class="section-header">影响范围:</div><br>包名: mysql2 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-4rch-2fh8-94vw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-4rch-2fh8-94vw<br><br><div class="cve-header">来自 CVE-2024-21511 的附加信息:</div><br><div class="section-header">描述: Versions of the package mysql2 before 3.9.7 are vulnerable to Arbitrary Code Injection due to improper sanitization of the timezone parameter in the readCodeFor function by calling a native MySQL Server date/time function.</div><br><div class="section-header">发布日期: 2024-04-23</div><br><div class="section-header">最后更新: 2024-08-01</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6670046</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.7</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2608</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/7d4b098c7e29d5a6cb9eac2633bfcc2f0f1db713</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21511</div><br><br><div class="section-header">发布日期: 2024-04-23</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21511</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2608</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/7d4b098c7e29d5a6cb9eac2633bfcc2f0f1db713</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.7</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6670046</span><br><br><div class="section-header">影响范围:</div><br>包名: mysql2 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-4vvj-4cpr-p986</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-4vvj-4cpr-p986<br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><div class="section-header">描述: Webpack is a module bundler. Its main purpose is to bundle JavaScript files for usage in a browser, yet it is also capable of transforming, bundling, or packaging just about any resource or asset. The webpack developers have discovered a DOM Clobbering vulnerability in Webpack’s `AutoPublicPathRuntimeModule`. The DOM Clobbering gadget in the module can lead to cross-site scripting (XSS) in web pages where scriptless attacker-controlled HTML elements (e.g., an `img` tag with an unsanitized `name` attribute) are present. Real-world exploitation of this gadget has been observed in the Canvas LMS which allows a XSS attack to happen through a javascript code compiled by Webpack (the vulnerable part is from Webpack). DOM Clobbering is a type of code-reuse attack where the attacker first embeds a piece of non-script, seemingly benign HTML markups in the webpage (e.g. through a post or comment) and leverages the gadgets (pieces of js code) living in the existing javascript code to transform it into executable code. This vulnerability can lead to cross-site scripting (XSS) on websites that include Webpack-generated files and allow users to inject certain scriptless HTML tags with improperly sanitized name or id attributes. This issue has been addressed in release version 5.94.0. All users are advised to upgrade. There are no known workarounds for this issue.</div><br><div class="section-header">发布日期: 2024-08-27</div><br><div class="section-header">最后更新: 2025-01-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986</span><br><span class="vuln-link">https://github.com/webpack/webpack/issues/18718#issuecomment-2326296270</span><br><span class="vuln-link">https://github.com/webpack/webpack/commit/955e057abc6cc83cbc3fa1e1ef67a49758bf5a61</span><br><span class="vuln-link">https://research.securitum.com/xss-in-amp4email-dom-clobbering</span><br><span class="vuln-link">https://scnps.co/papers/sp23_domclob.pdf</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-43788, CVE-2024-45389, CVE-2024-45812, GHSA-64vr-g452-qvp3, GHSA-gprj-6m2f-j9hx</div><br><br><div class="section-header">发布日期: 2024-08-27</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43788</span><br><span class="vuln-link">https://github.com/webpack/webpack/issues/18718#issuecomment-2326296270</span><br><span class="vuln-link">https://github.com/webpack/webpack/commit/955e057abc6cc83cbc3fa1e1ef67a49758bf5a61</span><br><span class="vuln-link">https://github.com/webpack/webpack</span><br><span class="vuln-link">https://research.securitum.com/xss-in-amp4email-dom-clobbering</span><br><span class="vuln-link">https://scnps.co/papers/sp23_domclob.pdf</span><br><br><div class="section-header">影响范围:</div><br>包名: webpack (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-7fh5-64p2-3v2j</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j<br><br><div class="cve-header">来自 CVE-2023-44270 的附加信息:</div><br><div class="section-header">描述: An issue was discovered in PostCSS before 8.4.31. The vulnerability affects linters using PostCSS to parse external untrusted CSS. An attacker can prepare CSS in such a way that it will contains parts parsed by PostCSS as a CSS comment. After processing by PostCSS, it will be included in the PostCSS output in CSS nodes (rules, properties) despite being included in a comment.</div><br><div class="section-header">发布日期: 2023-09-29</div><br><div class="section-header">最后更新: 2024-09-23</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-44270</div><br><br><div class="section-header">发布日期: 2023-09-30</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-44270</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/postcss/postcss</span><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><br><div class="section-header">影响范围:</div><br>包名: postcss (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-952p-6rrq-rcjv</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv<br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div><br><div class="section-header">描述: The NPM package `micromatch` prior to 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn't find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persists. This issue should be mitigated by using a safe pattern that won't start backtracking the regular expression due to greedy matching. This issue was fixed in version 4.0.8.</div><br><div class="section-header">发布日期: 2024-05-13</div><br><div class="section-header">最后更新: 2024-09-17</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067/</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067/</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-4067</div><br><br><div class="section-header">发布日期: 2024-05-14</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围:</div><br>包名: micromatch (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-968p-4wvh-cqc8</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8<br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div><br><div class="section-header">描述: Babel is a compiler for writing next generation JavaScript. When using versions of Babel prior to 7.26.10 and 8.0.0-alpha.17 to compile regular expression named capturing groups, Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`). Generated code is vulnerable if all the following conditions are true: Using Babel to compile regular expression named capturing groups, using the `.replace` method on a regular expression that contains named capturing groups, and the code using untrusted strings as the second argument of `.replace`. This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17. It's likely that individual users do not directly depend on `@babel/helpers`, and instead depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees use of a new enough `@babel/helpers` version. Note that just updating Babel dependencies is not enough; one will also need to re-compile the code. No known workarounds are available.</div><br><div class="section-header">发布日期: 2025-03-11</div><br><div class="section-header">最后更新: 2025-03-11</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-27789</div><br><br><div class="section-header">发布日期: 2025-03-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围:</div><br>包名: @babel/helpers (npm)<br>包名: @babel/runtime (npm)<br>包名: @babel/runtime-corejs2 (npm)<br>包名: @babel/runtime-corejs3 (npm)<br>包名: @babel/helpers (npm)<br>包名: @babel/runtime (npm)<br>包名: @babel/runtime-corejs2 (npm)<br>包名: @babel/runtime-corejs3 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-9wv6-86v2-598j</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-9wv6-86v2-598j<br><br><div class="cve-header">来自 CVE-2024-45296 的附加信息:</div><br><div class="section-header">描述: path-to-regexp turns path strings into a regular expressions. In certain cases, path-to-regexp will output a regular expression that can be exploited to cause poor performance. Because JavaScript is single threaded and regex matching runs on the main thread, poor performance will block the event loop and lead to a DoS. The bad regular expression is generated any time you have two parameters within a single segment, separated by something that is not a period (.). For users of 0.1, upgrade to 0.1.10. All other users should upgrade to 8.0.0.</div><br><div class="section-header">发布日期: 2024-09-09</div><br><div class="section-header">最后更新: 2025-01-24</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-45296</div><br><br><div class="section-header">发布日期: 2024-09-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45296</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/925ac8e3c5780b02f58cbd4e52f95da8ad2ac485</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/d31670ae8f6e69cbfd56e835742195b7d10942ef</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/f1253b47b347dcb909e3e80b0eb2649109e59894</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250124-0001</span><br><br><div class="section-header">影响范围:</div><br>包名: path-to-regexp (npm)<br>包名: path-to-regexp (npm)<br>包名: path-to-regexp (npm)<br>包名: path-to-regexp (npm)<br>包名: path-to-regexp (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-c7qv-q95q-8v27</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-c7qv-q95q-8v27<br><br><div class="cve-header">来自 CVE-2024-21536 的附加信息:</div><br><div class="section-header">描述: Versions of the package http-proxy-middleware before 2.0.7, from 3.0.0 and before 3.0.3 are vulnerable to Denial of Service (DoS) due to an UnhandledPromiseRejection error thrown by micromatch. An attacker could kill the Node.js process and crash the server by making requests to certain paths.</div><br><div class="section-header">发布日期: 2024-10-19</div><br><div class="section-header">最后更新: 2024-10-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-HTTPPROXYMIDDLEWARE-8229906</span><br><span class="vuln-link">https://gist.github.com/mhassan1/28be67266d82a53708ed59ce5dc3c94a</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware/commit/788b21e4aff38332d6319557d4a5b1b13b1f9a22</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware/commit/0b4274e8cc9e9a2c5a06f35fbf456ccfcebc55a5</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21536</div><br><br><div class="section-header">发布日期: 2024-10-19</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21536</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware/commit/0b4274e8cc9e9a2c5a06f35fbf456ccfcebc55a5</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware/commit/788b21e4aff38332d6319557d4a5b1b13b1f9a22</span><br><span class="vuln-link">https://gist.github.com/mhassan1/28be67266d82a53708ed59ce5dc3c94a</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-HTTPPROXYMIDDLEWARE-8229906</span><br><br><div class="section-header">影响范围:</div><br>包名: http-proxy-middleware (npm)<br>包名: http-proxy-middleware (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-cm22-4g7w-348p</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-cm22-4g7w-348p<br><br><div class="cve-header">来自 CVE-2024-43800 的附加信息:</div><br><div class="section-header">描述: serve-static serves static files. serve-static passes untrusted user input - even after sanitizing it - to redirect() may execute untrusted code. This issue is patched in serve-static 1.16.0.</div><br><div class="section-header">发布日期: 2024-09-10</div><br><div class="section-header">最后更新: 2024-09-10</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/expressjs/serve-static/security/advisories/GHSA-cm22-4g7w-348p</span><br><span class="vuln-link">https://github.com/expressjs/serve-static/commit/0c11fad159898cdc69fd9ab63269b72468ecaf6b</span><br><span class="vuln-link">https://github.com/expressjs/serve-static/commit/ce730896fddce1588111d9ef6fdf20896de5c6fa</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-43800</div><br><br><div class="section-header">发布日期: 2024-09-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/expressjs/serve-static/security/advisories/GHSA-cm22-4g7w-348p</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43800</span><br><span class="vuln-link">https://github.com/expressjs/serve-static/commit/0c11fad159898cdc69fd9ab63269b72468ecaf6b</span><br><span class="vuln-link">https://github.com/expressjs/serve-static/commit/ce730896fddce1588111d9ef6fdf20896de5c6fa</span><br><span class="vuln-link">https://github.com/expressjs/serve-static</span><br><br><div class="section-header">影响范围:</div><br>包名: serve-static (npm)<br>包名: serve-static (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-fpw7-j2hg-69v5</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-fpw7-j2hg-69v5<br><br><div class="cve-header">来自 CVE-2024-21508 的附加信息:</div><br><div class="section-header">描述: Versions of the package mysql2 before 3.9.4 are vulnerable to Remote Code Execution (RCE) via the readCodeFor function due to improper validation of the supportBigNumbers and bigNumberStrings values.</div><br><div class="section-header">发布日期: 2024-04-11</div><br><div class="section-header">最后更新: 2024-08-01</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591085</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration/</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/blob/1609b5393516d72a4ae47196837317fbe75e0c13/lib/parsers/text_parser.js%23L14C10-L14C21</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2572</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/74abf9ef94d76114d9a09415e28b496522a94805</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21508</div><br><br><div class="section-header">发布日期: 2024-04-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21508</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2572</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/74abf9ef94d76114d9a09415e28b496522a94805</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/blob/1609b5393516d72a4ae47196837317fbe75e0c13/lib/parsers/text_parser.js%23L14C10-L14C21</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.4</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591085</span><br><br><div class="section-header">影响范围:</div><br>包名: mysql2 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-gcx4-mw62-g8wm</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm<br><br><div class="cve-header">来自 CVE-2024-47068 的附加信息:</div><br><div class="section-header">描述: Rollup is a module bundler for JavaScript. Versions prior to 2.79.2, 3.29.5, and 4.22.4 are susceptible to a DOM Clobbering vulnerability when bundling scripts with properties from `import.meta` (e.g., `import.meta.url`) in `cjs`/`umd`/`iife` format. The DOM Clobbering gadget can lead to cross-site scripting (XSS) in web pages where scriptless attacker-controlled HTML elements (e.g., an `img` tag with an unsanitized `name` attribute) are present. Versions 2.79.2, 3.29.5, and 4.22.4  contain a patch for the vulnerability.</div><br><div class="section-header">发布日期: 2024-09-23</div><br><div class="section-header">最后更新: 2024-10-29</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/rollup/rollup/security/advisories/GHSA-gcx4-mw62-g8wm</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/2ef77c00ec2635d42697cff2c0567ccc8db34fb4</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/e2552c9e955e0a61f70f508200ee9f752f85a541</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L157-L162</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L180-L185</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-47068</div><br><br><div class="section-header">发布日期: 2024-09-23</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/rollup/rollup/security/advisories/GHSA-gcx4-mw62-g8wm</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-47068</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/2ef77c00ec2635d42697cff2c0567ccc8db34fb4</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/e2552c9e955e0a61f70f508200ee9f752f85a541</span><br><span class="vuln-link">https://github.com/rollup/rollup</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L157-L162</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L180-L185</span><br><br><div class="section-header">影响范围:</div><br>包名: rollup (npm)<br>包名: rollup (npm)<br>包名: rollup (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-m6fv-jmcg-4jfg</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-m6fv-jmcg-4jfg<br><br><div class="cve-header">来自 CVE-2024-43799 的附加信息:</div><br><div class="section-header">描述: Send is a library for streaming files from the file system as a http response. Send passes untrusted user input to SendStream.redirect() which executes untrusted code. This issue is patched in send 0.19.0.</div><br><div class="section-header">发布日期: 2024-09-10</div><br><div class="section-header">最后更新: 2024-09-10</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pillarjs/send/security/advisories/GHSA-m6fv-jmcg-4jfg</span><br><span class="vuln-link">https://github.com/pillarjs/send/commit/ae4f2989491b392ae2ef3b0015a019770ae65d35</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-43799</div><br><br><div class="section-header">发布日期: 2024-09-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pillarjs/send/security/advisories/GHSA-m6fv-jmcg-4jfg</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43799</span><br><span class="vuln-link">https://github.com/pillarjs/send/commit/ae4f2989491b392ae2ef3b0015a019770ae65d35</span><br><span class="vuln-link">https://github.com/pillarjs/send</span><br><br><div class="section-header">影响范围:</div><br>包名: send (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-mqr2-w7wj-jjgr</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-mqr2-w7wj-jjgr<br><br><div class="cve-header">来自 CVE-2024-21507 的附加信息:</div><br><div class="section-header">描述: Versions of the package mysql2 before 3.9.3 are vulnerable to Improper Input Validation through the keyFromFields function, resulting in cache poisoning. An attacker can inject a colon (:) character within a value of the attacker-crafted key.</div><br><div class="section-header">发布日期: 2024-04-10</div><br><div class="section-header">最后更新: 2024-09-18</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591300</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/0d54b0ca6498c823098426038162ef10df02c818</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration/</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2424</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21507</div><br><br><div class="section-header">发布日期: 2024-04-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21507</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2424</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/0d54b0ca6498c823098426038162ef10df02c818</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591300</span><br><br><div class="section-header">影响范围:</div><br>包名: mysql2 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-mwcw-c2x4-8c55</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55<br><br><div class="cve-header">来自 CVE-2024-55565 的附加信息:</div><br><div class="section-header">描述: nanoid (aka Nano ID) before 5.0.9 mishandles non-integer values. 3.3.8 is also a fixed version.</div><br><div class="section-header">发布日期: 2024-12-09</div><br><div class="section-header">最后更新: 2024-12-12</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/ai/nanoid/pull/510</span><br><span class="vuln-link">https://github.com/ai/nanoid/releases/tag/5.0.9</span><br><span class="vuln-link">https://github.com/ai/nanoid/compare/3.3.7...3.3.8</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-55565</div><br><br><div class="section-header">发布日期: 2024-12-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-55565</span><br><span class="vuln-link">https://github.com/ai/nanoid/pull/510</span><br><span class="vuln-link">https://github.com/ai/nanoid</span><br><span class="vuln-link">https://github.com/ai/nanoid/compare/3.3.7...3.3.8</span><br><span class="vuln-link">https://github.com/ai/nanoid/releases/tag/5.0.9</span><br><br><div class="section-header">影响范围:</div><br>包名: nanoid (npm)<br>包名: nanoid (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-pmh2-wpjm-fj45</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-pmh2-wpjm-fj45<br><br><div class="cve-header">来自 CVE-2024-21512 的附加信息:</div><br><div class="section-header">描述: Versions of the package mysql2 before 3.9.8 are vulnerable to Prototype Pollution due to improper user input sanitization passed to fields and tables when using nestTables.</div><br><div class="section-header">发布日期: 2024-05-29</div><br><div class="section-header">最后更新: 2024-08-01</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6861580</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-7176010</span><br><span class="vuln-link">https://gist.github.com/domdomi3/e9f0f9b9b1ed6bfbbc0bea87c5ca1e4a</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2702</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/efe3db527a2c94a63c2d14045baba8dfefe922bc</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21512</div><br><br><div class="section-header">发布日期: 2024-05-30</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21512</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2702</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/efe3db527a2c94a63c2d14045baba8dfefe922bc</span><br><span class="vuln-link">https://gist.github.com/domdomi3/e9f0f9b9b1ed6bfbbc0bea87c5ca1e4a</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-7176010</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6861580</span><br><br><div class="section-header">影响范围:</div><br>包名: mysql2 (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-pxg6-pf52-xh8x</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x<br><br><div class="cve-header">来自 CVE-2024-47764 的附加信息:</div><br><div class="section-header">描述: cookie is a basic HTTP cookie parser and serializer for HTTP servers. The cookie name could be used to set other fields of the cookie, resulting in an unexpected cookie value. A similar escape can be used for path and domain, which could be abused to alter other fields of the cookie. Upgrade to 0.7.0, which updates the validation for name, path, and domain.</div><br><div class="section-header">发布日期: 2024-10-04</div><br><div class="section-header">最后更新: 2024-10-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x</span><br><span class="vuln-link">https://github.com/jshttp/cookie/pull/167</span><br><span class="vuln-link">https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-47764</div><br><br><div class="section-header">发布日期: 2024-10-04</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x</span><br><span class="vuln-link">https://github.com/jshttp/cookie/pull/167</span><br><span class="vuln-link">https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c</span><br><span class="vuln-link">https://github.com/jshttp/cookie</span><br><br><div class="section-header">影响范围:</div><br>包名: cookie (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-qw6h-vgh9-j6wx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-qw6h-vgh9-j6wx<br><br><div class="cve-header">来自 CVE-2024-43796 的附加信息:</div><br><div class="section-header">描述: Express.js minimalist web framework for node. In express < 4.20.0, passing untrusted user input - even after sanitizing it - to response.redirect() may execute untrusted code. This issue is patched in express 4.20.0.</div><br><div class="section-header">发布日期: 2024-09-10</div><br><div class="section-header">最后更新: 2024-09-10</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/expressjs/express/security/advisories/GHSA-qw6h-vgh9-j6wx</span><br><span class="vuln-link">https://github.com/expressjs/express/commit/54271f69b511fea198471e6ff3400ab805d6b553</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-43796</div><br><br><div class="section-header">发布日期: 2024-09-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/expressjs/express/security/advisories/GHSA-qw6h-vgh9-j6wx</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43796</span><br><span class="vuln-link">https://github.com/expressjs/express/commit/54271f69b511fea198471e6ff3400ab805d6b553</span><br><span class="vuln-link">https://github.com/expressjs/express</span><br><br><div class="section-header">影响范围:</div><br>包名: express (npm)<br>包名: express (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-qwcr-r2fm-qrc7</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-qwcr-r2fm-qrc7<br><br><div class="cve-header">来自 CVE-2024-45590 的附加信息:</div><br><div class="section-header">描述: body-parser is Node.js body parsing middleware. body-parser <1.20.3 is vulnerable to denial of service when url encoding is enabled. A malicious actor using a specially crafted payload could flood the server with a large number of requests, resulting in denial of service. This issue is patched in 1.20.3.</div><br><div class="section-header">发布日期: 2024-09-10</div><br><div class="section-header">最后更新: 2024-09-10</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/expressjs/body-parser/security/advisories/GHSA-qwcr-r2fm-qrc7</span><br><span class="vuln-link">https://github.com/expressjs/body-parser/commit/b2695c4450f06ba3b0ccf48d872a229bb41c9bce</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-45590</div><br><br><div class="section-header">发布日期: 2024-09-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/expressjs/body-parser/security/advisories/GHSA-qwcr-r2fm-qrc7</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45590</span><br><span class="vuln-link">https://github.com/expressjs/body-parser/commit/b2695c4450f06ba3b0ccf48d872a229bb41c9bce</span><br><span class="vuln-link">https://github.com/expressjs/body-parser</span><br><br><div class="section-header">影响范围:</div><br>包名: body-parser (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-rhx6-c78j-4q9w</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-rhx6-c78j-4q9w<br><br><div class="cve-header">来自 CVE-2024-52798 的附加信息:</div><br><div class="section-header">描述: path-to-regexp turns path strings into a regular expressions. In certain cases, path-to-regexp will output a regular expression that can be exploited to cause poor performance. The regular expression that is vulnerable to backtracking can be generated in the 0.1.x release of path-to-regexp. Upgrade to 0.1.12. This vulnerability exists because of an incomplete fix for CVE-2024-45296.</div><br><div class="section-header">发布日期: 2024-12-05</div><br><div class="section-header">最后更新: 2025-01-24</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-rhx6-c78j-4q9w</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/f01c26a013b1889f0c217c643964513acf17f6a4</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-52798</div><br><br><div class="section-header">发布日期: 2024-12-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-rhx6-c78j-4q9w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52798</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/f01c26a013b1889f0c217c643964513acf17f6a4</span><br><span class="vuln-link">https://blakeembrey.com/posts/2024-09-web-redos</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250124-0002</span><br><br><div class="section-header">影响范围:</div><br>包名: path-to-regexp (npm)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-rp65-9cf3-cjxr</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-rp65-9cf3-cjxr<br><br><div class="cve-header">来自 CVE-2021-3803 的附加信息:</div><br><div class="section-header">描述: nth-check is vulnerable to Inefficient Regular Expression Complexity</div><br><div class="section-header">发布日期: 2021-09-17</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0</span><br><span class="vuln-link">https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/05/msg00023.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2021-3803</div><br><br><div class="section-header">发布日期: 2021-09-20</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2021-3803</span><br><span class="vuln-link">https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726</span><br><span class="vuln-link">https://github.com/fb55/nth-check</span><br><span class="vuln-link">https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/05/msg00023.html</span><br><br><div class="section-header">影响范围:</div><br>包名: nth-check (npm)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>com.webauthn4j:webauthn4j-core</td><td>0.28.6.RELEASE</td><td>NOASSERTION</td></tr><tr><td>com.webauthn4j:webauthn4j-test</td><td>0.28.6.RELEASE</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

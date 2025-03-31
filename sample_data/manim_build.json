@@ -1,0 +1,1076 @@
+{
+    "spdxVersion": "SPDX-2.3",
+    "dataLicense": "CC0-1.0",
+    "SPDXID": "SPDXRef-DOCUMENT",
+    "name": "com.github.SenjiMuramasa/manim",
+    "documentNamespace": "https://spdx.org/spdxdocs/protobom/7dad8227-83cb-418b-a28a-6e561ec5e851",
+    "comment": "Exact versions could not be resolved for some packages. For more information: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph#dependencies-included.",
+    "creationInfo": {
+        "creators": [
+            "Tool: protobom-v0.0.0-20250327140903-0d08710a8122+dirty",
+            "Tool: GitHub.com-Dependency-Graph"
+        ],
+        "created": "2025-03-28T02:16:13Z"
+    },
+    "packages": [
+        {
+            "name": "pydub",
+            "SPDXID": "SPDXRef-pypi-pydub-75c946",
+            "versionInfo": "\u003e= 0.20.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pydub"
+                }
+            ]
+        },
+        {
+            "name": "watchdog",
+            "SPDXID": "SPDXRef-pypi-watchdog-75c946",
+            "versionInfo": "\u003e= 2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/watchdog"
+                }
+            ]
+        },
+        {
+            "name": "typing-extensions",
+            "SPDXID": "SPDXRef-pypi-typing-extensions-75c946",
+            "versionInfo": "\u003e= 4.12.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/typing-extensions"
+                }
+            ]
+        },
+        {
+            "name": "z0al/dependent-issues",
+            "SPDXID": "SPDXRef-githubactions-z0al-dependent-issues-1..-75c946",
+            "versionInfo": "1.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/z0al/dependent-issues@1.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "networkx",
+            "SPDXID": "SPDXRef-pypi-networkx-75c946",
+            "versionInfo": "\u003e= 2.6",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/networkx"
+                }
+            ]
+        },
+        {
+            "name": "furo",
+            "SPDXID": "SPDXRef-pypi-furo-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/furo"
+                }
+            ]
+        },
+        {
+            "name": "sphinx-design",
+            "SPDXID": "SPDXRef-pypi-sphinx-design-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/sphinx-design"
+                }
+            ]
+        },
+        {
+            "name": "jupyterlab",
+            "SPDXID": "SPDXRef-pypi-jupyterlab-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/jupyterlab"
+                }
+            ]
+        },
+        {
+            "name": "srt",
+            "SPDXID": "SPDXRef-pypi-srt-75c946",
+            "versionInfo": "\u003e= 3.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/srt"
+                }
+            ]
+        },
+        {
+            "name": "isosurfaces",
+            "SPDXID": "SPDXRef-pypi-isosurfaces-75c946",
+            "versionInfo": "\u003e= 0.1.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/isosurfaces"
+                }
+            ]
+        },
+        {
+            "name": "github/codeql-action/analyze",
+            "SPDXID": "SPDXRef-githubactions-githubcodeql-action-analyze-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/github/codeql-action/analyze@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "github/codeql-action/autobuild",
+            "SPDXID": "SPDXRef-githubactions-githubcodeql-action-autobuild-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/github/codeql-action/autobuild@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "manimpango",
+            "SPDXID": "SPDXRef-pypi-manimpango-75c946",
+            "versionInfo": "\u003e= 0.5.0,\u003c 1.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/manimpango"
+                }
+            ]
+        },
+        {
+            "name": "av",
+            "SPDXID": "SPDXRef-pypi-av-75c946",
+            "versionInfo": "\u003e= 9.0.0,\u003c 14.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/av"
+                }
+            ]
+        },
+        {
+            "name": "astral-sh/setup-uv",
+            "SPDXID": "SPDXRef-githubactions-astral-sh-setup-uv-5..-75c946",
+            "versionInfo": "5.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/astral-sh/setup-uv@5.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "github/codeql-action/init",
+            "SPDXID": "SPDXRef-githubactions-githubcodeql-action-init-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/github/codeql-action/init@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "actions/upload-release-asset",
+            "SPDXID": "SPDXRef-githubactions-actions-upload-release-asset-1..-75c946",
+            "versionInfo": "1.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/upload-release-asset@1.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "aquasecurity/trivy-action",
+            "SPDXID": "SPDXRef-githubactions-aquasecurity-trivy-action-0.28.0-75c946",
+            "versionInfo": "0.28.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/aquasecurity/trivy-action@0.28.0"
+                }
+            ]
+        },
+        {
+            "name": "rich",
+            "SPDXID": "SPDXRef-pypi-rich-75c946",
+            "versionInfo": "\u003e= 12.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/rich"
+                }
+            ]
+        },
+        {
+            "name": "tqdm",
+            "SPDXID": "SPDXRef-pypi-tqdm-75c946",
+            "versionInfo": "\u003e= 4.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/tqdm"
+                }
+            ]
+        },
+        {
+            "name": "sphinxext-opengraph",
+            "SPDXID": "SPDXRef-pypi-sphinxext-opengraph-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/sphinxext-opengraph"
+                }
+            ]
+        },
+        {
+            "name": "sphinxcontrib-programoutput",
+            "SPDXID": "SPDXRef-pypi-sphinxcontrib-programoutput-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/sphinxcontrib-programoutput"
+                }
+            ]
+        },
+        {
+            "name": "decorator",
+            "SPDXID": "SPDXRef-pypi-decorator-75c946",
+            "versionInfo": "\u003e= 4.3.2",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/decorator"
+                }
+            ]
+        },
+        {
+            "name": "skia-pathops",
+            "SPDXID": "SPDXRef-pypi-skia-pathops-75c946",
+            "versionInfo": "\u003e= 0.7.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/skia-pathops"
+                }
+            ]
+        },
+        {
+            "name": "svgelements",
+            "SPDXID": "SPDXRef-pypi-svgelements-75c946",
+            "versionInfo": "\u003e= 1.8.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/svgelements"
+                }
+            ]
+        },
+        {
+            "name": "importlib-metadata",
+            "SPDXID": "SPDXRef-pypi-importlib-metadata-75c946",
+            "versionInfo": "\u003e= 8.6.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/importlib-metadata"
+                }
+            ]
+        },
+        {
+            "name": "beautifulsoup4",
+            "SPDXID": "SPDXRef-pypi-beautifulsoup4-75c946",
+            "versionInfo": "\u003e= 4.12",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/beautifulsoup4"
+                }
+            ]
+        },
+        {
+            "name": "pygments",
+            "SPDXID": "SPDXRef-pypi-pygments-75c946",
+            "versionInfo": "\u003e= 2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pygments"
+                }
+            ]
+        },
+        {
+            "name": "cloup",
+            "SPDXID": "SPDXRef-pypi-cloup-75c946",
+            "versionInfo": "\u003e= 2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/cloup"
+                }
+            ]
+        },
+        {
+            "name": "mapbox-earcut",
+            "SPDXID": "SPDXRef-pypi-mapbox-earcut-75c946",
+            "versionInfo": "\u003e= 1.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/mapbox-earcut"
+                }
+            ]
+        },
+        {
+            "name": "moderngl",
+            "SPDXID": "SPDXRef-pypi-moderngl-75c946",
+            "versionInfo": "\u003e= 5.0.0,\u003c 6.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/moderngl"
+                }
+            ]
+        },
+        {
+            "name": "scipy",
+            "SPDXID": "SPDXRef-pypi-scipy-75c946",
+            "versionInfo": "\u003e= 1.14.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/scipy"
+                }
+            ]
+        },
+        {
+            "name": "citation-file-format/cffconvert-github-action",
+            "SPDXID": "SPDXRef-githubactions-citation-file-format-cffconvert-github-action-2.0.0-75c946",
+            "versionInfo": "2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/citation-file-format/cffconvert-github-action@2.0.0"
+                }
+            ]
+        },
+        {
+            "name": "actions/setup-python",
+            "SPDXID": "SPDXRef-githubactions-actions-setup-python-5..-75c946",
+            "versionInfo": "5.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/setup-python@5.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "myst-parser",
+            "SPDXID": "SPDXRef-pypi-myst-parser-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/myst-parser"
+                }
+            ]
+        },
+        {
+            "name": "numpy",
+            "SPDXID": "SPDXRef-pypi-numpy-75c946",
+            "versionInfo": "\u003e= 2.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/numpy"
+                }
+            ]
+        },
+        {
+            "name": "audioop-lts",
+            "SPDXID": "SPDXRef-pypi-audioop-lts-75c946",
+            "versionInfo": "\u003e= 0.2.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/audioop-lts"
+                }
+            ]
+        },
+        {
+            "name": "actions/cache",
+            "SPDXID": "SPDXRef-githubactions-actions-cache-4..-75c946",
+            "versionInfo": "4.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/cache@4.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "docker/setup-buildx-action",
+            "SPDXID": "SPDXRef-githubactions-docker-setup-buildx-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/setup-buildx-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "docker/login-action",
+            "SPDXID": "SPDXRef-githubactions-docker-login-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/login-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "docker/setup-qemu-action",
+            "SPDXID": "SPDXRef-githubactions-docker-setup-qemu-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/setup-qemu-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "docker/build-push-action",
+            "SPDXID": "SPDXRef-githubactions-docker-build-push-action-6..-75c946",
+            "versionInfo": "6.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/build-push-action@6.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "sphinx-copybutton",
+            "SPDXID": "SPDXRef-pypi-sphinx-copybutton-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/sphinx-copybutton"
+                }
+            ]
+        },
+        {
+            "name": "click",
+            "SPDXID": "SPDXRef-pypi-click-75c946",
+            "versionInfo": "\u003e= 8.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/click"
+                }
+            ]
+        },
+        {
+            "name": "screeninfo",
+            "SPDXID": "SPDXRef-pypi-screeninfo-75c946",
+            "versionInfo": "\u003e= 0.7",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/screeninfo"
+                }
+            ]
+        },
+        {
+            "name": "moderngl-window",
+            "SPDXID": "SPDXRef-pypi-moderngl-window-75c946",
+            "versionInfo": "\u003e= 2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/moderngl-window"
+                }
+            ]
+        },
+        {
+            "name": "pycairo",
+            "SPDXID": "SPDXRef-pypi-pycairo-75c946",
+            "versionInfo": "\u003e= 1.13,\u003c 2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pycairo"
+                }
+            ]
+        },
+        {
+            "name": "actions/checkout",
+            "SPDXID": "SPDXRef-githubactions-actions-checkout-4..-75c946",
+            "versionInfo": "4.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/checkout@4.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "awalsh128/cache-apt-pkgs-action",
+            "SPDXID": "SPDXRef-githubactions-awalsh128-cache-apt-pkgs-action-latest-75c946",
+            "versionInfo": "latest",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/awalsh128/cache-apt-pkgs-action@latest"
+                }
+            ]
+        },
+        {
+            "name": "teatimeguest/setup-texlive-action",
+            "SPDXID": "SPDXRef-githubactions-teatimeguest-setup-texlive-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/teatimeguest/setup-texlive-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "sphinx-reredirects",
+            "SPDXID": "SPDXRef-pypi-sphinx-reredirects-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/sphinx-reredirects"
+                }
+            ]
+        },
+        {
+            "name": "sphinx",
+            "SPDXID": "SPDXRef-pypi-sphinx-75c946",
+            "versionInfo": "\u003e= 7.3",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/sphinx"
+                }
+            ]
+        },
+        {
+            "name": "pillow",
+            "SPDXID": "SPDXRef-pypi-pillow-75c946",
+            "versionInfo": "\u003e= 9.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pillow"
+                }
+            ]
+        },
+        {
+            "name": "ssciwr/setup-mesa-dist-win",
+            "SPDXID": "SPDXRef-githubactions-ssciwr-setup-mesa-dist-win-2..-75c946",
+            "versionInfo": "2.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/ssciwr/setup-mesa-dist-win@2.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "actions/upload-artifact",
+            "SPDXID": "SPDXRef-githubactions-actions-upload-artifact-4..-75c946",
+            "versionInfo": "4.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/upload-artifact@4.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "com.github.SenjiMuramasa/manim",
+            "SPDXID": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "versionInfo": "main",
+            "downloadLocation": "git+https://github.com/SenjiMuramasa/manim",
+            "filesAnalyzed": false,
+            "licenseDeclared": "MIT",
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:github/SenjiMuramasa/manim@main"
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-furo-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-manimpango-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-pycairo-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-teatimeguest-setup-texlive-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-ssciwr-setup-mesa-dist-win-2..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-decorator-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-typing-extensions-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-z0al-dependent-issues-1..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-av-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-upload-release-asset-1..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-tqdm-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-sphinxcontrib-programoutput-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-upload-artifact-4..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-skia-pathops-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-pygments-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-pydub-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-githubcodeql-action-init-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-aquasecurity-trivy-action-0.28.0-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-myst-parser-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-checkout-4..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-beautifulsoup4-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-cache-4..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-setup-buildx-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-setup-qemu-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-sphinx-copybutton-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-sphinx-design-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-cloup-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-moderngl-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-scipy-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-audioop-lts-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-login-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-click-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-awalsh128-cache-apt-pkgs-action-latest-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-isosurfaces-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-githubcodeql-action-analyze-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-astral-sh-setup-uv-5..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-sphinxext-opengraph-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-mapbox-earcut-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-numpy-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-screeninfo-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-sphinx-reredirects-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-svgelements-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-watchdog-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-srt-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-githubcodeql-action-autobuild-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-setup-python-5..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-sphinx-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-pillow-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-networkx-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-jupyterlab-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-rich-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-importlib-metadata-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-citation-file-format-cffconvert-github-action-2.0.0-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-build-push-action-6..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relatedSpdxElement": "SPDXRef-pypi-moderngl-window-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-DOCUMENT",
+            "relatedSpdxElement": "SPDXRef-github-SenjiMuramasa-manim-main-ab1c29",
+            "relationshipType": "DESCRIBES"
+        }
+    ]
+}

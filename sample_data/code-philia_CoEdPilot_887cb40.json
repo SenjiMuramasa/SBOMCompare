@@ -1,0 +1,851 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "code-philia/CoEdPilot SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/code-philia/CoEdPilot-c76eadfc-3c50-411d-a1a9-271b8bd50a2c",
+  "creationInfo": {
+    "created": "2025-03-30T03:00:52.962987Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "CoEdPilot",
+      "SPDXID": "SPDXRef-Package-CoEdPilot",
+      "downloadLocation": "https://github.com/code-philia/CoEdPilot.git",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "Source code for \"CoEdPilot: Recommending Code Edits with Learned Prior Edit Relevance, Project-wise Awareness, and Interactive Nature\"",
+      "comment": "Primary languages: Python, Markdown, Shell, YAML",
+      "versionInfo": "commit-main",
+      "supplier": "Organization: code-philia",
+      "homepage": "https://github.com/code-philia/CoEdPilot"
+    },
+    {
+      "name": "torch",
+      "SPDXID": "SPDXRef-Package-232a84abd3440b99b93411e5a85de603",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/torch/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) PyTorch Team",
+      "supplier": "Person: PyTorch Team",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
+      "homepage": "https://pytorch.org/"
+    },
+    {
+      "name": "torchvision",
+      "SPDXID": "SPDXRef-Package-1dad6e3a868bb2a333b7294690aad0ab",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/torchvision/",
+      "licenseConcluded": "BSD",
+      "licenseDeclared": "BSD",
+      "copyrightText": "Copyright (c) PyTorch Core Team",
+      "supplier": "Person: PyTorch Core Team",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "image and video datasets and models for torch deep learning",
+      "homepage": "https://github.com/pytorch/vision"
+    },
+    {
+      "name": "torchaudio",
+      "SPDXID": "SPDXRef-Package-515ac4b927070579e68ce69cdc039d58",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/torchaudio/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Soumith Chintala, David Pollack, Sean Naren, Peter Goldsborough, Moto Hira, Caroline Chen, Jeff Hwang, Zhaoheng Ni, Xiaohui Zhang",
+      "supplier": "Person: Soumith Chintala, David Pollack, Sean Naren, Peter Goldsborough, Moto Hira, Caroline Chen, Jeff Hwang, Zhaoheng Ni, Xiaohui Zhang",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "An audio package for PyTorch",
+      "homepage": "https://github.com/pytorch/audio"
+    },
+    {
+      "name": "transformers",
+      "SPDXID": "SPDXRef-Package-147464566246c950fee6cf9350d737ab",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/transformers/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) The Hugging Face team (past and future) with the help of all our contributors (https://github.com/huggingface/transformers/graphs/contributors)",
+      "supplier": "Person: The Hugging Face team (past and future) with the help of all our contributors (https://github.com/huggingface/transformers/graphs/contributors)",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "State-of-the-art Machine Learning for JAX, PyTorch and TensorFlow",
+      "homepage": "https://github.com/huggingface/transformers"
+    },
+    {
+      "name": "retriv",
+      "SPDXID": "SPDXRef-Package-d879770302a4b7d4f3f93f2184de21c7",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/retriv/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Elias Bassani",
+      "supplier": "Person: Elias Bassani",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "retriv: A Python Search Engine for Humans.",
+      "homepage": "https://github.com/AmenRa/retriv"
+    },
+    {
+      "name": "flask",
+      "SPDXID": "SPDXRef-Package-87688db1899483d4a13b005c713f2b5f",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/Flask/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "A simple framework for building complex web applications."
+    },
+    {
+      "name": "tqdm",
+      "SPDXID": "SPDXRef-Package-5c14266282e1125fa8022dfaace7dda9",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/tqdm/",
+      "licenseConcluded": "Mozilla Public License 2.0 (MPL 2.0)",
+      "licenseDeclared": "Mozilla Public License 2.0 (MPL 2.0)",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Fast, Extensible Progress Meter"
+    },
+    {
+      "name": "bleu",
+      "SPDXID": "SPDXRef-Package-e6fba9b45a624b0dbd8940a29a4adeb0",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/bleu/",
+      "licenseConcluded": "BSD 3-Clause",
+      "licenseDeclared": "BSD 3-Clause",
+      "copyrightText": "Copyright (c) Zhijing Jin",
+      "supplier": "Person: Zhijing Jin",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "A Python Wrapper to calculate standard BLEU scores for NLP",
+      "homepage": "https://github.com/zhijing-jin/bleu"
+    },
+    {
+      "name": "pandas",
+      "SPDXID": "SPDXRef-Package-76286c9c20d6b4763cc7b7f2e2687299",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/pandas/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Powerful data structures for data analysis, time series, and statistics",
+      "homepage": "https://pandas.pydata.org"
+    },
+    {
+      "name": "waitress",
+      "SPDXID": "SPDXRef-Package-033fdd730ef6a131cfd526a5ae511d02",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/waitress/",
+      "licenseConcluded": "Zope Public License",
+      "licenseDeclared": "Zope Public License",
+      "copyrightText": "Copyright (c) Zope Foundation and Contributors",
+      "supplier": "Person: Zope Foundation and Contributors",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Waitress WSGI server",
+      "homepage": "https://github.com/Pylons/waitress"
+    },
+    {
+      "name": "jsonlines",
+      "SPDXID": "SPDXRef-Package-d0b4c1cf04ea72ab9973c35697a644ca",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/jsonlines/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) wouter bolsterlee",
+      "supplier": "Person: wouter bolsterlee",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Library with helpers for the jsonlines file format",
+      "homepage": "https://github.com/wbolster/jsonlines"
+    },
+    {
+      "name": "pytest",
+      "SPDXID": "SPDXRef-Package-320ecbc5aec6094980d7d0a06fc99c58",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/pytest/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others (See AUTHORS)",
+      "supplier": "Person: Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others (See AUTHORS)",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "pytest: simple powerful testing with Python"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "83e1ef65ad9d93eb94c28444b9dfcbd85b11835a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "149ce93abc12307a60b3560888bd60d17f0233512056f9b600f804ac5a53de44"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b3ef376548c14d9e68b50a9213febdcf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "requirements.txt",
+      "SPDXID": "SPDXRef-File-b4ef698db8ca845e5845c4618278f29a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6a07ff5893df5f5c3ce2a5a657e403d0636a96c1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "84192af022c99fb034f7c2d440da368db18c895a621804eb1f1f4563ed301c70"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fd794e57e37278b109999d43e332aff0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\autopep8.yml",
+      "SPDXID": "SPDXRef-File-ed16e7b80f1d2f664aa28b55e666db14",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4ed5af63b3abb5317c2f35d0b0c2f2a3e64303fc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "179f9fe6cba377d8f76a868b8ffe4a7dd9b70cb7b1c2203bd440815c0e4db315"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "911ca5d46c704378f211037214f7b06a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\lint.yml",
+      "SPDXID": "SPDXRef-File-a4e627ea466cf59dd10ca27f0cb25883",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "330634621e8fddf86204af926af25f065adc5ef7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "90c2401bd89764adac152fcd7c3daff241f8985245eb8cda8fa9f154415492db"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2f3c3958c75d8f1b72277faa5e5158cc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\SecurityCodeScan.yml",
+      "SPDXID": "SPDXRef-File-428ecb57177485b1b739ee6c2ccf32da",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "451cd6d500de4a3ef9749754fb25f725a9d2a5f0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "59a037de686967219c0b4ab6b147a26288b2802fd0152168a445d266368f74cf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2d483b22c73d169125262a6e26982f55"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dependency_analyzer\\README.md",
+      "SPDXID": "SPDXRef-File-cf5a6f8f22d5992732c3181d820724fd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ba7f996b3af566e87b9faeae89dfaf67ff8ba68d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "858eedb0f9682839dd8239e2ec23b58eb9658ceda758a4dbd3ed0cc5ed9ab3e8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a1e727f01199ec7c880a37a211b5ea13"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "file_locator\\dependency_analyzer.py",
+      "SPDXID": "SPDXRef-File-14f05a298fe0a57706487dea81d26be0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7f06f30acbfb5c1d3ecc5916268b166625b304fa"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dd1d2d14d5f9be8b5ded4af1030570ee9b4dc44c6bfc2fad3515e21d47c2a20b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bc532c6aaaa7235f1cdc7b644bc18a72"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "file_locator\\main.py",
+      "SPDXID": "SPDXRef-File-f20f8881216322c2c05a736526e922f2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1d05c81e415607a20d428a225b3ea7e5d77631a7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e4cc5791e4323232896c533472fb7b8fdae5b00a5fca1e0cd8974a6546ca9a42"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "941f9e4f6b6f34fe66c5e999c542859f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "file_locator\\README.md",
+      "SPDXID": "SPDXRef-File-62c698d506623164c4e9e802d3738113",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "afdb732a714972a193857b866e60a3836bc83e7e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "77bc61666bfcd265bf5dc66c338a8104b1eecbb721d8a5d923f71335c0892d17"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a69ebf9a14ee54a7348925a30030a472"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "file_locator\\siamese_net.py",
+      "SPDXID": "SPDXRef-File-dc2edd22747785a17d8dcf87400bc311",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "46e4cfdc74a40dee54ecd7da752ec01e3429a604"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f245da59e297e3c31e77fed0e9358cd6c92b7d7484fddbf9228d5f11d2d91f84"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6cb9cb04cc725d03df7d14c8298bccdd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\bleu.py",
+      "SPDXID": "SPDXRef-File-ed5ca8c56edf22528634d04998397fe3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8661281d84da875a5be4a96d3c941c6fe4465f4a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "16a355e18776d4925ed1dc3d2cd07d74e6933868b5481b7a440b70e59759062c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e0b67275aa7e56747ddc441d2d702f2d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\evaluate.sh",
+      "SPDXID": "SPDXRef-File-0ec9261f786ec700361aa6288e127c6a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6c456600751f08aba7d8c45d6952c39666e64bdb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5601a12876da13b9e35d712ccff886284a629c389acbb46c6029e06256847452"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9fd6318a3fe9616ab600a4d4b96e8cb9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\generator_metric.py",
+      "SPDXID": "SPDXRef-File-29ee7c2abce5af3b9007cbfe491df988",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8ec913ab1c33e3c38f1ef4849c2ee30930e4c430"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c3e9f1ebd80242f9d6a0a3c22802d9c46b6ad01696c6df8811a2123da13de30f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9a47f436e4389604604016b23f6ea806"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\model.py",
+      "SPDXID": "SPDXRef-File-716492e23ee2d0db4bb13a37b4846bfe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "15309bc564ea966b36d467b1c3dc9bed4c4914ad"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6c19ed55c8b73277dbcf93e2ee51f2fd607b5935a6a38b6a8c1bf8b4375b6b26"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b0fbdbfb0af55af9ab0ee7657ee1a34d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\README.md",
+      "SPDXID": "SPDXRef-File-177bf4064744803443eea673d2c1cb9d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2a141512eab6461ccff530c0bdead4f196100fba"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c609829084ffc07870e756063dd2da92f94991d3f399d5b1468a1ad99f9424b7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "14b694aadb6428454c4b0af2e97f5811"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\run.py",
+      "SPDXID": "SPDXRef-File-7baeff65967fde4f9d116010bbe25a4d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "163fe73f146ba25ef78bfbf84358224fa8c48336"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4581722ce923d82a56eb7fa1f7126e1778b95b3eaebfd86d391c650d556afc80"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "31a5cbf4db170eafffbc2c17f8131933"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "generator\\run.sh",
+      "SPDXID": "SPDXRef-File-2825212d0c3387567aef4e420bf9a046",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "51487b43516909456e3c3c67f7ef1f0fb82b20e0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a47e1e7f4f40970b4674e66e527a02a08db8cda18ec529ce33e2184563816756"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f4b01a7551eef6a61ada03a30d72127c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\bleu.py",
+      "SPDXID": "SPDXRef-File-3d4e8d9688bd23f79b1f1ce0701c8d62",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0f7c4dbda2042b8b4cc09dc613787e807173e71b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8ce0252140f221088395bb123f24694815fb2c47572cfc99c25c6db14d46fe41"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d3954769953d2787604719f33ad289be"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\evaluate.sh",
+      "SPDXID": "SPDXRef-File-dfc012dc65a11657f3498f6afd05e4c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3919fe2a567b5d8ea56d28e3f31f53ac6556aa74"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9f7b3d7a5b20a85fe4aeda09cf058d34a2f19a267cfe7be1118271468cda5133"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5baf2e9b1a0c23869ac1f4a29da1af36"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\locator_metric.py",
+      "SPDXID": "SPDXRef-File-d128f57095d8d6f400ad7aecc4bf6011",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6adb1416666c939f365a2c2a2ec25580bfc80190"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d6717a185107bf2f3895fb831d0916050a805db39c2c7cfdf59561d0322de74a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "21a7042d08950a3b93592e0d128928de"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\model.py",
+      "SPDXID": "SPDXRef-File-b5652cdf3836ec3f0a4e1c8f3dd01aeb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "50b52f85c258c063b9039cd16a0c56f7bd6abe70"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a919ea2f6693b98c7338109ecd86d8dfdb5626f139704852d5e412d1072a372a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "373df9db0a316d6fc7a5931d22da54c6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\README.md",
+      "SPDXID": "SPDXRef-File-ef73c03301410176e5f0c75abdbe01e2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d3c328a3429b6729bb09c7fa84a46a914b7ff368"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a24853757ed6762d38ca90197f66347bd00614a51e3301bb6fc9e61bdc3b4ba0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ac30e1cf17872e5bb88c3669769f9316"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\run.py",
+      "SPDXID": "SPDXRef-File-0d7a7718933d3df55675032acf6db16b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d9e41e2f191b28a90658cea243ac93927035d05b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3b5162b0719d7d4dfb7075a78733691a3320bbf84e81ac25f4e29377920a7d25"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "63300b60f5a6dcd49d8b56fa2c1976c2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\run.sh",
+      "SPDXID": "SPDXRef-File-598bdde6e8f4f81fbaa74817d8a61da5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5420e7c0e3dac7e7708958715330268a6aa42adf"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e70354bc976b81e2cd4652cde739b7043a2fd77d287d576c20a12babc8eb21b6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3a8efa4d0d71a3bc7c5525a2b9566a92"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\test_bleu.py",
+      "SPDXID": "SPDXRef-File-4954f4d0c4e3e857e48d00df1620bb0a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a38c4c51e9647241c507bb7fee5c205500cc602d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "efc4202e115b583e35c30f57e8431a14f20077f84e6c77fc507508a9ebe24bff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "da2f6ba873b3d1e1ec29551a69375935"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "line_locator\\test_locator_metric.py",
+      "SPDXID": "SPDXRef-File-51ce423064af1c9c5c629b987da5eb75",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c0f4c735cc30d4e61800ed0d2846d53985b73bf9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "72aa543b9ee0a72d749cae911e04e430943c684eae2716e0975c0d5a60050db6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e98c426dcfff0216c5113fdc9a6276c2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-CoEdPilot",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-232a84abd3440b99b93411e5a85de603",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-1dad6e3a868bb2a333b7294690aad0ab",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-515ac4b927070579e68ce69cdc039d58",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-147464566246c950fee6cf9350d737ab",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-d879770302a4b7d4f3f93f2184de21c7",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-87688db1899483d4a13b005c713f2b5f",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-5c14266282e1125fa8022dfaace7dda9",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-e6fba9b45a624b0dbd8940a29a4adeb0",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-76286c9c20d6b4763cc7b7f2e2687299",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-033fdd730ef6a131cfd526a5ae511d02",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-d0b4c1cf04ea72ab9973c35697a644ca",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-CoEdPilot",
+      "relatedSpdxElement": "SPDXRef-Package-320ecbc5aec6094980d7d0a06fc99c58",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

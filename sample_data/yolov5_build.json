@@ -1,0 +1,708 @@
+{
+    "spdxVersion": "SPDX-2.3",
+    "dataLicense": "CC0-1.0",
+    "SPDXID": "SPDXRef-DOCUMENT",
+    "name": "com.github.SenjiMuramasa/yolov5",
+    "documentNamespace": "https://spdx.org/spdxdocs/protobom/0b3a5cb0-5917-4f66-9d54-93796d23c3bc",
+    "comment": "Exact versions could not be resolved for some packages. For more information: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph#dependencies-included.",
+    "creationInfo": {
+        "creators": [
+            "Tool: protobom-v0.0.0-20250324192217-c424805fdc26+dirty",
+            "Tool: GitHub.com-Dependency-Graph"
+        ],
+        "created": "2025-03-27T07:58:13Z"
+    },
+    "packages": [
+        {
+            "name": "actions/setup-python",
+            "SPDXID": "SPDXRef-githubactions-actions-setup-python-5..-75c946",
+            "versionInfo": "5.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/setup-python@5.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "slackapi/slack-github-action",
+            "SPDXID": "SPDXRef-githubactions-slackapi-slack-github-action-2.0.0-75c946",
+            "versionInfo": "2.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/slackapi/slack-github-action@2.0.0"
+                }
+            ]
+        },
+        {
+            "name": "docker/setup-buildx-action",
+            "SPDXID": "SPDXRef-githubactions-docker-setup-buildx-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/setup-buildx-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "docker/setup-qemu-action",
+            "SPDXID": "SPDXRef-githubactions-docker-setup-qemu-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/setup-qemu-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "pandas",
+            "SPDXID": "SPDXRef-pypi-pandas-75c946",
+            "versionInfo": "\u003e= 1.1.4",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pandas"
+                }
+            ]
+        },
+        {
+            "name": "pip",
+            "SPDXID": "SPDXRef-pypi-pip-23.3-75c946",
+            "versionInfo": "23.3",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "licenseConcluded": "MIT",
+            "copyrightText": "(c) 1999 Entrust.net Limited, (c) 1999 Entrust.net Limited Label Entrust.net Premium 2048 Secure Server CA Serial, (c) 2006 Entrust, Inc., (c) 2006 Entrust, Inc. Label Entrust Root Certification, (c) 2006-2023 by Georg Brandl, Matthaus Chajdas and contributors, (c) 2009 Entrust, Inc. - for, (c) 2012 Entrust, Inc. - for, (c) 2015 Entrust, Inc. - for, 2015 Eric Larson, 2021 Taneli Hukkinen, Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam, The Netherlands, Copyright (c) 1991, 1999 Free Software Foundation, Inc., Copyright (c) 1995-2001 Corporation for National Research Initiatives, Copyright (c) 1998 the Initial Developer, Copyright (c) 2001 the Initial Developer, Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Python Software Foundation, Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Python Software Foundation, Copyright (c) 2003-2022 Paul T. McGuire, Copyright (c) 2005 the Initial Developer, Copyright (c) 2006-2022 by the, Copyright (c) 2008-2011 INADA Naoki \u003csongofacandy@gmail.com\u003e, Copyright (c) 2008-2020 Andrey Petrov and contributors, Copyright (c) 2008-2020 The pip, Copyright (c) 2008-present The pip, Copyright (c) 2010 Jonathan Hartley, Copyright (c) 2010-2020 Benjamin Peterson, Copyright (c) 2010-202x The platformdirs, copyright (c) 2012 by Kenneth Reitz, Copyright (c) 2012 by Simon Sapin, Copyright (c) 2012 The Python Software Foundation, Copyright (c) 2012-2013 Python Software Foundation, Copyright (c) 2012-2015 Vinay Sajip, Copyright (c) 2012-2017 The Python Software Foundation, Copyright (c) 2012-2017 Vinay Sajip, Copyright (c) 2012-2021 The Python Software Foundation, Copyright (c) 2012-2022 Vinay Sajip, Copyright (c) 2013 Vinay Sajip, Copyright (c) 2013-2015 Vinay Sajip, Copyright (c) 2013-2017 Vinay Sajip, Copyright (c) 2013-2020 Vinay Sajip, Copyright (c) 2013-2021, Kim Davies, Copyright (c) 2015-2016 Will Bond \u003cwill@wbond.net\u003e, copyright (c) 2017 by Kenneth Reitz, Copyright (c) 2017 Thomas Kluyver, Copyright (c) 2018, Tzu-ping Chung \u003curanusjr@gmail.com\u003e, Copyright (c) 2020 Will McGugan, Copyright (c) 2021 Taneli Hukkinen, Copyright (c) 2022 Seth Michael Larson, Copyright (c) Donald Stufft and individual contributors, Copyright (c) Simple Launcher, Copyright (c) Sindre Sorhus \u003csindresorhus@gmail.com\u003e (sindresorhus.com), Copyright 2006-2023 by the Pygments team, Copyright 2012 by Simon Sapin, Copyright 2012-2021 Eric Larson, Copyright 2013-2014 Ray, copyright 2014-2019 s, Copyright 2015 Eric Larson, Copyright 2015,2016,2017 Nir Cohen, Copyright 2016 Etienne Bersac, Copyright 2016 Joshua Harlow, Copyright 2016 Julien Danjou, Copyright 2016-2018 Julien Danjou, Copyright 2016-2021 Julien Danjou, Copyright 2017 Elisey Zanko, Copyright 2021 Taneli Hukkinen, Copyright Jason R. Coombs, Copyright Jonathan Hartley 2013, Copyright Kenneth Reitz, copyrighted by the Free Software Foundation",
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pip@23.3"
+                }
+            ]
+        },
+        {
+            "name": "py-cpuinfo",
+            "SPDXID": "SPDXRef-pypi-py-cpuinfo-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/py-cpuinfo"
+                }
+            ]
+        },
+        {
+            "name": "pyyaml",
+            "SPDXID": "SPDXRef-pypi-pyyaml-75c946",
+            "versionInfo": "\u003e= 5.3.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pyyaml"
+                }
+            ]
+        },
+        {
+            "name": "gitpython",
+            "SPDXID": "SPDXRef-pypi-gitpython-75c946",
+            "versionInfo": "\u003e= 3.1.30",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/gitpython"
+                }
+            ]
+        },
+        {
+            "name": "contributor-assistant/github-action",
+            "SPDXID": "SPDXRef-githubactions-contributor-assistant-github-action-2.6.1-75c946",
+            "versionInfo": "2.6.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/contributor-assistant/github-action@2.6.1"
+                }
+            ]
+        },
+        {
+            "name": "ultralytics/actions",
+            "SPDXID": "SPDXRef-githubactions-ultralytics-actions-main-75c946",
+            "versionInfo": "main",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/ultralytics/actions@main"
+                }
+            ]
+        },
+        {
+            "name": "scipy",
+            "SPDXID": "SPDXRef-pypi-scipy-75c946",
+            "versionInfo": "\u003e= 1.4.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/scipy"
+                }
+            ]
+        },
+        {
+            "name": "torchvision",
+            "SPDXID": "SPDXRef-pypi-torchvision-75c946",
+            "versionInfo": "\u003e= 0.9.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/torchvision"
+                }
+            ]
+        },
+        {
+            "name": "ultralytics",
+            "SPDXID": "SPDXRef-pypi-ultralytics-75c946",
+            "versionInfo": "\u003e= 8.1.47",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/ultralytics"
+                }
+            ]
+        },
+        {
+            "name": "seaborn",
+            "SPDXID": "SPDXRef-pypi-seaborn-75c946",
+            "versionInfo": "\u003e= 0.11.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/seaborn"
+                }
+            ]
+        },
+        {
+            "name": "numpy",
+            "SPDXID": "SPDXRef-pypi-numpy-75c946",
+            "versionInfo": "\u003e= 1.22.2",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/numpy"
+                }
+            ]
+        },
+        {
+            "name": "matplotlib",
+            "SPDXID": "SPDXRef-pypi-matplotlib-75c946",
+            "versionInfo": "\u003e= 3.3.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/matplotlib"
+                }
+            ]
+        },
+        {
+            "name": "torch",
+            "SPDXID": "SPDXRef-pypi-torch-75c946",
+            "versionInfo": "\u003e= 1.8.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/torch"
+                }
+            ]
+        },
+        {
+            "name": "docker/build-push-action",
+            "SPDXID": "SPDXRef-githubactions-docker-build-push-action-6..-75c946",
+            "versionInfo": "6.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/build-push-action@6.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "aquasecurity/trivy-action",
+            "SPDXID": "SPDXRef-githubactions-aquasecurity-trivy-action-0.28.0-75c946",
+            "versionInfo": "0.28.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/aquasecurity/trivy-action@0.28.0"
+                }
+            ]
+        },
+        {
+            "name": "psutil",
+            "SPDXID": "SPDXRef-pypi-psutil-75c946",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/psutil"
+                }
+            ]
+        },
+        {
+            "name": "thop",
+            "SPDXID": "SPDXRef-pypi-thop-75c946",
+            "versionInfo": "\u003e= 0.1.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/thop"
+                }
+            ]
+        },
+        {
+            "name": "gunicorn",
+            "SPDXID": "SPDXRef-pypi-gunicorn-23.0.0-75c946",
+            "versionInfo": "23.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "licenseConcluded": "MIT",
+            "copyrightText": "(c) Benoit Chesneau \u003cbenoitc@gunicorn.org\u003e 2009-2015, (c) Meebo, Inc., (c) Paul J. Davis \u003cpaul.joseph.davis@gmail.com\u003e, Copyright (c) 2005-2006, Bob Ippolito, Copyright (c) 2007-2010, Linden Research, Inc., Copyright (c) 2008-2010, Eventlet, Copyright 2001-2005 by Vinay Sajip, Copyright 2009 Paul J. Davis \u003cpaul.joseph.davis@gmail.com\u003e, copyright 2009- s, Benoit Chesneau, Copyright 2013 Dariusz Suchojad",
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/gunicorn@23.0.0"
+                }
+            ]
+        },
+        {
+            "name": "zipp",
+            "SPDXID": "SPDXRef-pypi-zipp-75c946",
+            "versionInfo": "\u003e= 3.19.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/zipp"
+                }
+            ]
+        },
+        {
+            "name": "docker/login-action",
+            "SPDXID": "SPDXRef-githubactions-docker-login-action-3..-75c946",
+            "versionInfo": "3.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/docker/login-action@3.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "tqdm",
+            "SPDXID": "SPDXRef-pypi-tqdm-75c946",
+            "versionInfo": "\u003e= 4.64.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/tqdm"
+                }
+            ]
+        },
+        {
+            "name": "flask",
+            "SPDXID": "SPDXRef-pypi-flask-2.3.2-75c946",
+            "versionInfo": "2.3.2",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "licenseConcluded": "BSD-2-Clause AND BSD-3-Clause",
+            "copyrightText": "(c) Copyright 2010 by http://domain.invalid/'\u003e, Copyright (c) 2015 CERN., copyright 2010 Pallets, Copyright 2010 Pallets",
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/flask@2.3.2"
+                }
+            ]
+        },
+        {
+            "name": "actions/checkout",
+            "SPDXID": "SPDXRef-githubactions-actions-checkout-4..-75c946",
+            "versionInfo": "4.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/checkout@4.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "ultralytics/actions/retry",
+            "SPDXID": "SPDXRef-githubactions-ultralyticsactions-retry-main-75c946",
+            "versionInfo": "main",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/ultralytics/actions/retry@main"
+                }
+            ]
+        },
+        {
+            "name": "opencv-python",
+            "SPDXID": "SPDXRef-pypi-opencv-python-75c946",
+            "versionInfo": "\u003e= 4.6.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/opencv-python"
+                }
+            ]
+        },
+        {
+            "name": "pillow",
+            "SPDXID": "SPDXRef-pypi-pillow-75c946",
+            "versionInfo": "\u003e= 7.1.2",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/pillow"
+                }
+            ]
+        },
+        {
+            "name": "setuptools",
+            "SPDXID": "SPDXRef-pypi-setuptools-75c946",
+            "versionInfo": "\u003e= 70.0.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/setuptools"
+                }
+            ]
+        },
+        {
+            "name": "requests",
+            "SPDXID": "SPDXRef-pypi-requests-75c946",
+            "versionInfo": "\u003e= 2.23.0",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/requests"
+                }
+            ]
+        },
+        {
+            "name": "werkzeug",
+            "SPDXID": "SPDXRef-pypi-werkzeug-75c946",
+            "versionInfo": "\u003e= 3.0.1",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:pypi/werkzeug"
+                }
+            ]
+        },
+        {
+            "name": "actions/stale",
+            "SPDXID": "SPDXRef-githubactions-actions-stale-9..-75c946",
+            "versionInfo": "9.*.*",
+            "downloadLocation": "NOASSERTION",
+            "filesAnalyzed": false,
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:githubactions/actions/stale@9.%2A.%2A"
+                }
+            ]
+        },
+        {
+            "name": "com.github.SenjiMuramasa/yolov5",
+            "SPDXID": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "versionInfo": "master",
+            "downloadLocation": "git+https://github.com/SenjiMuramasa/yolov5",
+            "filesAnalyzed": false,
+            "licenseDeclared": "AGPL-3.0",
+            "externalRefs": [
+                {
+                    "referenceCategory": "PACKAGE-MANAGER",
+                    "referenceType": "purl",
+                    "referenceLocator": "pkg:github/SenjiMuramasa/yolov5@master"
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-requests-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-stale-9..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-slackapi-slack-github-action-2.0.0-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-tqdm-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-flask-2.3.2-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-opencv-python-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-pandas-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-py-cpuinfo-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-gitpython-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-scipy-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-pillow-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-torchvision-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-login-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-werkzeug-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-setup-python-5..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-seaborn-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-numpy-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-aquasecurity-trivy-action-0.28.0-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-psutil-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-gunicorn-23.0.0-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-setup-qemu-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-pyyaml-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-torch-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-zipp-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-setuptools-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-setup-buildx-action-3..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-ultralytics-actions-main-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-matplotlib-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-ultralyticsactions-retry-main-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-pip-23.3-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-contributor-assistant-github-action-2.6.1-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-ultralytics-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-docker-build-push-action-6..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-pypi-thop-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relatedSpdxElement": "SPDXRef-githubactions-actions-checkout-4..-75c946",
+            "relationshipType": "DEPENDS_ON"
+        },
+        {
+            "spdxElementId": "SPDXRef-DOCUMENT",
+            "relatedSpdxElement": "SPDXRef-github-SenjiMuramasa-yolov5-master-b873b4",
+            "relationshipType": "DESCRIBES"
+        }
+    ]
+}

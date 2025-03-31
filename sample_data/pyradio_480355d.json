@@ -1,0 +1,2082 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "coderholic/pyradio SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/coderholic/pyradio-5cdb8f5e-5807-45fd-ab19-0f3ad3506c52",
+  "creationInfo": {
+    "created": "2025-03-29T12:56:39.550227Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "pyradio",
+      "SPDXID": "SPDXRef-Package-pyradio",
+      "downloadLocation": "https://github.com/coderholic/pyradio.git",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "mit",
+      "copyrightText": "NOASSERTION",
+      "description": "Curses based internet radio player",
+      "comment": "Primary languages: Python, Markdown, HTML, JSON",
+      "versionInfo": "commit-master",
+      "supplier": "Organization: coderholic",
+      "homepage": "https://github.com/coderholic/pyradio"
+    },
+    {
+      "name": "mpv",
+      "SPDXID": "SPDXRef-Package-5a45f8f20e018498a894476d5b8862e3",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/mpv/",
+      "licenseConcluded": "GNU Lesser General Public License v2 or later (LGPLv2+)",
+      "licenseDeclared": "GNU Lesser General Public License v2 or later (LGPLv2+)",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (optional-dependencies.cli); From pyproject.toml (optional-dependencies.cli)",
+      "description": "A python interface to the mpv media player"
+    },
+    {
+      "name": "mplayer",
+      "SPDXID": "SPDXRef-Package-30c66196d76c8a7fa8cdc502dd46bd1d",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/mplayer/",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (optional-dependencies.cli)"
+    },
+    {
+      "name": "vlc",
+      "SPDXID": "SPDXRef-Package-cd193aeee252f7db42450007bcdeee1d",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/vlc/",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (optional-dependencies.cli)"
+    },
+    {
+      "name": "rich",
+      "SPDXID": "SPDXRef-Package-958bb158efbf555ae6992bd5041f4d37",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/rich/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Will McGugan",
+      "supplier": "Person: Will McGugan",
+      "comment": "From requirements_pipx.txt; From requirements_pipx.txt",
+      "description": "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
+      "homepage": "https://github.com/Textualize/rich"
+    },
+    {
+      "name": "requests",
+      "SPDXID": "SPDXRef-Package-abc4336bf42b459452d1cc87f7dfa3f2",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/requests/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) Kenneth Reitz",
+      "supplier": "Person: Kenneth Reitz",
+      "comment": "From requirements_pipx.txt; From requirements_pipx.txt",
+      "description": "Python HTTP for Humans.",
+      "homepage": "https://requests.readthedocs.io"
+    },
+    {
+      "name": "dnspython",
+      "SPDXID": "SPDXRef-Package-f83f9b6e0f356fe7c5db2c3019d28417",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/dnspython/",
+      "licenseConcluded": "ISC License (ISCL)",
+      "licenseDeclared": "ISC License (ISCL)",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From requirements_pipx.txt; From requirements_pipx.txt",
+      "description": "DNS toolkit"
+    },
+    {
+      "name": "psutil",
+      "SPDXID": "SPDXRef-Package-14376b94354e9c751f457877c79f9ed6",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/psutil/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Giampaolo Rodola",
+      "supplier": "Person: Giampaolo Rodola",
+      "comment": "From requirements_pipx.txt; From requirements_pipx.txt",
+      "description": "Cross-platform lib for process and system monitoring in Python.  NOTE: the syntax of this script MUST be kept compatible with Python 2.7.",
+      "homepage": "https://github.com/giampaolo/psutil"
+    },
+    {
+      "name": "netifaces",
+      "SPDXID": "SPDXRef-Package-80a840be957f8da678b8e745a20252f5",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/netifaces/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Alastair Houghton",
+      "supplier": "Person: Alastair Houghton",
+      "comment": "From requirements_pipx.txt; From requirements_pipx.txt",
+      "description": "Portable network interface information.",
+      "homepage": "https://github.com/al45tair/netifaces"
+    },
+    {
+      "name": "python-dateutil",
+      "SPDXID": "SPDXRef-Package-d8431b24c2c4737d4c58e7bf4c7d42b7",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/python-dateutil/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Gustavo Niemeyer",
+      "supplier": "Person: Gustavo Niemeyer",
+      "comment": "From requirements_pipx.txt; From requirements_pipx.txt",
+      "description": "Extensions to the standard Python datetime module",
+      "homepage": "https://github.com/dateutil/dateutil"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ff357eb87b234500716a824dfa49efad12744dcf"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9590dc04852c462029f9aadec8dc3e2421c5084ca60f6e1137d4cd0b28932ba8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "29dd5bdccf963762e9adad526fb3e0f4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "requirements_pipx.txt",
+      "SPDXID": "SPDXRef-File-3e337c73d304bdfd5f95c18c4b3d9d12",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "abcd5b811e50c24c2b727d58bde38d6b20f752e6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3bc7bd949190f28e58ecf06c48280db2dd2b2507f6f6ac9c3cacc304c319eb1b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e3af40de39c4a2295c948916db50a3bb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "setup.py",
+      "SPDXID": "SPDXRef-File-2eeaed663bd0d25b7e608891384b7298",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a060a20f8f710780f700625bb2e81c61e0110a8e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cbe9e76875052f2108e664ffd5685a743b449fea82eaac2d72ffa53faa732188"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6f7d0bf6e838ddf979bb1b7b27b67d9f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\ISSUE_TEMPLATE\\bug_report.md",
+      "SPDXID": "SPDXRef-File-b89ba48a880cb6e6253497b03db21ab5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ea988135f0d20a0d69c0032c744ed0fa318fb117"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "82cc68a38841e32c1718a9d36e995a23b494ae116e6aed51497b5833419369c1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "23840d6fef6b282f7c1e3622407a5e21"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\ISSUE_TEMPLATE\\feature_request.md",
+      "SPDXID": "SPDXRef-File-28adba74fe5dbe7fcd5ba0dd65d437ed",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f2d7ccde8df8cc26e697237502d99c91b8d3aff2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "928c177162b9ec2ec950de25b190b9318e16051d5a153971950733a84a900f6f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fd521e9f89201210b435bc5f7f4fde24"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\ISSUE_TEMPLATE\\installation---update-bug-report.md",
+      "SPDXID": "SPDXRef-File-a792612842658f6c44ed5918efd2d302",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2bcc0022fd4c35deb6f65fc44cede8573ce62fe2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dd60469115d5aa663e22ce9a8b263e9c023c079de67d890111d61d7737fad33a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3617427772ae9cdff5effd11ea259136"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\delOldInstallation.py",
+      "SPDXID": "SPDXRef-File-d7e71ccd1bee613de156d788ec5dc733",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "49418ef524660b9a841f783147f73296742c15bb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b435d2cc9cb3d0ced82e46885179c3965888877d2c09c2d99b85dc7dc8c66b04"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6d80e57df2c2f70f12b8e06ab6d47e00"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\get_shortcuts_and_classes.py",
+      "SPDXID": "SPDXRef-File-371634e72de370b549654cfd03e2b44b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3e490a5e81a2471156fc5f15ef916cad34d7aa90"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7971050c705c971f923bf95d4aaab70e67486103ff0465f3b618ee1349b6ca11"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3721e88f8105e2fd2967803793c8dd2d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\README.md",
+      "SPDXID": "SPDXRef-File-a28604ce7334225a04a3a9eb82c579ce",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d18b51361f4b219e539781576af1604e2033a11e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2d9efd6ac1d0f12ce8a089c1ea9fc45128bcfcaf14366d271186e540fe6853f3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "34647054c2f770672d38bd14a84e312a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\reg.py",
+      "SPDXID": "SPDXRef-File-9bbfd89e28e8a6bf394bfb1d81750d7b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0206cd48b62406fd0e92551218485be5dd1a8c77"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c93a497cfff52447f79da6c9cc146868b96dc4b37732440f5186ffaa8d57a9eb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4e63d3b0227587fd553b8b107df314aa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\site.py",
+      "SPDXID": "SPDXRef-File-fe51dd6fe146c3796f25fd58a7f42d5f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6e5260dcece3b2046624593b726c81ad059ef561"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7dce41b719e65d384ab6c74e2d789a76474e9cae90c7f7e8b2f07e53f41ace9b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8b8d8f1c25d281249d91f6275cf213f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\unreg.py",
+      "SPDXID": "SPDXRef-File-01dceed4c6e6a5d9fe0777ea6dea6d67",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f8822785cc603de6cd9b6ab8d121ee18fffd46bc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "19c1a8a77f142461b0d142737cc92bddc73a00ae05c0cc3c10dd231ee73b3d1b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8c259f00b388f0e47b1cc3a4dcd820f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "devel\\windirs.py",
+      "SPDXID": "SPDXRef-File-bc1462ef5f109341d23de5fbd1a146f9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e63b4b3dbffb7ee6df819ef0e3cef3524ed776ff"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "92d616a9fa2038ebb2f123e5f5e84c7f76742afd1871a6d02d4818a8a05f85b9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "11c34881401f5ad09b6f1e78af09a3f0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\build.html",
+      "SPDXID": "SPDXRef-File-e2e4444819e56c913b223fc14d7e2e1f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "22c3f58ff36d5dbe0ef6cb3135196e74df6aea21"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "28cca60793c2b15dfc1de97eed4ab85c2dce72374bc4ed2c123a8eef2a07be3b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "803caf70d1ea8527c7aefeb0cfb6113e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\build.md",
+      "SPDXID": "SPDXRef-File-c8e4be0afc8c9495f544fffa96daca12",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2ed55cc6f2173572d84c037c5b4c9f6cc55773e9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d5606c78cd7d2477f7010ce05e135db6a3692e2ab4a12e96d2e15734b0034ce9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a98e4c5bfb9f71b38cf9ee40426703aa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\client.html",
+      "SPDXID": "SPDXRef-File-af4259ced4c5c17ef3883057a5dedb65",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6da40f90c2fca18312917d3f6af6f3e832de7c6a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6db126c98c5a5390424c49194a53a3ce7941270156ce00364d0071c39f041981"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "73aa3dcae9bbe7c4abf3c9af90366f37"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\client.md",
+      "SPDXID": "SPDXRef-File-502e7ae97d0e6e28aa50587b72b773f6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "90a25c77f96ce37680344f217bdb1f2fdfff482f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "859754ee8ddde3c04c423b0f2cf0386ec5379d959cb1154477c0fe6b99d50b63"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bd6edcafe1b7a7873add94d359a25853"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\desktop-notification.html",
+      "SPDXID": "SPDXRef-File-7e3166c90013e3705d55f5fc61654d85",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fbc3b2c4802f462f902c14a781263297d46f5919"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "124729253da39fb524ebc807192a52a2090438eb2871db40af4f882851ccd48e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "289d8b8d8dedd241f4c8a495079f8b38"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\desktop-notification.md",
+      "SPDXID": "SPDXRef-File-b898c99a34e845131a502a5d262b5705",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2d478d80539ebf0e2374570f989d4040741a4c58"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f8e2d673cc59c970a06d218cc62e4e733482cfbefdd2399ab35947a8dbbcfac7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d12824b8fc708ed04d2ffec47a6d470f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\headless.html",
+      "SPDXID": "SPDXRef-File-86d57099ecd89fb7aef3d509d118d2d3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "11f9a631e063bfcbb950db23b2172046ab35f2f1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c3a46adab9afcd7d5d5ebfef33ebba2bec551e45a66bfca1ed4e5d74057b588b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "99982cc37f06ce2ccced83c1c93c9b60"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\headless.md",
+      "SPDXID": "SPDXRef-File-519f21408e8b4d23234987592826d39f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a3a16119c59700f2007173d100263b0a070a2290"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "78d95081e3d19b00ce264b99933d2d79a801519a80afdb303d455677b2685550"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "acd4c0217e68a4eade61400d4d0d7bc9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\index.html",
+      "SPDXID": "SPDXRef-File-6cd770a006334ed7ae61f8f7883bae7e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1b9f69c9611055dc649abd3709bac7e6cb3dc116"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "174c3cb04f8cb87f208f75ba696a56fe2d20f2501d3eb24cb46631dcbdae3d5c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6084e2f44ebb3feb8188626cc3677840"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\index.md",
+      "SPDXID": "SPDXRef-File-abc59e7b7d81c84019a75016a06095c2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cac17a5af6e7a8f52d95a3f43baadfac366f466d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e48e1a59474aeb447d3dab484a32d782000a65af3374a2dcf8f936f475eec56d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2fcb62394ab61b0ed5ba5c35b34768f7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\linux-pipx.html",
+      "SPDXID": "SPDXRef-File-42e12dfe6a4d2edae9a3af0e14180ef3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "88fb4ba7ed5ba2abb1fc5f63ae4978250cb870b6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c2ff2958471fd0e954e0b0eeeecd2550683df2b567ff571d992d5b9e658975e9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2b19febaa5bf4d6e524c6230e01a2afa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\linux-pipx.md",
+      "SPDXID": "SPDXRef-File-aa6c5385c54c86d0348f110f7ddf1716",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bd3dfbe60cdbf5c732562e1ec5078bc54a215ac9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "85d1cd34d5a860e0d07be433d77d29f35681bf5f174003a1098e5039f4fa24ff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "251e0613849225828499e2baa95903e3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\linux.html",
+      "SPDXID": "SPDXRef-File-bd7439dda0aea419cad61fb176e5a9fd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "de47f617f151e8fdcd782b7c5f01188892ef257f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "925a2caf241cc0af7296d449d5a43885f8bf1373495f1cc2cdc4a672994fb572"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0f36928c5e633cb9ea7b007b230a01f4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\linux.md",
+      "SPDXID": "SPDXRef-File-ae15f5c155a3731f4ed3207b76def89e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "117cccd8b8cc0a1ba6d9dea77d4f7d2c97c74f67"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0797c16c1da46ed0860522511e528294a04989a1c588afc684321077f5fb93ee"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4c147df1154963bebd870032a05a5e91"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\macos.html",
+      "SPDXID": "SPDXRef-File-556cb865aa5df4bb63e538ee4c075bd1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "39ef023d0d1f43885484d531f48124c2a1b4b27f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "941a4967c217716908045d2d177d9679c5c67a48e36f09741b2d53b76803bfc2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d891c48ae6c9d51f08a955a32afc1459"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\macos.md",
+      "SPDXID": "SPDXRef-File-a6728974dfdad6e27971eecd437ad370",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "769c23d00a41efa9749bf12518a7741180d84346"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "281c10e92d975d0f87d47ba3e840033dc6898de4e4be4c58b9c86b0d4424c709"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "657062d6666ebceaa8dbcc7b8fb80981"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\packaging.html",
+      "SPDXID": "SPDXRef-File-a9d69d7168bd3e66bac6fb57c84982f8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6d6872ec934ce72b38cea61b2355d353e86d93dd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9a2502622774307091267976ff241ff658d0fe1ba314b09b33ad9e873c30a328"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2bde14a2d85a57e0f93b1ab20f3c42ca"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\packaging.md",
+      "SPDXID": "SPDXRef-File-e8f4ecf53c4f47fbb0c61a753d86a7d7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "caca21f9dfb4ed16935d7b55376a1673c111c446"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e7ac1de5965f9ccff800437e11fde2ea2e0eaa69877e708482824a57a3d655ab"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "76378844cd7fbd7fd1c777726b0eaab8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\pip-error.html",
+      "SPDXID": "SPDXRef-File-c6eef9ff047295453c41398edcf34c64",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "997b28ba79979c9a17abdbc5914955b4ad4af6cb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8df211bed5b5645a2a638bc729c6115ff7c85bd8a7c82d0bbbbe74390638acdf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fcb3e9f485bcbe88e4a32d2d8805a482"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\pip-error.md",
+      "SPDXID": "SPDXRef-File-15aa4c44df407cdb350f7278f6866696",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0c0f4f582335114b1400113dc67b87505520125d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "af2ba3fe1189ae5dde3a4e531dd66416493e49d2c534c0530c326272a9a2f66d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f39440cf27f2085c4678ac567350f1c0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\radio-browser.html",
+      "SPDXID": "SPDXRef-File-13628081fdf38bc7fbc4c2b06b072032",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "98c860ce178832eeb09328fd3b5bdeb256a96e92"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "15fc50ef9e0376f5f69e4a55fc69a9e5aaacd28b49c2025212039656e86141aa"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5788a3e522cb5daa6b31a1e139164b9e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\radio-browser.md",
+      "SPDXID": "SPDXRef-File-76d82f8c2bab92ce51d4911ada7eb72a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fa74985897682c72487f0a4e11ee72804bf1d0c1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e87cb9fea8c5f5ebca91fb20e50a6259bd84ba7ac9b3bfa74d5e1c601083ed0a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bc4d6ad8e3e82331d4c35f56f8a1213a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\rec-dir.html",
+      "SPDXID": "SPDXRef-File-87eacc186289bdf71320fa08ee0b13c6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "31c2ca8fa02cfdffba70c7ad0ca802013f1ab0ab"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "48701cc82e1192d8c94eee69a7626a6b21ba8e71034a12cfdcbfb88879666e84"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d57dc7b288e7bbe0e0613a51c26dfd88"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\rec-dir.md",
+      "SPDXID": "SPDXRef-File-a9e412f908a7f01b31ee8094f1d5a59d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e1a3d5f5959ad22290a28e4e27e6661252fc4bbc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "19592631ae2e8d567f0af168265f7fc56e0cb3547fa34115fcb0b6053a53a32f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9e0b0f72f13d25b680bf1462b2bdcfce"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\recording.html",
+      "SPDXID": "SPDXRef-File-4d0b377e95e4d9b669e7f835bb20ad88",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "47de5c4e961b80a50a28b9617b082ed0af138a88"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ca5904e94abd940258dbc8fca5651a587ef32cbed4ce0f6e617d20da40468c2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "819883978cbf59c628934a0e6c87907c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\recording.md",
+      "SPDXID": "SPDXRef-File-8a8a446857a6a8d63fafd548b66ca38c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f44aee75e5bad9dbbb79ccfa2e0d77d69cb27377"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "716cbbfd1af726b49dc355c2f219314e23331227b9ddff347abb71792ad1ba84"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3bd243e3e484fb6e8d3bcd975ad91da7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\server.html",
+      "SPDXID": "SPDXRef-File-b05e93824dbdcc84fc4b70b7e0efd4d7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "81ba964f2303ea1663b29c9ffaebd3611e546113"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "01c2b7e953bd05b62ced4f9b845ef2e87d5d9cbc01d9e6b3a4a15ada4747d126"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a67d0973ede3be831250e602ff663456"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\server.md",
+      "SPDXID": "SPDXRef-File-c3cbce07d1b4e48979303b97c0279a23",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "984bc85748b9ad569d4b3f4af8daccefc20a03b6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6d201dcb4f58240032b3f631f80cb7c51b93d6b223c9adb5777ea4c1497792b1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "05d3cbcc282fad340bb0b91b518cd1b1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\themes.html",
+      "SPDXID": "SPDXRef-File-e416c675bdff936812ed7de41e6ae054",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "327539f0ba01dc6c597c8ad144ecebf7ba583582"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c9de915771dcd33fe986fb2f4b3d11437f2dfc1b8a2e1b66151c0a5453ef6537"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bae94ae47d7874745cf40fafcbc6c392"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\themes.md",
+      "SPDXID": "SPDXRef-File-2e128c90846f13a05962a63e346c99b0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7913fdb4985b582981e7a93b08b6ccbd677866fe"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "802ca06ae5d82987bdb55cbf7db2546380a5cf62edf242c7c42ae8b042512a55"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6552421dca473a0a3f56bf37c358673e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\windows-mplayer.html",
+      "SPDXID": "SPDXRef-File-003191dffd6d6cc4b479a6a04fc82ab5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ac8218df7d4b0171a515daa179212557d6f0f22b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "632c1f0f8b24af7f34d8a5ba9908f137711f8eba037863ec28a3a9aa8078f8e8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "43524c979de1b576209a72f78d2f5bba"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\windows-mplayer.md",
+      "SPDXID": "SPDXRef-File-8792ea1209d28fa1d8588f8d2879ea77",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ffbdd98e7ce4ceac4625466df96686115817f0fd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "478c90bc7e57dce618599e8b8e9cddde3b3ac1cabce59273138eaca1985ebf8a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c4740ea6f75c1c593ea195168ddffc9b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\windows-mpv.html",
+      "SPDXID": "SPDXRef-File-e70706b38bc96601a395372a922943dd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6006fa05a6b9f7bafd6cbc77da98ee1702ad70dc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0d846ccb25869f94bdfc21aaf0f4da0d417d6a6775f756b44685986b1c1a9bf1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "94a55523d82ff1dc7b54323340b7abde"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\windows-mpv.md",
+      "SPDXID": "SPDXRef-File-191aac402272798d511db42776f0f39a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fced4c1e2bc2f8d2782d0c9d291a0fb66c627cf7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f288ed519cbdeb58a197111b5de56108848b5a078b139a2115235c23e38d9922"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "def6d76c030b514b8669f6341b99ffec"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\windows.html",
+      "SPDXID": "SPDXRef-File-a37619a15c5669fb5a9f4f8b48c450c5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8374b0ff520141359bf5ad04a0cd9b2d534e58a6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "15408379b9e30261d895d5d3ce8115624d5ecbaa944bc1c1d8f5b9cf6cf4f45b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cfc470c53b892381248dd809db40396e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\windows.md",
+      "SPDXID": "SPDXRef-File-3ed74480a688d103645a20269ea9c8de",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0067ddcd9dc011d83d374e610c765364526bb29d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "72c5827410eec9ec41d97564106fbfe656d1d75ae54f8c08ef68adf770eec169"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "19a01f68a3798caa98929f1142504968"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\browser.py",
+      "SPDXID": "SPDXRef-File-767f872fb84a3b6a34cfa70b4492ad31",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2bb5ac612be1182116ea737474b49c5bb4baf3d8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "466be2caade62f461e6267991626327ba72e204f61cdf387879cba2d4224a2bc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5c588b8dede411952a060419960e7bf4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\cjkwrap.py",
+      "SPDXID": "SPDXRef-File-b2925d0aac8b79007a375e1601d7424c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e6cf1c0ca6a203ffa006ed17a9cfc52d6a7a29f0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ff73df6ae181e8a5fc066cac0e34f9c2b6817688fae05a9b3afe4a10e4103f2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b60b6a2a2942dd0d7c8d3cc5b54331e7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\client.py",
+      "SPDXID": "SPDXRef-File-60c8de58af9966f50f515a4c416aff26",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7476857917d2e5339003fa1811434ec61a072f98"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "51e4ad2a5af64da03ba67fb6cf515d853fa627767089846772ac7ed4c231f639"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ad21ffb6a28d99c72cf22d4b354f7a7f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\common.py",
+      "SPDXID": "SPDXRef-File-ca41ab22e6aa9a5e9b8b7bbb7cb5cca3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c535d3fd6d631e7dff7b825c3ae650f8b8c89f80"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c674fae4daf1e03905145d590e74c7c65c2fc6073defc5089bc0476a61154f6d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "01c1b64324dd767ce6ef93f7c1aa23d3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\compare_files.py",
+      "SPDXID": "SPDXRef-File-45faba5be4269332398b58034f5593bb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "de30e2cd28f50a1b01cfe1fcf8a94df92c1bde86"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "84f3d241b6af7cff4a7f465f7689650a5bdecd55616cdfe58791475fac03f837"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "529bdb3384ff488944daab6dc6255483"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\config.py",
+      "SPDXID": "SPDXRef-File-1ba49ffe58a7a05ad34d5f410fab59eb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4cd43afa9f7d98941aa326516ae76ba4a80ed2fd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "414dc5a05e9e0afb66f8cd8db48720e28f177e9ca56c07722f416e618340a4e1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "732bae5dff29bdd1e046e4945cd23104"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\config_window.py",
+      "SPDXID": "SPDXRef-File-b49cc0fc8e1d6078f6cd4025f0d1f294",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0f88bd2bebd3d738d4be74cfa9a0deaa68800e5e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8c895579f7bdc76c2361c61850eae2430c646eff794d04f59b3c37dfdbcd7a36"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ac6e3895d0b3d64502672700b9df66d6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\countries.py",
+      "SPDXID": "SPDXRef-File-28f4e942eb235dbbc6ddd533008d397e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "363962cbe341a9682b95d2683e669608afdeac9b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "70db38c812115bba32e5008ae4b74d346d5bbf618fb3598517dd779b592b9975"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "feb81bd5d234b9851b002f5f5c2eeea2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\del_vlc_log.py",
+      "SPDXID": "SPDXRef-File-da9ae16d5ea4c04ca27470b22c5db671",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1ad21b16e16fc165ce75c1470f469851a30725dc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4f444a2cdf7a5472463e7f5788b5b19ddae722622756afa3df3d00047a3391de"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cfe9d39b8be7f54ad83ca7f1c4a46042"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\edit.py",
+      "SPDXID": "SPDXRef-File-9fff4aea1c17306d74edc8e4b8b8dcac",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "89879d9aedeb469acafc113970018565e710cd6c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8897ecce588ac2a18d368b4d15921a8a8eb1ec4b36d714a150dfe5363acd0243"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0756998bc83df4a124cbc24fbb9ec76c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\encodings.py",
+      "SPDXID": "SPDXRef-File-68b97147c0a514c85b27349fce667264",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5ddab43679a482bdf36761d0ced207b3d296d7e0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "82886618a1dfcf38da69dd3072aa131344bf0ad638b1172d3834643130d67661"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1efe30495a7547e52e1392f03f8e463c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\html_help.py",
+      "SPDXID": "SPDXRef-File-243a4ca107fc4036f732d90a7ab4115c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4e0e7042a765b740792568f55f72b52a38f63b79"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3499db1d8330901718a25273edc05e68a4b00463bfde49a1af67e27976956453"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "79f8dc330e6a8dfed261afc4eef76e5b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\install.py",
+      "SPDXID": "SPDXRef-File-29dcb981d320a407df9cbaf2c59c888d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1d8e4cac9b4640191f25f4725ea7fddf84a1e6be"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1046ab3f5c44f4af38bc1bf645ab324da66b5cd257a49839fef7f21198d9035a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6eca930068a3b195cfaad900bbab4880"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\keyboard.py",
+      "SPDXID": "SPDXRef-File-83c794ee9132834ffe125aeab68bc251",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "69b271f72a091e2776d06026adfc2ebd0f0ddae7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a3c578d7275b743f805d504294585fd2d991480c53aeb358adcd5d09d87900e5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "540c90f70062a780b44d6f529de74752"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\log.py",
+      "SPDXID": "SPDXRef-File-f75406c3ac380e16e1dfbf558b76bffa",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "550a61ba38284fa4d0991a82713b92b22930864e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5bff6f524761be8f0cb268201d117f45a51ecedaa4829e31ba8678a2a9e0817d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f43422ee52a7a2576b7a1d95eed6f2b1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\main.py",
+      "SPDXID": "SPDXRef-File-71199a3e4218f0d596a8017868674936",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "aca79e3184147c35b850f126d23493d4251f2234"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f033e1cc98a0c98c6b6c0f9bbc056ec294ef776b3bfdc69f8af490a2b29697ed"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c80741cc5918f2600ac9b8057489e424"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\messages_system.py",
+      "SPDXID": "SPDXRef-File-1770c5c3216d802cd39f331a9fb333d5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f1da7f6c51a92294a7ff8aa86dfb7a60f1b37d5d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7d735fae8c85f723ad4a123bddd4ca96897725dde965d0e992ac3638743b6eea"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "058cb751842b5d6f98fa56e16c258d45"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\mkvtoolnix.py",
+      "SPDXID": "SPDXRef-File-d1311ada6576ecbe385833ef216c3cd0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "13dc157e07b958af16a66d5761c6d1bd3ac67541"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bd08b17e8ea4c44b03bac2356c3ded86971fc1f53109a2696ddd8b5943a133a2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6a0db1835479c440a41670176a9e7f62"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\ping.py",
+      "SPDXID": "SPDXRef-File-fdc7de8b58864fa713655902f924bec8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "40a02bf7b41aca94b0b4cbf07936809d80269dfb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6d15ec8283c7c31c7ccd51df03652edfc479fe335a235cc44ba227fc09cb0866"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2055562269367ef27bc6da8f54890921"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\player.py",
+      "SPDXID": "SPDXRef-File-3ddf68f704624a7a6922164b2b43cae4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "622d612cfa64e1f20a6083125454a211b2039ab6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1ff2153d58594a8f96f2ff61c14714f6735fb024e06c166d12b61e714b3bd270"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bc11c11f055c454dd9a79f565b9e9d52"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\radio.py",
+      "SPDXID": "SPDXRef-File-9aa92961b8d14251f3af11a71537d4d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d1a28ecd708c8dea20e8ce6e0385a309b75ddfb7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ed85ce24bc853a2a0905845206e47d2f789c1441f06ae2b81b092a516ae92957"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "17ce6f4104086674666b4570f0c670ab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\schedule.py",
+      "SPDXID": "SPDXRef-File-3980112b326b1f96b942437fac57d65f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "951e3ee05eb6daae50b4c0286718114f93f23c78"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e95565c4b5787cc715a3dae31783423159eb031af75d2077e5f39b09cdb3c57c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "030ff97cd5fb902dbd3354ecd1042612"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\schedule_win.py",
+      "SPDXID": "SPDXRef-File-0849ee8cc91d3f9dff44a5186409ee7f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3555e6e562eea94e188dcd652c9f8235ca3677e5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "867e2db29365b4e5fdaf5d989e95242af28226baa41ac9cbdc3ba2e986ef2139"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "95581f57be620583ade66d0407d13fc7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\server.py",
+      "SPDXID": "SPDXRef-File-c20c5679e635d7cd45c98fdf6b5027f5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "54ebca90b383952acaa4826e40070e7722d5b7c1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "76c85b33e81a7e7a053b60dbd7856cea7f854e1e1be10e32b80b41dc7148fb7d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c1203a9426173c492aed30c5cbb45726"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\simple_curses_widgets.py",
+      "SPDXID": "SPDXRef-File-d9c2e1659165a02ad71f16c76bdc02d2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "132098547d23f29bb178517e3f7d4b549754e79e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7e2623764180db241ced4e8faa522de0e9c9bc6aac02daa4e584c69a4f7b27d1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "72ae0d3a9963a7396c8a7ec8e5a8d2a9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\themes.py",
+      "SPDXID": "SPDXRef-File-21291294057255304729b6184101980c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5e1aeb240829d51fb58c4040f4665d69368edf69"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c4889b5039e2f606559c66a8e3cde426668920ef2dbc08ad32e142b9f12e9135"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "32aade5463977904b3465322c4d8081e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\win.py",
+      "SPDXID": "SPDXRef-File-bf0b5aeca630844bdb3b8af1d594ea67",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "db89b554b71e0fa2911e11206f0d7a1d0cf65933"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ac224f14649cb78f86014c88292c52853d0bda1095e45afe72801f9837416c30"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "758aa0d46baa5568169a57d27419e614"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\window_stack.py",
+      "SPDXID": "SPDXRef-File-873c959266fc3bb0f73fdaafa85a6842",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "729e1611a1450975ae5a247fc006aed09d4f8144"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c5c80957560693d45d84ec71470bfc0d8be44b9916381e5d2c352946b8ea60ec"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "064fcf921003af6f2db3ed4e5a2df35e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\win_del_old_inst.py",
+      "SPDXID": "SPDXRef-File-022b0c5c65e543155d2b5921fb88fd1e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "df66d27ed698e676a64916a06900aac4b2428d7e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2c0b85deb2e8068241400c61c17dbe77b843039298175f321eade12fc57ffd04"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "52f796697d699efd7877e07954a42fb4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\xdg.py",
+      "SPDXID": "SPDXRef-File-ac0ed24338ffacaec622c74f4d6fe778",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2c62d0107b8bd435a46ee89f9096da32c856e51b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "23e099085f5bccf60baab5162d8b70567d91fba234743606f164faf99f632099"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f92054bf923fc7cbd6e392e292b806c9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\__init__.py",
+      "SPDXID": "SPDXRef-File-184940654ca4604bd2535acee41ba807",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7c6be62a2a03c8e11105c528c40b052a2b55f326"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0b4e130040555d74b4c451be07db1821441a54c0b8748a08a810c427a29f6e25"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4aad8f477b52866c7e29010929161c2d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\keyboard\\classes.json",
+      "SPDXID": "SPDXRef-File-8d33fcf33d8c7bf5513185629e56aa5a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1293aef743f65e2dadb9c2573b7b5cd2bf68ed35"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c4709ef89e1a55ec1a5c1115907803b8a7f83feeddbbefcd99990d5fff31e750"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b155f7183f5d8d389ef0dd42771f42f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "pyradio\\keyboard\\lkb_greek.json",
+      "SPDXID": "SPDXRef-File-70fd6984760609102e30ecf7228eed8e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a3e193dc36ef4a5275169a90cd8fdf80d7172723"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "729abccff90d203a958716b6f367dab3bf02d4524206f0b4ffed5550dc668cf0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cdd3ffe63e42ffc95affda449be0d419"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-pyradio",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-5a45f8f20e018498a894476d5b8862e3",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-30c66196d76c8a7fa8cdc502dd46bd1d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-cd193aeee252f7db42450007bcdeee1d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-958bb158efbf555ae6992bd5041f4d37",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-abc4336bf42b459452d1cc87f7dfa3f2",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-f83f9b6e0f356fe7c5db2c3019d28417",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-14376b94354e9c751f457877c79f9ed6",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-80a840be957f8da678b8e745a20252f5",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-pyradio",
+      "relatedSpdxElement": "SPDXRef-Package-d8431b24c2c4737d4c58e7bf4c7d42b7",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

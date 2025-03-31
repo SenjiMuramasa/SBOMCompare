@@ -1,0 +1,259 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "skyth3r/automate-now SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/skyth3r/automate-now-1f7a667a-cae9-4273-9f33-8e2c6f2d4fcf",
+  "creationInfo": {
+    "created": "2025-03-30T06:44:00.192876Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "automate-now",
+      "SPDXID": "SPDXRef-Package-automate-now",
+      "downloadLocation": "https://github.com/skyth3r/automate-now.git",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "mit",
+      "copyrightText": "NOASSERTION",
+      "description": "A script that fetches data from various sources and builds a markdown page to automate my /now page on my website",
+      "comment": "Primary languages: Go, Markdown",
+      "versionInfo": "commit-main",
+      "supplier": "Organization: skyth3r",
+      "homepage": "https://github.com/skyth3r/automate-now"
+    },
+    {
+      "name": "github.com/PuerkitoBio/goquery",
+      "SPDXID": "SPDXRef-Package-2bb4aeb3f95fd4a0656e04a2d1f23bc9",
+      "versionInfo": "v1.8.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/PuerkitoBio/goquery",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/andybalholm/cascadia",
+      "SPDXID": "SPDXRef-Package-93556d36eba72e92ed2f96fc70e7cd0a",
+      "versionInfo": "v1.3.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/andybalholm/cascadia",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/json-iterator/go",
+      "SPDXID": "SPDXRef-Package-bbce79aabe9add907ee59db95908e521",
+      "versionInfo": "v1.1.12",
+      "downloadLocation": "https://pkg.go.dev/github.com/json-iterator/go",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/mmcdole/gofeed",
+      "SPDXID": "SPDXRef-Package-c1b4650c319738a252e09966c3341eaa",
+      "versionInfo": "v1.2.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/mmcdole/gofeed",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/mmcdole/goxpp",
+      "SPDXID": "SPDXRef-Package-3e6a7dbd2a8972caa86b96839d01c139",
+      "versionInfo": "v1.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/mmcdole/goxpp",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/modern-go/concurrent",
+      "SPDXID": "SPDXRef-Package-f7c27553d68c0c26b44430c1d66a5729",
+      "versionInfo": "v0.0.0-20180306012644-bacd9c7ef1dd",
+      "downloadLocation": "https://pkg.go.dev/github.com/modern-go/concurrent",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/modern-go/reflect2",
+      "SPDXID": "SPDXRef-Package-0727a4a840a352c9fad6782800cf0f4c",
+      "versionInfo": "v1.0.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/modern-go/reflect2",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/net",
+      "SPDXID": "SPDXRef-Package-338c5481d3a4d52c09b24a69f23c4012",
+      "versionInfo": "v0.4.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/net",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/text",
+      "SPDXID": "SPDXRef-Package-d21fca5bb1f8d72b92210e4500b5b865",
+      "versionInfo": "v0.5.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/text",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "(",
+      "SPDXID": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "versionInfo": "github.com/PuerkitoBio/goquery",
+      "downloadLocation": "https://pkg.go.dev/(",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 Akash Goswami\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "main.go",
+      "SPDXID": "SPDXRef-File-7ddfb3e035b42cd70649cc33393fe32c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "90958cfe4a643cc9ef9de55ff2bb7858f4dce376"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "18b4a49eb33a961c512b69269015d52876462f3c5ff8dffd2fd2d62765cc945e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5f413c22fddff7df3fd62a746beb4f56"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "main_test.go",
+      "SPDXID": "SPDXRef-File-53618cae32e23ae47e1c35f10da92654",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dce2e5fb36cf7cc66eeac9e706d31971ba1ff6f1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dcac4ac4da0bf422a1e4f3a89874dff6fa193b9f7040c496af73f7dd9b003950"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c96c568b40eb86d20c53aaaee06a913b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0dacc5b35c01bbcaddc9bb294cc440b780193bd4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ceb7b0a9018cb617c3201906f0cb052d05da5c0b6a032eeae4cbd1a7d25db48e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5aea73c02a6b0d4b9955dc4983006b34"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-automate-now",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-2bb4aeb3f95fd4a0656e04a2d1f23bc9",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-93556d36eba72e92ed2f96fc70e7cd0a",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-bbce79aabe9add907ee59db95908e521",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-c1b4650c319738a252e09966c3341eaa",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-3e6a7dbd2a8972caa86b96839d01c139",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-f7c27553d68c0c26b44430c1d66a5729",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-0727a4a840a352c9fad6782800cf0f4c",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-338c5481d3a4d52c09b24a69f23c4012",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-d21fca5bb1f8d72b92210e4500b5b865",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-automate-now",
+      "relatedSpdxElement": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

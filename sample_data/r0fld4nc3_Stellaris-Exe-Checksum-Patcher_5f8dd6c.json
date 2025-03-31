@@ -1,0 +1,599 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "r0fld4nc3/Stellaris-Exe-Checksum-Patcher SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/r0fld4nc3/Stellaris-Exe-Checksum-Patcher-46b11694-f259-475d-b73c-bdcce9b8cb6c",
+  "creationInfo": {
+    "created": "2025-03-30T02:37:56.828686Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "Stellaris-Exe-Checksum-Patcher",
+      "SPDXID": "SPDXRef-Package-Stellaris-Exe-Checksum-Patcher",
+      "downloadLocation": "https://github.com/r0fld4nc3/Stellaris-Exe-Checksum-Patcher.git",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "gpl-3.0",
+      "copyrightText": "NOASSERTION",
+      "description": "Patch game binary to allow achievements to be earned with Ironman and Mods that modify the checksum enabled.",
+      "comment": "Primary languages: Python, Markdown",
+      "versionInfo": "commit-main",
+      "supplier": "Organization: r0fld4nc3",
+      "homepage": "https://github.com/r0fld4nc3/Stellaris-Exe-Checksum-Patcher"
+    },
+    {
+      "name": "PySide6",
+      "SPDXID": "SPDXRef-Package-24d46029b68b443d2787cca8133ba99f",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/PySide6/",
+      "licenseConcluded": "License :: Other/Proprietary License",
+      "licenseDeclared": "License :: Other/Proprietary License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Python bindings for the Qt cross-platform application and UI framework"
+    },
+    {
+      "name": "requests",
+      "SPDXID": "SPDXRef-Package-abc4336bf42b459452d1cc87f7dfa3f2",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/requests/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) Kenneth Reitz",
+      "supplier": "Person: Kenneth Reitz",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Python HTTP for Humans.",
+      "homepage": "https://requests.readthedocs.io"
+    },
+    {
+      "name": "vdf",
+      "SPDXID": "SPDXRef-Package-8085cb14a9849eff5751fe2c33e036b2",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/vdf/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Rossen Georgiev",
+      "supplier": "Person: Rossen Georgiev",
+      "comment": "From requirements.txt; From requirements.txt",
+      "description": "Library for working with Valve's VDF text format",
+      "homepage": "https://github.com/ValvePython/vdf"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "da50efa7dfa9c5cb38ab1f118fa8fa53372c6966"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "98d35f3ea3018af426cea5c40025bfb5901db895b7e2baa59a7b0a2dd2cd467e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3c99719bd23f35cc2c735da95fd58a57"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "requirements.txt",
+      "SPDXID": "SPDXRef-File-b4ef698db8ca845e5845c4618278f29a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0e63397fc368304e47611dbec542cf44b1580537"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3b05d0bd4231b71210a52c82be2bf3eaf6f162b827366751ecb1754973da549b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "977f0c8ab82fb2c39b5aa7f080350ebc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\conf_globals.py",
+      "SPDXID": "SPDXRef-File-6d4476c1f703f3fe4197facd7a38383a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b6bedae588563f73589950ca419eb402a6bfdfcd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d01b4105725850ede525194449ab8eabb63bd1e3ce6c2d0c05ec302eec86bf3e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "651eb87f080ec46a4bd0fa6b0de845b5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\main.py",
+      "SPDXID": "SPDXRef-File-9c83611f22f5060242c14ed725efd71a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8bafd0e97273f32452321b20a5bb8a5e01af3b6e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "512ce6015a574a7b2bb6a71d5335b20e2c83dd8477d26bf67467231970cf7ab2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "946997254e6a3fb4c631f3304f7d4398"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\achievements\\achievements.txt",
+      "SPDXID": "SPDXRef-File-bc53ccc6b13ee6e69b54c2429c43190d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e79264bd44c0c9978a6c5f881c3163b9cca7d3b6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "798a2b12b383feff65aaf7e405d86ba581e7411768af1655f2567a3ec59629cb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "63cd6838c0137a83d4813802bdcf955f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\logger\\logs.py",
+      "SPDXID": "SPDXRef-File-f780c0aaf843be65408861b4624ccae2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6c919135c79cf1f3016cfb6f43a06f981b0088e4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "58c13683a228f4d680ad2f8cb14a07d8e7215e2fe46fa8bb55755c7bbbe541d1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ce3d5a6de3fa73b26bf23d55c59a4a04"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\logger\\path_helpers.py",
+      "SPDXID": "SPDXRef-File-0bc62025b07a01f306adf0046e2c1a63",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "11a3e2b771284fd6038738ce21335b8c959bf5bd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a4986bd019b716af39675a34305d2f98f1cbab1d7ddf0673c10c63815dcc9b60"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7543aa276c3c9928288786c755f75da4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\logger\\__init__.py",
+      "SPDXID": "SPDXRef-File-d3b66f372addb8d3006863d92fdaf658",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f0b63af259171461f5488d3efa017e1a7e4d7ec6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d09ba879bfc6f298d8669dc5ae0206f6bc8fbd5664cd746df58750e7c857d39a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0886606d8336db73bb521b86489895d8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\patchers\\save_patcher.py",
+      "SPDXID": "SPDXRef-File-01ff1e1a28c6fcceea13cb34998a98d9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3f38b1c3c63cd0c0247d27b949ef0e300730e6b9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7a64bf75fb07006a1dd78f829fd7908a6497f3684781d8fee0e57c384efae4f3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "140cfa90eb84ca6d0965f3d4e27c112e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\patchers\\stellaris_patch.py",
+      "SPDXID": "SPDXRef-File-086edd1b48e57d9ccdecd159286a9107",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5a88d3df7a89c8c126ae4c218f609191097c94ca"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b05fca9ab6af966d5eb5227d077238703c0cd4186713f84efaa967d1cd0d1428"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cda66faf0418744fb96c233e62365198"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\patchers\\__init__.py",
+      "SPDXID": "SPDXRef-File-10f1e78cc8a15f3b6927995f42e18963",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9170205fb84c93a8a1dead4362c472e1161c20fe"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4cc06fd9cfdc48bebe9cbbdaf7cccc8a875dd8636afe5c7744b087906d98795e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dae9f4e3db96890a27b499a03289cd49"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\settings\\settings.py",
+      "SPDXID": "SPDXRef-File-0ccc0132b829cdd90ae6a12e246c1023",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1580282e3760a541c88e64890963e9f5555489f7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9676d0130d16aead67c9b00fc28724f535d73d98dd3d1a6ad91e0c798d88ef4a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "170f2460540bf53e93ebc916f6eb708f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\settings\\__init__.py",
+      "SPDXID": "SPDXRef-File-1d0dedc61ec19d82b4165cabd6b99707",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f06414d16f390712c59811a1570cc2d59f9a2d5a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "121e215fb5615c06eb6a804f166858291fb799296a298520adc692e8abb26965"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3f4c75dcd4e3a93f338706a0b7b75f08"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\UI\\Styles.py",
+      "SPDXID": "SPDXRef-File-eb3a4673524dc559c00a6ffaabbd1e8e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1bbc6630d241d75b782dfd39ad57e8e16ec59a7a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "60282a0c1c03bd2e600133e81c1c513a4b730c468a42ff3798fa348b06715331"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0f28d5f8c8dd1db37929bfff12519053"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\UI\\ui_main.py",
+      "SPDXID": "SPDXRef-File-b5d074e944a37c4b6661d57ffa8b1296",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ab6a7735bdcc3e9154b386c9482935aca33d83d4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a68162fbd1a1ec9742d3884288527d2ebd3645004a3b28b08a0b6d13a730b3b5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "282af3978d31c248b51f283a0cb9a154"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\UI\\ui_utils.py",
+      "SPDXID": "SPDXRef-File-12877acb212caeb10161d1615ff6d19d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f400d3769641df82d5a8d2fc49641acbf188e756"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8fd933b847827728b570375f5b1a72e6a8c01d3e4a04a7b8a5ded363e8453283"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b9a425f37251ffec6b59cc691bed31ca"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\UI\\__init__.py",
+      "SPDXID": "SPDXRef-File-fb28c5578f5e3c29d9faf82f72ffe462",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6b3368688b3c0752ad11ae3cfec0c2311d2a1573"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f03dd3c7c4c2bd8e029c8bbf699b9deab12ad1c5c30a9147eb8ea5fc6080d6c1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "98ba80b6416d1a95ff9a6c854fec12dc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\updater\\updater.py",
+      "SPDXID": "SPDXRef-File-06a2239669063eed33c66b233cb1dba9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0d2e66067c12f05217a7d1fde7cf80dfe2b8f3be"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "db94858926b55e9b8e5b2a73babbf0c0a1a11a6e5d78e466e0e7660b85bdd2b4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "df554d12788c83e8f60081022e1cce94"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\updater\\__init__.py",
+      "SPDXID": "SPDXRef-File-25efb4d2a6636f95e3f1de69d2d1f625",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7f1664ae7a7538ca54ecd0c6305db6acc1b4ba29"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7ff4378a4fbd6dba18f6ebb8a3d4327ff067b134d73c8143411da1f57517b882"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f154fa55f9b68343978e2b7cf7a96f25"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\utils\\registry_helper.py",
+      "SPDXID": "SPDXRef-File-33552237e263cb85c786da46e4c6435d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cb82ad82b5ab62c67a6c80b40e879879b01f1248"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "be44746f6d3c74cedd68862fc600cfd09cd9d92d106574ac82403b79dce83e9c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ce023ca34c1fd1ffe3784e81e3d49da8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\utils\\steam_helper.py",
+      "SPDXID": "SPDXRef-File-2ac7d9bc4062ef9eed5b0454a0c6b27e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e1255ec555ab57c5802a14f59ed9c8598ce1a5c0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f1f8163107b4b1322d75ae3f58b0f3fb18864ab8eca174ad5d3e28b0fe9dd09e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "223ba1161ff2b88bf112b50cf99a7f16"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "src\\utils\\__init__.py",
+      "SPDXID": "SPDXRef-File-35aeeadb3a3d1df146c34bec60c3b51b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d41d8cd98f00b204e9800998ecf8427e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-Stellaris-Exe-Checksum-Patcher",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Stellaris-Exe-Checksum-Patcher",
+      "relatedSpdxElement": "SPDXRef-Package-24d46029b68b443d2787cca8133ba99f",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Stellaris-Exe-Checksum-Patcher",
+      "relatedSpdxElement": "SPDXRef-Package-abc4336bf42b459452d1cc87f7dfa3f2",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Stellaris-Exe-Checksum-Patcher",
+      "relatedSpdxElement": "SPDXRef-Package-8085cb14a9849eff5751fe2c33e036b2",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}
