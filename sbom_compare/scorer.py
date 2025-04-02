@@ -9,6 +9,7 @@ import logging
 import math
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
+import re
 
 from .comparator import ComparisonResult
 from .scorecard import ScorecardAPI
@@ -301,6 +302,32 @@ class SecurityScoreCalculator:
             impact_factors=impact_factors
         )
     
+    def _normalize_version(self, version: str) -> str:
+        """
+        标准化版本号，去除前缀v等
+        
+        Args:
+            version: 原始版本号
+            
+        Returns:
+            str: 标准化后的版本号
+        """
+        if not version:
+            return ""
+            
+        # 移除版本号中可能的前缀v
+        if version.startswith('v'):
+            version = version[1:]
+        
+        # 移除版本范围符号
+        version = re.sub(r'[<>=~^]', '', version)
+        
+        # 移除注释部分
+        if ' ' in version:
+            version = version.split(' ')[0]
+            
+        return version.strip()
+
     def _score_version_consistency(self) -> ScoreCategory:
         """评估版本一致性"""
         max_score = self.max_scores["version_consistency"]
@@ -311,9 +338,74 @@ class SecurityScoreCalculator:
         # 基线包数量
         baseline_count = max(1, len(self.result.sbom_a.packages))
         
-        # 评估版本变更
+        # 首先检测版本降级（特别严重的问题）
+        # 降级是最高优先级处理的问题，会直接影响最终得分
         version_changes = self.result.version_changes
+        downgrades = []
+        
         if version_changes:
+            for change in version_changes:
+                try:
+                    # 使用标准化方法处理版本号
+                    normalized_old = self._normalize_version(change.old_version)
+                    normalized_new = self._normalize_version(change.new_version)
+                    
+                    # 当规范化后的版本相同时不判断为降级
+                    if normalized_old == normalized_new:
+                        continue
+                    
+                    # 解析版本号
+                    old_parts = [int(p.split('-')[0]) for p in normalized_old.split('.')]
+                    new_parts = [int(p.split('-')[0]) for p in normalized_new.split('.')]
+                    
+                    for i in range(min(len(old_parts), len(new_parts))):
+                        if new_parts[i] < old_parts[i]:
+                            downgrades.append(change.package_name)
+                            break
+                        elif new_parts[i] > old_parts[i]:
+                            # 如果新版本比旧版本高，则肯定不是降级
+                            break
+                except (ValueError, IndexError) as e:
+                    # 记录日志以便调试
+                    logger.warning(f"处理版本号 {change.old_version} -> {change.new_version} 时出错: {str(e)}")
+                    continue
+            
+            if downgrades:
+                # 记录降级检测结果，帮助调试
+                logger.warning(f"检测到 {len(downgrades)} 个版本降级包: {', '.join(downgrades[:5])}")
+                
+                # 版本降级是极其严重的问题，应当大幅降低得分
+                # 立即降低到所有评分类别中的最低分数，不超过30%
+                downgrade_penalty = max(max_score * 0.7, min(max_score * 0.95, len(downgrades) * max_score * 0.4))
+                
+                # 强制设置分数为一个很低的值
+                score = max_score * 0.2  # 固定保留20%分数
+                if max_score > 3.0:  # 如果是版本比较场景，得分权重较高
+                    score = max_score * 0.1  # 只保留10%分数
+                
+                details.append(f"{len(downgrades)}个包发生版本降级，可能丢失安全修复或引入兼容性问题")
+                impact_factors.append("版本降级")
+                
+                # 添加具体的降级包信息到details
+                if len(downgrades) <= 5:
+                    details.append(f"降级的包: {', '.join(downgrades)}")
+                else:
+                    details.append(f"降级的包(前5个): {', '.join(downgrades[:5])}等")
+                
+                # 当存在版本降级时，记录日志以便调试
+                logger.warning(f"检测到{len(downgrades)}个包存在版本降级，版本一致性得分从{max_score}降至{score}")
+                
+                # 直接返回结果，不处理其他版本变更
+                return ScoreCategory(
+                    name="版本一致性",
+                    score=score,
+                    max_score=max_score,
+                    details=details,
+                    impact_factors=impact_factors
+                )
+        
+        # 如果没有降级，再评估其他版本变更类型
+        if not downgrades and version_changes:
             # 计算版本变更比例
             change_ratio = len(version_changes) / baseline_count
             
@@ -353,28 +445,6 @@ class SecurityScoreCalculator:
                 penalty = min(max_score * 0.3, max_score * 0.06 * other_ratio * 10)
                 score -= penalty
                 details.append(f"{len(other_changes)}个包发生其他版本变更")
-        
-            # 检测版本降级（特别严重的问题）
-            downgrades = []
-            for change in version_changes:
-                try:
-                    old_parts = [int(p.split('-')[0]) for p in change.old_version.split('.')]
-                    new_parts = [int(p.split('-')[0]) for p in change.new_version.split('.')]
-                    
-                    for i in range(min(len(old_parts), len(new_parts))):
-                        if new_parts[i] < old_parts[i]:
-                            downgrades.append(change.package_name)
-                            break
-                        elif new_parts[i] > old_parts[i]:
-                            break
-                except (ValueError, IndexError):
-                    continue
-            
-            if downgrades:
-                penalty = min(max_score * 0.8, len(downgrades) * max_score * 0.15)
-                score -= penalty
-                details.append(f"{len(downgrades)}个包发生版本降级，可能丢失安全修复")
-                impact_factors.append("版本降级")
         
         # 确保分数不为负
         score = max(0, score)

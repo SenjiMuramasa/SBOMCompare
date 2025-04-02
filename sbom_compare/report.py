@@ -114,11 +114,29 @@ class ReportGenerator:
                 
                 # 详情和影响因素
                 if category.details:
-                    lines.append(f"    详情: {'; '.join(category.details)}")
+                    lines.append("    详情:")
+                    for detail in category.details:
+                        lines.append(f"      - {detail}")
                 if category.impact_factors:
                     lines.append(f"    影响因素: {', '.join(category.impact_factors)}")
             
             lines.append(f"\n评分总结: {security_score.summary}")
+            
+            # 添加重要警告信息部分
+            critical_warnings = []
+            # 检查是否有版本降级
+            for category_name, category in security_score.categories.items():
+                if category_name == "version_consistency":
+                    for detail in category.details:
+                        if "降级" in detail:
+                            critical_warnings.append(detail)
+            
+            # 显示关键警告信息
+            if critical_warnings:
+                lines.append("\n重要警告:")
+                for warning in critical_warnings:
+                    lines.append(f"  ⚠️ {warning}")
+            
             lines.append("")
         
         # 基本统计信息
@@ -1132,6 +1150,63 @@ class ReportGenerator:
             box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
             border: 1px solid rgba(0,0,0,0.05);
         }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
         """
 
         # 简单的HTML模板
@@ -1487,121 +1562,101 @@ class ReportGenerator:
             security_score = self.result.security_score
             percentage = (security_score.total_score / security_score.max_score) * 100
             
-            # 确定等级样式类
-            grade_class = ""
-            if security_score.grade.startswith('A'):
-                grade_class = "grade-a"
-            elif security_score.grade.startswith('B'):
-                grade_class = "grade-b"
-            elif security_score.grade.startswith('C'):
-                grade_class = "grade-c"
-            elif security_score.grade.startswith('D') or security_score.grade.startswith('F'):
-                grade_class = "grade-f"
+            # 根据得分确定颜色
+            if percentage >= 80:
+                score_color = "score-high"
+            elif percentage >= 60:
+                score_color = "score-medium"
+            else:
+                score_color = "score-low"
             
-            # 构建各分类的评分内容
-            category_items = []
+            # 版本降级警告区域
+            downgrade_warning = ""
+            critical_details = []
+            
+            # 检查是否有版本降级
+            if "version_consistency" in security_score.categories:
+                vc_category = security_score.categories["version_consistency"]
+                for detail in vc_category.details:
+                    if "降级" in detail:
+                        critical_details.append(detail)
+            
+            # 如果有版本降级，添加警告区域
+            if critical_details:
+                downgrade_warning = f"""
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ 版本降级警告</div>
+                    <div class="warning-content">
+                        <ul>
+                            {"".join(f"<li>{detail}</li>" for detail in critical_details)}
+                        </ul>
+                        <p class="warning-note">版本降级可能导致安全修复丢失，增加安全风险！</p>
+                    </div>
+                </div>
+                """
+            
+            # 生成各类别得分表格
+            category_rows = []
             for category_name, category in security_score.categories.items():
                 cat_percentage = (category.score / category.max_score) * 100
-                category_class = "category-score-high" if cat_percentage >= 80 else "category-score-medium" if cat_percentage >= 60 else "category-score-low"
                 
-                # 对于scorecard_assessment分类，过滤掉漏洞信息
-                details = category.details
-                if category_name == "scorecard_assessment":
-                    details = [d for d in details if not d.startswith("- ")]
+                # 根据类别得分确定颜色
+                if cat_percentage >= 80:
+                    cat_score_class = "score-high"
+                elif cat_percentage >= 60:
+                    cat_score_class = "score-medium"
+                else:
+                    cat_score_class = "score-low"
                 
+                # 创建详细信息HTML
                 details_html = ""
-                if details:
-                    details_html = f"<p><strong>详情:</strong> {'; '.join(details)}</p>"
+                if category.details:
+                    details_html = "<ul class='details-list'>"
+                    for detail in category.details:
+                        # 检查是否为降级或高危提示，添加特殊样式
+                        if "降级" in detail or "高危" in detail or "严重" in detail:
+                            details_html += f"<li class='critical-detail'>{detail}</li>"
+                        else:
+                            details_html += f"<li>{detail}</li>"
+                    details_html += "</ul>"
                 
+                # 创建影响因素HTML
                 impact_html = ""
                 if category.impact_factors:
-                    impact_html = f"<p><strong>影响因素:</strong> {', '.join(category.impact_factors)}</p>"
+                    impact_html = "<div class='impact-factors'><strong>影响因素:</strong> "
+                    impact_html += ", ".join(category.impact_factors)
+                    impact_html += "</div>"
                 
-                category_items.append(f"""
-                <div class="category-score {category_class}">
-                    <h3>{category.name}: {category.score:.1f}/{category.max_score:.1f} ({cat_percentage:.1f}%)</h3>
-                    {details_html}
-                    {impact_html}
-                </div>
+                # 添加到表格行
+                category_rows.append(f"""
+                <tr>
+                    <td>{category.name}</td>
+                    <td class="{cat_score_class}">{category.score:.1f}/{category.max_score:.1f} ({cat_percentage:.1f}%)</td>
+                    <td>{details_html}{impact_html}</td>
+                </tr>
                 """)
             
-            # 检查是否因为漏洞严重程度限制了评分
-            vuln_limit_html = ""
-            
-            # 获取新增包的漏洞信息，使用已有缓存
-            if self.added_packages_vulnerabilities:
-                pkg_vulns = self.added_packages_vulnerabilities
-            else:
-                pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
-            
-            # 检查漏洞严重程度
-            has_critical = False
-            has_high = False
-            has_medium = False
-            
-            for pkg_name, vulns in pkg_vulns.items():
-                for vuln in vulns:
-                    # 获取漏洞严重程度
-                    severity = "unknown"
-                    if "database_specific" in vuln and "severity" in vuln["database_specific"]:
-                        severity = vuln["database_specific"]["severity"]
-                    elif "severity" in vuln:
-                        # 处理severity字段是列表的情况
-                        if isinstance(vuln["severity"], list):
-                            for sev_item in vuln["severity"]:
-                                if isinstance(sev_item, dict) and "type" in sev_item and sev_item.get("type") == "CVSS_V3":
-                                    severity = sev_item.get("score", "unknown")
-                                    break
-                        else:
-                            severity = vuln["severity"]
-                    
-                    # 根据严重程度调整评分上限
-                    if severity == "CRITICAL":
-                        has_critical = True
-                        break
-                    elif severity == "HIGH":
-                        has_high = True
-                    elif severity == "MEDIUM":
-                        has_medium = True
-            
-            # 显示漏洞限制评分的说明
-            if has_critical:
-                vuln_limit_html = """
-                <div class="vuln-critical" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #d32f2f;">
-                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在严重级别(CRITICAL)漏洞，评分被限制在4分以内。
-                </div>
-                """
-            elif has_high:
-                vuln_limit_html = """
-                <div class="vuln-high" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #f44336;">
-                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在高危级别(HIGH)漏洞，评分被限制在6分以内。
-                </div>
-                """
-            elif has_medium:
-                vuln_limit_html = """
-                <div class="vuln-medium" style="margin-top: 15px; padding: 10px; border-radius: 5px; border: 1px solid #ff9800;">
-                    <strong>⚠️ 评分限制:</strong> 由于新增包中存在中危级别(MEDIUM)漏洞，评分被限制在8分以内。
-                </div>
-                """
-            
+            # 构建安全评分部分
             security_score_section = f"""
-            <h2>软件供应链安全评分</h2>
-            <div class="security-score">
-                <div class="score-summary">
-                    <span class="total-score">{security_score.total_score:.1f}/10</span>
-                    <span class="score-percentage">({percentage:.1f}%)</span>
-                    <span class="score-grade {grade_class}">{security_score.grade}</span>
-                </div>
-                
-                {vuln_limit_html}
-                
-                <div class="score-categories">
-                    {"".join(category_items)}
-                </div>
-                
-                <div class="score-summary-text">
-                    <p><strong>评分总结:</strong> {security_score.summary}</p>
-                </div>
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score {score_color}">{security_score.total_score:.1f}/10 ({percentage:.1f}%) [{security_score.grade}]</span>
+            </button>
+            <div class="content">
+                {downgrade_warning}
+                <p class="score-summary">{security_score.summary}</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {"".join(category_rows)}
+                    </tbody>
+                </table>
             </div>
             """
         

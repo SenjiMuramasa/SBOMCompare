@@ -237,13 +237,70 @@
             box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
             border: 1px solid rgba(0,0,0,0.05);
         }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
         
             </style>
         </head>
         <body>
             <div class="container">
                 <h1>SBOM 比较报告</h1>
-                <p>生成时间: 2025-04-02 16:42:52</p>
+                <p>生成时间: 2025-04-02 17:17:50</p>
                 <p>SBOM A: sample_data\consul_a5c7ecc.json</p>
                 <p>SBOM B: sample_data\consul_now.json</p>
                 
@@ -268,54 +325,66 @@
                 </table>
                 
                 
-            <h2>软件供应链安全评分</h2>
-            <div class="security-score">
-                <div class="score-summary">
-                    <span class="total-score">9.6/10</span>
-                    <span class="score-percentage">(95.8%)</span>
-                    <span class="score-grade grade-a">A+</span>
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">6.4/10 (64.5%) [C+]</span>
+            </button>
+            <div class="content">
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ 版本降级警告</div>
+                    <div class="warning-content">
+                        <ul>
+                            <li>2个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li>降级的包: golang.org/x/net, github.com/go-jose/go-jose/v3</li>
+                        </ul>
+                        <p class="warning-note">版本降级可能导致安全修复丢失，增加安全风险！</p>
+                    </div>
                 </div>
                 
+                <p class="score-summary">软件供应链安全评分为 6.4/10.0 (64.5%)，安全等级: C+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：版本降级, CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>移除了1个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
                 
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-low">0.3/3.5 (10.0%)</td>
+                    <td><ul class='details-list'><li class='critical-detail'>2个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li class='critical-detail'>降级的包: golang.org/x/net, github.com/go-jose/go-jose/v3</li></ul><div class='impact-factors'><strong>影响因素:</strong> 版本降级</div></td>
+                </tr>
                 
-                <div class="score-categories">
-                    
-                <div class="category-score category-score-high">
-                    <h3>供应链完整性: 1.7/1.7 (100.0%)</h3>
-                    <p><strong>详情:</strong> 移除了1个包; 供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</p>
-                    
-                </div>
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (99.9%)</td>
+                    <td><ul class='details-list'><li>5个包发生许可证变更</li><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
                 
-                <div class="category-score category-score-high">
-                    <h3>版本一致性: 3.5/3.5 (99.6%)</h3>
-                    <p><strong>详情:</strong> 11个包发生次版本变更; 1个包发生补丁版本变更; 3个包发生其他版本变更</p>
-                    <p><strong>影响因素:</strong> 大量次版本变更</p>
-                </div>
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
                 
-                <div class="category-score category-score-high">
-                    <h3>许可证合规性: 0.9/0.9 (99.9%)</h3>
-                    <p><strong>详情:</strong> 5个包发生许可证变更; 许可证变更较少，无明显合规风险</p>
-                    
-                </div>
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.9/1.3 (69.0%)</td>
+                    <td><ul class='details-list'><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2022-0635 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0635</li><li>- Warn: Project is vulnerable to: GO-2022-0646 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0646</li><li>- Warn: Project is vulnerable to: GO-2025-3553 / GHSA-mh63-6h87-95cp (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3553 / GHSA-mh63-6h87-95cp</li><li>- Warn: Project is vulnerable to: GO-2024-2611 / GHSA-8r3f-844c-mc37 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2611 / GHSA-8r3f-844c-mc37</li><li>- Warn: Project is vulnerable to: GO-2023-2412 / GHSA-7ww5-4wqc-m92c (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2023-2412 / GHSA-7ww5-4wqc-m92c</li><li>- Warn: Project is vulnerable to: GO-2025-3528 / GHSA-265r-hfxg-fhmg (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3528 / GHSA-265r-hfxg-fhmg</li><li>- Warn: Project is vulnerable to: GHSA-jq35-85cj-fj4p (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-jq35-85cj-fj4p</li><li>- Warn: Project is vulnerable to: GO-2024-2512 / GHSA-xw73-rw38-6vjc (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2512 / GHSA-xw73-rw38-6vjc</li><li>- Warn: Project is vulnerable to: GO-2024-3005 / GHSA-v23v-6jw2-98fq (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3005 / GHSA-v23v-6jw2-98fq</li><li>- Warn: Project is vulnerable to: GO-2024-2491 / GHSA-xr7r-f8xq-vfvv (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2491 / GHSA-xr7r-f8xq-vfvv</li><li>- Warn: Project is vulnerable to: GO-2024-3110 / GHSA-jfvp-7x6p-h2pv (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3110 / GHSA-jfvp-7x6p-h2pv</li><li>- Warn: Project is vulnerable to: GO-2024-3242 / GHSA-99wr-c2px-grmh (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3242 / GHSA-99wr-c2px-grmh</li><li>- Warn: Project is vulnerable to: GO-2024-3241 / GHSA-5c4w-8hhh-3c3h (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3241 / GHSA-5c4w-8hhh-3c3h</li><li>- Warn: Project is vulnerable to: GO-2024-3243 / GHSA-chgm-7r52-whjj (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3243 / GHSA-chgm-7r52-whjj</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-67hx-6x53-jw92 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-67hx-6x53-jw92</li><li>- Warn: Project is vulnerable to: GHSA-qwcr-r2fm-qrc7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-qwcr-r2fm-qrc7</li><li>- Warn: Project is vulnerable to: GHSA-wxhq-pm8v-cw75 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-wxhq-pm8v-cw75</li><li>- Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x</li><li>- Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</li><li>- Warn: Project is vulnerable to: GHSA-434g-2637-qmqr (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-434g-2637-qmqr</li><li>- Warn: Project is vulnerable to: GHSA-49q7-c7j4-3p7m (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-49q7-c7j4-3p7m</li><li>- Warn: Project is vulnerable to: GHSA-977x-g7h5-7qgw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-977x-g7h5-7qgw</li><li>- Warn: Project is vulnerable to: GHSA-f7q4-pwc6-w24p (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-f7q4-pwc6-w24p</li><li>- Warn: Project is vulnerable to: GHSA-fc9h-whq2-v747 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-fc9h-whq2-v747</li><li>- Warn: Project is vulnerable to: GHSA-vjh7-7g9h-fjfh (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-vjh7-7g9h-fjfh</li><li>- Warn: Project is vulnerable to: GHSA-qw6h-vgh9-j6wx (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-qw6h-vgh9-j6wx</li><li>- Warn: Project is vulnerable to: GHSA-9c47-m6qq-7p4h (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9c47-m6qq-7p4h</li><li>- Warn: Project is vulnerable to: GHSA-35jh-r3h4-6jhm (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-35jh-r3h4-6jhm</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>- Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55</li><li>- Warn: Project is vulnerable to: GHSA-hcrg-fc28-fcg5 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-hcrg-fc28-fcg5</li><li>- Warn: Project is vulnerable to: GHSA-9wv6-86v2-598j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9wv6-86v2-598j</li><li>- Warn: Project is vulnerable to: GHSA-rhx6-c78j-4q9w (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-rhx6-c78j-4q9w</li><li>- Warn: Project is vulnerable to: GHSA-x7hr-w5r2-h6wg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-x7hr-w5r2-h6wg</li><li>- Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm</li><li>- Warn: Project is vulnerable to: GHSA-m6fv-jmcg-4jfg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-m6fv-jmcg-4jfg</li><li>- Warn: Project is vulnerable to: GHSA-cm22-4g7w-348p (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cm22-4g7w-348p</li><li>- Warn: Project is vulnerable to: GHSA-4vvj-4cpr-p986 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-4vvj-4cpr-p986</li><li>- Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</li><li>- Warn: Project is vulnerable to: GHSA-w573-4hg7-7wgq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-w573-4hg7-7wgq</li><li>- Warn: Project is vulnerable to: GHSA-ghr5-ch3p-vcr6 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-ghr5-ch3p-vcr6</li><li>- Warn: Project is vulnerable to: GHSA-f82v-jwr5-mffw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-f82v-jwr5-mffw</li><li>- Warn: Project is vulnerable to: GHSA-c59h-r6p8-q9wc (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-c59h-r6p8-q9wc</li><li>- Warn: Project is vulnerable to: GHSA-g77x-44xx-532m (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-g77x-44xx-532m</li><li>- Warn: Project is vulnerable to: GHSA-7gfc-8cq8-jh5f (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7gfc-8cq8-jh5f</li><li>- Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</li><li>- Warn: Project is vulnerable to: GHSA-c2qf-rxjj-qqgw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-c2qf-rxjj-qqgw</li><li>- Warn: Project is vulnerable to: GHSA-72xf-g2v4-qvf3 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-72xf-g2v4-qvf3</li><li>- Warn: Project is vulnerable to: GHSA-w5p7-h5w8-2hfq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-w5p7-h5w8-2hfq</li><li>- Warn: Project is vulnerable to: GHSA-v4rh-8p82-6h5w (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-v4rh-8p82-6h5w</li><li>- Warn: Project is vulnerable to: GHSA-j8xg-fqg3-53r7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-j8xg-fqg3-53r7</li><li>- Warn: Project is vulnerable to: GHSA-3h5v-q93c-6h6q (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3h5v-q93c-6h6q</li><li>- Warn: Project is vulnerable to: GHSA-f9xv-q969-pqx4 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-f9xv-q969-pqx4</li><li>- Warn: Project is vulnerable to: GHSA-m95q-7qp3-xv42 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-m95q-7qp3-xv42</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
                 
-                <div class="category-score category-score-high">
-                    <h3>风险评估: 2.6/2.6 (100.0%)</h3>
-                    <p><strong>详情:</strong> 风险分析未发现明显的安全问题</p>
-                    
-                </div>
-                
-                <div class="category-score category-score-medium">
-                    <h3>Scorecard评估: 0.9/1.3 (69.0%)</h3>
-                    <p><strong>详情:</strong> 以下项目风险较高: CII-Best-Practices, Vulnerabilities, Token-Permissions; 
-已知漏洞信息:; 项目安全实践有待改进</p>
-                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞</p>
-                </div>
-                
-                </div>
-                
-                <div class="score-summary-text">
-                    <p><strong>评分总结:</strong> 软件供应链安全评分为 9.6/10.0 (95.8%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量次版本变更, CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞。</p>
-                </div>
+                    </tbody>
+                </table>
             </div>
             
                 
@@ -642,7 +711,7 @@
                         <th>新版本</th>
                         <th>变更类型</th>
                     </tr>
-                    <tr><td>golang.org/x/oauth2</td><td>v0.15.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.31.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.3.0</td><td>v0.11.0</td><td>次版本</td></tr><tr class='risk-high'><td>golang.org/x/net</td><td>v0.37.0</td><td>v0.24.0</td><td>⚠️ 版本降级</td></tr><tr><td>golang.org/x/sync</td><td>v0.2.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/consul-awsauth</td><td>v0.0.0-20220713182709-05ac1c5c2706</td><td>v0.0.0-20250130185352-0a5f57fe920a</td><td>一般变更</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.2.3</td><td>v0.3.0</td><td>次版本</td></tr><tr><td>golang.org/x/lint</td><td>v0.0.0-20210508222113-6edffad5e616</td><td>v0.0.0-20241112194109-818c5a804067</td><td>一般变更</td></tr><tr><td>golang.org/x/sys</td><td>v0.19.0</td><td>v0.31.0</td><td>次版本</td></tr><tr class='risk-high'><td>github.com/go-jose/go-jose/v3</td><td>v3.0.4</td><td>v3.0.3</td><td>⚠️ 版本降级</td></tr><tr><td>golang.org/x/tools</td><td>v0.21.1-0.20240508182429-e35e4ccd0d2d</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>golang.org/x/exp</td><td>v0.0.0-20230817173708-d852ddb80c63</td><td>v0.0.0-20250305212735-054e65f0b394</td><td>一般变更</td></tr><tr><td>golang.org/x/term</td><td>v0.27.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.14.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.17.0</td><td>v0.24.0</td><td>次版本</td></tr>
+                    <tr><td>golang.org/x/tools</td><td>v0.21.1-0.20240508182429-e35e4ccd0d2d</td><td>v0.31.0</td><td>次版本</td></tr><tr class='risk-high'><td>golang.org/x/net</td><td>v0.37.0</td><td>v0.24.0</td><td>⚠️ 版本降级</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.2.3</td><td>v0.3.0</td><td>次版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.17.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>golang.org/x/exp</td><td>v0.0.0-20230817173708-d852ddb80c63</td><td>v0.0.0-20250305212735-054e65f0b394</td><td>一般变更</td></tr><tr><td>golang.org/x/lint</td><td>v0.0.0-20210508222113-6edffad5e616</td><td>v0.0.0-20241112194109-818c5a804067</td><td>一般变更</td></tr><tr><td>golang.org/x/time</td><td>v0.3.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.19.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/hashicorp/consul-awsauth</td><td>v0.0.0-20220713182709-05ac1c5c2706</td><td>v0.0.0-20250130185352-0a5f57fe920a</td><td>一般变更</td></tr><tr><td>golang.org/x/sync</td><td>v0.2.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.27.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.15.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.14.0</td><td>v0.23.0</td><td>次版本</td></tr><tr class='risk-high'><td>github.com/go-jose/go-jose/v3</td><td>v3.0.4</td><td>v3.0.3</td><td>⚠️ 版本降级</td></tr><tr><td>golang.org/x/crypto</td><td>v0.31.0</td><td>v0.36.0</td><td>次版本</td></tr>
                 </table>
                 
                 <div class="downgrade-warning">
@@ -667,7 +736,7 @@
                         <th>新许可证</th>
                         <th>兼容性问题</th>
                     </tr>
-                    <tr><td>golang.org/x/net</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/sync</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/sys</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/text</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/google/go-cmp</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr>
+                    <tr><td>golang.org/x/net</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/sys</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/sync</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/google/go-cmp</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr><tr><td>golang.org/x/text</td><td>GPL-3.0-or-later</td><td>NOASSERTION</td><td>否</td></tr>
                 </table>
             </div>
             
