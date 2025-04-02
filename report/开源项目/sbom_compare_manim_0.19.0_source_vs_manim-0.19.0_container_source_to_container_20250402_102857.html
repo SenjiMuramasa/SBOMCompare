@@ -1,0 +1,458 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-02 10:29:00</p>
+                <p>SBOM A: sample_data\manim_0.19.0_source.json</p>
+                <p>SBOM B: sample_data\manim-0.19.0_container.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">8.5/10</span>
+                    <span class="score-percentage">(85.0%)</span>
+                    <span class="score-grade grade-a">A</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 2.5/3.1 (82.2%)</h3>
+                    <p><strong>详情:</strong> 容器中存在1个在源代码中未声明的包; 源代码中定义但容器中缺少9个包</p>
+                    <p><strong>影响因素:</strong> 端到端额外依赖引入, 端到端缺失依赖</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>版本一致性: 1.8/1.8 (98.5%)</h3>
+                    <p><strong>详情:</strong> 1个包发生其他版本变更; 版本变更合理，主要是补丁和小版本更新</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 1.4/1.4 (100.0%)</h3>
+                    <p><strong>详情:</strong> 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>风险评估: 2.0/2.3 (85.0%)</h3>
+                    <p><strong>详情:</strong> 存在1个高风险项</p>
+                    <p><strong>影响因素:</strong> 容器供应链污染</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.8/1.4 (59.0%)</h3>
+                    <p><strong>详情:</strong> Vulnerabilities需要改进; 以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions, Security-Policy; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链源代码到容器的端到端安全评分为 8.5/10.0 (85.0%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：端到端额外依赖引入, 端到端缺失依赖, 容器供应链污染, CII-Best-Practices风险, Branch-Protection风险。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (3)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-44cc-43rp-5947</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-44cc-43rp-5947<br><br><div class="cve-header">来自 CVE-2024-22421 的附加信息:</div><br><div class="section-header">描述: JupyterLab is an extensible environment for interactive and reproducible computing, based on the Jupyter Notebook and Architecture. Users of JupyterLab who click on a malicious link may get their `Authorization` and `XSRFToken` tokens exposed to a third party when running an older `jupyter-server` version. JupyterLab versions 4.1.0b2, 4.0.11, and 3.6.7 are patched. No workaround has been identified, however users should ensure to upgrade `jupyter-server` to version 2.7.2 or newer which includes a redirect vulnerability fix.</div><br><div class="section-header">发布日期: 2024-01-19</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-44cc-43rp-5947</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/19bd9b96cb2e77170a67e43121637d0b5619e8c6</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UQJKNRDRFMKGVRIYNNN6CKMNJDNYWO2H/</span><br><br><div class="section-header">相关漏洞ID: BIT-jupyter-base-notebook-2024-22421, BIT-jupyter-notebook-2024-22421, BIT-jupyterlab-2024-22421, CVE-2024-22421</div><br><br><div class="section-header">发布日期: 2024-01-19</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-44cc-43rp-5947</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-22421</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/19bd9b96cb2e77170a67e43121637d0b5619e8c6</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/1ef7a4fa0202ebdf663e1cc0b45c8813a34a0b96</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/fccd83dc4441da0384ee3fd1322c3b2d9ad4caaa</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UQJKNRDRFMKGVRIYNNN6CKMNJDNYWO2H</span><br><br><div class="section-header">影响范围:</div><br>包名: jupyterlab (PyPI)<br>包名: jupyterlab (PyPI)<br>包名: notebook (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-9q39-rmj3-p4r2</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-9q39-rmj3-p4r2<br><br><div class="cve-header">来自 CVE-2024-43805 的附加信息:</div><br><div class="section-header">描述: jupyterlab is an extensible environment for interactive and reproducible computing, based on the Jupyter Notebook Architecture. This vulnerability depends on user interaction by opening a malicious notebook with Markdown cells, or Markdown file using JupyterLab preview feature. A malicious user can access any data that the attacked user has access to as well as perform arbitrary requests acting as the attacked user. JupyterLab v3.6.8, v4.2.5 and Jupyter Notebook v7.2.2 have been patched to resolve this issue. Users are advised to upgrade. There is no workaround for the underlying DOM Clobbering susceptibility. However, select plugins can be disabled on deployments which cannot update in a timely fashion to minimise the risk. These are: 1. `@jupyterlab/mathjax-extension:plugin` - users will loose ability to preview mathematical equations. 2. `@jupyterlab/markdownviewer-extension:plugin` - users will loose ability to open Markdown previews. 3. `@jupyterlab/mathjax2-extension:plugin` (if installed with optional `jupyterlab-mathjax2` package) - an older version of the mathjax plugin for JupyterLab 4.x. To disable these extensions run: ```jupyter labextension disable @jupyterlab/markdownviewer-extension:plugin && jupyter labextension disable @jupyterlab/mathjax-extension:plugin && jupyter labextension disable @jupyterlab/mathjax2-extension:plugin ``` in bash.</div><br><div class="section-header">发布日期: 2024-08-28</div><br><div class="section-header">最后更新: 2024-08-28</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-9q39-rmj3-p4r2</span><br><br><div class="section-header">相关漏洞ID: BIT-jupyter-base-notebook-2024-43805, BIT-jupyter-notebook-2024-43805, BIT-jupyterlab-2024-43805, CVE-2024-43805</div><br><br><div class="section-header">发布日期: 2024-08-29</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-9q39-rmj3-p4r2</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43805</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/06ad9de836f155add7d3d651ef936cc4c5ea8093</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/88e24baac551196f9cb3de16bd060a7ab1597674</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab</span><br><br><div class="section-header">影响范围:</div><br>包名: jupyterlab (PyPI)<br>包名: notebook (PyPI)<br>包名: jupyterlab (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2021-130 / GHSA-4952-p58q-6crx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-130 / GHSA-4952-p58q-6crx<br><br><div class="cve-header">来自 CVE-2021-32797 的附加信息:</div><br><div class="section-header">描述: JupyterLab is a user interface for Project Jupyter which will eventually replace the classic Jupyter Notebook. In affected versions untrusted notebook can execute code on load. In particular JupyterLab doesn’t sanitize the action attribute of html `<form>`. Using this it is possible to trigger the form validation outside of the form itself. This is a remote code execution, but requires user action to open a notebook.</div><br><div class="section-header">发布日期: 2021-08-09</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed</span><br><br><div class="section-header">相关漏洞ID: BIT-jupyterlab-2021-32797, CVE-2021-32797, GHSA-4952-p58q-6crx</div><br><br><div class="section-header">发布日期: 2021-08-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx</span><br><br><div class="section-header">影响范围:</div><br>包名: jupyterlab (PyPI)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>manim-0.19.0</td><td>commit-local</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (9)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>furo</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>sphinxext-opengraph</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>myst-parser</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>manim</td><td>commit-main</td><td>NOASSERTION</td></tr><tr><td>sphinx-design</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>sphinx-copybutton</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>sphinx</td><td>>=7.3</td><td>NOASSERTION</td></tr><tr><td>sphinxcontrib-programoutput</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>sphinx-reredirects</td><td>NOASSERTION</td><td>BSD License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>jupyterlab</td><td>NOASSERTION</td><td>>=3.0.0</td><td>一般变更</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (1)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="stage-header">
+                        <span>【端到端供应链阶段】</span>
+                    </div>
+                    
+                        <div class="risk-high">
+                            <div class="risk-category">容器供应链污染</div>
+                            <div class="risk-description">容器中存在1个在源代码中未声明的可疑包</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> manim-0.19.0</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 审核完整软件供应链，确保所有包都经过审查和授权</div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,494 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-02 11:43:59</p>
+                <p>SBOM A: sample_data\freqtrade_freqtrade_2025.3_source.json</p>
+                <p>SBOM B: sample_data\freqtrade-2025.3_container.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>13</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>70</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <h2>软件供应链安全评分</h2>
+            <div class="security-score">
+                <div class="score-summary">
+                    <span class="total-score">7.6/10</span>
+                    <span class="score-percentage">(76.1%)</span>
+                    <span class="score-grade grade-b">B+</span>
+                </div>
+                
+                
+                
+                <div class="score-categories">
+                    
+                <div class="category-score category-score-high">
+                    <h3>供应链完整性: 2.9/3.1 (94.1%)</h3>
+                    <p><strong>详情:</strong> 容器中存在1个在源代码中未声明的包; 源代码中定义但容器中缺少13个包</p>
+                    <p><strong>影响因素:</strong> 端到端额外依赖引入, 端到端缺失依赖</p>
+                </div>
+                
+                <div class="category-score category-score-medium">
+                    <h3>版本一致性: 1.3/1.8 (74.0%)</h3>
+                    <p><strong>详情:</strong> 3个包发生主版本变更，可能存在API不兼容; 2个包发生次版本变更; 3个包发生补丁版本变更; 62个包发生其他版本变更</p>
+                    <p><strong>影响因素:</strong> 主版本变更</p>
+                </div>
+                
+                <div class="category-score category-score-high">
+                    <h3>许可证合规性: 1.4/1.4 (100.0%)</h3>
+                    <p><strong>详情:</strong> 许可证变更较少，无明显合规风险</p>
+                    
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>风险评估: 1.2/2.3 (54.0%)</h3>
+                    <p><strong>详情:</strong> 存在2个高风险项; 存在2个中风险项</p>
+                    <p><strong>影响因素:</strong> 端到端版本漂移, 容器供应链污染</p>
+                </div>
+                
+                <div class="category-score category-score-low">
+                    <h3>Scorecard评估: 0.7/1.4 (51.0%)</h3>
+                    <p><strong>详情:</strong> Binary-Artifacts需要改进; 以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Code-Review, Security-Policy; 
+已知漏洞信息:; 项目安全实践亟需加强</p>
+                    <p><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Code-Review风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</p>
+                </div>
+                
+                </div>
+                
+                <div class="score-summary-text">
+                    <p><strong>评分总结:</strong> 软件供应链源代码到容器的端到端安全评分为 7.6/10.0 (76.1%)，安全等级: B+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：端到端额外依赖引入, 端到端缺失依赖, 主版本变更, 端到端版本漂移, 容器供应链污染。</p>
+                </div>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (6)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-4vmg-rw8f-92f9</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-4vmg-rw8f-92f9<br><br><div class="cve-header">来自 CVE-2024-7804 的附加信息:</div><br><div class="section-header">发布日期: 2025-03-20</div><br><div class="section-header">最后更新: 2025-04-01</div><br><br><div class="section-header">相关漏洞ID: CVE-2024-7804</div><br><br><div class="section-header">发布日期: 2025-03-20</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-7804</span><br><span class="vuln-link">https://github.com/pytorch/pytorch</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/blob/27a14405d3b996d572ba18339410e29ec005c775/torch/distributed/rpc/internal.py#L162</span><br><span class="vuln-link">https://huntr.com/bounties/0e870eeb-f924-4054-8fac-d926b1fb7259</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-5pcm-hx3q-hm94</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-5pcm-hx3q-hm94<br><br><div class="cve-header">来自 CVE-2024-31580 的附加信息:</div><br><div class="section-header">描述: PyTorch before v2.2.0 was discovered to contain a heap buffer overflow vulnerability in the component /runtime/vararg_functions.cpp. This vulnerability allows attackers to cause a Denial of Service (DoS) via a crafted input.</div><br><div class="section-header">发布日期: 2024-04-17</div><br><div class="section-header">最后更新: 2025-03-28</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/b5c3a17c2c207ebefcb85043f0cf94be9b2fef81</span><br><span class="vuln-link">https://gist.github.com/1047524396/038c78f2f007345e6f497698ace2aa3d</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-31580</div><br><br><div class="section-header">发布日期: 2024-04-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-31580</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/b5c3a17c2c207ebefcb85043f0cf94be9b2fef81</span><br><span class="vuln-link">https://gist.github.com/1047524396/038c78f2f007345e6f497698ace2aa3d</span><br><span class="vuln-link">https://github.com/pytorch/pytorch</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-PYTHON-TORCH-6649934</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-8495-4g3g-x7pr</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr<br><br><div class="cve-header">来自 CVE-2024-52304 的附加信息:</div><br><div class="section-header">描述: aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Prior to version 3.10.11, the Python parser parses newlines in chunk extensions incorrectly which can lead to request smuggling vulnerabilities under certain conditions. If a pure Python version of aiohttp is installed (i.e. without the usual C extensions) or `AIOHTTP_NO_EXTENSIONS` is enabled, then an attacker may be able to execute a request smuggling attack to bypass certain firewalls or proxy protections. Version 3.10.11 fixes the issue.</div><br><div class="section-header">发布日期: 2024-11-18</div><br><div class="section-header">最后更新: 2024-11-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-8495-4g3g-x7pr</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/259edc369075de63e6f3a4eaade058c62af0df71</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-52304</div><br><br><div class="section-header">发布日期: 2024-11-18</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-8495-4g3g-x7pr</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52304</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/259edc369075de63e6f3a4eaade058c62af0df71</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><br><div class="section-header">影响范围:</div><br>包名: aiohttp (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-jwhx-xcg6-8xhj</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj<br><br><div class="cve-header">来自 CVE-2024-42367 的附加信息:</div><br><div class="section-header">描述: aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Prior to version 3.10.2, static routes which contain files with compressed variants (`.gz` or `.br` extension) are vulnerable to path traversal outside the root directory if those variants are symbolic links. The server protects static routes from path traversal outside the root directory when `follow_symlinks=False` (default).  It does this by resolving the requested URL to an absolute path and then checking that path relative to the root. However, these checks are not performed when looking for compressed variants in the `FileResponse` class, and symbolic links are then automatically followed when performing the `Path.stat()` and `Path.open()` to send the file. Version 3.10.2 contains a patch for the issue.</div><br><div class="section-header">发布日期: 2024-08-09</div><br><div class="section-header">最后更新: 2024-08-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-jwhx-xcg6-8xhj</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8653</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/ce2e9758814527589b10759a20783fb03b98339f</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_fileresponse.py#L177</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_urldispatcher.py#L674</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-42367</div><br><br><div class="section-header">发布日期: 2024-08-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-jwhx-xcg6-8xhj</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-42367</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8653</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/ce2e9758814527589b10759a20783fb03b98339f</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_fileresponse.py#L177</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_urldispatcher.py#L674</span><br><br><div class="section-header">影响范围:</div><br>包名: aiohttp (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-pg7h-5qx3-wjr3</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-pg7h-5qx3-wjr3<br><br><div class="cve-header">来自 CVE-2024-31583 的附加信息:</div><br><div class="section-header">描述: Pytorch before version v2.2.0 was discovered to contain a use-after-free vulnerability in torch/csrc/jit/mobile/interpreter.cpp.</div><br><div class="section-header">发布日期: 2024-04-17</div><br><div class="section-header">最后更新: 2024-08-02</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/9c7071b0e324f9fb68ab881283d6b8d388a4bcd2</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/blob/v2.1.2/torch/csrc/jit/mobile/interpreter.cpp#L132</span><br><span class="vuln-link">https://gist.github.com/1047524396/43e19a41f2b36503a4a228c32cdbc176</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-31583</div><br><br><div class="section-header">发布日期: 2024-04-17</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-31583</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/9c7071b0e324f9fb68ab881283d6b8d388a4bcd2</span><br><span class="vuln-link">https://gist.github.com/1047524396/43e19a41f2b36503a4a228c32cdbc176</span><br><span class="vuln-link">https://github.com/pytorch/pytorch</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/blob/v2.1.2/torch/csrc/jit/mobile/interpreter.cpp#L132</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-PYTHON-TORCH-6619806</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2022-43015 / GHSA-47fc-vmwq-366v</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-43015 / GHSA-47fc-vmwq-366v<br><br><div class="cve-header">来自 CVE-2022-45907 的附加信息:</div><br><div class="section-header">描述: In PyTorch before trunk/89695, torch.jit.annotations.parse_type_line can cause arbitrary code execution because eval is used unsafely.</div><br><div class="section-header">发布日期: 2022-11-26</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/issues/88868</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/767f6aa49fe20a2766b9843d01e3b7f7793df6a3</span><br><br><div class="section-header">相关漏洞ID: BIT-pytorch-2022-45907, CVE-2022-45907, GHSA-47fc-vmwq-366v</div><br><br><div class="section-header">发布日期: 2022-11-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pytorch/pytorch/commit/767f6aa49fe20a2766b9843d01e3b7f7793df6a3</span><br><span class="vuln-link">https://github.com/pytorch/pytorch/issues/88868</span><br><br><div class="section-header">影响范围:</div><br>包名: torch (PyPI)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>freqtrade-2025.3</td><td>commit-local</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (13)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>markdown</td><td>==3.7</td><td>BSD License</td></tr><tr><td>requests >= 2.26.0</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>stable_baselines3</td><td>==2.5.0 ; sys_platform != 'darwin' or platform_machine != 'x86_64'</td><td>MIT</td></tr><tr><td>python-rapidjson >= 1.0</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>pymdown-extensions</td><td>==10.14.3</td><td>MIT License</td></tr><tr><td>mike</td><td>==2.1.3</td><td>BSD License</td></tr><tr><td>mkdocs-material</td><td>==9.6.9</td><td>MIT License</td></tr><tr><td>sb3_contrib</td><td>>=2.2.1</td><td>MIT</td></tr><tr><td>freqtrade</td><td>commit-develop</td><td>NOASSERTION</td></tr><tr><td>mkdocs</td><td>==1.6.1</td><td>BSD License</td></tr><tr><td>mdx_truly_sane_lists</td><td>==1.3</td><td>MIT License</td></tr><tr><td>numexpr</td><td>==2.10.2</td><td>MIT License</td></tr><tr><td>bottleneck</td><td>==1.4.2</td><td>BSD License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (70)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>catboost</td><td>==1.2.7 ; 'arm' not in platform_machine</td><td>NOASSERTION ; platform_machine != "aarch64"</td><td>一般变更</td></tr><tr><td>ccxt</td><td>==4.4.69</td><td>>=4.4.60</td><td>补丁版本</td></tr><tr><td>psutil</td><td>==7.0.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>sdnotify</td><td>==0.3.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>datasieve</td><td>==0.1.7</td><td>>=0.1.5</td><td>补丁版本</td></tr><tr><td>janus</td><td>==2.0.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>TA-Lib</td><td>==0.4.38</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>isort</td><td>==6.0.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>py_find_1st</td><td>==1.1.7</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pyarrow</td><td>==19.0.1 ; platform_machine != 'armv7l'</td><td>NOASSERTION ; platform_machine != "armv7l"</td><td>一般变更</td></tr><tr><td>pytest-mock</td><td>==3.14.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pre-commit</td><td>==4.2.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>schedule</td><td>==1.2.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>aiohttp</td><td>==3.9.5</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>lightgbm</td><td>==4.6.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pytest-timeout</td><td>==2.3.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>urllib3</td><td>==2.3.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>technical</td><td>==1.5.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>coveralls</td><td>==4.0.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>python-dateutil</td><td>==2.9.0.post0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>jinja2</td><td>==3.1.6</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>plotly</td><td>==6.0.1</td><td>>=4.0</td><td>主版本</td></tr><tr><td>pytest-random-order</td><td>==1.1.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>tqdm</td><td>==4.67.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>humanize</td><td>==4.12.1</td><td>>=4.0.0</td><td>次版本</td></tr><tr><td>joblib</td><td>==1.4.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>fastapi</td><td>==0.115.12</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>numpy</td><td>==1.26.4</td><td><2.0</td><td>主版本</td></tr><tr><td>rich</td><td>==13.9.4</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pytz</td><td>==2025.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>prompt-toolkit</td><td>==3.0.50</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>scipy</td><td>==1.15.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>orjson</td><td>==3.10.15</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>gymnasium</td><td>==0.29.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>tabulate</td><td>==0.9.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>types-cachetools</td><td>==5.5.0.20240820</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>ruff</td><td>==0.11.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>time-machine</td><td>==2.16.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pytest-xdist</td><td>==3.6.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>jsonschema</td><td>==4.23.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pandas-ta</td><td>==0.3.14b</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pyjwt</td><td>==2.10.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pytest-asyncio</td><td>==0.25.3</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>nbconvert</td><td>==7.16.6</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pandas</td><td>==2.2.3</td><td>>=2.2.0,<3.0</td><td>一般变更</td></tr><tr><td>websockets</td><td>==15.0.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>python-telegram-bot</td><td>==22.0</td><td>>=20.1</td><td>主版本</td></tr><tr><td>mypy</td><td>==1.15.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>questionary</td><td>==2.1.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>python-rapidjson</td><td>==1.20</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>ast-comments</td><td>==1.2.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>uvicorn</td><td>==0.34.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pydantic</td><td>==2.10.6</td><td>>=2.2.0</td><td>次版本</td></tr><tr><td>types-requests</td><td>==2.32.0.20250306</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>SQLAlchemy</td><td>==2.0.39</td><td>>=2.0.6</td><td>补丁版本</td></tr><tr><td>types-filelock</td><td>==3.2.7</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>requests</td><td>==2.32.3</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>torch</td><td>==2.6.0 ; sys_platform != 'darwin' or platform_machine != 'x86_64'</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>xgboost</td><td>==2.1.4</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>types-python-dateutil</td><td>==2.9.0.20241206</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>tensorboard</td><td>==2.19.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>types-tabulate</td><td>==0.9.0.20241207</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>aiofiles</td><td>==24.1.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>packaging</td><td>==24.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pytest</td><td>==8.3.5</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>filelock</td><td>==3.18.0</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>cachetools</td><td>==5.5.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>cryptography</td><td>==44.0.2</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>scikit-learn</td><td>==1.6.1</td><td>NOASSERTION</td><td>一般变更</td></tr><tr><td>pytest-cov</td><td>==6.0.0</td><td>NOASSERTION</td><td>一般变更</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">风险分析 (4)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <div class="risk-container">
+                        
+                    <div class="risk-medium">
+                        <div class="risk-category">依赖变更</div>
+                        <div class="risk-description">移除了大量包（13个），可能表明软件架构发生了重大变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> markdown, requests >= 2.26.0, stable_baselines3, python-rapidjson >= 1.0, pymdown-extensions... 等共13个包</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 确认所有被移除的依赖项功能都已经被适当替代或不再需要</div>
+                    </div>
+                    
+                    <div class="risk-medium">
+                        <div class="risk-category">重大版本变更</div>
+                        <div class="risk-description">3个包进行了主版本升级，可能包含不兼容的API变更</div>
+                        <div class="risk-affected"><strong>受影响的包:</strong> plotly, numpy, python-telegram-bot</div>
+                        <div class="risk-recommendation"><strong>建议:</strong> 审查主版本变更的包的变更日志，确认API兼容性，并进行全面测试</div>
+                    </div>
+                    
+                    <div class="stage-header">
+                        <span>【端到端供应链阶段】</span>
+                    </div>
+                    
+                        <div class="risk-high">
+                            <div class="risk-category">端到端版本漂移</div>
+                            <div class="risk-description">从源代码到容器，3个包发生了主版本变更</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> plotly, numpy, python-telegram-bot</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 实施严格的版本锁定策略，确保从源代码到容器的整个过程中版本一致</div>
+                        </div>
+                        
+                        <div class="risk-high">
+                            <div class="risk-category">容器供应链污染</div>
+                            <div class="risk-description">容器中存在1个在源代码中未声明的可疑包</div>
+                            <div class="risk-affected"><strong>受影响的包:</strong> freqtrade-2025.3</div>
+                            <div class="risk-recommendation"><strong>建议:</strong> 审核完整软件供应链，确保所有包都经过审查和授权</div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,1326 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "local/locust-2.33.2 SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/local/locust-2.33.2-7fa73e88-6993-4549-8ced-b78b141b0a59",
+  "creationInfo": {
+    "created": "2025-04-02T04:05:41.302901Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "locust-2.33.2",
+      "SPDXID": "SPDXRef-Package-locust-2.33.2",
+      "downloadLocation": "file://D:\\CorDefense\\project\\locust-2.33.2",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "Local project: locust-2.33.2",
+      "comment": "Primary languages: Python, HTML, Markdown, JavaScript",
+      "versionInfo": "commit-local",
+      "supplier": "Organization: local",
+      "homepage": "file://D:\\CorDefense\\project\\locust-2.33.2"
+    },
+    {
+      "name": "gevent",
+      "SPDXID": "SPDXRef-Package-90a5dcebf1f59b376b487dffcdadd99d",
+      "versionInfo": ">=22.10.2 ; python_version <= '3.12'",
+      "downloadLocation": "https://pypi.org/project/gevent/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Denis Bilenko",
+      "supplier": "Person: Denis Bilenko",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Coroutine-based network library",
+      "homepage": "http://www.gevent.org/"
+    },
+    {
+      "name": "gevent",
+      "SPDXID": "SPDXRef-Package-ced5111dc0f3e234083941f5e44c8e24",
+      "versionInfo": ">=24.10.1 ; python_version > '3.13'",
+      "downloadLocation": "https://pypi.org/project/gevent/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Denis Bilenko",
+      "supplier": "Person: Denis Bilenko",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Coroutine-based network library",
+      "homepage": "http://www.gevent.org/"
+    },
+    {
+      "name": "flask",
+      "SPDXID": "SPDXRef-Package-6c86e1abe57d09f390068a4c16f84543",
+      "versionInfo": ">=2.0.0",
+      "downloadLocation": "https://pypi.org/project/Flask/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "A simple framework for building complex web applications."
+    },
+    {
+      "name": "Werkzeug",
+      "SPDXID": "SPDXRef-Package-6802503259f112e7f36087e665112403",
+      "versionInfo": ">=2.0.0",
+      "downloadLocation": "https://pypi.org/project/Werkzeug/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "The comprehensive WSGI web application library."
+    },
+    {
+      "name": "requests",
+      "SPDXID": "SPDXRef-Package-1edddf31bc32f7ac8d2890d0cd246c30",
+      "versionInfo": ">=2.26.0 ; python_version <= '3.11'",
+      "downloadLocation": "https://pypi.org/project/requests/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) Kenneth Reitz",
+      "supplier": "Person: Kenneth Reitz",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Python HTTP for Humans.",
+      "homepage": "https://requests.readthedocs.io"
+    },
+    {
+      "name": "requests",
+      "SPDXID": "SPDXRef-Package-b80b52df49a0ac739d9e31429f7961a8",
+      "versionInfo": ">=2.32.2 ; python_version > '3.11'",
+      "downloadLocation": "https://pypi.org/project/requests/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) Kenneth Reitz",
+      "supplier": "Person: Kenneth Reitz",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Python HTTP for Humans.",
+      "homepage": "https://requests.readthedocs.io"
+    },
+    {
+      "name": "msgpack",
+      "SPDXID": "SPDXRef-Package-6411a8083d4fa167317f5813c95bd157",
+      "versionInfo": ">=1.0.0",
+      "downloadLocation": "https://pypi.org/project/msgpack/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "MessagePack serializer"
+    },
+    {
+      "name": "pyzmq",
+      "SPDXID": "SPDXRef-Package-233b9ded379c1ff27113b6ca2bb6208d",
+      "versionInfo": ">=25.0.0",
+      "downloadLocation": "https://pypi.org/project/pyzmq/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Brian E. Granger, Min Ragan-Kelley",
+      "supplier": "Person: Brian E. Granger, Min Ragan-Kelley",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Python bindings for 0MQ"
+    },
+    {
+      "name": "geventhttpclient",
+      "SPDXID": "SPDXRef-Package-6e045b6c260424b7b0abd5f83c6e1a5b",
+      "versionInfo": ">=2.3.1",
+      "downloadLocation": "https://pypi.org/project/geventhttpclient/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "HTTP client library for gevent"
+    },
+    {
+      "name": "ConfigArgParse",
+      "SPDXID": "SPDXRef-Package-7191a550a5c87e12e3ae8b81791a38f0",
+      "versionInfo": ">=1.5.5",
+      "downloadLocation": "https://pypi.org/project/ConfigArgParse/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) ",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables.",
+      "homepage": "https://github.com/bw2/ConfigArgParse"
+    },
+    {
+      "name": "tomli",
+      "SPDXID": "SPDXRef-Package-4359c573ee4741a73d6a4de3bc50ec7d",
+      "versionInfo": ">=1.1.0 ; python_version < '3.11'",
+      "downloadLocation": "https://pypi.org/project/tomli/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "A lil' TOML parser"
+    },
+    {
+      "name": "typing_extensions",
+      "SPDXID": "SPDXRef-Package-0f8b80a15a8e3cdf0ea721bd148c0fdd",
+      "versionInfo": ">=4.6.0 ; python_version < '3.11'",
+      "downloadLocation": "https://pypi.org/project/typing-extensions/",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Backported and Experimental Type Hints for Python 3.8+"
+    },
+    {
+      "name": "psutil",
+      "SPDXID": "SPDXRef-Package-7b932489d8f366cec97886633291263a",
+      "versionInfo": ">=5.9.1",
+      "downloadLocation": "https://pypi.org/project/psutil/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Giampaolo Rodola",
+      "supplier": "Person: Giampaolo Rodola",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Cross-platform lib for process and system monitoring in Python.  NOTE: the syntax of this script MUST be kept compatible with Python 2.7.",
+      "homepage": "https://github.com/giampaolo/psutil"
+    },
+    {
+      "name": "Flask-Login",
+      "SPDXID": "SPDXRef-Package-b17fcbc515a4d5d8d3240e1cc01379af",
+      "versionInfo": ">=0.6.3",
+      "downloadLocation": "https://pypi.org/project/Flask-Login/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Matthew Frazier",
+      "supplier": "Person: Matthew Frazier",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "User authentication and session management for Flask.",
+      "homepage": "https://github.com/maxcountryman/flask-login"
+    },
+    {
+      "name": "Flask-Cors",
+      "SPDXID": "SPDXRef-Package-364a54d66519a9f8cb38fb51998d9c20",
+      "versionInfo": ">=3.0.10",
+      "downloadLocation": "https://pypi.org/project/flask-cors/",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "A Flask extension simplifying CORS support"
+    },
+    {
+      "name": "pywin32",
+      "SPDXID": "SPDXRef-Package-731e17b8a8ffca8718872b3306041785",
+      "versionInfo": "NOASSERTION ; sys_platform == 'win32'",
+      "downloadLocation": "https://pypi.org/project/pywin32/",
+      "licenseConcluded": "Python Software Foundation License",
+      "licenseDeclared": "Python Software Foundation License",
+      "copyrightText": "Copyright (c) Mark Hammond (et al)",
+      "supplier": "Person: Mark Hammond (et al)",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Python for Window Extensions",
+      "homepage": "https://github.com/mhammond/pywin32"
+    },
+    {
+      "name": "setuptools",
+      "SPDXID": "SPDXRef-Package-0ceb33eb120cfc16af73d9c8294a1a37",
+      "versionInfo": ">=70.0.0",
+      "downloadLocation": "https://pypi.org/project/setuptools/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "Easily download, build, install, upgrade, and uninstall Python packages"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "hatch_build.py",
+      "SPDXID": "SPDXRef-File-40bf0fa360626fd22c60f30c3c45233d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d50957d3ba531e86898ba014c31c59159bf95551"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d8be857756576669307d4bf7f7b98a14a7acc167be2fa0292eb70490669bc0e6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "640a2c016285199c2477af9a34eaacf9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1959484c6716bbbccca3fb3705ad39b22a90df75"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0581fd5952eeb151131276abf1ecbfb7a9efad113c542a9ebcd658e21f3a810d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "44257a25d18d979e30ffdd039837790c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\argument_parser.py",
+      "SPDXID": "SPDXRef-File-14b11f48bbe36c3976532aa912288422",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6573c5cd5f60403339fceb0a2d4fb8328d36397e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aee489718e28b84470568a47bc70cafa86d00fa9e544a0ea8cb2f08ded921fd9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d939e61ab9f43bc97e59c2b4547feade"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\clients.py",
+      "SPDXID": "SPDXRef-File-605e75b1dcd05ec5afccf589c5e9fb2c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5dafc9651bc0f4ad133301e4e9b6760cd1d15bdb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2c70188daa118cc5f074e07c281518447f7ef1493817c36f52c0f2e544f12a40"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "60f984a540c7582e26882ac4813000d4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\debug.py",
+      "SPDXID": "SPDXRef-File-c36f8c6103ad79cf100238f5385c2693",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d67b6a08a0985936038d7b7d213cb614ea191e76"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ec20a6f1b220e38b861f6c2a065a35ad7073576573c0f89c2f12dec33f2be424"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "07e7d556265e9b5c81e078d6adf0ba52"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\dispatch.py",
+      "SPDXID": "SPDXRef-File-b09f5da00a1c195193aebafa2be47822",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dfb011c3ea440b3b0472dd3b05d15b7ea6e6106a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a6b770b5bf44a0de00f6496088a816bb0426bc507c844b851ce2baa2deb60092"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9de15d330bce799ded85498a820f1825"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\env.py",
+      "SPDXID": "SPDXRef-File-39e93df7ddf2e7fdecbfdfa84fe215b7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7a1d7d0cdc772aaae09980bc013b03d38cff4314"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "52047ce426db3178e1b1bacc3bc731fbeb9b773130b8cd9666d63c0c53071e1a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b7a68b673e7eca8a4888e893836d8ddb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\event.py",
+      "SPDXID": "SPDXRef-File-fb348dc723167067e3031a872afff71a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1f88de1a90a060d3be4f50ee8768442fe4e72acc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "016a1e1b6ab5d55a6ea6fd5e5bd45fd8dd042387430c095d29eeb36356a30bb2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "91a0a481b6cc7dc0663d3e5fcefa67f1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\exception.py",
+      "SPDXID": "SPDXRef-File-612c6b3cf35815b895dd536389e12fb4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "41beadadc743a3cb68c73e3788e698f93f3d5394"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8c6809df6b9bb9fe2959d95a54e91b8766342e51b4fc31e2fa5bf789bf29a4e1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "653db13819e1abf609cf467a7af83e52"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\html.py",
+      "SPDXID": "SPDXRef-File-5aa24c5763172262bd9bbad252af1988",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5fc4fc9f2b3a2262ca88079332c5b2a4f209c428"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e20d0bc6ac14ea986dbb85a99aabd944eb33dcb4ef4966aae686086ebb3b465b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9b15ec867e3575e5d60e2fdad6c681d0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\input_events.py",
+      "SPDXID": "SPDXRef-File-5eb9c3e4fdb7846dad569fc03a43687a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a29c497b96d64fc4bd63a5881e4a24f6bfe1fd7c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "648c9e3f200cb80fd81585a0d7c83fa44e24c2e415dd16c4076e743335d1c236"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f28f94ee17061a1ab0fa3dadc766b99a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\log.py",
+      "SPDXID": "SPDXRef-File-f8311ed2db367ddd2d9b318ea3857412",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "19d41e5ce3bd83a4ab774185e9f3c6951f72d8ff"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e44d9950e6b7578b1f0aa6bee3bd0695ed4893d2f99f1622b6c8c407db51c04d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d3f48cedd7b09d78552e2bab04cd52ff"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\main.py",
+      "SPDXID": "SPDXRef-File-b1f3fefbdb8b399127602dd664c561ba",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6f24adcfe7bee354e129213ce1ee1747c555ad26"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2c7ab15f3f0c06e78498c82150fccaf8df4c0c29ef634982cbe11feccb083d82"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3d5267de6f70fbb0e79d59a04e3670ad"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\runners.py",
+      "SPDXID": "SPDXRef-File-717d8b7ac03814405c63491280dd6d5c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a7edd846f7916903f3328a8f5644de0b5a58c4dd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "eb6a3309bdd2ecb7ad06838c3b54ff2f90ae682a73c6a1ac8e28eb57e1fbd506"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "53293bb19bfa1661e743d78748f374bb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\shape.py",
+      "SPDXID": "SPDXRef-File-ef783b5a64687fe2d6506721f92cd80f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "caabf1da9b2f5762096884d4435a0f1ca34f19cc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b7e970052f0b3a359c29734bee3d94df3ae82172756f47dacd4c2945840e297c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3b570cd005488b542328e3c9c2c47a66"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\stats.py",
+      "SPDXID": "SPDXRef-File-6b2470db7b96f77cc9aaf08064563755",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e7befeeb78c82669b731522f75b68fcbe5bb259f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b28208bf3c4e62b11bf8252f2ea0e061ca0af572805f7d731355e480f5964901"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "889c753508e9299f891a4293ef4fcc4e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\web.py",
+      "SPDXID": "SPDXRef-File-3dabcaf51046c0ed1757697bf78d365a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "014fad6cb1c1a620ecf871cf191a4c718318bbac"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a151ea27fbcf43e80bccc66073c470a86e380d0ea7cdb5e9b5aefc8a1b550a3a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b2f0fa7abeb1bd4ce2aa84b9f8e9b45a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\_version.py",
+      "SPDXID": "SPDXRef-File-ec7069d9a3d6a3464c5d6960400968ca",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2e63fcba9d711b6ea9a75948db4c10617708f858"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8a8e21995b875d4890b4775bc7813e445324fc4109472769757c98badaf969cb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5b148294ee72afe0ba94749f929045a9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\__init__.py",
+      "SPDXID": "SPDXRef-File-9f6768bc0c6dac2e98d3b6792c03ef79",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "971e138d9b52b3ae93e378a04a7750e3ff9e7f55"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6967ae04f53138d8f0366d71a78bfc2f804ed784ae60b8ec7088b02555f5522e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2e9241e7200fb79ce34954011e4e2059"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\__main__.py",
+      "SPDXID": "SPDXRef-File-54a0c110be77564659e37f0046b3ec50",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "92b120d432a69f9701d8113248900e7f1b124617"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bc143cdb7df8917d3a2260db1653c582205188b2229f0364df3f0a86cea177be"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "845d2319a64211df1f84a9f4a0b61a0d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\contrib\\fasthttp.py",
+      "SPDXID": "SPDXRef-File-be05f4e00739dab051b1671b152f9afc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d4b55cc8e285a27a0e5236528c3f4b2ab99c763e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "941d6df2ccac85da490eb367acdea3d34145e13b3375863c6147dd83ef66c301"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a6747a40dd942299701f7c983ba5dc18"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\contrib\\mongodb.py",
+      "SPDXID": "SPDXRef-File-a5f3b35f08f5212816605595a15dd72c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7f63393713902624f30b21e4d987d44b453deebe"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d6c79462024e68d2b0c9b60e3fd3d411586097c846cbe1b7ddff25163dd1f16f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a829f53142afcb20eb787bc4f87a7990"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\contrib\\postgres.py",
+      "SPDXID": "SPDXRef-File-4696b9c32fe9f9741bcd7af6c9c96c86",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "74a946adefa110d7ac989bb91b31ac7eb9d7c494"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3ae3169c660dd742bae53ab66b15444845b6e58d20e6025bd2b2bdd2391c0898"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8ce66badb501c1b2acb650041c1fa8fd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\contrib\\__init__.py",
+      "SPDXID": "SPDXRef-File-189dba57ae572965d8136b36132748b3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d41d8cd98f00b204e9800998ecf8427e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\rpc\\protocol.py",
+      "SPDXID": "SPDXRef-File-a9eb5bed4598bc28bfe7207e2e387cb4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5c2ff45bf39a4d3b22ef210c0371a4cd78d145ed"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9feadbdc66507009657580e3e04e06b851b29588ffdba1924b9536f6679fb796"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d8c81af9bde59991711835cfea4440d6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\rpc\\zmqrpc.py",
+      "SPDXID": "SPDXRef-File-2ede12a5080fbba7323021668633cf48",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cdf7c1396ae86d05ac8f9d94c41937c70d1b3766"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b4c78b4222c823c40fdbd9401c666c8f93dfe45b132fe5f8c0cd03aed47700bc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "56892b43e29ad25a718b3ccb7e963389"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\rpc\\__init__.py",
+      "SPDXID": "SPDXRef-File-074ff328b33c9264d6e2e481c9ec1cc5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0a1156e8f62d13e02397e6657b6c5029a049dc2a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e583aefb9f174a7b7ea1658d0138172d335d6280e49278301cd5e9af19162923"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "101a1dfd9d84d3786b25fd9d087c1a24"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\user\\inspectuser.py",
+      "SPDXID": "SPDXRef-File-8e245d55e4fe3796ca1a0ee16d31ceb7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b6fba991698b51c341752f9f8eb14c58ce94ee69"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2a0ad61f21398e12baa2be7c47bb282d17fefecb78d80690ad1ef6a9b897c3d1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b58c9cc280771f286e1d2050d171fa2a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\user\\sequential_taskset.py",
+      "SPDXID": "SPDXRef-File-bb0221552d6b3edae4bbd29664b8cee8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5ef05295b0b8df83f5ac1543fa757ec0c5c07742"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "49baeb194f475769c459eeb3415b63ca69fc3603c848fed048da15772a178d88"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "23f502016511718b8bd3681cae5b2ce7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\user\\task.py",
+      "SPDXID": "SPDXRef-File-0c48db960665bfc96ca48219fc4a381e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5261d7e50a1832cb24cd7ccf4bc7b89e4305c3c1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "76808e72584f0bdd9e3df55ad4a7c871e642f98a1fa6733855a2a995660d1fca"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4cd674e15973b0c74b748a887a06c991"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\user\\users.py",
+      "SPDXID": "SPDXRef-File-ac2326afa8545bd5060e34e3d0d21726",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "370cf68f0c91c9632f67c1c6dfdf6d7503041d44"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "06c2b2c732ead6599d6015e7c07372307fcdc5fcbb4119722e77e213ce77f476"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "05eb9c9f727e9766eb21005b1dc2b4d1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\user\\wait_time.py",
+      "SPDXID": "SPDXRef-File-b25f84d1c8eb77832d2c7ad09db165c3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "986da88bae335e7813dc6cdbabf89c5827762df6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6c644a315c789689bbe6c5f73ce60951ad423de304d9b1005c6e82120c523b95"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "98d90b8cc480a907586a6d80d52a496d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\user\\__init__.py",
+      "SPDXID": "SPDXRef-File-f06df502271eb4881d0b47e185dabb91",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0927b0f2b9a5d83037902ab7ee5413ef2d462f0d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "46075109f94fd9d20372fc1531d84f40700c85657041aad0f705a317d1ca934c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "16bb7f741076c936568f9ec532ea453d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\cache.py",
+      "SPDXID": "SPDXRef-File-d72642dd54c4174bc0772ebc4b408717",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3481e9e91e34144d604f4968af7d31b14a4a2b9e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2316e919ac25d3e86858abc2aed92cc6348b7f619b0414d59ecd3a17b9850643"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7cef7a5a7d223735b121dcb380663313"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\date.py",
+      "SPDXID": "SPDXRef-File-c836b99cc8327eb15fcd03c69583d158",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "28af647d7dd9860b64181068bf84f9f892a251b5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dae64063e7e426aee5954715cb04c34db7beff6218ba60afd7c9f756b73be60c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "df09255813ac8c1bf2c260961ceda265"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\deprecation.py",
+      "SPDXID": "SPDXRef-File-c43b55cb5e04ef241448e0b4a33bc47c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e0064d23c996a68366b7a63a2c09097aad6c7693"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e26cb821c1696cceb210aaf9ebd18c50a32c4b4cb0a7437824f861c26dc9d7ec"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c4dbe4bb0222bab2d92dd314130a39fb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\directory.py",
+      "SPDXID": "SPDXRef-File-4b272c83afb06715ab0e63df24993d27",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a45af470d543e9a5f69ea4d2f90b8bf2deeffa84"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d847ae548205104ae6d0ea4d5ddb048102f1e3d8c05eaf8fbcc8f6b98d0cafca"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cd96d28d9e35d5c970e5b1e05fb08043"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\exception_handler.py",
+      "SPDXID": "SPDXRef-File-ae004136f4ea9ab3760a8816a44c73a0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1a8210f53aee8ff90c9e607f9e113fd233a34403"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8d333206ad9ad0ed3b7d18e6a869217b268f8f9f2d5209db6dc8e87ac2863f0b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "043628012e53a24ee24a89977d804e13"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\load_locustfile.py",
+      "SPDXID": "SPDXRef-File-b423038c7b8dab4fd6da6b6bd118e710",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5a2a3a7960050ebdc56141653b205afa2349ffc3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "867ef429c206f231e6672b8abf6a5c126c205ad384bb6e047de8e2d4a4583541"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "aa97f79b1dab49d06e402b4716e74783"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\rounding.py",
+      "SPDXID": "SPDXRef-File-b6653fe5d056cb47e732beda840714ce",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2f09724492d5850700943f70358439da814955b5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e616b147c98a8404ea6a0e96bcf6f2f8c491460230e4e6fab616f2bcc61933ba"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "56ca3259351de1be7efce76bd77296d8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\timespan.py",
+      "SPDXID": "SPDXRef-File-286ae71802c234e3ed6e42f22d08b078",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "16824a26b2629a274575f32978926e49238eda44"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6342ed9e152ad8cab5f69d38bb45ed065610ffe4b6711bf045d82bbbc5bd5a10"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ff62b5c77b1df832c772c7e75867801a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\url.py",
+      "SPDXID": "SPDXRef-File-8f3591b4e8839df383388676ca32d984",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "393d9d2f1a675904a0c9e771732576a0763b3361"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b3f5b63c2c6fc535b1597d3252fa7ef1506e426f3cd4ac08e57f6289fa20646e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "962705ecc4f301cab9ca253a91a79400"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "locust\\util\\__init__.py",
+      "SPDXID": "SPDXRef-File-c4d39490b1f1805c5fe7560439871e79",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d41d8cd98f00b204e9800998ecf8427e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-locust-2.33.2",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-90a5dcebf1f59b376b487dffcdadd99d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-ced5111dc0f3e234083941f5e44c8e24",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-6c86e1abe57d09f390068a4c16f84543",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-6802503259f112e7f36087e665112403",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-1edddf31bc32f7ac8d2890d0cd246c30",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-b80b52df49a0ac739d9e31429f7961a8",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-6411a8083d4fa167317f5813c95bd157",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-233b9ded379c1ff27113b6ca2bb6208d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-6e045b6c260424b7b0abd5f83c6e1a5b",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-7191a550a5c87e12e3ae8b81791a38f0",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-4359c573ee4741a73d6a4de3bc50ec7d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-0f8b80a15a8e3cdf0ea721bd148c0fdd",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-7b932489d8f366cec97886633291263a",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-b17fcbc515a4d5d8d3240e1cc01379af",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-364a54d66519a9f8cb38fb51998d9c20",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-731e17b8a8ffca8718872b3306041785",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-locust-2.33.2",
+      "relatedSpdxElement": "SPDXRef-Package-0ceb33eb120cfc16af73d9c8294a1a37",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

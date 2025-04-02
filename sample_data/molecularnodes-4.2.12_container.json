@@ -1,0 +1,2204 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "local/molecularnodes-4.2.12 SBOM",
+  "documentNamespace": "https://spdx.org/spdxdocs/local/molecularnodes-4.2.12-d76f8446-09fd-45b3-8207-b4cd37413004",
+  "creationInfo": {
+    "created": "2025-04-02T05:54:21.104368Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "molecularnodes-4.2.12",
+      "SPDXID": "SPDXRef-Package-molecularnodes-4.2.12",
+      "downloadLocation": "file://D:\\CorDefense\\project\\molecularnodes-4.2.12",
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "Local project: molecularnodes-4.2.12",
+      "comment": "Primary languages: Python, Markdown",
+      "versionInfo": "commit-local",
+      "supplier": "Organization: local",
+      "homepage": "file://D:\\CorDefense\\project\\molecularnodes-4.2.12"
+    },
+    {
+      "name": "databpy",
+      "SPDXID": "SPDXRef-Package-0b212b9b1c25ee394d2be9e9808f1c81",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/databpy/",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "A data-oriented wrapper library for the Blender Python API"
+    },
+    {
+      "name": "MDAnalysis",
+      "SPDXID": "SPDXRef-Package-0ec1be2b619d52e93e3030900189c5b3",
+      "versionInfo": ">=2.7.0",
+      "downloadLocation": "https://pypi.org/project/MDAnalysis/",
+      "licenseConcluded": "GNU Lesser General Public License v3 or later (LGPLv3+)",
+      "licenseDeclared": "GNU Lesser General Public License v3 or later (LGPLv3+)",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "An object-oriented toolkit to analyze molecular dynamics trajectories."
+    },
+    {
+      "name": "biotite",
+      "SPDXID": "SPDXRef-Package-f824338279fa2defb1f1e7d02cbfcbca",
+      "versionInfo": ">=1.1",
+      "downloadLocation": "https://pypi.org/project/biotite/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) The Biotite contributors",
+      "supplier": "Person: The Biotite contributors",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "A comprehensive library for computational molecular biology"
+    },
+    {
+      "name": "mrcfile",
+      "SPDXID": "SPDXRef-Package-afc0726d22614bc206b643e24dffd4fb",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/mrcfile/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Colin Palmer",
+      "supplier": "Person: Colin Palmer",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "MRC file I/O library",
+      "homepage": "https://github.com/ccpem/mrcfile"
+    },
+    {
+      "name": "starfile",
+      "SPDXID": "SPDXRef-Package-aadd680cb99f236a6f3bf678375351de",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/starfile/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (project.dependencies); From pyproject.toml (project.dependencies)",
+      "description": "STAR file I/O in Python"
+    },
+    {
+      "name": "bpy",
+      "SPDXID": "SPDXRef-Package-8e14295ee226172ecbc4f441ea7e986f",
+      "versionInfo": ">=4.2",
+      "downloadLocation": "https://pypi.org/project/bpy/",
+      "licenseConcluded": "GPL-3.0",
+      "licenseDeclared": "GPL-3.0",
+      "copyrightText": "Copyright (c) Blender Foundation",
+      "supplier": "Person: Blender Foundation",
+      "comment": "From pyproject.toml (optional-dependencies.bpy); From pyproject.toml (optional-dependencies.bpy)",
+      "description": "Blender as a Python module",
+      "homepage": "https://www.blender.org"
+    },
+    {
+      "name": "pytest",
+      "SPDXID": "SPDXRef-Package-7ceccc8076e85ba05e8a694ddf1ea24a",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/pytest/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others (See AUTHORS)",
+      "supplier": "Person: Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others (See AUTHORS)",
+      "comment": "From pyproject.toml (optional-dependencies.dev); From pyproject.toml (optional-dependencies.dev)",
+      "description": "pytest: simple powerful testing with Python"
+    },
+    {
+      "name": "pytest-cov",
+      "SPDXID": "SPDXRef-Package-809cab012f80cffa3e1e9eb37061a7ea",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/pytest-cov/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Marc Schlaich",
+      "supplier": "Person: Marc Schlaich",
+      "comment": "From pyproject.toml (optional-dependencies.dev); From pyproject.toml (optional-dependencies.dev)",
+      "description": "Pytest plugin for measuring coverage.",
+      "homepage": "https://github.com/pytest-dev/pytest-cov"
+    },
+    {
+      "name": "syrupy",
+      "SPDXID": "SPDXRef-Package-c720cbe2c1d98efbe83ece387396aaa0",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/syrupy/",
+      "licenseConcluded": "Apache Software License",
+      "licenseDeclared": "Apache Software License",
+      "copyrightText": "Copyright (c) Noah Ulster",
+      "supplier": "Person: Noah Ulster",
+      "comment": "From pyproject.toml (optional-dependencies.dev); From pyproject.toml (optional-dependencies.dev)",
+      "description": "Pytest Snapshot Test Utility",
+      "homepage": "https://github.com/syrupy-project/syrupy"
+    },
+    {
+      "name": "scipy",
+      "SPDXID": "SPDXRef-Package-75890af5eaf1a5180b644d8fb2d16de4",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/scipy/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (optional-dependencies.dev); From pyproject.toml (optional-dependencies.dev)",
+      "description": "Fundamental algorithms for scientific computing in Python"
+    },
+    {
+      "name": "fake-bpy-module",
+      "SPDXID": "SPDXRef-Package-881bd19679288cec4ebe1ee146b37f62",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/fake-bpy-module/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) nutti",
+      "supplier": "Person: nutti",
+      "comment": "From pyproject.toml (optional-dependencies.dev); From pyproject.toml (optional-dependencies.dev)",
+      "description": "Collection of the fake Blender Python API module for the code completion."
+    },
+    {
+      "name": "IPython",
+      "SPDXID": "SPDXRef-Package-3a8c1f18b74ce263ebafdac69305e461",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/ipython/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) The IPython Development Team",
+      "supplier": "Person: The IPython Development Team",
+      "comment": "From pyproject.toml (optional-dependencies.dev); From pyproject.toml (optional-dependencies.dev)",
+      "description": "IPython: Productive Interactive Computing"
+    },
+    {
+      "name": "quartodoc",
+      "SPDXID": "SPDXRef-Package-5802effc2c1f21d3dcafd9e229036cb7",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/quartodoc/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (optional-dependencies.docs); From pyproject.toml (optional-dependencies.docs)",
+      "description": "Generate API documentation with Quarto."
+    },
+    {
+      "name": "tomlkit",
+      "SPDXID": "SPDXRef-Package-287898845217c9d8070a50420c29776e",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/tomlkit/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) Sébastien Eustace",
+      "supplier": "Person: Sébastien Eustace",
+      "comment": "From pyproject.toml (optional-dependencies.docs); From pyproject.toml (optional-dependencies.docs)",
+      "description": "Style preserving TOML library",
+      "homepage": "https://github.com/sdispater/tomlkit"
+    },
+    {
+      "name": "nodepad",
+      "SPDXID": "SPDXRef-Package-c707c2f684e3a7a1958fb022a4573b1b",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/nodepad/",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From pyproject.toml (optional-dependencies.docs); From pyproject.toml (optional-dependencies.docs)",
+      "description": "Generate node group documentation from Blender files"
+    },
+    {
+      "name": "jupyter",
+      "SPDXID": "SPDXRef-Package-1310f27045efada2349093cd6afabbca",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/jupyter/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) Jupyter Development Team",
+      "supplier": "Person: Jupyter Development Team",
+      "comment": "From pyproject.toml (optional-dependencies.docs); From pyproject.toml (optional-dependencies.docs)",
+      "description": "Jupyter metapackage. Install all the Jupyter components in one go.",
+      "homepage": "https://jupyter.org"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5a7cf2beeda3efd4c71193418e64d46aa34ffc26"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2252180dfbb82e5cf4b11a0866e95f77cbf27ab53caaf7f7ab777b87b057de47"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3bbcf11e63e40c442819066343906c03"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\addon.py",
+      "SPDXID": "SPDXRef-File-1142444a43946a8d93455273eea9c031",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3b513b6b3f3c459332cafc411a25e47ba1fe4178"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6c2b2357365461d0d61ab587eb70e697c81bf85284748f3582446a960bbd859c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "010b3e2f1370f78bfc2cd8e5c480baca"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\color.py",
+      "SPDXID": "SPDXRef-File-66be168069bbbf7b4e896dcabafdb4dd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d19996bfeace38df1587bb686bd103d63ce36c02"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2fe68a0a647fe1cd705d862e088b30eb3ce44d1560ec079f8e1b2888f9cc13d8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0121c527a2b5d5311cd70d1b73fd60bc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\data.py",
+      "SPDXID": "SPDXRef-File-dcc1c825fd02b04a4d816c7d13fa2a28",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "92e1e3b3d2ba977ccd142f0c390fae1bea0aa9e0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "719f2786748b7eca3acf9dc2091e03b578dd55f3e5d604b35c130e5eadf09635"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3aa0a3e36b5ed66411feae2956b78a13"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\download.py",
+      "SPDXID": "SPDXRef-File-138eaa0662b102efa0da156bb4bda530",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2ff07e1be614ff2ad63b8ecd7a414978eaf940c2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c4e40d2b579cb06ca60ba5b8e18ef337966a99821660d94c448e53a0c5ce7ba8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "11c629b540ae61e2e77ac80e5e8e5fac"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\handlers.py",
+      "SPDXID": "SPDXRef-File-6478887a02662150b444b915cbac2a1b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0ff2ad0e7b74daad711aa8314445d64cea1e6efc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d57ae8616caf6bfe021d9b0560dda6d4eace70a066311f0ab1bdff9a8a6779f9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8f0ddfefecf2165239d67fe85baaedc2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\pref.py",
+      "SPDXID": "SPDXRef-File-21e06b82afd3c1f9da3cea77e2fcde3a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d1985708be3f86237748ba544bdb0f43478242fc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "27ac55f3557cfec6684c87fcc40ebf29b2c752b84a3ad1d290061be6f721fa83"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "46534efc3342ce214f2926fa68fe52db"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\props.py",
+      "SPDXID": "SPDXRef-File-c0479ce4a16956f8de0f5f552c3879c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b5b08ed053ed807b0ba0154993e8b9e6a7a909e1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cc4d674385e4d2fae69f7862281eea387603c21e2051326310a7cb90660ef9f2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bb464c0e078dadcf99e6942a8e74038a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\session.py",
+      "SPDXID": "SPDXRef-File-65fc4aff9b6defcc69dd883601ae788e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9e247e86ac2abf3bd79b287520e75e0356e4653d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1221834a6cc287bd7860a347a92faa9fccc6cf3eb38463652a4a8712928beb90"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "769b5dd1f328027044f766f679ce5ad8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\style.py",
+      "SPDXID": "SPDXRef-File-6ad7d1a9db6872c1b4d7a6b1da93041f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dc7930e12be674f4f2bc6e492529ddb5a210f08c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f869f4cb4cf6c606a5c906ffab2e2eadd08fdf64855ad6e14fd9d80db919ff2e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "85c908f2be477fce7273cdbf2968e186"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\template.py",
+      "SPDXID": "SPDXRef-File-fbc283d20c26524a51f296cdbedc9fa0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ff9f0fc7dcd2c67f5cdf2ebfac1f09400df6497a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "438b5516204332b69a92c2b84fc7ae88e0ce142b102449ee8be135b4a4d48cad"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7330e267615fc315c142f6cfd10e71f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\utils.py",
+      "SPDXID": "SPDXRef-File-8c4306d5a311074f288b2a7a9db71032",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "13130a83fa283ffde1371cd07eec506af7268ea1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3c8f8ba2dcb87c5e601d0aeea13845f2a1ae8604b890ce046936f9b168e035b9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "73a42ca2b3bcfd1f43b65399f487b10b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\__init__.py",
+      "SPDXID": "SPDXRef-File-264b2d4ea072384a6a9e2e6fa427b494",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "127eb68633ff4beb55885700bd2fdb984ed44d3a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8a97ed731654ad8651a41d2721c8d5921c9df0889c7f339875ea41f8a8bcea72"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b4858d500f195fe0a09e06b2ab6571c4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\blender\\coll.py",
+      "SPDXID": "SPDXRef-File-d36d8d47ad4769b8d06593cd0bea0b16",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "eb662a287563b2d854a4488c0a00d546614f5d60"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "40bba6cbf6c1f9c64a35daa3c9411444e6ae758d6cc52b103e959a355ef7771d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d13f7cb84a659b688aa8f3e93b47f257"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\blender\\material.py",
+      "SPDXID": "SPDXRef-File-0b9155a9f9e5d97998387d2502774f26",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ba0ac04811151c50f0a77856671f2b3ec88c9279"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c23dfc870aa05ce42c15d7e80a0ee01e7bff0fb8d650c4c5cc2da45124abb2ac"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bbeaac02b313622c9190e67a734732d6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\blender\\mesh.py",
+      "SPDXID": "SPDXRef-File-03d0aa8c89ea71a6b42fd4a06ba4327b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "82e46cd862bb52bc90722426dad39dc0834602e1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3547402c68c781f2e625771ffab8d881de883393a38776fbe6f34f9fc95c584"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "711ed86c45e02c5fb2df891a4df9b0f0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\blender\\nodes.py",
+      "SPDXID": "SPDXRef-File-1eb868001652e7641dc7a9071f7886d6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e1b8d02493986955db6c1f6e4a06283be75b3735"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b9dce999a4f774436c3f74bc38fa85fbf7af326edcd821589860035d80983491"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6c2f845836c055839f29fd9974ef5920"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\blender\\utils.py",
+      "SPDXID": "SPDXRef-File-cdb114c64acd94722bbfcf4e34b9e9e9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d1b86e82fa90e4aebba85d9be4f644538770f577"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bfa10af32805074bd3dccecd6b5e4cb236d38be9deee1d0d75c2ecceaea36513"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4f834f2561fcc9a163f10e870a26a8a0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\blender\\__init__.py",
+      "SPDXID": "SPDXRef-File-6929c5b20c58dc2c66dd101117e83c16",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "290809fc0c9ef668a06fc6b0f7a60999de62a7ec"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b7666f314de8917d2a6021405ff55f3129103f09fa70e77dc5b363c30131eae0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b1006c14abeb82383239a791e1121ab0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\base.py",
+      "SPDXID": "SPDXRef-File-e69266c1f7c425a2d52ebb8e1a92f978",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a5275660df46c0e5177fb26d172322053fb5504a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3c1cfb618b31fb3a3af8572f30ecc946c2b5adea31ca8cece10e79f2204e8c85"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "96774f268f15167a8b06c43c1718ec39"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\__init__.py",
+      "SPDXID": "SPDXRef-File-b03a59c689b11b3f839d64c731764a38",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "af541c3e512b9e632403eeff4ce8c83bf4309881"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c58cfa969d2410807efcfa9ebad583c0fdedd08ab961953156a03c8a92f2c71d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d23918be1daf89ffddd64c01a80e7f3c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\density\\base.py",
+      "SPDXID": "SPDXRef-File-b79d51197b0c050bab678c1f35ad5de6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4d083b45c36c9142d014ba228203ad0d6370aa5d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2ea36b8e791ce355e8362a4acff0d46fb3ce82ffe5610f2bfe308786afb45bbd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e160222608d2aa3b03c24990b560818f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\density\\mrc.py",
+      "SPDXID": "SPDXRef-File-b602c44432bbcf8a3c2ac256754ce4cb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cae7235b325ad689e7db764e3f07c273e1ff9790"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "df0b86cfc411913b12fe752228a2eaa9cc93ffb9b7a723d3fbcded64afbd8c4f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "55e72666c5a86eb5acbd55b31581216c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\density\\ui.py",
+      "SPDXID": "SPDXRef-File-82b57dc29b4d797b1827cb3065dd3d6f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "acfdc0c6b1bdc07b015bee9a7bcc9eb0b1dbabca"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "95c3e769622d10db3f9932e30f0672c0b5b8b4b2048b4ff822fd4731c9d8d13e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "182b38b19ed415313e1906d6ee159a6b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\density\\__init__.py",
+      "SPDXID": "SPDXRef-File-774987bb3e1ad5fc7cd8a4538610569d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a14ab2117557e89e02ffd43a0e08586e02d9d38a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "676bf45eea159f0bfa0b072a28a86c6038cf51caae9c15f0a61fa85b516faf7e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1b237736c8403c05663ebb9f8656d759"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\ensemble\\base.py",
+      "SPDXID": "SPDXRef-File-16033b69cde08c05f7b30355170d6db7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d09d68f1e8e4a0b04d27dbbe7aa93c44e6eb986a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f3d10c5291b1e167d1108bbd1019023d9a714881cd50b4876632370b0422567b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "759460495fd90ae748ca9b0272212046"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\ensemble\\cellpack.py",
+      "SPDXID": "SPDXRef-File-b4e67994ebcb27b842d27d1134e9465b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "edde224aa2db20df62d8b5a6545539713394ad55"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "46c78343103131d97ac25d94c585bfc87ec9d82b8bae19980335a6fa0ea1aaee"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8378a48f18c3399e9c4c628c01329c87"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\ensemble\\reader.py",
+      "SPDXID": "SPDXRef-File-038dc36bd60f15fd4e1dc49a328ed1c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dd1dce2a27ea0a70ebf6eadbfad9bcb03f487b36"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8945cbc0d54606c9d040c3d7873548ef6da65399aa49097d521b54a2a39d4480"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "248c97286b3c9c6106918cccdf1019cb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\ensemble\\star.py",
+      "SPDXID": "SPDXRef-File-2f247e793d368d46a7bcdbcedffdf08e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b94e018450321a3c66058f82a463c57f343cc211"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1f975caa58e54be45e3768b9338eb33bedd3033bd247fe4f2e71bad601067db1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c15ce6dd10d605fc3ab034a2e2997a37"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\ensemble\\ui.py",
+      "SPDXID": "SPDXRef-File-67615652700acb93c2364481af8be254",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f8d3b2dd80ce575a6fe6321c603ca19fd81aa933"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7d5e804b3aee534daf76462b900a05d754d88aa87398f3482587a13d068f75ff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "294e47092dc0e72a0308a8ac0b7ac5ce"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\ensemble\\__init__.py",
+      "SPDXID": "SPDXRef-File-ee4de02d3c34471e35062476dd80de04",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b3b39dd04a329adeff8f0fcefda873b2e41b0977"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "99325abc0e743183188091b80b79e97adb829bbe463816b2ae2d27afaf7143bc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c8e6257ea28d90355f75e5504e003292"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\assembly.py",
+      "SPDXID": "SPDXRef-File-9eec556ebcd89856209809b36159b708",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "32eef09a38dae8eff57a84521990fd66315ee5a4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0c165212bf7267b579fa57c8f4d56783caa322ad988c080845a19e98bb65f7b5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3e6257b436c223b0bcb6f02be1951b2d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\base.py",
+      "SPDXID": "SPDXRef-File-b959d93a6ab7365893bcc0e7a6a4538f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9facaad6fe146ae1b7dffb9c03ccde688732a60d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c55cc9367bdbe53de57ac4f7febd16efa6cdd20048445952c557e19cf3b193d7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1985d85e5321e81d65e6307b037ed7c2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\pdb.py",
+      "SPDXID": "SPDXRef-File-23779f4a38e154e97dc8b8ade76d0e7d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2839944d05dabede6581b1eabbe05f4483015957"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "664618d8571dbecccc2c96abd77641a67f6b86c363703179716da65d70f1d5ef"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bca7b9d542674dea80f1e813430d5722"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\pdbx.py",
+      "SPDXID": "SPDXRef-File-2e46fe4ef441c529eddbcc2df92fe72b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fc5ebc678df4180c5dced6935b6da2d5c9b02602"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9f0ec64fff72ec9cae5ca63d33e16666f3603559a0c1f527895c26ca2e6206c0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "00f996d3b19cd87e0fe170c9956b3959"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\sdf.py",
+      "SPDXID": "SPDXRef-File-0263d20490081634756c64de290634b5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5e2816ff1804839e58bce0993428cf628cd9bcb9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "452dfff1388e2b924301b4b112af3ad783ae9d43da1b6bf7d095bd3f5628660a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f24538c95780e4d3e5788492b49b3edb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\ui.py",
+      "SPDXID": "SPDXRef-File-6c91e03cb1c54b6c1682e69f276f0e9b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a257c6de86f53f7a1b3b30b0b39d3b776fd0fa46"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "49e626581a1baf93e35584a48bf6f5f01a13fbe15b162e9711a98a080889ce55"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "460976ecad95d2ca0cf85dfc4de19829"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\molecule\\__init__.py",
+      "SPDXID": "SPDXRef-File-01a555a0227424e822a59b6cf986ec04",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "02a2b8eb163ac3df04e4314c9912cf9fce035434"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f128ef210ff082bfe1f6a6a46aa697bcbe218bcc307a17028e41a482d5e53149"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a8f134ee0c5f4098d7ebdfa4136e990b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\base.py",
+      "SPDXID": "SPDXRef-File-2026a593645492ecf14f46f5bae09a4a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3c6c6c575135f9f7b7067e6a8b1a32f8b3362d5a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "622489194acc85872fc5a6ec0ea09768e93e91fd1787e34c6589e952ae6c675b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7610694d13ba73f15d63e71ee4b71549"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\dna.py",
+      "SPDXID": "SPDXRef-File-93da152b6592ad25529a523e5b716908",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7288a380b73e8662dd374adf6bc075325af4a176"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "050cebf8e8d2844c0050a4180a8f6e67219b7933492ed86f315d45a11460470a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "eaceb8a3b63213d58fc191149d3d2bcb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\ops.py",
+      "SPDXID": "SPDXRef-File-fcac64b5a25e5ddff6d19377140386c8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f42f730a976291633ed5be7f65dcec4a459e2ddd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8020c533f23eb152397b7fb4059d705b0c134958d11e3deaeca07e0d77fc1883"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "038f3aa85fe61e42ddde0c4e694c0113"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\selections.py",
+      "SPDXID": "SPDXRef-File-09c93e39149f9b82d422e7b181c239ab",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "85d6c379334d5ab270a80b512595ec1392eb121c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "815286a4a5a7a6eab258476e51182c9d068dd23f971459fe2a3aec69aa79db4b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0376cd28c46c523b297ddcae64d4bc5d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\ui.py",
+      "SPDXID": "SPDXRef-File-7eac5e8f2d982edbca3e7fdab5648b70",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5e7ec696f4b343fe22dfbade3fcc15e63410ec8f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "97f4c94ef98122d283d4ebd349a413927eeb0c1aef517fe05aee0bce7af280ff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "aff9a8d195ef1c417142d7e9fc6e3541"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\__init__.py",
+      "SPDXID": "SPDXRef-File-81c52fee5d2d84fb987ec17edd29b1df",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f0d45aa112f34e2a2d53dfbe85a29e5c6e1854ca"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3c96860707e75f7c9ef8155b00e4bdec6131a718ca82f119d67ba43f6ffebb30"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6006f72435ce11a80dfd161c8ccbd800"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\oxdna\\OXDNAParser.py",
+      "SPDXID": "SPDXRef-File-ae2bd376bc409033f3dd9437b4fba898",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e5703c34ef11b5f6c407a7bff11a5f7982b67fce"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5fa176b1b78513237265cea4b5452264bc64b07f85679a156524b4af3af6c20f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "df1c1dc1ee4d78407963a384286b142d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\entities\\trajectory\\oxdna\\OXDNAReader.py",
+      "SPDXID": "SPDXRef-File-6a21d846df7aa6f1a146851c540b6215",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "871e709a9445434544022e5118b3494e9d643a38"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aef12f079d7cf7194a3f2c3d297133dd32d4c7eea02892046a0950c1f901c31c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1b40a5c85527cdbd53ffa7789f4a3bb7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\operators\\node_add_buttons.py",
+      "SPDXID": "SPDXRef-File-9a5e84059a8fe1f73daf64158bf5cd6f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7c13d7af17bf53aefb5f387cae30c78de9d725a2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0f5a43103a1e67ff440152e0e0fafeb10d01cc43ad65ceb85a72c2106c074413"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fff9571e809c5bd39188e03e28a67f32"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\operators\\__init__.py",
+      "SPDXID": "SPDXRef-File-65ef649fd4a1064206d98b474f09c2d4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9c7408e2917bb0afe74b2d03db35a72f1bf31a67"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3863959f7af1f3f8d778772c363e777f9359e797f598f01e8b1c3be6d8ec9cd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "30f1666be9e904895f47310f596ad7c3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\scene\\base.py",
+      "SPDXID": "SPDXRef-File-92f8dd17face291966cb41ace93a3d88",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c14c2fc01c1256f6df11fe961ce284744ea0a1a0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "acc442dd6692addfac83e4747944f9965060d17cfa9c31d0569daaf8cd3694ae"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5efaf98360dc3f39351085f1c77a3af1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\scene\\__init__.py",
+      "SPDXID": "SPDXRef-File-6cc0da6a5e593216e70b7f96bb62faf9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8f3836b1bbcafd1bd29b0c3e6cd25bc03e214647"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a6013a410977b426045c98f039d5af6060dd1e682a8bb7fdd3754abf78c97c1b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "48a0c2e41bb0f5409234cba9830f453e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\ui\\menu.py",
+      "SPDXID": "SPDXRef-File-3f77a1fc701d540296a3d6be188a8a5c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "50e1d780feb6a56d2ae68af344bfd79e090c1afb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "acc78c1ac0d73ca63b1e5a5d06fb6f0f1c2229a47dc3a29590681e3e5e1e63f5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c32196b35d169594409b6d505c9baa0e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\ui\\node_info.py",
+      "SPDXID": "SPDXRef-File-9d9d36061bce599a6bf562ed8aafd828",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9305341fddc68e0b27dbbc2aa386f1bd308c1313"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f61a0e217a11cc644ef5e8138a1ce56b6b1e61f3bbd4969a5429144573042335"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d16b8d83e2811edc6a603babef422e6c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\ui\\node_menu.py",
+      "SPDXID": "SPDXRef-File-f7c886b58191b65a92a04f6187b9c186",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d52fff947fab397da3e04b8f6eafde06c6f8ef10"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c811c345d864c8684180be59e12731fd1baac071e3c74f959757bdda8e49f25c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "095ac2477985b294b65c4da3388ef441"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\ui\\panel.py",
+      "SPDXID": "SPDXRef-File-2db29cfc09139cbcac17a953658ae293",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2c3ed382b4b1d94c4dee2f0a2f8b816a13f812a1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "87d05289a2fe81a0fa0e71efc9567f6c5d85606e3d01d8cac569266fb2133179"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "134597931df7cdc03f567d01d47e2d5c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes\\ui\\__init__.py",
+      "SPDXID": "SPDXRef-File-2103dafb1dae9b87950ed21ebdec3c20",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e3d67d2849cdf3aa2d0a6e73f636ab0dfbf441c0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "823614a4287ea2dc57d5d09c28e24abaa5b2606ab3e28db7767b72118b3fb2e4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "70eec13c89072a3ab911013e1eecf604"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes.egg-info\\dependency_links.txt",
+      "SPDXID": "SPDXRef-File-53c5501d6dca571f110903915d1e9dd5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "68b329da9893e34099c7d8ad5cb9c940"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes.egg-info\\requires.txt",
+      "SPDXID": "SPDXRef-File-ab2facbb2ead1b13edec2defd123bef5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "aad6d0dca04785eacdb7ca4cea8a37bbc33b9c7c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "61befd0ade521ff23df06d4f361f3ecbc281b253a2772d7d2da4f701295b96fd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "795fb11c569f8987644b82d87d70e496"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes.egg-info\\SOURCES.txt",
+      "SPDXID": "SPDXRef-File-077441e2e17e746b23c83edca37f5f73",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "afc557fd9f1c0c5e68b6702b957cae9054acfc3b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f6daf236d8f5470951a9d949e977f663e12cef23654aace8065d4cf0b324f3ef"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f40ba7a993b9225efe376583e6cc95e3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "molecularnodes.egg-info\\top_level.txt",
+      "SPDXID": "SPDXRef-File-b1b8a49385d51dafa37b67cb431f95cd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "86fea4aab4c9b50b2f59f46271f2aeb54b0f7754"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9327fa85690a2326a38baed5b910b539248acd023b86a6bc920d1e2258b442ce"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0c6e49694f4c6c214ca50d4c62683e45"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_assembly.py",
+      "SPDXID": "SPDXRef-File-35673f2ab9eb8b9d2509eb00bebe02f3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b44d58f384c2c37cbd976fb76119ba56ed96c346"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5409017476e63c21677a0751ec69c618418330e5d4cde67e4a861de2627282ca"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d0f4fef05b6ba987b0fb1aa3bfc1204b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_attributes.py",
+      "SPDXID": "SPDXRef-File-d4be60e542381e5ba75b75e45b2eedc0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a993f7a6a3ef20ee6e1ff235eba8d46c8ac3a7f5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "27837a20484a830c1c927379e44a562c48f216a1f92aee8cdb051474b354e09a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cde63716cebbd16302cb1608b956c14b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_canvas.py",
+      "SPDXID": "SPDXRef-File-d5f68403ad4f4a5daeeee2bd776e8a77",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0e2b89d7459fc3a287c34c6425d453ed57ba316a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "525eb16f14076992412395ffc9ed6199424ba05c58b8bc90b2302aba38ace1ec"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ca667691ae2fc57c177124e0eaf7e343"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_cellpack.py",
+      "SPDXID": "SPDXRef-File-fc0b842bec7e317ff3099790a19327cb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f61147cb99949891a4142b941d786038c8406ff0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "05e5bab91f9f48290865ec8eb59dbe2798e505e75a95362e56a4bf62f80dfcda"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "98774f11923195fda9990d74e0633c1c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_coll.py",
+      "SPDXID": "SPDXRef-File-5a8155cd841f7db74ea23ec2fe5e0495",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "35a4ce2dd7038deedb8612b6f12289abd627c150"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e9eef0202d5983cbfbc4c73a4780e3cac7ddfe58d3ea3e45e05f090ec27b5bab"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5534709bb5fcee305f6f84ca2d20d26e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_color.py",
+      "SPDXID": "SPDXRef-File-1fa66aef7441b6925ca96f409527a7a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ac43b05da44865cb378b21d40357c0e6b8c02a74"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9e1d057f63a33ab72775f863d4583204c800ca160f19ea1796b847de24af686d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c047d1584db2b8230d27bc6234d823c0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_density.py",
+      "SPDXID": "SPDXRef-File-d9d3deb0fc3cceb2276afdb19c0a3dad",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "68a39cd42abaa555f1e6867bc9e51194957563c5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "62490e0692884625b5d04e955695e6026509c216dea980a51e1507c4bdaab1cf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "37c3a083ea62abbeafb0cbf6e33cafb9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_dna.py",
+      "SPDXID": "SPDXRef-File-9acbca93842e08c91fabf748b8908e50",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c2932d77da9aece18f7b1e00707fc5fce4a1b8fe"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "81f8b6673da4c1f285f41ec35c2d30ad67dab4fae547c293457903018c414343"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9f4719f18b1b54a30bdb382766508f82"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_download.py",
+      "SPDXID": "SPDXRef-File-7cf3599bcd05eb2ebd0f45ca65241278",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "92e83452969dc55f168b5eeb8599f97c6d55843f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "60f344f431b7d8ecd994f9dd057926a95d5b386ddd465bf1bfa6969f38bbaffa"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5ade802fa96c59906a9989ac5025bcf7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_load.py",
+      "SPDXID": "SPDXRef-File-46ea2ca4901fd4f8ee2df7dae8326b30",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "76f9fbf403435dce25900438e1a8600f856cf977"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "69a869a95b24f8cbb702b57b4b0da32050c7cea7946f55b7b9e9c22f5f135ce5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "577ae7ec49bcdabc7adc839c4447c8c4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_mol_sdf.py",
+      "SPDXID": "SPDXRef-File-2b7a7b99b95115e7326ef3fbd0b3f326",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bcfa0efbc1ecb4b98becdc8bc1a8aa89ef8b55b1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2385c7ec2c4e83256b9a1bdce73228c76ea9f7c76b38e529ea71f2057409f2b1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5d7b1d005c41b5086ac4c0c0dae3bae8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_nodes.py",
+      "SPDXID": "SPDXRef-File-2af693976487db73f5c338ac3d77d9e0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a9d3a0a71b1100ba82e6baf014d06707954d298b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "176ea275e65efbb2642d7b0229a98b72a12af9f4bfffad2f158ae4c4fba3a1a0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f196a268aadebad2039582a45e228726"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_nodes_geometry.py",
+      "SPDXID": "SPDXRef-File-9309db26b1ace52688ede6e5341673c4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3b65ac2ce9e39cbbb14d8818265bc918cc1bcc3e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a812e5aae55fffc75dc54bb31890b0a33a8062364ec10386f9476afa328f6f09"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9c2d6c3e81a7faaa27e8caef8ea7df98"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_obj.py",
+      "SPDXID": "SPDXRef-File-de2fb9b2c3d219fc33e528b97db33633",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "49109398f2530f5b041d0cb338e66cd3e414bde8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ad6d22416d4ec50def660351fcea7f43522b71a3d163c0710a2a15adf4a43695"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "88886a47abebb7cdd15b2bafe7a3677a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_ops.py",
+      "SPDXID": "SPDXRef-File-5b6e63f8d19f7ff1f3073a9431c1d823",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "047faf35e533b58cfb529e4c4ff3b1b2327bb9ec"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4d6dca6d4eeed35d4b8d1de1e99fd88f20ee84364e38e2d4954f41f528533471"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a9d2f5fd68d9a21320c1ecb5d67b77f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_parse.py",
+      "SPDXID": "SPDXRef-File-87d17c2848103bb030f5bae6a898edf6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "67a9ae062aae6166ff5913371c720b602b2d5f2a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ce895a0af64feb00bc0148dd26e3411c5deafcff1fe851d97707f03f4fa19e8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9fda009f051a63ae32e9d9e081d650ae"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_pdbx.py",
+      "SPDXID": "SPDXRef-File-15bef8b65ed815745082408da5a618fd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cef202932d1cba2cb53cc799b416e97335e173af"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5efc61b4b63d529bc394ecf2abc8f77d56cce306c01efde64167b229e765b7de"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0addc345da422bba7a41cf362f0b21d2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_select.py",
+      "SPDXID": "SPDXRef-File-5ec640661a11d88142357dd59a740598",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0c8863c57903b1b4e9980e83a486cc70fdc7b7bd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d3a3206e6b5a24582156b25d224b993875b39e7dbda69b0a68e7debaec23629f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "63a3676b76e9bff690faa2f6aacfdb99"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_session.py",
+      "SPDXID": "SPDXRef-File-460cd61a85cd6cfed0499b0b79bfd722",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1de51a8ab66ba87010f95109eaba197c0f48e780"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4bd6d914df062dc6e4e94a1f1243e39ff8d3423fa1bb4aafc0e6bafe3366078f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a8404a3d51df179cb5e0e32bf7162477"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_setup.py",
+      "SPDXID": "SPDXRef-File-25a9ae850954bcd1c77d410274b550f0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "211f751ad881f76a08cde102ab050bd52fbb1cc5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d9d1b4882a72489cdca67eb54844df88da844d4b9eb219d7633433626e6f1081"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d64601ef50b35901fdb02c50f099baa3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_star.py",
+      "SPDXID": "SPDXRef-File-ac283dd240cc528ab772bec1ba118bb8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f18d8cb1fc63087b0a6ba7ff2293dd8a9a9906c5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dbfed60f620fadd75b6db2699d3d3fff3555e7d3fde29083be8acb5fe395815d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2299ccb5485e97a671246584fcfe0078"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_trajectory.py",
+      "SPDXID": "SPDXRef-File-4ceef63d9fe3cdf474c622f2f2638b43",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6347075bf09862e02096d819cbd9b5b4b3b453b3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "336bbd2ff40d178695d5b3a20cd604b709ad113fc605b804498c6f96ac76a91c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1c010483a0e9c981844b0e7dc04bf270"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "tests\\test_utils.py",
+      "SPDXID": "SPDXRef-File-0d0d79b8cd46618c9e1e283a12bbc756",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "340a5e99f9864d615cabea81b573865622513052"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dcc39596b4c81d5ba26f14342528c2dd6040387ba928c7dbbfd9ae97fc5f7d9d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ba80d18b839bc0b0417ca5a916fad2f7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-0b212b9b1c25ee394d2be9e9808f1c81",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-0ec1be2b619d52e93e3030900189c5b3",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-f824338279fa2defb1f1e7d02cbfcbca",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-afc0726d22614bc206b643e24dffd4fb",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-aadd680cb99f236a6f3bf678375351de",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-8e14295ee226172ecbc4f441ea7e986f",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-7ceccc8076e85ba05e8a694ddf1ea24a",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-809cab012f80cffa3e1e9eb37061a7ea",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-c720cbe2c1d98efbe83ece387396aaa0",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-75890af5eaf1a5180b644d8fb2d16de4",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-881bd19679288cec4ebe1ee146b37f62",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-3a8c1f18b74ce263ebafdac69305e461",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-5802effc2c1f21d3dcafd9e229036cb7",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-287898845217c9d8070a50420c29776e",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-c707c2f684e3a7a1958fb022a4573b1b",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-molecularnodes-4.2.12",
+      "relatedSpdxElement": "SPDXRef-Package-1310f27045efada2349093cd6afabbca",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}
