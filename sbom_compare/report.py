@@ -46,6 +46,8 @@ class ReportGenerator:
         self.vulnerability_cache = {}
         # 新增包的漏洞信息缓存
         self.added_packages_vulnerabilities = None
+        # 版本变更包的漏洞信息缓存
+        self.version_changed_packages_vulnerabilities = None
     
     def generate(self, output_path: str, format_type: str = "text") -> None:
         """生成报告
@@ -164,6 +166,8 @@ class ReportGenerator:
             table_data = []
             headers = ["包名", "旧版本", "新版本", "变更类型"]
             
+            # 检测版本降级
+            downgrades = []
             for change in self.result.version_changes:
                 # 规范化版本号进行比较
                 normalized_old = self._normalize_version(change.old_version)
@@ -173,7 +177,27 @@ class ReportGenerator:
                 if normalized_old == normalized_new:
                     change_type = "无变更"
                 else:
-                    change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                    # 检查是否为降级
+                    is_downgrade = False
+                    try:
+                        old_parts = [int(p.split('-')[0]) for p in normalized_old.split('.')]
+                        new_parts = [int(p.split('-')[0]) for p in normalized_new.split('.')]
+                        
+                        for i in range(min(len(old_parts), len(new_parts))):
+                            if new_parts[i] < old_parts[i]:
+                                is_downgrade = True
+                                downgrades.append(change.package_name)
+                                break
+                            elif new_parts[i] > old_parts[i]:
+                                break
+                    except (ValueError, IndexError):
+                        pass
+                    
+                    if is_downgrade:
+                        change_type = "⚠️ 版本降级"
+                    else:
+                        change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                
                 table_data.append([
                     change.package_name,
                     change.old_version,
@@ -182,7 +206,58 @@ class ReportGenerator:
                 ])
             
             lines.append(tabulate(table_data, headers=headers, tablefmt="grid"))
+            
+            # 如果存在版本降级，添加警告
+            if downgrades:
+                lines.append("")
+                lines.append("⚠️ 警告: 检测到以下包版本降级，可能丢失安全修复或引入兼容性问题:")
+                for pkg in downgrades:
+                    lines.append(f"  - {pkg}")
+            
             lines.append("")
+            
+            # 添加版本变更引入的漏洞信息
+            version_changed_vulnerabilities = self._check_version_changed_vulnerabilities()
+            if version_changed_vulnerabilities:
+                lines.append("-" * 80)
+                lines.append("版本变更引入的漏洞")
+                lines.append("-" * 80)
+                vuln_table_data = []
+                vuln_headers = ["包名", "漏洞ID", "严重程度", "版本范围", "描述"]
+                
+                for pkg_name, vulns in version_changed_vulnerabilities.items():
+                    for vuln in vulns:
+                        # 提取基本信息
+                        vuln_id = vuln.get("id", "未知")
+                        severity = "未知"
+                        if "database_specific" in vuln and "severity" in vuln["database_specific"]:
+                            severity = vuln["database_specific"]["severity"]
+                        
+                        # 获取版本范围
+                        affected_versions = "未知"
+                        if "affected" in vuln:
+                            for affected in vuln["affected"]:
+                                if "versions" in affected:
+                                    affected_versions = ", ".join(affected["versions"])
+                                    break
+                        
+                        # 获取描述
+                        description = vuln.get("summary", "无描述")
+                        
+                        # 添加到表格
+                        vuln_table_data.append([
+                            pkg_name,
+                            vuln_id,
+                            severity,
+                            affected_versions,
+                            description[:100] + "..." if len(description) > 100 else description
+                        ])
+                
+                if vuln_table_data:
+                    lines.append(tabulate(vuln_table_data, headers=vuln_headers, tablefmt="grid"))
+                else:
+                    lines.append("未发现版本变更引入的漏洞")
+                lines.append("")
         
         # 许可证变更
         if self.result.license_changes:
@@ -1107,6 +1182,7 @@ class ReportGenerator:
                 {dependency_graph_section}
                 {risk_analysis_section}
                 {added_pkg_vulnerabilities_section}
+                {version_changed_vulnerabilities_section}
             </div>
             
             <script>
@@ -1195,6 +1271,9 @@ class ReportGenerator:
         version_changes_section = ""
         if self.result.version_changes:
             rows = []
+            # 检测版本降级
+            downgrades = []
+            
             for change in self.result.version_changes:
                 # 规范化版本号进行比较
                 normalized_old = self._normalize_version(change.old_version)
@@ -1204,9 +1283,41 @@ class ReportGenerator:
                 if normalized_old == normalized_new:
                     change_type = "无变更"
                 else:
-                    change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                    # 检查是否为降级
+                    is_downgrade = False
+                    try:
+                        old_parts = [int(p.split('-')[0]) for p in normalized_old.split('.')]
+                        new_parts = [int(p.split('-')[0]) for p in normalized_new.split('.')]
+                        
+                        for i in range(min(len(old_parts), len(new_parts))):
+                            if new_parts[i] < old_parts[i]:
+                                is_downgrade = True
+                                downgrades.append(change.package_name)
+                                break
+                            elif new_parts[i] > old_parts[i]:
+                                break
+                    except (ValueError, IndexError):
+                        pass
+                    
+                    if is_downgrade:
+                        change_type = "⚠️ 版本降级"
+                        row_class = " class='risk-high'"
+                    else:
+                        change_type = "主版本" if change.is_major else "次版本" if change.is_minor else "补丁版本" if change.is_patch else "一般变更"
+                        row_class = ""
                 
-                rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_version}</td><td>{change.new_version}</td><td>{change_type}</td></tr>")
+                rows.append(f"<tr{row_class}><td>{change.package_name}</td><td>{change.old_version}</td><td>{change.new_version}</td><td>{change_type}</td></tr>")
+            
+            downgrade_warning = ""
+            if downgrades:
+                downgrade_warning = f"""
+                <div class="downgrade-warning">
+                    <p>⚠️ <strong>警告</strong>: 检测到{len(downgrades)}个包发生版本降级，可能丢失安全修复或引入兼容性问题:</p>
+                    <ul>
+                        {"".join([f"<li>{pkg}</li>" for pkg in downgrades])}
+                    </ul>
+                </div>
+                """
             
             version_changes_section = f"""
             <button type="button" class="collapsible">
@@ -1223,6 +1334,7 @@ class ReportGenerator:
                     </tr>
                     {"".join(rows)}
                 </table>
+                {downgrade_warning}
             </div>
             """
         
@@ -1728,7 +1840,150 @@ class ReportGenerator:
                     </div>
                     """
         
-        # 在HTML模板中添加新增包漏洞信息部分
+        # 添加版本变更包漏洞信息部分
+        version_changed_vulnerabilities_section = ""
+        if self.result.version_changes:
+            # 获取版本变更包的漏洞信息
+            version_changed_vulnerabilities = self._check_version_changed_vulnerabilities()
+            
+            if version_changed_vulnerabilities:
+                # 计算总漏洞数
+                total_vulns = sum(len(vulns) for vulns in version_changed_vulnerabilities.values())
+                
+                # 生成漏洞表格
+                vuln_rows = []
+                
+                # 按包名处理所有漏洞
+                for pkg_name, vulns in version_changed_vulnerabilities.items():
+                    for vuln in vulns:
+                        vuln_id = vuln["id"]
+                        
+                        # 初始化所有字段
+                        severity = "未知"
+                        description = vuln.get("summary", "")
+                        affected_versions = ""
+                        published_date = ""
+                        cve_ids = []
+                        references = []
+                        
+                        # 提取严重程度
+                        if "database_specific" in vuln and "severity" in vuln["database_specific"]:
+                            raw_severity = vuln["database_specific"]["severity"]
+                            severity_map = {
+                                "CRITICAL": "严重",
+                                "HIGH": "高危",
+                                "MEDIUM": "中危",
+                                "LOW": "低危"
+                            }
+                            severity = severity_map.get(raw_severity, "未知")
+                        
+                        # 提取详细描述
+                        if "details" in vuln:
+                            description = f"{description}<br><br>{vuln['details']}"
+                        
+                        # 提取发布日期
+                        if "published" in vuln:
+                            try:
+                                published_date = vuln["published"][:10]  # 获取年月日部分
+                            except:
+                                published_date = ""
+                        
+                        # 提取相关CVE ID
+                        if "aliases" in vuln:
+                            cve_ids = [cve for cve in vuln["aliases"] if cve.startswith("CVE-")]
+                        
+                        # 提取受影响的版本范围
+                        if "affected" in vuln:
+                            version_ranges = []
+                            for affected in vuln["affected"]:
+                                if "package" in affected and affected["package"].get("name") == pkg_name.split('@')[0]:
+                                    # 检查版本范围
+                                    if "ranges" in affected:
+                                        for range_info in affected["ranges"]:
+                                            if range_info.get("type") == "SEMVER" and "events" in range_info:
+                                                events = range_info["events"]
+                                                range_desc = []
+                                                
+                                                for event in events:
+                                                    if "introduced" in event:
+                                                        if event["introduced"] == "0":
+                                                            range_desc.append("所有版本")
+                                                        else:
+                                                            range_desc.append(f">= {event['introduced']}")
+                                                    if "fixed" in event:
+                                                        range_desc.append(f"< {event['fixed']}")
+                                                
+                                                if range_desc:
+                                                    version_ranges.append(" ".join(range_desc))
+                            
+                                    # 直接使用受影响的版本列表
+                                    if "versions" in affected and affected["versions"]:
+                                        version_ranges.append(f"具体受影响版本: {', '.join(affected['versions'])}")
+                        
+                        if version_ranges:
+                            affected_versions = "<br>".join(version_ranges)
+                        else:
+                            affected_versions = "未指定"
+                        
+                        # 获取参考链接
+                        if "references" in vuln:
+                            for ref in vuln["references"][:5]:  # 最多显示5个链接
+                                if "url" in ref:
+                                    references.append(ref["url"])
+                        
+                        # 使用适当的严重等级样式
+                        severity_class = {
+                            "严重": "vuln-critical",
+                            "高危": "vuln-high",
+                            "中危": "vuln-medium",
+                            "低危": "vuln-low",
+                            "未知": "vuln-unknown"
+                        }.get(severity, "vuln-unknown")
+                        
+                        # 添加CVE信息
+                        cve_info = f"关联CVE: {', '.join(cve_ids)}" if cve_ids else ""
+                        
+                        # 构建参考链接HTML
+                        refs_html = ""
+                        if references:
+                            refs_html = "<div class='vuln-refs'><strong>参考链接:</strong><br>" + "<br>".join([f"<a href='{url}' target='_blank' class='vuln-link'>{url}</a>" for url in references]) + "</div>"
+                        
+                        vuln_rows.append(f"""
+                        <tr>
+                            <td>{pkg_name}</td>
+                            <td class="{severity_class}">{vuln_id}<br>{cve_info}</td>
+                            <td>{affected_versions}</td>
+                            <td>{description}{refs_html}</td>
+                            <td>{published_date}</td>
+                        </tr>
+                        """)
+                
+                # 创建表格
+                if vuln_rows:
+                    version_changed_vulnerabilities_section = f"""
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 ({total_vulns})</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {"".join(vuln_rows)}
+                            </tbody>
+                        </table>
+                    </div>
+                    """
+        
+        # 在HTML模板中添加漏洞信息部分
         html_content = html_template.format(
             timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             sbom_a_path=self.sbom_a.file_path,
@@ -1747,6 +2002,7 @@ class ReportGenerator:
             security_score_section=security_score_section,
             vulnerability_section=vulnerability_section,
             added_pkg_vulnerabilities_section=added_pkg_vulnerabilities_section,
+            version_changed_vulnerabilities_section=version_changed_vulnerabilities_section,
             css_styles=css_styles
         )
         
@@ -1821,14 +2077,38 @@ class ReportGenerator:
             })
         
         for change in self.result.version_changes:
+            # 检查是否为降级
+            is_downgrade = False
+            try:
+                normalized_old = self._normalize_version(change.old_version)
+                normalized_new = self._normalize_version(change.new_version)
+                
+                old_parts = [int(p.split('-')[0]) for p in normalized_old.split('.')]
+                new_parts = [int(p.split('-')[0]) for p in normalized_new.split('.')]
+                
+                for i in range(min(len(old_parts), len(new_parts))):
+                    if new_parts[i] < old_parts[i]:
+                        is_downgrade = True
+                        break
+                    elif new_parts[i] > old_parts[i]:
+                        break
+            except (ValueError, IndexError):
+                pass
+                
             report_data["version_changes"].append({
                 "package_name": change.package_name,
                 "old_version": change.old_version,
                 "new_version": change.new_version,
                 "is_major": change.is_major,
                 "is_minor": change.is_minor,
-                "is_patch": change.is_patch
+                "is_patch": change.is_patch,
+                "is_downgrade": is_downgrade
             })
+        
+        # 收集所有版本降级的包
+        downgraded_packages = [change["package_name"] for change in report_data["version_changes"] if change.get("is_downgrade")]
+        if downgraded_packages:
+            report_data["downgraded_packages"] = downgraded_packages
         
         for change in self.result.license_changes:
             report_data["license_changes"].append({
@@ -1865,9 +2145,70 @@ class ReportGenerator:
                         "recommendation": risk.recommendation
                     })
         
+        # 添加新增包的漏洞信息
+        if self.result.added_packages:
+            # 获取新增包的漏洞信息
+            if self.added_packages_vulnerabilities:
+                pkg_vulns = self.added_packages_vulnerabilities
+            else:
+                pkg_vulns = self._fetch_package_vulnerabilities_batch(self.result.added_packages)
+            
+            if pkg_vulns:
+                report_data["added_packages_vulnerabilities"] = {}
+                for pkg_name, vulns in pkg_vulns.items():
+                    report_data["added_packages_vulnerabilities"][pkg_name] = [self._convert_vuln_to_json(vuln) for vuln in vulns]
+        
+        # 添加版本变更包的漏洞信息
+        if self.result.version_changes:
+            # 获取版本变更包的漏洞信息
+            version_changed_vulnerabilities = self._check_version_changed_vulnerabilities()
+            
+            if version_changed_vulnerabilities:
+                report_data["version_changed_vulnerabilities"] = {}
+                for pkg_name, vulns in version_changed_vulnerabilities.items():
+                    report_data["version_changed_vulnerabilities"][pkg_name] = [self._convert_vuln_to_json(vuln) for vuln in vulns]
+        
         # 写入JSON文件
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(report_data, f, ensure_ascii=False, indent=2)
+    
+    def _convert_vuln_to_json(self, vuln: Dict) -> Dict:
+        """将漏洞信息转换为JSON友好格式"""
+        result = {
+            "id": vuln.get("id", ""),
+            "summary": vuln.get("summary", ""),
+            "details": vuln.get("details", ""),
+            "severity": "unknown",
+            "affected_versions": [],
+            "published_date": vuln.get("published", ""),
+            "cve_ids": [],
+            "references": []
+        }
+        
+        # 提取严重程度
+        if "database_specific" in vuln and "severity" in vuln["database_specific"]:
+            result["severity"] = vuln["database_specific"]["severity"]
+        
+        # 提取受影响版本
+        if "affected" in vuln:
+            for affected in vuln["affected"]:
+                if "versions" in affected:
+                    result["affected_versions"] = affected["versions"]
+                    break
+        
+        # 提取CVE ID
+        if "aliases" in vuln:
+            for alias in vuln["aliases"]:
+                if alias.startswith("CVE-"):
+                    result["cve_ids"].append(alias)
+        
+        # 提取参考链接
+        if "references" in vuln:
+            for ref in vuln["references"]:
+                if "url" in ref:
+                    result["references"].append(ref["url"])
+        
+        return result
     
     def _generate_dependency_graph(self, output_dir: str) -> None:
         """生成依赖关系图
@@ -2616,3 +2957,51 @@ class ReportGenerator:
             setattr(self.result, 'added_packages_vulnerabilities', result)
         
         return result
+    
+    def _check_version_changed_vulnerabilities(self) -> Dict[str, List[Dict]]:
+        """
+        检查版本变更的包是否引入了新的漏洞
+        
+        Returns:
+            Dict[str, List[Dict]]: 包名到漏洞信息列表的映射
+        """
+        # 检查是否已有缓存结果
+        if self.version_changed_packages_vulnerabilities is not None:
+            logger.info("使用已缓存的版本变更包漏洞信息")
+            return self.version_changed_packages_vulnerabilities
+        
+        # 收集版本变更的包
+        version_changes = self.result.version_changes
+        
+        if not version_changes:
+            return {}
+        
+        # 构建需要查询的包列表
+        packages_to_check = []
+        package_versions = {}
+        
+        for change in version_changes:
+            pkg_name = change.package_name
+            new_version = change.new_version
+            
+            # 标准化版本号
+            if new_version:
+                # 把包名和版本添加到要查询的列表中
+                packages_to_check.append(pkg_name)
+                package_versions[pkg_name] = new_version
+        
+        # 使用现有的批量查询方法获取漏洞信息
+        if packages_to_check:
+            logger.info(f"开始检查 {len(packages_to_check)} 个版本变更包的漏洞信息")
+            all_vulns = self._fetch_package_vulnerabilities_batch(packages_to_check)
+            
+            # 只保留有漏洞的包
+            result = {pkg: vulns for pkg, vulns in all_vulns.items() if vulns}
+            
+            # 缓存结果
+            self.version_changed_packages_vulnerabilities = result
+            logger.info(f"版本变更漏洞检查完成，发现 {len(result)} 个包存在漏洞")
+            
+            return result
+        
+        return {}
