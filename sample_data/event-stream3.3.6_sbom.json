@@ -1,0 +1,1755 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "local/event-stream3.3.6",
+  "comment": "Local project: event-stream3.3.6",
+  "licenseDeclared": "NOASSERTION",
+  "primaryLanguage": "JavaScript, JSON, YAML",
+  "documentNamespace": "https://spdx.org/spdxdocs/local/event-stream3.3.6-66355115-e551-4120-94bc-af0d8ccea2eb",
+  "creationInfo": {
+    "created": "2025-04-04T09:17:15.470845Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "assertions",
+      "SPDXID": "SPDXRef-Package-assertions",
+      "versionInfo": "2.3.4",
+      "downloadLocation": "https://registry.npmjs.org/assertions/-/assertions-2.3.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-qUM87R/OV8yZmvCWXRAI6WwnluY="
+    },
+    {
+      "name": "asynct",
+      "SPDXID": "SPDXRef-Package-asynct",
+      "versionInfo": "1.1.0",
+      "downloadLocation": "https://registry.npmjs.org/asynct/-/asynct-1.1.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-O7LFB9OhPyAAugWGmhp0DCGICRM="
+    },
+    {
+      "name": "balanced-match",
+      "SPDXID": "SPDXRef-Package-balanced-match",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-ibTRmasr7kneFk6gK4nORi1xt2c="
+    },
+    {
+      "name": "brace-expansion",
+      "SPDXID": "SPDXRef-Package-brace-expansion",
+      "versionInfo": "1.1.11",
+      "downloadLocation": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.11.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA=="
+    },
+    {
+      "name": "concat-map",
+      "SPDXID": "SPDXRef-Package-concat-map",
+      "versionInfo": "0.0.1",
+      "downloadLocation": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s="
+    },
+    {
+      "name": "ctrlflow",
+      "SPDXID": "SPDXRef-Package-ctrlflow",
+      "versionInfo": "0.0.3",
+      "downloadLocation": "https://registry.npmjs.org/ctrlflow/-/ctrlflow-0.0.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-6WwYCJDcBcKztDc19SmnEpPhOcA="
+    },
+    {
+      "name": "curry",
+      "SPDXID": "SPDXRef-Package-curry",
+      "versionInfo": "0.0.4",
+      "downloadLocation": "https://registry.npmjs.org/curry/-/curry-0.0.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-F1DVGNkZxE89N/9E7caT3h8NX8s="
+    },
+    {
+      "name": "d-utils",
+      "SPDXID": "SPDXRef-Package-d-utils",
+      "versionInfo": "2.1.1",
+      "downloadLocation": "https://registry.npmjs.org/d-utils/-/d-utils-2.1.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-NZxqACBJUW8ELbnkneMCIE4f7Dw="
+    },
+    {
+      "name": "deep-equal",
+      "SPDXID": "SPDXRef-Package-deep-equal",
+      "versionInfo": "1.0.1",
+      "downloadLocation": "https://registry.npmjs.org/deep-equal/-/deep-equal-1.0.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-9dJgKStmDghO/0zbyfCK0yR0SLU="
+    },
+    {
+      "name": "define-properties",
+      "SPDXID": "SPDXRef-Package-define-properties",
+      "versionInfo": "1.1.3",
+      "downloadLocation": "https://registry.npmjs.org/define-properties/-/define-properties-1.1.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-3MqfYKj2lLzdMSf8ZIZE/V+Zuy+BgD6f164e8K2w7dgnpKArBDerGYpM46IYYcjnkdPNMjPk9A6VFB8+3SKlXQ=="
+    },
+    {
+      "name": "defined",
+      "SPDXID": "SPDXRef-Package-defined",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "https://registry.npmjs.org/defined/-/defined-1.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-yY2bzvdWdBiOEQlpFRGZ45sfppM="
+    },
+    {
+      "name": "duplexer",
+      "SPDXID": "SPDXRef-Package-duplexer",
+      "versionInfo": "0.1.1",
+      "downloadLocation": "https://registry.npmjs.org/duplexer/-/duplexer-0.1.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-rOb/gIwc5mtX0ev5eXessCM0z8E="
+    },
+    {
+      "name": "es-abstract",
+      "SPDXID": "SPDXRef-Package-es-abstract",
+      "versionInfo": "1.12.0",
+      "downloadLocation": "https://registry.npmjs.org/es-abstract/-/es-abstract-1.12.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-C8Fx/0jFmV5IPoMOFPA9P9G5NtqW+4cOPit3MIuvR2t7Ag2K15EJTpxnHAYTzL+aYQJIESYeXZmDBfOBE1HcpA=="
+    },
+    {
+      "name": "es-to-primitive",
+      "SPDXID": "SPDXRef-Package-es-to-primitive",
+      "versionInfo": "1.1.1",
+      "downloadLocation": "https://registry.npmjs.org/es-to-primitive/-/es-to-primitive-1.1.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-RTVSSKiJeQNLZ5Lhm7gfK3l13Q0="
+    },
+    {
+      "name": "flatmap-stream",
+      "SPDXID": "SPDXRef-Package-flatmap-stream",
+      "versionInfo": "0.1.0",
+      "downloadLocation": "https://registry.npmjs.org/flatmap-stream/-/flatmap-stream-0.1.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-Nlic4ZRYxikqnK5rj3YoxDVKGGtUjcNDUtvQ7XsdGLZmMwdUYnXf10o1zcXtzEZTBgc6GxeRpQxV/Wu3WPIIHA=="
+    },
+    {
+      "name": "fomatto",
+      "SPDXID": "SPDXRef-Package-fomatto",
+      "versionInfo": "git://github.com/BonsaiDen/Fomatto.git#468666f600b46f9067e3da7200fd9df428923ea6",
+      "downloadLocation": "https://www.npmjs.com/package/fomatto",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: NOASSERTION"
+    },
+    {
+      "name": "for-each",
+      "SPDXID": "SPDXRef-Package-for-each",
+      "versionInfo": "0.3.3",
+      "downloadLocation": "https://registry.npmjs.org/for-each/-/for-each-0.3.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw=="
+    },
+    {
+      "name": "from",
+      "SPDXID": "SPDXRef-Package-from",
+      "versionInfo": "0.1.7",
+      "downloadLocation": "https://registry.npmjs.org/from/-/from-0.1.7.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-g8YK/Fi5xWmXAH7Rp2izqzA6RP4="
+    },
+    {
+      "name": "fs.realpath",
+      "SPDXID": "SPDXRef-Package-fs.realpath",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8="
+    },
+    {
+      "name": "function-bind",
+      "SPDXID": "SPDXRef-Package-function-bind",
+      "versionInfo": "1.1.1",
+      "downloadLocation": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
+    },
+    {
+      "name": "glob",
+      "SPDXID": "SPDXRef-Package-glob",
+      "versionInfo": "7.1.3",
+      "downloadLocation": "https://registry.npmjs.org/glob/-/glob-7.1.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-vcfuiIxogLV4DlGBHIUOwI0IbrJ8HWPc4MU7HzviGeNho/UJDfi6B5p3sHeWIQ0KGIU0Jpxi5ZHxemQfLkkAwQ=="
+    },
+    {
+      "name": "has",
+      "SPDXID": "SPDXRef-Package-has",
+      "versionInfo": "1.0.3",
+      "downloadLocation": "https://registry.npmjs.org/has/-/has-1.0.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw=="
+    },
+    {
+      "name": "inflight",
+      "SPDXID": "SPDXRef-Package-inflight",
+      "versionInfo": "1.0.6",
+      "downloadLocation": "https://registry.npmjs.org/inflight/-/inflight-1.0.6.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-Sb1jMdfQLQwJvJEKEHW6gWW1bfk="
+    },
+    {
+      "name": "inherits",
+      "SPDXID": "SPDXRef-Package-inherits",
+      "versionInfo": "2.0.3",
+      "downloadLocation": "https://registry.npmjs.org/inherits/-/inherits-2.0.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4="
+    },
+    {
+      "name": "is-callable",
+      "SPDXID": "SPDXRef-Package-is-callable",
+      "versionInfo": "1.1.4",
+      "downloadLocation": "https://registry.npmjs.org/is-callable/-/is-callable-1.1.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-r5p9sxJjYnArLjObpjA4xu5EKI3CuKHkJXMhT7kwbpUyIFD1n5PMAsoPvWnvtZiNz7LjkYDRZhd7FlI0eMijEA=="
+    },
+    {
+      "name": "is-date-object",
+      "SPDXID": "SPDXRef-Package-is-date-object",
+      "versionInfo": "1.0.1",
+      "downloadLocation": "https://registry.npmjs.org/is-date-object/-/is-date-object-1.0.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-mqIOtq7rv/d/vTPnTKAbM1gdOhY="
+    },
+    {
+      "name": "is-regex",
+      "SPDXID": "SPDXRef-Package-is-regex",
+      "versionInfo": "1.0.4",
+      "downloadLocation": "https://registry.npmjs.org/is-regex/-/is-regex-1.0.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-VRdIm1RwkbCTDglWVM7SXul+lJE="
+    },
+    {
+      "name": "is-symbol",
+      "SPDXID": "SPDXRef-Package-is-symbol",
+      "versionInfo": "1.0.1",
+      "downloadLocation": "https://registry.npmjs.org/is-symbol/-/is-symbol-1.0.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-PMWfAAJRlLarLjjbrmaJJWtmBXI="
+    },
+    {
+      "name": "it-is",
+      "SPDXID": "SPDXRef-Package-it-is",
+      "versionInfo": "1.0.3",
+      "downloadLocation": "https://registry.npmjs.org/it-is/-/it-is-1.0.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-RpcAgZg4pGVu1PF2lT9b/PU/SDs="
+    },
+    {
+      "name": "ls-r",
+      "SPDXID": "SPDXRef-Package-ls-r",
+      "versionInfo": "0.2.1",
+      "downloadLocation": "https://registry.npmjs.org/ls-r/-/ls-r-0.2.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-sjmgH6p9QxSIdKZP6xHgrey2b6A="
+    },
+    {
+      "name": "macgyver",
+      "SPDXID": "SPDXRef-Package-macgyver",
+      "versionInfo": "1.10.1",
+      "downloadLocation": "https://registry.npmjs.org/macgyver/-/macgyver-1.10.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-sJ0VmdizbtWxb1lYlRXZ0UvC/Yg="
+    },
+    {
+      "name": "map-stream",
+      "SPDXID": "SPDXRef-Package-map-stream",
+      "versionInfo": "0.0.7",
+      "downloadLocation": "https://registry.npmjs.org/map-stream/-/map-stream-0.0.7.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-ih8HiW2CsQkmvTdEokIACfiJdKg="
+    },
+    {
+      "name": "minimatch",
+      "SPDXID": "SPDXRef-Package-minimatch",
+      "versionInfo": "3.0.4",
+      "downloadLocation": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA=="
+    },
+    {
+      "name": "minimist",
+      "SPDXID": "SPDXRef-Package-minimist",
+      "versionInfo": "1.2.0",
+      "downloadLocation": "http://registry.npmjs.org/minimist/-/minimist-1.2.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ="
+    },
+    {
+      "name": "object-inspect",
+      "SPDXID": "SPDXRef-Package-object-inspect",
+      "versionInfo": "1.6.0",
+      "downloadLocation": "https://registry.npmjs.org/object-inspect/-/object-inspect-1.6.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-GJzfBZ6DgDAmnuaM3104jR4s1Myxr3Y3zfIyN4z3UdqN69oSRacNK8UhnobDdC+7J2AHCjGwxQubNJfE70SXXQ=="
+    },
+    {
+      "name": "object-keys",
+      "SPDXID": "SPDXRef-Package-object-keys",
+      "versionInfo": "1.0.12",
+      "downloadLocation": "https://registry.npmjs.org/object-keys/-/object-keys-1.0.12.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-FTMyFUm2wBcGHnH2eXmz7tC6IwlqQZ6mVZ+6dm6vZ4IQIHjs6FdNsQBuKGPuUUUY6NfJw2PshC08Tn6LzLDOag=="
+    },
+    {
+      "name": "once",
+      "SPDXID": "SPDXRef-Package-once",
+      "versionInfo": "1.4.0",
+      "downloadLocation": "https://registry.npmjs.org/once/-/once-1.4.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E="
+    },
+    {
+      "name": "optimist",
+      "SPDXID": "SPDXRef-Package-optimist",
+      "versionInfo": "0.2.8",
+      "downloadLocation": "https://registry.npmjs.org/optimist/-/optimist-0.2.8.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-6YGrfiaLRXlIWTtVZ0wJmoFcrDE="
+    },
+    {
+      "name": "path-is-absolute",
+      "SPDXID": "SPDXRef-Package-path-is-absolute",
+      "versionInfo": "1.0.1",
+      "downloadLocation": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-F0uSaHNVNP+8es5r9TpanhtcX18="
+    },
+    {
+      "name": "path-parse",
+      "SPDXID": "SPDXRef-Package-path-parse",
+      "versionInfo": "1.0.6",
+      "downloadLocation": "https://registry.npmjs.org/path-parse/-/path-parse-1.0.6.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw=="
+    },
+    {
+      "name": "pause-stream",
+      "SPDXID": "SPDXRef-Package-pause-stream",
+      "versionInfo": "0.0.11",
+      "downloadLocation": "https://registry.npmjs.org/pause-stream/-/pause-stream-0.0.11.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-/lo0sMvOErWqaitAPuLnO2AvFEU="
+    },
+    {
+      "name": "render",
+      "SPDXID": "SPDXRef-Package-render",
+      "versionInfo": "0.1.4",
+      "downloadLocation": "https://registry.npmjs.org/render/-/render-0.1.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-z7M6NOJgaFkdQYRp4j2Mxc4c7/U="
+    },
+    {
+      "name": "resolve",
+      "SPDXID": "SPDXRef-Package-resolve",
+      "versionInfo": "1.7.1",
+      "downloadLocation": "https://registry.npmjs.org/resolve/-/resolve-1.7.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-c7rwLofp8g1U+h1KNyHL/jicrKg1Ek4q+Lr33AL65uZTinUZHe30D5HlyN5V9NW0JX1D5dXQ4jqW5l7Sy/kGfw=="
+    },
+    {
+      "name": "resumer",
+      "SPDXID": "SPDXRef-Package-resumer",
+      "versionInfo": "0.0.0",
+      "downloadLocation": "https://registry.npmjs.org/resumer/-/resumer-0.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-8ej0YeQGS6Oegq883CqMiT0HZ1k="
+    },
+    {
+      "name": "should",
+      "SPDXID": "SPDXRef-Package-should",
+      "versionInfo": "13.2.3",
+      "downloadLocation": "https://registry.npmjs.org/should/-/should-13.2.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-ggLesLtu2xp+ZxI+ysJTmNjh2U0TsC+rQ/pfED9bUZZ4DKefP27D+7YJVVTvKsmjLpIi9jAa7itwDGkDDmt1GQ=="
+    },
+    {
+      "name": "should-equal",
+      "SPDXID": "SPDXRef-Package-should-equal",
+      "versionInfo": "2.0.0",
+      "downloadLocation": "https://registry.npmjs.org/should-equal/-/should-equal-2.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-ZP36TMrK9euEuWQYBig9W55WPC7uo37qzAEmbjHz4gfyuXrEUgF8cUvQVO+w+d3OMfPvSRQJ22lSm8MQJ43LTA=="
+    },
+    {
+      "name": "should-format",
+      "SPDXID": "SPDXRef-Package-should-format",
+      "versionInfo": "3.0.3",
+      "downloadLocation": "https://registry.npmjs.org/should-format/-/should-format-3.0.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-m/yPdPo5IFxT04w01xcwPidxJPE="
+    },
+    {
+      "name": "should-type",
+      "SPDXID": "SPDXRef-Package-should-type",
+      "versionInfo": "1.4.0",
+      "downloadLocation": "https://registry.npmjs.org/should-type/-/should-type-1.4.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-B1bYzoRt/QmEOmlHcZ36DUz/XPM="
+    },
+    {
+      "name": "should-type-adaptors",
+      "SPDXID": "SPDXRef-Package-should-type-adaptors",
+      "versionInfo": "1.1.0",
+      "downloadLocation": "https://registry.npmjs.org/should-type-adaptors/-/should-type-adaptors-1.1.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-JA4hdoLnN+kebEp2Vs8eBe9g7uy0zbRo+RMcU0EsNy+R+k049Ki+N5tT5Jagst2g7EAja+euFuoXFCa8vIklfA=="
+    },
+    {
+      "name": "should-util",
+      "SPDXID": "SPDXRef-Package-should-util",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "https://registry.npmjs.org/should-util/-/should-util-1.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-yYzaN0qmsZDfi6h8mInCtNtiAGM="
+    },
+    {
+      "name": "split",
+      "SPDXID": "SPDXRef-Package-split",
+      "versionInfo": "1.0.1",
+      "downloadLocation": "https://registry.npmjs.org/split/-/split-1.0.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg=="
+    },
+    {
+      "name": "stream-combiner",
+      "SPDXID": "SPDXRef-Package-stream-combiner",
+      "versionInfo": "0.2.2",
+      "downloadLocation": "https://registry.npmjs.org/stream-combiner/-/stream-combiner-0.2.2.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-rsjLrBd7Vrb0+kec7YwZEs7lKFg="
+    },
+    {
+      "name": "stream-spec",
+      "SPDXID": "SPDXRef-Package-stream-spec",
+      "versionInfo": "0.3.6",
+      "downloadLocation": "https://registry.npmjs.org/stream-spec/-/stream-spec-0.3.6.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-L92sSge/Pp+JY8Z3prWmzCEVJV4="
+    },
+    {
+      "name": "string.prototype.trim",
+      "SPDXID": "SPDXRef-Package-string.prototype.trim",
+      "versionInfo": "1.1.2",
+      "downloadLocation": "https://registry.npmjs.org/string.prototype.trim/-/string.prototype.trim-1.1.2.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-0E3iyJ4Tf019IG8Ia17S+ua+jOo="
+    },
+    {
+      "name": "style",
+      "SPDXID": "SPDXRef-Package-style",
+      "versionInfo": "0.1.1",
+      "downloadLocation": "https://registry.npmjs.org/style/-/style-0.1.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-4vq2WxuB0+AOvK2FTMWEuiMfJW0="
+    },
+    {
+      "name": "tape",
+      "SPDXID": "SPDXRef-Package-tape",
+      "versionInfo": "4.9.1",
+      "downloadLocation": "https://registry.npmjs.org/tape/-/tape-4.9.1.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha512-6fKIXknLpoe/Jp4rzHKFPpJUHDHDqn8jus99IfPnHIjyz78HYlefTGD3b5EkbQzuLfaEvmfPK3IolLgq2xT3kw=="
+    },
+    {
+      "name": "test-cmd",
+      "SPDXID": "SPDXRef-Package-test-cmd",
+      "versionInfo": "1.7.0",
+      "downloadLocation": "https://registry.npmjs.org/test-cmd/-/test-cmd-1.7.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-nldMSfOUcweeLyj+cWF4EtFH4xA="
+    },
+    {
+      "name": "test-report",
+      "SPDXID": "SPDXRef-Package-test-report",
+      "versionInfo": "1.1.2",
+      "downloadLocation": "https://registry.npmjs.org/test-report/-/test-report-1.1.2.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-nCHcPuk/qpMwTfnl1Zo+ccMBxaQ="
+    },
+    {
+      "name": "test-report-view",
+      "SPDXID": "SPDXRef-Package-test-report-view",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "https://registry.npmjs.org/test-report-view/-/test-report-view-1.0.0.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-/Z8/hA/Hsp0/dhNweJ93gFsZ440="
+    },
+    {
+      "name": "through",
+      "SPDXID": "SPDXRef-Package-through",
+      "versionInfo": "2.3.8",
+      "downloadLocation": "https://registry.npmjs.org/through/-/through-2.3.8.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU="
+    },
+    {
+      "name": "traverser",
+      "SPDXID": "SPDXRef-Package-traverser",
+      "versionInfo": "0.0.5",
+      "downloadLocation": "https://registry.npmjs.org/traverser/-/traverser-0.0.5.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-xm84xFagwhqIAUsSI1gMfr4GMes="
+    },
+    {
+      "name": "trees",
+      "SPDXID": "SPDXRef-Package-trees",
+      "versionInfo": "0.0.4",
+      "downloadLocation": "https://registry.npmjs.org/trees/-/trees-0.0.4.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-L1H9m19khvcyyX4R7nVmcja+HVk="
+    },
+    {
+      "name": "ubelt",
+      "SPDXID": "SPDXRef-Package-ubelt",
+      "versionInfo": "3.2.2",
+      "downloadLocation": "https://registry.npmjs.org/ubelt/-/ubelt-3.2.2.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-Ros+spc6rabxe5ff5zL1nZbiOwM="
+    },
+    {
+      "name": "wordwrap",
+      "SPDXID": "SPDXRef-Package-wordwrap",
+      "versionInfo": "0.0.3",
+      "downloadLocation": "https://registry.npmjs.org/wordwrap/-/wordwrap-0.0.3.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-o9XabNXAvAAI03I0u68b7WMFkQc="
+    },
+    {
+      "name": "wrappy",
+      "SPDXID": "SPDXRef-Package-wrappy",
+      "versionInfo": "1.0.2",
+      "downloadLocation": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Organization: npm",
+      "comment": "Integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8="
+    },
+    {
+      "name": "duplexer",
+      "SPDXID": "SPDXRef-Package-duplexer",
+      "versionInfo": "^0.1.1",
+      "downloadLocation": "https://www.npmjs.com/package/duplexer",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "flatmap-stream",
+      "SPDXID": "SPDXRef-Package-flatmap-stream",
+      "versionInfo": "^0.1.0",
+      "downloadLocation": "https://www.npmjs.com/package/flatmap-stream",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "from",
+      "SPDXID": "SPDXRef-Package-from",
+      "versionInfo": "^0.1.7",
+      "downloadLocation": "https://www.npmjs.com/package/from",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "pause-stream",
+      "SPDXID": "SPDXRef-Package-pause-stream",
+      "versionInfo": "^0.0.11",
+      "downloadLocation": "https://www.npmjs.com/package/pause-stream",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "split",
+      "SPDXID": "SPDXRef-Package-split",
+      "versionInfo": "^1.0.1",
+      "downloadLocation": "https://www.npmjs.com/package/split",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "stream-combiner",
+      "SPDXID": "SPDXRef-Package-stream-combiner",
+      "versionInfo": "^0.2.2",
+      "downloadLocation": "https://www.npmjs.com/package/stream-combiner",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "through",
+      "SPDXID": "SPDXRef-Package-through",
+      "versionInfo": "^2.3.8",
+      "downloadLocation": "https://www.npmjs.com/package/through",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "asynct",
+      "SPDXID": "SPDXRef-Package-asynct",
+      "versionInfo": "^1.1.0",
+      "downloadLocation": "https://www.npmjs.com/package/asynct",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "it-is",
+      "SPDXID": "SPDXRef-Package-it-is",
+      "versionInfo": "^1.0.3",
+      "downloadLocation": "https://www.npmjs.com/package/it-is",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "stream-spec",
+      "SPDXID": "SPDXRef-Package-stream-spec",
+      "versionInfo": "^0.3.6",
+      "downloadLocation": "https://www.npmjs.com/package/stream-spec",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "tape",
+      "SPDXID": "SPDXRef-Package-tape",
+      "versionInfo": "^4.9.1",
+      "downloadLocation": "https://www.npmjs.com/package/tape",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    },
+    {
+      "name": "ubelt",
+      "SPDXID": "SPDXRef-Package-ubelt",
+      "versionInfo": "^3.2.2",
+      "downloadLocation": "https://www.npmjs.com/package/ubelt",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "supplier": "Person: Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".travis.yml",
+      "SPDXID": "SPDXRef-File-354f30a63fb0907d4ad57269548329e3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6d60dfed243c9731bf2dcd21b436a430e89d50e1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e36b9b52fccb8114b8b8b13bdfbaa87342b07bda069b517ca34db9f85adaa3e3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1578eee81b2b3bec97af747e482f1cb9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "index.js",
+      "SPDXID": "SPDXRef-File-168726dbe96b3ce427e7fedce31bb0bc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "db14bcb844dfdc0f187403ca2c14d3201d91cf71"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bf915c55424a63d72ce0c3b49a4c10bc48b059464fc4399daa2d533c57833212"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d4130a6db71ba22951db7011efba7490"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "package-lock.json",
+      "SPDXID": "SPDXRef-File-32607347f8126e6534ebc7ebaec4853d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6a92db6a742573f7da66aeac08ccb87a8dd6bd36"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c2bc4130ae02d9a79f0e67e4dbffc38d2c2a65625b2b636baef6fe9f64fcb2a2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "431a7b1bed5e7ec3a8ef01ca5f6f19c5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "package.json",
+      "SPDXID": "SPDXRef-File-b9cfc7f2cdf78a7f4b91a753d10865a2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "24281f250548f084d38644d7ef5ec55b169a94c3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "82bd67d40f2cd037dc53c3a416be117a2e53e785b6b640a4314acf9d99b59bf3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f715eaabb62f15dcd89d651f7b4b19f2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "examples\\map.js",
+      "SPDXID": "SPDXRef-File-9133efb4a472c061fdaf3e64946dd5d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b9bc748413758aac349684a51e5a2d969df36169"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "229be770211799ca6cd233a5d34525bc3fc59f8ae6e2e80a1e89869b60a4eac5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "22eb1f9943b69d6ffbd6176d3470ac41"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "examples\\pretty.js",
+      "SPDXID": "SPDXRef-File-a62efcc90aabbc55ee4ff2e2c7a564db",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b45b09cec95b8f8ab10408f2960172bbd42cd8d3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e5a3f5e132110bafe3944599a65611ae3898f2b6ef41e35c80f607358dbbb250"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "35f3794d059953e72b00ca321af2f480"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "examples\\split.js",
+      "SPDXID": "SPDXRef-File-de5a4dd634cd161e84634a145a8afc24",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8e4be9003a0238e8f3ea192de03d44e3dc05b9e3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cf509bd846f19a8e5864dbcb873bf4e909cc934c1dfa9b75c680654b14ffdc21"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e0c259f412f5475a1bba55af0768c8aa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\connect.asynct.js",
+      "SPDXID": "SPDXRef-File-57b213962c975e149db2db063db4b925",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4186cf97a543b726394bb5ab65e13bd03be712e4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d477e83e87219cb2890b04672c192f23fe3fd2cd277884135545775c0ac1e378"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "af99ba98144d95a102d94f360e2ca215"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\flatmap.asynct.js",
+      "SPDXID": "SPDXRef-File-bf3c994b2c740dea9aed25e951c579e8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d89ba8f24f902af1476e50f331bd52cdbe2f463e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cc275783a851f66984da4d058e0782f09f926329964a9b48bad7e9617bc900a4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5bca82bd0d95fbb8069207739c19bbe6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\merge.asynct.js",
+      "SPDXID": "SPDXRef-File-c8bf695bbd7c3778931fa667c99a17c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d50ceaefbc4647dcb671f3420d8c4e7066a404e4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0a65d7dbb780cdac0c831a5cd43a6193894af719404877e4acb40114245d3334"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1ce6ad7b3318daa15cf8b02dd5c06952"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\parse.asynct.js",
+      "SPDXID": "SPDXRef-File-5636e70e721ef0a522d1058b02d84b56",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fcfd8940bb7c63b9875d62acd2cbe323c14f9efc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "455b572873cf8645dd696ef9feae0a24f790e11b6f78458a4e12272034d17a4a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0f18389cbab1d9496ebb23dbc82d1196"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\pause.asynct.js",
+      "SPDXID": "SPDXRef-File-a0e5ca36a11c50976e07f043bbf7d47e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "88930ff402505c2cf9ac53223b5b4ff87087871f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1fadea1032d66fcf88f68fa323bc3bbce3673df2c95610a42106cecc5b54c16c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f130f626343a97dddde2f1697fdfd330"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\pipeline.asynct.js",
+      "SPDXID": "SPDXRef-File-d5eee26c6cf8480309c32a3ff1c6f720",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7524f3e047d83cffcffafb9f91da06e86f63b9a7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "36e4855952b9d6b39a8d561b0b4a487a67e9cfee2d30d8cecd5006cb0ce90034"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "960c5d4ecc87cf93fd291343bf4e5101"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\readable.asynct.js",
+      "SPDXID": "SPDXRef-File-0e8cf48593f7efea2d107f3ab7e4f8cb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d53ba11ed30e77379a28c5b48b27e283188b3dc2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e155cc7ae149699f1c4563f9837010ef1a5fba8e9e58ebd653735f83a404df44"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0b7b57b6f86c568e9695a91ac939dcdc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\readArray.asynct.js",
+      "SPDXID": "SPDXRef-File-a6acf7afeb49ba0097a35ec19209a15c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "64e5c94c9cfe6917ce24e5c2003030a6edf384ae"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1a7afbc7f35cf220e885f5832f9b67b8de923771d70575f1d48a1327c3634891"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1a18981d1a5cf855afb24d02ada3be2b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\replace.asynct.js",
+      "SPDXID": "SPDXRef-File-9417b60f412f140d533a5502901f1db0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "278b65a969ed3a8c1df60ff3ccebad9a2923be6a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9db0c809adfd98893163f75910991fd6943fbcc129e025784b8e4e051ddc89a7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0640a39278545711bc38cb45c7909ef3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\simple-map.asynct.js",
+      "SPDXID": "SPDXRef-File-6b16b29e4a230085d7a816471e281a7d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4d9d16bbd7d22d510b0867ce1f25afcec8370bd0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "692a2fae2638458ab3d75300ca36fd5aab56cab1ce093eb6c46d2f6908b39c56"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e5ca6feac85d865196cd0d446a7a9e76"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\spec.asynct.js",
+      "SPDXID": "SPDXRef-File-eee5dfe783eebfcb2c7bd5542755ac93",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "820c052243c61b56417aec99a03f179eb886a6f2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7d757f4985481a25a0ef35419342860787d889a8ae4b24213a030685298d40b6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "432e9c5b05c1673285f7aeb55fc1f0b5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\split.asynct.js",
+      "SPDXID": "SPDXRef-File-b5fcb706cb6a92a16d6b6f8cb9afae42",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0d09a7e2903bf72ff6f21b20a777a316742ec23d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c7e38c5c040c1dc04148fb361185dfa7e45c07717705217e629cb9a5114d493d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "902887a9c150045a24b03db8e237e668"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\stringify.js",
+      "SPDXID": "SPDXRef-File-831e2c887d4039f925c97337a00087f5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d57e4f5f7ef42cdef60bf41f527449e02cf72bfb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4d3309085be33914f46b800772e99bbd051476861187f75303a655d34a50fe81"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2e627f636a4df324ed3153cb2cb31ab2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\writeArray.asynct.js",
+      "SPDXID": "SPDXRef-File-27947239451ee5ddcf07aa5c79b3bd87",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bb5efea4832356e5b0c7f14fc6714fa87cad4bcc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "607f46817ee0247ce48c8c5506218b7e2e14d3451c4114d7ff1259456cbfbe7a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "20be65f7b215dc1d964907e7b505867c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "test\\helper\\index.js",
+      "SPDXID": "SPDXRef-File-90a20f6916bda88c65c3b7db0d021889",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "260968cee40c4994cd2a1b34c4ac6d16d6a57afe"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fe763959ab9f2d8a5a58569dad09190f9b03a42478f8a3ae6d3d15a4534e60e9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c6e2b565c1bfc9f873e4d42b7cb80f29"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-event-stream3.3.6",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-assertions",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-asynct",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-balanced-match",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-brace-expansion",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-concat-map",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-ctrlflow",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-curry",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-d-utils",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-deep-equal",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-define-properties",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-defined",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-duplexer",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-es-abstract",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-es-to-primitive",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-flatmap-stream",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-fomatto",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-for-each",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-from",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-fs.realpath",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-function-bind",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-glob",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-has",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-inflight",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-inherits",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-is-callable",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-is-date-object",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-is-regex",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-is-symbol",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-it-is",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-ls-r",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-macgyver",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-map-stream",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-minimatch",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-minimist",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-object-inspect",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-object-keys",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-once",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-optimist",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-path-is-absolute",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-path-parse",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-pause-stream",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-render",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-resolve",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-resumer",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-should",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-should-equal",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-should-format",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-should-type",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-should-type-adaptors",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-should-util",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-split",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-stream-combiner",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-stream-spec",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-string.prototype.trim",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-style",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-tape",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-test-cmd",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-test-report",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-test-report-view",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-through",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-traverser",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-trees",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-ubelt",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-wordwrap",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-wrappy",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-duplexer",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-flatmap-stream",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-from",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-pause-stream",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-split",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-stream-combiner",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-through",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-asynct",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-it-is",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-stream-spec",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-tape",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-event-stream3.3.6",
+      "relatedSpdxElement": "SPDXRef-Package-ubelt",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

@@ -2,32 +2,20 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "luisdanieldlcg/BackTools SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/luisdanieldlcg/BackTools-3d8444c0-bf73-48c2-9af1-2d95045b9bdc",
+  "name": "luisdanieldlcg/BackTools",
+  "comment": "BackTools for Fabric. Shows the last used tool on the player's back. Purely aesthetic.",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Java, JSON, Markdown, YAML",
+  "documentNamespace": "https://spdx.org/spdxdocs/luisdanieldlcg/BackTools-f520e755-e695-4e7c-8b1e-e90bad957cf1",
   "creationInfo": {
-    "created": "2025-03-30T06:31:54.031730Z",
+    "created": "2025-04-04T09:50:57.931103Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
     ],
     "licenseListVersion": "3.19"
   },
-  "packages": [
-    {
-      "name": "BackTools",
-      "SPDXID": "SPDXRef-Package-BackTools",
-      "downloadLocation": "https://github.com/luisdanieldlcg/BackTools.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "mit",
-      "copyrightText": "NOASSERTION",
-      "description": "BackTools for Fabric. Shows the last used tool on the player's back. Purely aesthetic.",
-      "comment": "Primary languages: Java, JSON, Markdown, YAML",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: luisdanieldlcg",
-      "homepage": "https://github.com/luisdanieldlcg/BackTools"
-    }
-  ],
+  "packages": [],
   "files": [
     {
       "fileName": "README.md",

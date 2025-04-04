@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "telefonicaid/fiware-keypass SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/telefonicaid/fiware-keypass-c2dc5ee9-7b97-4487-9e5f-34792457750a",
+  "name": "telefonicaid/fiware-keypass",
+  "comment": "Keypass is a multitenant XACML Authorization Server (Access Control) with PAP (Policy Administration Point) and PDP (Policy Decision Point) capabilities used by IoT Platform.",
+  "licenseDeclared": "apache-2.0",
+  "primaryLanguage": "Java, XML, Markdown, Shell, YAML, Python, JSON",
+  "documentNamespace": "https://spdx.org/spdxdocs/telefonicaid/fiware-keypass-30fd4c3d-6776-41bc-bcad-c0336f469b20",
   "creationInfo": {
-    "created": "2025-03-30T06:36:31.322844Z",
+    "created": "2025-04-04T10:43:42.780392Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "fiware-keypass",
-      "SPDXID": "SPDXRef-Package-fiware-keypass",
-      "downloadLocation": "https://github.com/telefonicaid/fiware-keypass.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "apache-2.0",
-      "copyrightText": "NOASSERTION",
-      "description": "Keypass is a multitenant XACML Authorization Server (Access Control) with PAP (Policy Administration Point) and PDP (Policy Decision Point) capabilities used by IoT Platform.",
-      "comment": "Primary languages: Java, XML, Markdown, Shell, YAML, Python, JSON",
-      "versionInfo": "commit-master",
-      "supplier": "Organization: telefonicaid",
-      "homepage": "https://github.com/telefonicaid/fiware-keypass"
-    },
     {
       "name": "io.dropwizard:dropwizard-core",
       "SPDXID": "SPDXRef-Package-993aee2c35cdb20ce7733b57f3994b1d",

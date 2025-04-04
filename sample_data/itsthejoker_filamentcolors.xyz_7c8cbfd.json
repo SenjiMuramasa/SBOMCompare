@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "itsthejoker/filamentcolors.xyz SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/itsthejoker/filamentcolors.xyz-89d89450-8f83-4a19-8e4a-e9967606e585",
+  "name": "itsthejoker/filamentcolors.xyz",
+  "comment": "The source code for a small website to compare pieces of printed filament.",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Python, HTML, JavaScript, CSS, Shell, Markdown, YAML, XML, JSON",
+  "documentNamespace": "https://spdx.org/spdxdocs/itsthejoker/filamentcolors.xyz-360367d1-cba1-41df-8957-6d36e3d75dac",
   "creationInfo": {
-    "created": "2025-03-30T02:28:20.828953Z",
+    "created": "2025-04-04T09:35:46.426853Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "filamentcolors.xyz",
-      "SPDXID": "SPDXRef-Package-filamentcolors.xyz",
-      "downloadLocation": "https://github.com/itsthejoker/filamentcolors.xyz.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "mit",
-      "copyrightText": "NOASSERTION",
-      "description": "The source code for a small website to compare pieces of printed filament.",
-      "comment": "Primary languages: Python, HTML, JavaScript, CSS, Shell, Markdown, YAML, XML, JSON",
-      "versionInfo": "commit-master",
-      "supplier": "Organization: itsthejoker",
-      "homepage": "https://github.com/itsthejoker/filamentcolors.xyz"
-    },
     {
       "name": "django",
       "SPDXID": "SPDXRef-Package-1f4570838f64fcdcecb9e4bbdef0ff5a",
@@ -294,8 +283,8 @@
       "SPDXID": "SPDXRef-Package-d4afc26b5bfbd5196f759280dac716dd",
       "versionInfo": "^2024.6.1",
       "downloadLocation": "https://pypi.org/project/imagecodecs/",
-      "licenseConcluded": "BSD License",
-      "licenseDeclared": "BSD License",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
       "copyrightText": "Copyright (c) Christoph Gohlke",
       "supplier": "Person: Christoph Gohlke",
       "comment": "From pyproject.toml (poetry.dependencies); From pyproject.toml (poetry.dependencies)",

@@ -1,0 +1,426 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "logica0419/resigif",
+  "comment": "Animated GIF resizing library w/o cgo or any third-party Libraries",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Go, YAML, Markdown, JSON",
+  "documentNamespace": "https://spdx.org/spdxdocs/logica0419/resigif-aaa2fd9e-7b98-4ada-bac6-b3997bb5653a",
+  "creationInfo": {
+    "created": "2025-04-04T09:45:55.326655Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "github.com/youta-t/its",
+      "SPDXID": "SPDXRef-Package-067b1c498237918be43612c374df6b4c",
+      "versionInfo": "v0.6.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/youta-t/its",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 logica\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/image",
+      "SPDXID": "SPDXRef-Package-e598f3616a6e16a44c82360773748116",
+      "versionInfo": "v0.25.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/image",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 logica\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/sync",
+      "SPDXID": "SPDXRef-Package-178f6c71ac4e409931d0535821368a2e",
+      "versionInfo": "v0.12.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/sync",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 logica\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "(",
+      "SPDXID": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "versionInfo": "github.com/youta-t/its",
+      "downloadLocation": "https://pkg.go.dev/(",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 logica\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/mod",
+      "SPDXID": "SPDXRef-Package-8d7a121bf7b5b730849cfbdd2e0a109d",
+      "versionInfo": "v0.24.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/mod",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2024 logica\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".golangci.yaml",
+      "SPDXID": "SPDXRef-File-f5e6ed72f74bd5711969dc7bbe35ac73",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "57f2366ef9eed9c1528ff4a70e925b81d9371d17"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "188a0cfec588a28d690715b025834d9f933260b896c448347cfc8bd1786862ac"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8483c3242786f141415f444973ca53c3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".goreleaser.yaml",
+      "SPDXID": "SPDXRef-File-aedb9ef6a17a16fd320c5a93d5c7cc4f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ac0507982c6a428aec4fd026f6b5a2d7e671946a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b5281cff7b1b0d3a556b26b261f4e8773833889d4fac690f9317a73f959feaf0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fcc3116b193b56d0bfa2c642b37085f2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "image.go",
+      "SPDXID": "SPDXRef-File-9452939f2ca4b63fbe7d0e3408c6f95b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c1d6e2c379f6e35c78653d9aca47ae2184a030ad"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bc1c091e350c59df5d1b8f27d3ecf88f002a1b83b339e9692e8d7770226cf29d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bd7a8e40a8c765730ac5d7db79a51a47"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "options.go",
+      "SPDXID": "SPDXRef-File-4aae454123f50b906f9aaef44f10011e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "34e0439973c62a8353261eba9b4d3072989c776a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "37eb7fb3a2aab68395390095d71be646f2ef1886a07fe52e7a2f0ba6a28066e0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ca55cf1b1f5581740b3b3c300ebeb674"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "processor.go",
+      "SPDXID": "SPDXRef-File-d68bdb72e6383c3eaca19896f345966c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2ab7c67e8660a7f42adc4eb87d76e8ba4ecf637d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "11be3d0f44313cca3f7e28d7858bc130692b58552c6be0b9eec9db3c61d20430"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2f435780b422b8c792aef1f35e9dc4ab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6875b053e1e1fd314b733b925be28f42917675ae"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ac640b92f74be582ec9ed5c49f8f809c49d1eebdf8cfd3315d8024bdba96c7e4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "486f9ac486ea42e2a80b59259bd26aee"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "resigif.go",
+      "SPDXID": "SPDXRef-File-26daeadb956fd6f057ed49ecc68d0308",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2ffdc4ba4c9166ee19f12a1a725959ab18bdbaba"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6b4968c2438d7e56e5376e1b30a9550b3a1fb0ec3d8dda7621bcc48f0f52e97d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b55cabee7b90e873dd4ef067396935a5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "resigif_test.go",
+      "SPDXID": "SPDXRef-File-c8eb07bf20a6906f47fa869d12caa569",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f8db20273d6ffda5427936809f4902f52190912a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d51c87f3d4f6a50dea87d9056bc3e535f313161d84e14e97aa9a2355722603f9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0f5da75148fa786c066f8f95b82c1240"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Taskfile.yaml",
+      "SPDXID": "SPDXRef-File-38d03f2d832bc186bae36326985a34c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7557685e2fabe52f8adc51725e98f7bdafe977d8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "46c56d49bdbe903ea712e711fc056c074d87b2d329cbe76156941884d9fb64ff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c0274d1b977ae142e9b4b7cc92c5c303"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "utils.go",
+      "SPDXID": "SPDXRef-File-7d1c2a3334601b6c1958aae0a594cba8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a9593be76fe000c2833ae5862686362d87c6627f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "31782e7f109fab0d39e51531e70e67fe6d0dc05bb0c69d7f252d5d9cf91473b1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "04d336b5cea71cc75d6d4f6c5bc1b6ec"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\renovate.json",
+      "SPDXID": "SPDXRef-File-90021e844b6acda3b261c6498620f090",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3398847a063196cabf55293f48782ebd94179c91"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6de24880c250b71106169b6840398e96ebc007156703dcebf47f705bff93a80e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b894cd7d120700e1fd8d925ef00d089d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\ci.yml",
+      "SPDXID": "SPDXRef-File-db5a98ed1447d83cfbc6b9fce9c8aba8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "24a4e3a81c1e79a3c0cfda9bee09147c09404e74"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "093eb3e607a1aaaa164eeafec045528609bf280e9751b8183e4e92320f5f6ce2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ed598506a8562a509559ac1403e29755"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\release.yml",
+      "SPDXID": "SPDXRef-File-65d7be0e3d6ba0d5a83cabf820e2f30f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c37430220502a7b3395b335b6e77879934033807"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5f9753279ead6da6d1cadb3a2aa2f8a548db1d3595b8861a7971ae75a6550c2c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "82b38eed4fd15eda8e0b558ef758983b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "testdata\\embed.go",
+      "SPDXID": "SPDXRef-File-a87e337bbf24e926af3ccb90966c285c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b9c9fada3e08212abcd5ce8cba0d5d64736fe400"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "13e00de83d7cffe92598571be6024d80be02a96acb772589a5741c398bc4db97"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "da2c5a76d9f9b4009c331ead12a49afd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-resigif",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-resigif",
+      "relatedSpdxElement": "SPDXRef-Package-067b1c498237918be43612c374df6b4c",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-resigif",
+      "relatedSpdxElement": "SPDXRef-Package-e598f3616a6e16a44c82360773748116",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-resigif",
+      "relatedSpdxElement": "SPDXRef-Package-178f6c71ac4e409931d0535821368a2e",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-resigif",
+      "relatedSpdxElement": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-resigif",
+      "relatedSpdxElement": "SPDXRef-Package-8d7a121bf7b5b730849cfbdd2e0a109d",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

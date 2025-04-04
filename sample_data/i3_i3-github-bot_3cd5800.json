@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "i3/i3-github-bot SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/i3/i3-github-bot-44536717-6c67-4e08-92f3-0c75e5518436",
+  "name": "i3/i3-github-bot",
+  "comment": "logs.i3wm.org and @i3bot on GitHub",
+  "licenseDeclared": "other",
+  "primaryLanguage": "Go, YAML, Markdown",
+  "documentNamespace": "https://spdx.org/spdxdocs/i3/i3-github-bot-e2cb1451-f6ed-4a38-9ee2-2e5f829ce756",
   "creationInfo": {
-    "created": "2025-03-30T06:51:09.473068Z",
+    "created": "2025-04-04T09:34:30.648211Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "i3-github-bot",
-      "SPDXID": "SPDXRef-Package-i3-github-bot",
-      "downloadLocation": "https://github.com/i3/i3-github-bot.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "other",
-      "copyrightText": "NOASSERTION",
-      "description": "logs.i3wm.org and @i3bot on GitHub",
-      "comment": "Primary languages: Go, YAML, Markdown",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: i3",
-      "homepage": "https://github.com/i3/i3-github-bot"
-    },
     {
       "name": "cloud.google.com/go/storage",
       "SPDXID": "SPDXRef-Package-676b3a2b490673a63f3bf1c277a14c82",

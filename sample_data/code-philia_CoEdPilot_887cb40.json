@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "code-philia/CoEdPilot SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/code-philia/CoEdPilot-c76eadfc-3c50-411d-a1a9-271b8bd50a2c",
+  "name": "code-philia/CoEdPilot",
+  "comment": "Source code for \"CoEdPilot: Recommending Code Edits with Learned Prior Edit Relevance, Project-wise Awareness, and Interactive Nature\"",
+  "licenseDeclared": "NOASSERTION",
+  "primaryLanguage": "Python, Markdown, Shell, YAML",
+  "documentNamespace": "https://spdx.org/spdxdocs/code-philia/CoEdPilot-07c23ba8-698c-4362-bbfd-f3cf37ba4b5f",
   "creationInfo": {
-    "created": "2025-03-30T03:00:52.962987Z",
+    "created": "2025-04-04T09:04:52.295829Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "CoEdPilot",
-      "SPDXID": "SPDXRef-Package-CoEdPilot",
-      "downloadLocation": "https://github.com/code-philia/CoEdPilot.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "NOASSERTION",
-      "copyrightText": "NOASSERTION",
-      "description": "Source code for \"CoEdPilot: Recommending Code Edits with Learned Prior Edit Relevance, Project-wise Awareness, and Interactive Nature\"",
-      "comment": "Primary languages: Python, Markdown, Shell, YAML",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: code-philia",
-      "homepage": "https://github.com/code-philia/CoEdPilot"
-    },
     {
       "name": "torch",
       "SPDXID": "SPDXRef-Package-232a84abd3440b99b93411e5a85de603",

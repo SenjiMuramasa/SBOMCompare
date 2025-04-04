@@ -1,0 +1,3777 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "wagoodman/dive",
+  "comment": "A tool for exploring each layer in a docker image",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Go, YAML, Markdown, Python, Shell",
+  "documentNamespace": "https://spdx.org/spdxdocs/wagoodman/dive-5c833f3c-c07a-4be8-8613-8f0e639c19e1",
+  "creationInfo": {
+    "created": "2025-04-04T09:11:02.766886Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "github.com/awesome-gocui/gocui",
+      "SPDXID": "SPDXRef-Package-42b3d4747d01b3afb61a8c3da650c7f4",
+      "versionInfo": "v1.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/awesome-gocui/gocui",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/awesome-gocui/keybinding",
+      "SPDXID": "SPDXRef-Package-bc4501f04d574f5f5c8fa7983a82b452",
+      "versionInfo": "v1.0.1-0.20211011072933-86029037a63f",
+      "downloadLocation": "https://pkg.go.dev/github.com/awesome-gocui/keybinding",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/cespare/xxhash/v2",
+      "SPDXID": "SPDXRef-Package-72f403a6f9370597185ac7f9ce89e9aa",
+      "versionInfo": "v2.3.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/cespare/xxhash/v2",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/docker/cli",
+      "SPDXID": "SPDXRef-Package-32d82f0f79c33d76a3f67ca0799fa7ed",
+      "versionInfo": "v28.0.4+incompatible",
+      "downloadLocation": "https://pkg.go.dev/github.com/docker/cli",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/docker/docker",
+      "SPDXID": "SPDXRef-Package-a9c5c1ba787a1691b7c8e8918cfc742d",
+      "versionInfo": "v28.0.4+incompatible",
+      "downloadLocation": "https://pkg.go.dev/github.com/docker/docker",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/dustin/go-humanize",
+      "SPDXID": "SPDXRef-Package-0064b18ad701ef4a3e76613407e32bbe",
+      "versionInfo": "v1.0.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/dustin/go-humanize",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/fatih/color",
+      "SPDXID": "SPDXRef-Package-db72156071ece408b821eabbca5a8cda",
+      "versionInfo": "v1.18.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/fatih/color",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/google/uuid",
+      "SPDXID": "SPDXRef-Package-64f6c175f16232732e49a32737505ecd",
+      "versionInfo": "v1.6.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/google/uuid",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/klauspost/compress",
+      "SPDXID": "SPDXRef-Package-86b05ef1d1cca0cda413287c8ef57e21",
+      "versionInfo": "v1.18.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/klauspost/compress",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/logrusorgru/aurora/v4",
+      "SPDXID": "SPDXRef-Package-694f854cdac6a935ec68ac56d76f9154",
+      "versionInfo": "v4.0.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/logrusorgru/aurora/v4",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/lunixbochs/vtclean",
+      "SPDXID": "SPDXRef-Package-ab4a028d4d86c234626902cbdba44fd7",
+      "versionInfo": "v1.0.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/lunixbochs/vtclean",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/mitchellh/go-homedir",
+      "SPDXID": "SPDXRef-Package-31e269a2273321d57d4f9c682514ab59",
+      "versionInfo": "v1.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/mitchellh/go-homedir",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/phayes/permbits",
+      "SPDXID": "SPDXRef-Package-e54c2378387ba88a9ab7a35a59734004",
+      "versionInfo": "v0.0.0-20190612203442-39d7c581d2ee",
+      "downloadLocation": "https://pkg.go.dev/github.com/phayes/permbits",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/scylladb/go-set",
+      "SPDXID": "SPDXRef-Package-7ed3ee7bc3bbbf7f6e87d1e39205dfc3",
+      "versionInfo": "v1.0.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/scylladb/go-set",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/sergi/go-diff",
+      "SPDXID": "SPDXRef-Package-d73196789d8c8ee6179751ca48668494",
+      "versionInfo": "v1.3.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/sergi/go-diff",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/sirupsen/logrus",
+      "SPDXID": "SPDXRef-Package-2881124da3aa3acbe08e2516e4953abb",
+      "versionInfo": "v1.9.3",
+      "downloadLocation": "https://pkg.go.dev/github.com/sirupsen/logrus",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/spf13/afero",
+      "SPDXID": "SPDXRef-Package-0e2693424cb512af71080e01083dc5ba",
+      "versionInfo": "v1.14.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/spf13/afero",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/spf13/cobra",
+      "SPDXID": "SPDXRef-Package-0ac0d6fb0ded66a5b74732ad574b3375",
+      "versionInfo": "v1.9.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/spf13/cobra",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/spf13/viper",
+      "SPDXID": "SPDXRef-Package-9dfd44d7afa684cfcad95d48ebc6d982",
+      "versionInfo": "v1.20.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/spf13/viper",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/stretchr/testify",
+      "SPDXID": "SPDXRef-Package-245cb304f906c779d03288fcd906b9b1",
+      "versionInfo": "v1.10.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/stretchr/testify",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/net",
+      "SPDXID": "SPDXRef-Package-338c5481d3a4d52c09b24a69f23c4012",
+      "versionInfo": "v0.38.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/net",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/Microsoft/go-winio",
+      "SPDXID": "SPDXRef-Package-30a45616d59f6a2ce2ae998ed0d68aaa",
+      "versionInfo": "v0.4.14",
+      "downloadLocation": "https://pkg.go.dev/github.com/Microsoft/go-winio",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/containerd/log",
+      "SPDXID": "SPDXRef-Package-58e104b3b96ae647cc4cfb3c949e43de",
+      "versionInfo": "v0.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/containerd/log",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/davecgh/go-spew",
+      "SPDXID": "SPDXRef-Package-0761935d11505eb79da31bf4340fdbbe",
+      "versionInfo": "v1.1.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/davecgh/go-spew",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/distribution/reference",
+      "SPDXID": "SPDXRef-Package-d1bd00da3f306c7027b1e8bbbb6cacb2",
+      "versionInfo": "v0.6.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/distribution/reference",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/docker/docker-credential-helpers",
+      "SPDXID": "SPDXRef-Package-9f60de06a9918192b8fa42bf8dc053f7",
+      "versionInfo": "v0.8.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/docker/docker-credential-helpers",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/docker/go-connections",
+      "SPDXID": "SPDXRef-Package-97bf6dff3bafafde463738650dfce9b9",
+      "versionInfo": "v0.4.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/docker/go-connections",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/docker/go-units",
+      "SPDXID": "SPDXRef-Package-3a8f9f934ef41bacf59f9a6f4dbe3556",
+      "versionInfo": "v0.4.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/docker/go-units",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/felixge/httpsnoop",
+      "SPDXID": "SPDXRef-Package-2ce45d9cd25ff42c38e6caed0d3883c8",
+      "versionInfo": "v1.0.4",
+      "downloadLocation": "https://pkg.go.dev/github.com/felixge/httpsnoop",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/fsnotify/fsnotify",
+      "SPDXID": "SPDXRef-Package-ef4aeb96dce83d075ca3f6188332e53b",
+      "versionInfo": "v1.8.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/fsnotify/fsnotify",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/fvbommel/sortorder",
+      "SPDXID": "SPDXRef-Package-a3ae6112cecb255c6e12bfa554dcab38",
+      "versionInfo": "v1.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/fvbommel/sortorder",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/gdamore/encoding",
+      "SPDXID": "SPDXRef-Package-d117e380b1f25b20b894a03731b43900",
+      "versionInfo": "v1.0.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/gdamore/encoding",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/gdamore/tcell/v2",
+      "SPDXID": "SPDXRef-Package-8ff585c005a2037e8144d897c4ca34fe",
+      "versionInfo": "v2.4.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/gdamore/tcell/v2",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/go-logr/logr",
+      "SPDXID": "SPDXRef-Package-f96c14c5421c26e5149a5edd783f84b5",
+      "versionInfo": "v1.4.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/go-logr/logr",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/go-logr/stdr",
+      "SPDXID": "SPDXRef-Package-b0af2bab8c2b5516b0d6c1c26a5e0022",
+      "versionInfo": "v1.2.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/go-logr/stdr",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/go-viper/mapstructure/v2",
+      "SPDXID": "SPDXRef-Package-b985d432f3626f35ba3c5da8ef88404a",
+      "versionInfo": "v2.2.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/go-viper/mapstructure/v2",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/gogo/protobuf",
+      "SPDXID": "SPDXRef-Package-f10131c10aec4e48fa8607c019019803",
+      "versionInfo": "v1.3.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/gogo/protobuf",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/inconshreveable/mousetrap",
+      "SPDXID": "SPDXRef-Package-a7f33b65cdbf005ae35d5a2bdcf9d2cb",
+      "versionInfo": "v1.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/inconshreveable/mousetrap",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/lucasb-eyer/go-colorful",
+      "SPDXID": "SPDXRef-Package-43d69d1c97b58f13e8867c3f11fd5d23",
+      "versionInfo": "v1.0.3",
+      "downloadLocation": "https://pkg.go.dev/github.com/lucasb-eyer/go-colorful",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/mattn/go-colorable",
+      "SPDXID": "SPDXRef-Package-c06dfafdd0a5a5d54b384a37fe25eaf3",
+      "versionInfo": "v0.1.13",
+      "downloadLocation": "https://pkg.go.dev/github.com/mattn/go-colorable",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/mattn/go-isatty",
+      "SPDXID": "SPDXRef-Package-04e24326bc324234598e90c94720897e",
+      "versionInfo": "v0.0.20",
+      "downloadLocation": "https://pkg.go.dev/github.com/mattn/go-isatty",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/mattn/go-runewidth",
+      "SPDXID": "SPDXRef-Package-d5931aa707e520567ae2264c61d935da",
+      "versionInfo": "v0.0.10",
+      "downloadLocation": "https://pkg.go.dev/github.com/mattn/go-runewidth",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/moby/docker-image-spec",
+      "SPDXID": "SPDXRef-Package-1316c5d97ad02d5f82e4b678ffc40c5b",
+      "versionInfo": "v1.3.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/moby/docker-image-spec",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/moby/term",
+      "SPDXID": "SPDXRef-Package-5743827a6cbf5af39f5742e5facdc5ba",
+      "versionInfo": "v0.5.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/moby/term",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/morikuni/aec",
+      "SPDXID": "SPDXRef-Package-b03736a644ddbd3f2ee9d497d08ec4fc",
+      "versionInfo": "v1.0.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/morikuni/aec",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/opencontainers/go-digest",
+      "SPDXID": "SPDXRef-Package-7b0c206b26c130edebfad3562bd830fa",
+      "versionInfo": "v1.0.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/opencontainers/go-digest",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/opencontainers/image-spec",
+      "SPDXID": "SPDXRef-Package-e66d33955d0676538dbf3296bf78c1ad",
+      "versionInfo": "v1.0.2",
+      "downloadLocation": "https://pkg.go.dev/github.com/opencontainers/image-spec",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/pelletier/go-toml/v2",
+      "SPDXID": "SPDXRef-Package-a03d316d9573f53e648b8a940e2077b5",
+      "versionInfo": "v2.2.3",
+      "downloadLocation": "https://pkg.go.dev/github.com/pelletier/go-toml/v2",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/pkg/errors",
+      "SPDXID": "SPDXRef-Package-9e46bcebc61da5756098c5a67ed01f25",
+      "versionInfo": "v0.9.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/pkg/errors",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/pmezard/go-difflib",
+      "SPDXID": "SPDXRef-Package-b632824f7ac086045ad5e9b002d6b042",
+      "versionInfo": "v1.0.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/pmezard/go-difflib",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/rivo/uniseg",
+      "SPDXID": "SPDXRef-Package-f16616a27eab0a0670e5bd66155ef409",
+      "versionInfo": "v0.1.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/rivo/uniseg",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/sagikazarmark/locafero",
+      "SPDXID": "SPDXRef-Package-f0d4a0bde35501b9f1dcacc220d04fbd",
+      "versionInfo": "v0.7.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/sagikazarmark/locafero",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/sourcegraph/conc",
+      "SPDXID": "SPDXRef-Package-ddc464f14957462676362b967b987960",
+      "versionInfo": "v0.3.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/sourcegraph/conc",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/spf13/cast",
+      "SPDXID": "SPDXRef-Package-c8825d3c1845bbee949c7a3033649417",
+      "versionInfo": "v1.7.1",
+      "downloadLocation": "https://pkg.go.dev/github.com/spf13/cast",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/spf13/pflag",
+      "SPDXID": "SPDXRef-Package-21b264e5203c540eba9284649450f986",
+      "versionInfo": "v1.0.6",
+      "downloadLocation": "https://pkg.go.dev/github.com/spf13/pflag",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "github.com/subosito/gotenv",
+      "SPDXID": "SPDXRef-Package-cd5a5819b329faf25a09cb9807a8bae4",
+      "versionInfo": "v1.6.0",
+      "downloadLocation": "https://pkg.go.dev/github.com/subosito/gotenv",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+      "SPDXID": "SPDXRef-Package-b893b1997c3614529753ad8adaa62ed8",
+      "versionInfo": "v0.54.0",
+      "downloadLocation": "https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.opentelemetry.io/otel",
+      "SPDXID": "SPDXRef-Package-d433d4a727f9df2ccff48425e7de9d51",
+      "versionInfo": "v1.31.0",
+      "downloadLocation": "https://pkg.go.dev/go.opentelemetry.io/otel",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp",
+      "SPDXID": "SPDXRef-Package-ee681bbcf9d2bed18dd767dabcc612d7",
+      "versionInfo": "v1.31.0",
+      "downloadLocation": "https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/metric",
+      "SPDXID": "SPDXRef-Package-defd207fc48df79776b25a538db9b99d",
+      "versionInfo": "v1.31.0",
+      "downloadLocation": "https://pkg.go.dev/go.opentelemetry.io/otel/metric",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/sdk",
+      "SPDXID": "SPDXRef-Package-57705ead17784644966e21e8da0873d1",
+      "versionInfo": "v1.31.0",
+      "downloadLocation": "https://pkg.go.dev/go.opentelemetry.io/otel/sdk",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/trace",
+      "SPDXID": "SPDXRef-Package-9d9403da9dfc4c0b5ae39f41c6ef3528",
+      "versionInfo": "v1.31.0",
+      "downloadLocation": "https://pkg.go.dev/go.opentelemetry.io/otel/trace",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.uber.org/atomic",
+      "SPDXID": "SPDXRef-Package-adcf0471cf427f3e360af189f7dc4a6c",
+      "versionInfo": "v1.9.0",
+      "downloadLocation": "https://pkg.go.dev/go.uber.org/atomic",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "go.uber.org/multierr",
+      "SPDXID": "SPDXRef-Package-359848428d04ba484da485a032664582",
+      "versionInfo": "v1.9.0",
+      "downloadLocation": "https://pkg.go.dev/go.uber.org/multierr",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/sys",
+      "SPDXID": "SPDXRef-Package-af39534fbe6f71bfee2f937b8c05225b",
+      "versionInfo": "v0.31.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/sys",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/term",
+      "SPDXID": "SPDXRef-Package-15fa94b9b2e0d1ce83a10010e8984f41",
+      "versionInfo": "v0.30.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/term",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/text",
+      "SPDXID": "SPDXRef-Package-d21fca5bb1f8d72b92210e4500b5b865",
+      "versionInfo": "v0.23.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/text",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "golang.org/x/time",
+      "SPDXID": "SPDXRef-Package-ddd2d28b772c5d5a379526fea7ab33d4",
+      "versionInfo": "v0.11.0",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/time",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "gopkg.in/yaml.v3",
+      "SPDXID": "SPDXRef-Package-7f8140c8eb7fe0368509d3cc7fba9d47",
+      "versionInfo": "v3.0.1",
+      "downloadLocation": "https://pkg.go.dev/gopkg.in/yaml.v3",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "gotest.tools/v3",
+      "SPDXID": "SPDXRef-Package-e606319df5b097fe5fe9deb296a087ae",
+      "versionInfo": "v3.5.0",
+      "downloadLocation": "https://pkg.go.dev/gotest.tools/v3",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "(",
+      "SPDXID": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "versionInfo": "github.com/awesome-gocui/gocui",
+      "downloadLocation": "https://pkg.go.dev/(",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    },
+    {
+      "name": "(",
+      "SPDXID": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "versionInfo": "github.com/Microsoft/go-winio",
+      "downloadLocation": "https://pkg.go.dev/(",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "2018 Alex Goodman\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software",
+      "supplier": "Organization: github.com"
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".binny.yaml",
+      "SPDXID": "SPDXRef-File-da849736f343ab61c8154a7feed8efba",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ebe0726758bfde2e10f35d20ecfe9956626df62a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a9b36606bb5577025c198a124939af3c022771206296f1be86d35e72e6f8a0af"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b8a16062c09bffce7eb7aa290fe8d028"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".bouncer.yaml",
+      "SPDXID": "SPDXRef-File-8f8c75ca8ebab6d1c5bf39cd049bd52a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e738791e1d7707d0a2692f57b699ce7978f8443d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c2ff36b0bcf3cdb1533b492fb1a1d4dee977e59207d28f35dee0bdcb847cb5c6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "453128598698f29b1a4b5cffcd15c831"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".golangci.yaml",
+      "SPDXID": "SPDXRef-File-f5e6ed72f74bd5711969dc7bbe35ac73",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "576ec403e7dfbfc072dbb43948034915395f3e26"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e15e116d742429bbc32ffd8802096c121def1e4755d821f0c2a6babbdae9e610"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f39c0b47f9ced5be5279a813b31a60ac"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".goreleaser.yaml",
+      "SPDXID": "SPDXRef-File-aedb9ef6a17a16fd320c5a93d5c7cc4f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c4e80d98a6dfbf54f581e001151c61a14d04daaa"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0005090022619f8794660f5aa93ed83ddb2b0ae9b0ffdeab781a8d5db5326c51"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d6a6b48eb9cd3bf0647d1c9b37398542"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "main.go",
+      "SPDXID": "SPDXRef-File-7ddfb3e035b42cd70649cc33393fe32c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "99e2623bcd1d6e52850ac4f2aa1886415af092a0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0db02885a15e33785ce4e99ebd6c17d100ae2e1d1a30cdcfe3d5c2ec2992c77e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f15d844446f652b26de03bcd8948da26"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ac670baf3f770cddff4a02b5282780e66641823d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ba6e92d38fa43d5e8050b1bb83268fb726cea1807aaa0643af3c641e97eb1bab"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ab0687242889498b81526998a588cac3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "RELEASE.md",
+      "SPDXID": "SPDXRef-File-781a53e648f3df8d16a08ec083b04bf4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "80919b3aaf4a2bac6c92ff148fe7d2186d8092a8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9cbe632fcd10db9ca2b1d72653670050236006604d3a30b4dc89f9f6c4f5fe7e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8859f11ee9503443cffea978b9e36f28"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Taskfile.yaml",
+      "SPDXID": "SPDXRef-File-38d03f2d832bc186bae36326985a34c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c198b6cd2da056cbc975690753288314c1253e9d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6f649957a4c04d970420b8003eab9667d4f1d38f9bb634602d2c3e51edae7cdd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6143ed022a06a488bef2274c73f63667"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\dependabot.yaml",
+      "SPDXID": "SPDXRef-File-dcb656e3d77d70977e96a968a70bf1d5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1e91fc3344ae5c75e57141ef9f5761bf3ef7a545"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "699c5cd970dc4908fb4b23490f6aa3d2c9e100944c3b75dfa31b095a1ecbfc41"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a27437f4e3241de4a8e76ac2791bb349"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\FUNDING.yml",
+      "SPDXID": "SPDXRef-File-99c38a2af8d2fc85bde2a5cd17049723",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6543823893b1adb9f2811008f99f5285e5492a28"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6869e497430980936c57e8413c37a0efc4952d8350cf85b0651d10c39e3bc9fd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1afc0eacf83007cb12089e49967e9afd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\actions\\bootstrap\\action.yaml",
+      "SPDXID": "SPDXRef-File-8cf41fd2b182c3f04fdcfb8f2e984c34",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ad3ff0d70a5071787158c30bc9c9bbd40fba835e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7b3110d3efb61dc865165c4584e640f3909c33e262f3b38e845009e4d57ef432"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "028691f51edf37e5e857d5a3d3ae509e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\ISSUE_TEMPLATE\\bug_report.md",
+      "SPDXID": "SPDXRef-File-b89ba48a880cb6e6253497b03db21ab5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8b7a631100e40458b677c1bad79cbf2ddb981aaa"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6c4aae79e6cdf4e093e0fbd04100cab3bd9d088d774e82a93a7c08655f2a5b5f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "55bda51b937fee6756339f3eba5ab3f8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\ISSUE_TEMPLATE\\feature_request.md",
+      "SPDXID": "SPDXRef-File-28adba74fe5dbe7fcd5ba0dd65d437ed",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "90a47dbb1e7b3b3c7b5ddb7c1206defa27c99a69"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b474a4126396bcf262eb0a3b1367b51f3494c12baf47c4fbab87bb2b8cf4650e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b6f8d6e773e85e34aab55bf6b1e57d07"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\scripts\\coverage.py",
+      "SPDXID": "SPDXRef-File-54a70bd182f675dfa54339c3931e8063",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "612f35ce8dc560c144a92f6929efe54270fddfae"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "554cd348169bd9420cacee99847c97ef193aec89e9a3b63f9975e95c12e1c2eb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "01eab12e8b8e46ef05d34d9758aaa5e9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\scripts\\trigger-release.sh",
+      "SPDXID": "SPDXRef-File-2bb018ed31c4120696d213484fd6ef4a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5fc403d594da989058bec66f00cbcee91cf8609f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "537fd6b33888a654c871cd73264e1fee4baa9c8c04b53ea9229c6d260ecb6d02"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ef0bc2bde8a721dbb72261401aca37d8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\release.yaml",
+      "SPDXID": "SPDXRef-File-d9c3fb8cc08ab188d03a0c78044b3e89",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2b5bc56b53253c674ffbe6c06e0a77edd9f2e2f3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "27dbf622e8718db3ed5c94e4b890ef8e9f278872abf68f6d1172ab58c9ebb502"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "31042f1548b27b757f0cd4fc0c027895"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\validations.yaml",
+      "SPDXID": "SPDXRef-File-a251dd19ac5a3cd38b0bd425da35c55a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7fec56e5a542a39ca8b03eb727962811ff2a6c79"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "247438b457030e18a52bd5f3a18517f4209e7f7f484b84a08601ccd61b807836"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b1bc83170671f88c0a77649d8c34c1ba"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "cmd\\analyze.go",
+      "SPDXID": "SPDXRef-File-3eef190106ac2b8af33ec6577d6da8fb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4c576550ec9df69e186e72803ac5e2687b35c55e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "eb3eb9048e3f11854e2e42357ac61e4eb1ce774a0b9ef7882d51d7dc2d0d0055"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "18a10e1ef151ecdff3bc44148a852716"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "cmd\\build.go",
+      "SPDXID": "SPDXRef-File-b49543828ce7920cc2da64f096ba5fec",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8dcfd631a28e62d972953f534f7f77af1ffd5acc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e5744ec92323c0bbcb69ee75b81047425a6edd230edc449e727d239c30e91bf0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cefa875c60e2f8e498bb90291a7d6713"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "cmd\\ci.go",
+      "SPDXID": "SPDXRef-File-c7772528bf493e7b23846bb5885492ba",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "adaacdd307f7a0f8b3861865b11e590e78974763"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "951e60827828d7a6fdb52fecc23454015f19d50d050b0ddedc2e4b1bdcf0db8b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d553c826165f78da26750a4dc7adab03"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "cmd\\root.go",
+      "SPDXID": "SPDXRef-File-b13d387a42912d6f5899f78eafa93554",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1e09c8365fadb3d6d92b1028b4c4fec0a9c797d1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "eb3df79c1fee6270602d3b2fd2e9904608b164cba6468a48be7102d7735ba768"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "296d338b96df745fdeb1f7559299d1c0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "cmd\\version.go",
+      "SPDXID": "SPDXRef-File-c0543317c488cf0c554ecd685392ab53",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c2e592843d8a05cc4db3568d86a5ef00d7d95d85"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "81d7e37a053e019ada038c61862d1f1520237bc64b521f6ba918b9e5e0e7cbd0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c27fe645aca5bab6b43050a1ab8c2875"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\get_image_resolver.go",
+      "SPDXID": "SPDXRef-File-52c97ad6ebe8137fc742205f06f1859a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "850f9414b5177777000233401cbb64172c9edf0f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "85f1530d4bb3885fb47170a44148664dba7a67499be482edb0d06a4f0f23cca0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a00a09ba3bfa606a124113ca0fc44da7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\comparer.go",
+      "SPDXID": "SPDXRef-File-696a34022012690b493e330e743f3dd0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "91de866cfc45c35eb0bfabe28160913e4410ae96"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f822a3ff47fb8e4de802ac556d4967cce4d730b430e3c3b710105858e553257c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e5bd34635dfa9a9cefbe22703fb58eaa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\diff.go",
+      "SPDXID": "SPDXRef-File-e3d9486f564dc8de7fb6634be052eeda",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e4c810c380a689cd16e3db3bba1e737347c0aec1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7bde01972639b776aa3472a6d72651bddf0d89074ae5afdc14d152e307d1f738"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1263e204a84349f5b38ca636c78cda8c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\efficiency.go",
+      "SPDXID": "SPDXRef-File-d026e33880f9f67b324ba85cf62213f4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8154e43925fd9f956e1a6203d1d9b9662a80ec89"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c03099de0ef38ee3e5c7b9dceda563428a39baaec7abb6c3f0b3ffda2e9f9d44"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "37bff2bd24052dbdc269d4c8ca20eb0c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\efficiency_test.go",
+      "SPDXID": "SPDXRef-File-a49fe0668c74a71d60d7f20dc709e52f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "06faf8e94cae9b046bcdbe047f2c8aef7f02eebb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cfb2bb27acef4f7ab8c74c868df5c0de2e34d7346bbcfab0c6d83c630693de08"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9061b4b7057131c56e5d6f9b0a9b0fea"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\file_info.go",
+      "SPDXID": "SPDXRef-File-cbca139b2b202196b18cdb2244275f93",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "181a3d01ff244acaf11a43dde8029275afd5efd4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6ad7c4cae37a98cb870f0a56cc9557f4b7a4e9ef1b822dc0296cf10edcecd7f5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7e2806e51957d307799fa48c75dd4063"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\file_node.go",
+      "SPDXID": "SPDXRef-File-be87073904b1e9bbe0b58e07e1142974",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "32a4aca5807386ee3e0d40c8e20543bd1bbe5e34"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e035c58e589920c238a6dbfa8978237cbecde66668683b47dd196503c3395cb3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "072c216702b91bc287adcf23cb575945"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\file_node_test.go",
+      "SPDXID": "SPDXRef-File-dae1573ebdfadcdafd0387427c9d5ee5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5f41fa5afa9c0fd67239bff9014f3dc21ec3fa0e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f6ae7aa4652d60d8c04075827b000d7ab581ad49d0a2df36df5a4922cd7cfdd9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e8853101566e0bc2f2c6e2080be22f3b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\file_tree.go",
+      "SPDXID": "SPDXRef-File-e42d1189322853c209ccd536a2b38d36",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a76d1435a3e991613ba2640e722e19029565d349"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4fde93efe55a524011d8dc7f286b3ead3e4c5ccaa2c79765de6fb8b120e8eab9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "786e5a7fb53494b5895a00189382d06f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\file_tree_test.go",
+      "SPDXID": "SPDXRef-File-d52850820b76d86a44ed72e1cdc84bbe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d14d57dffaea31b234bcdf3a9238664dfeef4468"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ace75f1ff6b85547b6d582d0cc1ac887f682b72055603fbd38a2db89fd0a62a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f576ec703e26dc026debe875ee999e7d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\node_data.go",
+      "SPDXID": "SPDXRef-File-7fd01c86ebbafcc0b8df18d945a3ef96",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "75c276f9d100cf051e513a5647b89e20d8e09ca1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3b0b701e86a24698c81e94f71c4e5a881c415231c7110e8fad16357466f87948"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0bac25405d2139e13de3a1ba9f0f6f0e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\node_data_test.go",
+      "SPDXID": "SPDXRef-File-cc2b7ed167de76c795c18daef58f1ff9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f78158b436d11ca6e8369abb1804edc969595a78"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0030d57129f6f82e670eea39ab57ddfc6d36ea0d8c5c47e3cf861953e6c1fe36"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7478812d31c4765dc746b106898fe0f1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\order_strategy.go",
+      "SPDXID": "SPDXRef-File-ef8209c0a3b34f06ab9af98f0258c104",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "68b3105e080e109718752ac866fa117219fb6638"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8cdf49d02ac123c15c37fec8b0680a7eab68ba7d180c6f9e022bb0881c2711d5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4574d57dc5f34b8872b3582b2eee7132"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\path_error.go",
+      "SPDXID": "SPDXRef-File-abf231445d5e2806f6ebcf3cb52897cc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3eda5b69bc0d457350d485ef4cd59c33e296f5be"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "25577167cefe4a8d70a969409ba06a02cf5b571d962cf78142616b0f036160c3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "97a1660e7e2a0613fdc2aaa8bca92e70"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\filetree\\view_info.go",
+      "SPDXID": "SPDXRef-File-e0be50b9a25dfa0510f1b4bbfbe84cbd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ba9c625fe3e5a63d84d5c16a356de594e521d64e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f8b738ab9506b6cccd34d41e2575c87cf9a5670e4ec589d61b02066a4e651d01"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9c5d3f4238bec681c6beacbb1afdd80d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\analyzer.go",
+      "SPDXID": "SPDXRef-File-056700cb09af34c658d505b187be7307",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "eea4fa1f5a20818bcdffc2239186a5c41f0e8fbd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bd73e9d0eeaf49e30eb5b9a8ad291aa8a2a2d2f6df060b1231a6ddba0c1219a9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1772a69f6415aeca6a86bc01011fa254"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\image.go",
+      "SPDXID": "SPDXRef-File-fab8f61b6f17c2531a26237576fd68e0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ce41ffc2f8590a66adf2be6a7804374eaac7110d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8feda07bf9719b30f2554454708cb09aa90e46b2fbd7bff2e2a1aefa370f5aee"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7b70a2c7dc10aa2cf82361156457c426"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\layer.go",
+      "SPDXID": "SPDXRef-File-dfa472356b678243b24916a68e2095db",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f6bd093b695d78f2f47da41f251dd7b30d1cbd6e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5da6eb3855a890d6123e3f655eff8e7bda9cc9f6418ba28d20928b0f5ce55299"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "14c5a05213a8f4dd51cd32d9902865ef"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\resolver.go",
+      "SPDXID": "SPDXRef-File-4f34bf12eda9bd736a875ea372d615f0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cf19a25798151af8175d8c44dd3bf593fbfc247e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "abd09d63d090dddf6d850dfc73dc62ccb8bddc8807db48f592a898f71a9b2f68"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5750941b632777cb644b7d5b4716ccbc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\archive_resolver.go",
+      "SPDXID": "SPDXRef-File-1d6e3a5ee326cce26a3f8d5320fc3048",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "446627752e5adfa8922dae2120393184cb3715c0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2d9e4eaedbe084019a34f34def19c2511cfda8ac90410a0749871fc841d5de40"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f022482df6ff6f873e0a71eae3bf665a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\build.go",
+      "SPDXID": "SPDXRef-File-ee125c23a23a16690fee84671fabc9dc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f12bb9ab79f2cb97c8031dc4821188792c4d38ab"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "79de45b8f42a936dee0184007ad656f78bccd07a1ae149fc68cad73d860569da"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ff40c600d147c6a3c167f58e7d4c8e98"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\build_test.go",
+      "SPDXID": "SPDXRef-File-44299b24727634c2ceef27c907a9f869",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "264b90fff180712926ae3794d954c9eb94b1e804"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6cc42d3fa2c5f1163445127b0d7df1015149317cb5e404714861a14986eaaa91"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a77882d159cc6dc569b0ea3d6e286f04"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\cli.go",
+      "SPDXID": "SPDXRef-File-37a7410d834ea18c4736621f394dcc3e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e995ade39f64b7014edb5cbaaac269c3f38f8485"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b1bd230a5de085774410d317ed381b725848657ead9c0380c5d05b4fc6683e55"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9d7c511e668a7802ef3dbbdf3f823743"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\config.go",
+      "SPDXID": "SPDXRef-File-769c4325bdcda2b453c96bbfc617c023",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fd39093d54599746c46a688d258af1d67f96158b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "007cea951cbaada7ef68a747a07386567e5e1b8dcfbc084c12b6931e445f8b44"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4ffeb8071e7a8b97b560e55c6615adcc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\docker_host_unix.go",
+      "SPDXID": "SPDXRef-File-914dff841920c70552aadc11790aea80",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c51c0606e0c4a7e9168120fca5ff9692d1caab31"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9db09c39751094a49e327264fdc0b6f3c8fd2f841a6a7e1f7b126143441f3a32"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b17b65e376d7de421eb4cc6bc8006957"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\docker_host_windows.go",
+      "SPDXID": "SPDXRef-File-1c1f8e1d354a58fd244375df1675bd51",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "79acc1d9aaf7bf5bd70dd40b9a342bdaee6d1f26"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8ba1e7a3db7e88d016dd5bc8dbe59b89c608c48776816e6f3a41fa7873a7f6a2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a020570862930f95ecc0d5733d0870aa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\engine_resolver.go",
+      "SPDXID": "SPDXRef-File-13cc34e5c0f7e64364e39c163750b8e7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1de93be9ab4bfd5d5d22330ec226838dc9f31e2f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "362903a8576a0faea5bc4595eaa47e02d90481e3e856b52461bc2a2701f3cb24"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a7093dd9534b8cf0adbb4b36e4ec5363"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\image_archive.go",
+      "SPDXID": "SPDXRef-File-d2df885cfcb3582ddd540ffbea0550f7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "356f4b1709e47cf2a32523df98f093611a4ef133"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7bf344481714438202f02f322bb33b5a2fd87fc9dd1bead4a84934ab390bb761"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "93a34353e60bc1cb4fe9ae1ace1f4f20"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\image_archive_analysis_test.go",
+      "SPDXID": "SPDXRef-File-c75bcf75e1fe3fbfd5dc373ac7587122",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "069c89267529729fe27bf4eda03031fd9b6cc7a8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "48aa5fef2ca917dd59420b85e3e19f5e451e3c98a3965e81f1b79dfe20418123"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "06d705a5fd154c8fe932bf927bc5d9a7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\layer.go",
+      "SPDXID": "SPDXRef-File-1d204fe08830948e539cc2854419f6d7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "effd64d7cf7cbe476f216cf31cda7977c872831c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1918590c83287a25cff19fd7338dfdf5a8ccb3f3182866d72bea4471c67a1907"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bf27f94dec4f979d3df51b4b0346b7f5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\manifest.go",
+      "SPDXID": "SPDXRef-File-02c320810ee955a3837ec718136aaf29",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4a8365967ee63b2a83c3d0f8be7366452ecdaba6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "576ebfe01bf69a6fd7d938e32eb1546e5ff5b8c133ad89cb5320a8ef9ddd5504"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "89058568976bbb08e6c3f656f8aa0a85"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\docker\\testing.go",
+      "SPDXID": "SPDXRef-File-6fd51adbc96817118b83e103cbfcd219",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bc5561108ee93960890144a4540ee79b61257ed6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7921e464714e4c8ee73020bbc03bf7a672d6819d9af48419f63e280a0244cbfb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3b0fac1b06b0d90c316d47d4c1744b8b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\podman\\build.go",
+      "SPDXID": "SPDXRef-File-f4da5aea16495245cd94d298517f5921",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "665e7ef4be193d4129a5322f566ad9d0e7f592db"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e0f86da5aca3e6c653ff7e344be4c14edc39d23f4be354fd4392509786150cc2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "56864b6c8044ee9f30043e78b8e32dec"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\podman\\cli.go",
+      "SPDXID": "SPDXRef-File-450b2ef8671c2f1d417ea0ad6ed70ba3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "11ce0bd44ee17b19de9cab4918f5d60c153a2f44"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8b6dc64a2e4bbf979b873eac8a015a764c291902cf451480684f706b22d1dd46"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bd210c234aa2261cdbf62375b8d927aa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\podman\\resolver.go",
+      "SPDXID": "SPDXRef-File-a1062bd0fecce02a94d77b635298f791",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4b20c20cd8bdd867251c939d245faf8b71432b3a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "30e9f812be37c94425dd32b4871c185748df32b10a43d8df2ff93ca5dd3c9c43"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f43d2205a477be105a79adc364b151c4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "dive\\image\\podman\\resolver_unsupported.go",
+      "SPDXID": "SPDXRef-File-8c80974656d6b535fb02d5f6a3768623",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ce249317c2125446338b17da7acd5dacd72fb2af"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ba68c285a88cacb245085e90fedab58c0e84712c66b15945405e259785639cb8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3a0ef60282fbe7e0197ba297d05c0ea0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\event.go",
+      "SPDXID": "SPDXRef-File-1b62df4ab25cc3f3051c4be17d123288",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b80b3871b391d4a153050d5097adfba6205af1c8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3403380ae06aac1f4222c0effd73628d7fb459c557273765eaf66ee749cb7c10"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c2194291b6e4d95274565dafc788ab31"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\options.go",
+      "SPDXID": "SPDXRef-File-1201f0ec6ee9efbc754502dcf3b4c777",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4838687c6955184bc4212158857bc2a80b0535d2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "de07408c9b32743154303f77668d30c9c0cc8492f0844872bfeef3c3a18037d3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5edb47b7daf08ee56ff8e205374943be"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\run.go",
+      "SPDXID": "SPDXRef-File-2862325034d2d2225cee140bdfdd4486",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b6e7a9c77eb2df032f7dd391fc72a0ad164b1d6d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "55f2c45b21c758194b2c08a1cafcbe02b4208f93a0b84b495f99465a071b0d55"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ea69262940a229ee1879749270cc037a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\run_test.go",
+      "SPDXID": "SPDXRef-File-c1819f3b1930cec64ae5f7b2d30ac956",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fe01d61e9d1c99b96798c6eec121500694d09d53"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9ecf382608de7c58ae5c44e966039c9a98aceca7bc1fe7f79b7d8b55769bca8f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d06e6672b48fe2a41c4078959ecc0bf9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ci\\evaluator.go",
+      "SPDXID": "SPDXRef-File-91a898ead93b2046e2a00365fefa8f5f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ad433cd06bc7b97378a5d96a0e7d6a24d3638964"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aa6732d0a84e4e795ed225e1ac2c85f3eec7741d5783b218df193d92d0bbccf6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4812025eed84880baa02216d013a0e55"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ci\\evaluator_test.go",
+      "SPDXID": "SPDXRef-File-babeefa1c107c4532f846ee7bc169c82",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2586373d110a429357823e11cb4aee4e0ef7c013"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c8714687a7b28c92b595d1755d43e846c48693613fe8bb4774e13fd583ae8678"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "697c6be5d7a260049c7f1625057100db"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ci\\reference_file.go",
+      "SPDXID": "SPDXRef-File-73f0e200fd15a2b233e0733ec21a0546",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cb5a6ef136099e842919605046225f8a7134a6a3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bb00e832d85df166019ee29450164830fdf0e26117ff9f8a8c539897432e16b7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "31401ab877326bc26705d88ae7f20f4e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ci\\rule.go",
+      "SPDXID": "SPDXRef-File-6ec208682eff3e466bd5d88d2b8c40d3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "085f166a79c93db5407afa1fe76f29d2b9ba6af7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5dda086383a4f78a57aee915dd4b9589968721f16fabcf49daefcd872e33dfad"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0139d0ba6be5593c104de4f9df4a486e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\export\\export.go",
+      "SPDXID": "SPDXRef-File-2a928ffdd4957fa8c7a727dbc76efe2b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bd04c2611708bb0ec48f8877fc509b86a710c6e7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7137dc3f57aaa83491d0d86a4260108fcb3c81d6f2355a6472ae20ef84db5e4e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0a067c81cf379a32a7479a6f06907922"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\export\\export_test.go",
+      "SPDXID": "SPDXRef-File-019eaeeb871818ec84de31e15172e3d4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b5931c9c0fff5530f39eb99d47b2f3e925ae47ed"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2cda6eace955c9beedc8b4bbb14278ee7e3aaf04eb826bad4338cd414e12eabf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "625c349fb100449183cce6e33e92ef22"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\export\\file_reference.go",
+      "SPDXID": "SPDXRef-File-7e5f0d5bf0c671fffaf2fa1c5de945f9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e662a5d9d33d359a46fcedb8c68908522a3c6eb8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "31b26db8945bde488ed104d0268bd1e4790cc6017e77df67f05890e6928a5228"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e5404df936debcb8470b9a8f5998490c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\export\\image.go",
+      "SPDXID": "SPDXRef-File-fc06f87f2e47248f1e93f0971dc3f7fd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2aa7bcb0373654a9f6c767a6d2cc4c498fb81bd8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dae7571af0e84b709c7d08fbc99ae968b78b89de91745207f8eb58997bff4c39"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c177c1e678d4483c215f0427198c6b7a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\export\\layer.go",
+      "SPDXID": "SPDXRef-File-4d92b6fe49eb6c1b983586720d41bd74",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1958aa947d9f058f5aedef5277b5a437fdf48e6d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9dc1e44aaa0665dec74e3845c9a8e15c0f5fb4be81e0fce0b44b28682ae96820"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "aed403b4c63922e8f32f34c7c2ec81f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\app.go",
+      "SPDXID": "SPDXRef-File-f93590a971b8c65e50e6a0793f9d8c17",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7df9bb7d6e4441fddc994afa50b3924b41de3901"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5d9158cadb22f8bb29dbc734d264fff6daf6b9e667fcecc2b9005b5fc873e929"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4de2d5cc5b0c609ead173882e70f5353"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\controller.go",
+      "SPDXID": "SPDXRef-File-913eaa361a6a579b4cbb9175eba3087b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2f8f426fadef9ad0ad4a99c448c3c697f03a7310"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ff41bc306a1890ccce19df8f5534ce405935fa26b043b80278edbafebceffa33"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4aecd81c0657c347488c5b917fbe4e0c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\job_control_other.go",
+      "SPDXID": "SPDXRef-File-b97241e9674af4e12536d4ea3438ad22",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "23924b2684c4ff2512b9ec21d488fa413749d776"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d984d59e1a4fb4e3986b5bc1876c9eb2cc665589982e2a5998a5a439053d8f35"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a8bf2e61fe4e577320756686ca37a15b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\job_control_unix.go",
+      "SPDXID": "SPDXRef-File-71b8ed3542e74bc3128cd47b7539d424",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6b26edb25ba5039a0ec8ca0f5f4da818afcddea2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5b3704d95630ee1ff3fa15275f6efa9175c475ac33d4ae860e0e9654660be65d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d9b81ea61d6a8cb1b9fd36e27dbc729b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\format\\format.go",
+      "SPDXID": "SPDXRef-File-80068df6b3e2646dd3591701dd06454c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e08660cadcc751807c3de6902633910e6a97b6da"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d8ef5ad2cb82ee78e4f4f6fa033a21da001e007c531f7fe3571b7040142926b8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1d2af52501574044dc4aa0c4f84318fe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\key\\binding.go",
+      "SPDXID": "SPDXRef-File-545052bad12836b2f184ca8c2758a513",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b987217e89f45200c00101b21481841aefe16786"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d21414c6f14ea8a8ea6b60ac25af8d495937778f651100c76221cc8d15c4042b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "60041de4939b1fd07f1fcd92bd21c47b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\layout\\area.go",
+      "SPDXID": "SPDXRef-File-c183bdb9643764463e806cc10844012b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f3786d5ac85d16bf0f043a1bdcb7aef3d2e46d0a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a5cd72a0406c96e193fefd3573b960d2c741e811ff2958e674dca4e4e000cf0e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3614e7dfb2fb34b0a7fbd4bc30b2c0e9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\layout\\layout.go",
+      "SPDXID": "SPDXRef-File-ba92e2fb2b667d7442074c02d53fc864",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "392aaec568b45ea5764af910fdd3bf2ff5284fd2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7094144760e23d89f0c5486bf81ee1f4e694245714f811280e0ae9e52803abb2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6050e34a7c217d5aa0d05aaa164c922e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\layout\\location.go",
+      "SPDXID": "SPDXRef-File-c2634873b224bf3e75b82281c011cdcf",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d9ebe87d59291b82dd9d26a31f0103e0a05837fb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "228c82538f958228ee56464e1f34a5aed155b9f00ba3456ca359139864072a46"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "75d48c033295d1cb31a994bdd04b352d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\layout\\manager.go",
+      "SPDXID": "SPDXRef-File-83a27dfdaddd3941a750e4eed66e8c8c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "571d2b070ae7f093401e15fdd27a1363af35726c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a48ca81c46130ad35642e0168ebad03dd19945efc3e794e5be3fb2b7d35e11ff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "57e13f7ddfced52f69985701e42a3571"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\layout\\manager_test.go",
+      "SPDXID": "SPDXRef-File-0fe4452fb53b393dbe3b249565c6e5ca",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e377685c0ae579b262156c11348c85f23229f06a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "05bb578efa1467d7ef80bb817f7db2244b889b339734f1f45274d88eb74ba7b6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f68139723d847e77051cf24b564af66d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\layout\\compound\\layer_details_column.go",
+      "SPDXID": "SPDXRef-File-c2f9d800d1fc8cb4d6427290db58b8fe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8da33e0978701dc102c72d24476ffe9e2c0e8ee2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5c771413590e78f18dc41592fd8c5f5ca59fa339592d6ad85cbfaacb9b501c08"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "498cfa448b6ab8b0a133e3021699223a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\cursor.go",
+      "SPDXID": "SPDXRef-File-7eb294c75664daafa0ac93dc40587bcd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4b2399a1559f54cbdf5809caaa81ccc9c4f8327c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6272876ba3b0c51bc50e3e917db8c821d6630cd8fc30c73e023fd95acf4bf379"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "627277753303228115aba298b03cd9df"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\debug.go",
+      "SPDXID": "SPDXRef-File-71ae882df2c539cacdaab989967fd32a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6326a1f509557e6c547c1d8d11de88802803f571"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "25074e331264bdfd95306f3c06ae896957e17d44af15b9d5fbf34a29e490805d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "39648f71713e9ec8198b8c95fee7c928"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\filetree.go",
+      "SPDXID": "SPDXRef-File-ee06c97df7d776181404e709b63949a4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c6a69d85d1b11479d2f0a2e631559e5923f462b5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7b325077eeba7bffd963b68b74b827bcd64a89119fff2ae5619d686e2499892e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b1a1a7fdabd044877eeccc95a679cdda"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\filter.go",
+      "SPDXID": "SPDXRef-File-7522a5da3abeaba70d3a889fca360048",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "36c047312f735ab69f92e4d819d15e0ce9dfaba6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0d763b6aa51a6fd794c97737d3cb5a90431dff8d55d64fdac3b4099f053f1cbb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "12029cd236badb4f0797bb9227e73c8c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\image_details.go",
+      "SPDXID": "SPDXRef-File-523fdba7e239199ecf6141ea3c213a16",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "25919aa66db9aab08ad63006e34d3cee177d23e7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "53fe11800dbff65da6d8448deacd01bcf0bb0ac79f642689ab15f013f0de8614"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3b2690ca02f211bf4ff4cf21c9f2aa30"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\layer.go",
+      "SPDXID": "SPDXRef-File-34d5b99e693d03313711081734e99977",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "062677a597ddaa7721d16c0f871ead79b5fa1c4c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "529a89f3b2664b893a4ab46a9edbc4cc24c0f0e5582fdc596c4a87e751480157"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "eb4614340898970d9fa489496c577b54"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\layer_change_listener.go",
+      "SPDXID": "SPDXRef-File-27eb9ea0cc52d277a17df7080617ef44",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c23114a3fa3f8e91b3a704ca42db0f4d6554216e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8771241103729d98f67a5dffccfb2f77a505dbf36c1c245fa3534f50310bc0f2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5ef0b3a9cfbb74c378368f089918ff61"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\layer_details.go",
+      "SPDXID": "SPDXRef-File-2ef52384e507ada7547300a561490e5a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "384ffb8cc300aaa1f36bc55cf8c729d7181e37f0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e71bb3868a76a6a1b0ac2a98338540d49087d78c0cb939135aa9d2c343a46138"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7888627b631093a6b5f8a1588afd12d4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\renderer.go",
+      "SPDXID": "SPDXRef-File-e335529c7b3de575f64fa3921f2a8e43",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "467110e3e8295de74ca3f5d181f55aa1e7ed0562"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "03941f5b4ffdce2dc7ffa063ec2e48b3f09481845c3b466ab54dd0428247faf8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d8a750f59fc8785d4a202f79bbd5e72a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\status.go",
+      "SPDXID": "SPDXRef-File-5a449af4544c88b30cc1d7a86dc7c894",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dab9395b2f5de3aaf86aa104a3a13ddae64f130e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "042e55fbc414cf8d140903341ca43855a6743f5a8daa659dcc11a5523d704009"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dd17538707d84162782fb3a604bc6e4a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\view\\views.go",
+      "SPDXID": "SPDXRef-File-97f14e3cee7b7de4e889db1cd311e9b7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "767290d8cc68fa64162176d4f74022afebf691c3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1294652555a55bac1f1f9fa7f93affe322d8f2fe5a12c754c1754fbd48a1c0e5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7f9eccfae3e672d92c772a4100a2d252"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\filetree.go",
+      "SPDXID": "SPDXRef-File-e811391007cb4aad38d8376c74e750e6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0ec0d8c5cc57e53eb476a8a8d89040421efe67d9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ed597fefa599b7814e6ec084a268d274dfeebbfe79ac95d1cc2ab4d5817113e8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "eb4deef0daf9d9d8faae50150f8f7ff2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\filetree_test.go",
+      "SPDXID": "SPDXRef-File-012d0037991053f09ca54348e2b7a80b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2ee00ba6d2f3f14fb8bc571ab2fc9b1d9ab39763"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0b1b93c08318808a44f8ca444df162c3d1b4dcf26f4b6d2da560d61d998e1d26"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f29c9a727c4de07eecf07f2846d98dab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\layer_compare.go",
+      "SPDXID": "SPDXRef-File-f8266c8198b766ad4a5b8ed5cf0f9983",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3b23d8cbba71394e6f926e31c31fb5ecce737fb9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bde1df42d8fc0eb6af02e4ecdc4f15b71421d4af713f33eaffa59e98a0b3bba8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a0c78af71ba1fe1ef30dce40059cd9ec"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\layer_selection.go",
+      "SPDXID": "SPDXRef-File-95b112e92bb8e1d0e507737eb49888c3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ec1b2035e83ccf0145523aca4a5dc1a1eae9ab0f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a8842df3040d16b3c37c86856bf6fb9d0c68d806535c720470c99454b969ed13"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e65d39864132860a8784d705052d52fe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\layer_set_state.go",
+      "SPDXID": "SPDXRef-File-1fbb398169266566ac5e8b2cbee69390",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2f1a0326d360d28bb12981a0c5d8d516f860529c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cb7c62169f5f065f9e8e65fcb1b7582362d3d062f24e381f849ed3e1c51bba95"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "76a9b5f5db287e6fc9c3d9cd3cf071bc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\layer_set_state_test.go",
+      "SPDXID": "SPDXRef-File-c715112b46c403c24e7f4aa4d502929b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fc072870cd76478f3dbfd63bd6824c300652441a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "646ccf001cf54bd88719dc66bedeb98b7b5aac74724fc70185714679fe50d523"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6b8c47cb779da58d94f4027b3db6158a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileShowAggregateChanges.txt",
+      "SPDXID": "SPDXRef-File-173a5cd77fb6789d360e1cea5487e119",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "22c4740e72d9b4b53552e830914ab98d117e0f92"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "451542b35ca3b7f87c9b1fb57d5cbbc85a1e70321ca9765ed75952ef04a356eb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "002466d10fbeb5f29b0c5c5457f3f558"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeDirCollapse.txt",
+      "SPDXID": "SPDXRef-File-959f487daf603dbaf23ce2bbf180ef36",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "59a668a71c14df8ca01ac1034695515f967d2d02"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "317ade124de0b473d5ea7718a24b6d2ec4ca5f2236a4b961979cf774451f9bf1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4c97ae24398eeb85b14d34dd3505d3b2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeDirCollapseAll.txt",
+      "SPDXID": "SPDXRef-File-e457c0830ee6033858186401129802a0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a16046f37e7295c2ec3ec84d0f580461e04d92b4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8fc39b379a4bd1231df4ed54d3ddc1a6564a9705c36d65a414c0019ecf248805"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "894b50c50176364409a5e4949d196d73"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeDirCursorRight.txt",
+      "SPDXID": "SPDXRef-File-7110c2d526511a6c466a4cf108fa3e17",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ded39742c84eda6e56cb88f3053880d8db7e15c6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "87fac75e2ad384b82de17f8907eb8f7ce26ed1ed810575c2bf4cb74d3afed5e7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8dbe23fac18ea6963ee0091b8f2acf85"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeFilterTree.txt",
+      "SPDXID": "SPDXRef-File-888dfe30a50ff5cbf614fff6e1349648",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e889a98ce87bf6ff642013ec516e9f6dd53ebc48"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e2acac609105e913e8b5163274e085d100ba532296eb2ddb0de3b21166ab7996"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "74655b51f4ae3bd5abd14b12e7a0c10d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeGoCase.txt",
+      "SPDXID": "SPDXRef-File-d4a49a9966a65199c7d09ec7286b1ca8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bfc44efcb585a6df39d9f32ffd4b3c1e47fcc212"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7b1d69b80e27aaf694ce2c33cf61491d4d5dadb546ff7a9df31933a21e9da493"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cbb319df524b00a3b0ad5c0a8868fc08"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeHideAddedRemovedModified.txt",
+      "SPDXID": "SPDXRef-File-8fa27c29598c4a50de8197f7eacd9b7c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "005bd700796a593f93a708fe4757dfdb33f6b9c5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6050374e454795f324a9f3f589984b542bb911757d68963bcaf5bb9047f9177c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6dda8c0128322273f9e5533526928876"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeHideTypeWithFilter.txt",
+      "SPDXID": "SPDXRef-File-702ca28141deb63ab2929ed1f7707deb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ba8ab5a0280b953aa97435ff8946cbcbb2755a27"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "81051bcc2cf1bedf378224b0a93e2877"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeHideUnmodified.txt",
+      "SPDXID": "SPDXRef-File-0f69e71c7d6c1930d05f559d6284a25d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1c1fb85b5e6c691cb0f4454ffc3d5519178f809f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bb728d360acb0f764ca55101fef39f3f22700e813736e7c76092fe5d185f7daa"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "92e8241ae5bd69ef2f81c53d14eeb3d9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeNoAttributes.txt",
+      "SPDXID": "SPDXRef-File-07b80f8b386972f626b30bd5fc70b1ba",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e93238ee290332dbb1c4857fd9639f9f856f8d04"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c3f0d23d9de0055273eac2e37597113560d859b3e0279177707826267760ecb6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2531eb94891eeebaad5cfc0a902a225c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreePageDown.txt",
+      "SPDXID": "SPDXRef-File-8ea620870cf8fcb84d9b2a6a0fbbeb14",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8d31d2480cc5fa497390121527c3016d0db404b5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d10e337165f60f0d52650e4ef9bb9f37cbf465691617ad7c0f4ce67c931f5610"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4089345f3e607e4d8657b9d9fea42f0e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreePageUp.txt",
+      "SPDXID": "SPDXRef-File-3fb3a3d96a3d87a842dfbd654749e0d5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f3b3093c5249cbec1af09bbb667ace84134d250a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "80676ec61fc1fbd70f614db60aef808a908216d50735879a8da964fcc0460e44"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cbc60eaf079aabaf4178e9e8423ce880"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeRestrictedHeight.txt",
+      "SPDXID": "SPDXRef-File-599e9a0aa88500921271c1e2fe6c9382",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6b891f717891e6d6444f5656e8ca6a23dd9c8a2e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9d585f4311d7107276dc6522120ea3116d6e7990268bc4a985d06b676a28b19d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7f4af3eafc7e787055ea16632d705479"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "runtime\\ui\\viewmodel\\testdata\\TestFileTreeSelectLayer.txt",
+      "SPDXID": "SPDXRef-File-58bbc57566988453c6b53d7c0129b4ce",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "df0738edfa00a09ed7a4bfbde39e5ee08f8df980"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "64114ddecdf78dc49c6368d9a98233f6e11f4d46167e36e8c8ea927a64326ad5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "69a73226f972fcd8c6f71c83d21f3324"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "utils\\format.go",
+      "SPDXID": "SPDXRef-File-795052c06020bebffdcf9afd518be704",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "07cf8e38202ba3bc6b38ad1182236e5ca8ab9be7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bb45afea9aa6185c903612da1e3f17035131077f86e9c70262525e4f00d0a730"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b9824823f5fcad61ccca8061628a582e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "utils\\view.go",
+      "SPDXID": "SPDXRef-File-55ea69a93113b88b82f95436e9f4ac68",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "54cb6fe39c9d0795863ae1f49d032210d24b5fee"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f499c9b7ab7b830a93214753756dc34c97a116aee151e09934646b12ab8dab87"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4422bc42916b1830861b495b3a28284d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-dive",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-42b3d4747d01b3afb61a8c3da650c7f4",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-bc4501f04d574f5f5c8fa7983a82b452",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-72f403a6f9370597185ac7f9ce89e9aa",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-32d82f0f79c33d76a3f67ca0799fa7ed",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-a9c5c1ba787a1691b7c8e8918cfc742d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-0064b18ad701ef4a3e76613407e32bbe",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-db72156071ece408b821eabbca5a8cda",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-64f6c175f16232732e49a32737505ecd",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-86b05ef1d1cca0cda413287c8ef57e21",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-694f854cdac6a935ec68ac56d76f9154",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-ab4a028d4d86c234626902cbdba44fd7",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-31e269a2273321d57d4f9c682514ab59",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-e54c2378387ba88a9ab7a35a59734004",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-7ed3ee7bc3bbbf7f6e87d1e39205dfc3",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-d73196789d8c8ee6179751ca48668494",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-2881124da3aa3acbe08e2516e4953abb",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-0e2693424cb512af71080e01083dc5ba",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-0ac0d6fb0ded66a5b74732ad574b3375",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-9dfd44d7afa684cfcad95d48ebc6d982",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-245cb304f906c779d03288fcd906b9b1",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-338c5481d3a4d52c09b24a69f23c4012",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-30a45616d59f6a2ce2ae998ed0d68aaa",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-58e104b3b96ae647cc4cfb3c949e43de",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-0761935d11505eb79da31bf4340fdbbe",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-d1bd00da3f306c7027b1e8bbbb6cacb2",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-9f60de06a9918192b8fa42bf8dc053f7",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-97bf6dff3bafafde463738650dfce9b9",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-3a8f9f934ef41bacf59f9a6f4dbe3556",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-2ce45d9cd25ff42c38e6caed0d3883c8",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-ef4aeb96dce83d075ca3f6188332e53b",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-a3ae6112cecb255c6e12bfa554dcab38",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-d117e380b1f25b20b894a03731b43900",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-8ff585c005a2037e8144d897c4ca34fe",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-f96c14c5421c26e5149a5edd783f84b5",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-b0af2bab8c2b5516b0d6c1c26a5e0022",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-b985d432f3626f35ba3c5da8ef88404a",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-f10131c10aec4e48fa8607c019019803",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-a7f33b65cdbf005ae35d5a2bdcf9d2cb",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-43d69d1c97b58f13e8867c3f11fd5d23",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-c06dfafdd0a5a5d54b384a37fe25eaf3",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-04e24326bc324234598e90c94720897e",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-d5931aa707e520567ae2264c61d935da",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-1316c5d97ad02d5f82e4b678ffc40c5b",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-5743827a6cbf5af39f5742e5facdc5ba",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-b03736a644ddbd3f2ee9d497d08ec4fc",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-7b0c206b26c130edebfad3562bd830fa",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-e66d33955d0676538dbf3296bf78c1ad",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-a03d316d9573f53e648b8a940e2077b5",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-9e46bcebc61da5756098c5a67ed01f25",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-b632824f7ac086045ad5e9b002d6b042",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-f16616a27eab0a0670e5bd66155ef409",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-f0d4a0bde35501b9f1dcacc220d04fbd",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-ddc464f14957462676362b967b987960",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-c8825d3c1845bbee949c7a3033649417",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-21b264e5203c540eba9284649450f986",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-cd5a5819b329faf25a09cb9807a8bae4",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-b893b1997c3614529753ad8adaa62ed8",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-d433d4a727f9df2ccff48425e7de9d51",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-ee681bbcf9d2bed18dd767dabcc612d7",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-defd207fc48df79776b25a538db9b99d",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-57705ead17784644966e21e8da0873d1",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-9d9403da9dfc4c0b5ae39f41c6ef3528",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-adcf0471cf427f3e360af189f7dc4a6c",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-359848428d04ba484da485a032664582",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-af39534fbe6f71bfee2f937b8c05225b",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-15fa94b9b2e0d1ce83a10010e8984f41",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-d21fca5bb1f8d72b92210e4500b5b865",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-ddd2d28b772c5d5a379526fea7ab33d4",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-7f8140c8eb7fe0368509d3cc7fba9d47",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-e606319df5b097fe5fe9deb296a087ae",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-dive",
+      "relatedSpdxElement": "SPDXRef-Package-84c40473414caf2ed4a7b1283e48bbf4",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

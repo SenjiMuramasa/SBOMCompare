@@ -29,6 +29,16 @@ class SPDXPackage:
     external_references: List[Dict[str, str]] = field(default_factory=list)
 
 @dataclass
+class SPDXFile:
+    """SPDX文件信息"""
+    fileName: str
+    SPDXID: str
+    checksums: List[Dict[str, str]] = field(default_factory=list)
+    license_concluded: Optional[str] = None
+    license_info_in_files: List[str] = field(default_factory=list)
+    copyright_text: Optional[str] = None
+
+@dataclass
 class SPDXRelationship:
     """SPDX关系信息"""
     spdx_element_id: str
@@ -40,6 +50,7 @@ class SPDXDocument:
     """SPDX文档"""
     name: str
     packages: List[SPDXPackage] = field(default_factory=list)
+    files: List[SPDXFile] = field(default_factory=list)
     relationships: List[SPDXRelationship] = field(default_factory=list)
     creation_info: Dict[str, Any] = field(default_factory=dict)
 
@@ -51,10 +62,12 @@ class SBOMData:
         self.file_path = file_path
         self.name = document.name
         self.packages = document.packages
+        self.files = document.files
         self.creation_info = document.creation_info
         self.package_relationships = self._extract_relationships()
         self.external_references = self._extract_external_refs()
         self.package_map = {pkg.name: pkg for pkg in self.packages if pkg.name}
+        self.file_map = {file.fileName: file for file in self.files if file.fileName}
         
         # 提取关键信息映射
         self.license_map = {pkg.name: pkg.license_concluded 
@@ -106,6 +119,10 @@ class SBOMData:
     def get_package_by_name(self, name: str) -> Optional[Any]:
         """根据名称获取包"""
         return self.package_map.get(name)
+    
+    def get_file_by_name(self, name: str) -> Optional[Any]:
+        """根据文件名获取文件"""
+        return self.file_map.get(name)
     
     def get_dependencies(self, package_name: str) -> List[str]:
         """获取指定包的依赖项"""
@@ -174,6 +191,21 @@ class SBOMParser:
             packages.append(package)
         
         document.packages = packages
+        
+        # 解析文件信息
+        files = []
+        for file_data in data.get("files", []):
+            file = SPDXFile(
+                fileName=file_data.get("fileName", ""),
+                SPDXID=file_data.get("SPDXID", ""),
+                checksums=file_data.get("checksums", []),
+                license_concluded=file_data.get("licenseConcluded"),
+                license_info_in_files=file_data.get("licenseInfoInFiles", []),
+                copyright_text=file_data.get("copyrightText")
+            )
+            files.append(file)
+        
+        document.files = files
         
         # 解析关系信息
         relationships = []

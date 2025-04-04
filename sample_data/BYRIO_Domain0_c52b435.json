@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "BYRIO/Domain0 SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/BYRIO/Domain0-5c94bed9-4cd3-487e-8417-e71d13b80667",
+  "name": "BYRIO/Domain0",
+  "comment": "A cloud resource management system designed to manage multiple cloud providers for multi-users.",
+  "licenseDeclared": "NOASSERTION",
+  "primaryLanguage": "Go, YAML, Markdown, JSON",
+  "documentNamespace": "https://spdx.org/spdxdocs/BYRIO/Domain0-ec7ecef7-232a-4544-8899-7cf5e8470cb7",
   "creationInfo": {
-    "created": "2025-03-30T06:53:56.862882Z",
+    "created": "2025-04-04T09:01:34.762646Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "Domain0",
-      "SPDXID": "SPDXRef-Package-Domain0",
-      "downloadLocation": "https://github.com/BYRIO/Domain0.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "NOASSERTION",
-      "copyrightText": "NOASSERTION",
-      "description": "A cloud resource management system designed to manage multiple cloud providers for multi-users.",
-      "comment": "Primary languages: Go, YAML, Markdown, JSON",
-      "versionInfo": "commit-master",
-      "supplier": "Organization: BYRIO",
-      "homepage": "https://github.com/BYRIO/Domain0"
-    },
     {
       "name": "github.com/KyleBanks/depth",
       "SPDXID": "SPDXRef-Package-ce799c77378c105f0677a6484486a84d",

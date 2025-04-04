@@ -150,6 +150,16 @@ class ReportGenerator:
         lines.append(f"许可证变更: {len(self.result.license_changes)}")
         lines.append(f"供应商变更: {len(self.result.supplier_changes)}")
         lines.append(f"依赖关系变更: {len(self.result.dependency_changes)}")
+
+        # 文件统计
+        if hasattr(self.result, 'added_files') and hasattr(self.result, 'removed_files'):
+            file_count_a = len(self.sbom_a.file_map) if hasattr(self.sbom_a, 'file_map') else 0
+            file_count_b = len(self.sbom_b.file_map) if hasattr(self.sbom_b, 'file_map') else 0
+            lines.append(f"文件数量 A: {file_count_a}, B: {file_count_b}")
+            lines.append(f"新增文件: {len(self.result.added_files)}")
+            lines.append(f"移除文件: {len(self.result.removed_files)}")
+            lines.append(f"文件内容变更: {len(self.result.file_changes)}")
+        
         lines.append("")
         
         # 新增包
@@ -372,6 +382,51 @@ class ReportGenerator:
                         lines.append(f"    受影响的包: {affected_packages}")
                         lines.append(f"    建议: {risk.recommendation}")
                         lines.append("")
+        
+        # 文件变更
+        if hasattr(self.result, 'added_files') and self.result.added_files:
+            lines.append("-" * 80)
+            lines.append("新增文件")
+            lines.append("-" * 80)
+            for file_name in self.result.added_files[:50]:  # 限制显示数量
+                lines.append(f"{file_name}")
+            
+            if len(self.result.added_files) > 50:
+                lines.append(f"...等共 {len(self.result.added_files)} 个文件")
+            
+            lines.append("")
+        
+        if hasattr(self.result, 'removed_files') and self.result.removed_files:
+            lines.append("-" * 80)
+            lines.append("移除文件")
+            lines.append("-" * 80)
+            for file_name in self.result.removed_files[:50]:  # 限制显示数量
+                lines.append(f"{file_name}")
+            
+            if len(self.result.removed_files) > 50:
+                lines.append(f"...等共 {len(self.result.removed_files)} 个文件")
+            
+            lines.append("")
+        
+        if hasattr(self.result, 'file_changes') and self.result.file_changes:
+            lines.append("-" * 80)
+            lines.append("文件内容变更")
+            lines.append("-" * 80)
+            table_data = []
+            headers = ["文件名", "变更类型"]
+            
+            for change in self.result.file_changes[:50]:  # 限制显示数量
+                table_data.append([
+                    change.file_name,
+                    "内容变更" if change.has_content_change else "校验和变更"
+                ])
+            
+            lines.append(tabulate(table_data, headers=headers, tablefmt="grid"))
+            
+            if len(self.result.file_changes) > 50:
+                lines.append(f"...等共 {len(self.result.file_changes)} 个文件内容变更")
+            
+            lines.append("")
         
         # 添加漏洞信息部分
         if hasattr(self.result, "security_score"):
@@ -910,8 +965,10 @@ class ReportGenerator:
         if self.result.dependency_changes:
             self._generate_dependency_graph(os.path.dirname(output_path))
         
+        # 生成HTML内容
         html_content = self._get_html_report_content()
         
+        # 写入文件
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
     
@@ -922,8 +979,10 @@ class ReportGenerator:
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            margin: 20px;
-            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
         .container {
             max-width: 1200px;
@@ -1258,6 +1317,10 @@ class ReportGenerator:
                 {risk_analysis_section}
                 {added_pkg_vulnerabilities_section}
                 {version_changed_vulnerabilities_section}
+                {file_stats}
+                {added_files_section}
+                {removed_files_section}
+                {file_changes_section}
             </div>
             
             <script>
@@ -1440,12 +1503,18 @@ class ReportGenerator:
             </div>
             """
         
-        # 供应商变更部分
+        # 生成供应商变更部分
         supplier_changes_section = ""
         if self.result.supplier_changes:
             rows = []
             for change in self.result.supplier_changes:
-                rows.append(f"<tr><td>{change.package_name}</td><td>{change.old_supplier}</td><td>{change.new_supplier}</td></tr>")
+                rows.append(f"""
+                <tr>
+                    <td>{change.package_name}</td>
+                    <td>{change.old_supplier}</td>
+                    <td>{change.new_supplier}</td>
+                </tr>
+                """)
             
             supplier_changes_section = f"""
             <button type="button" class="collapsible">
@@ -1454,12 +1523,16 @@ class ReportGenerator:
             </button>
             <div class="content">
                 <table>
-                    <tr>
-                        <th>包名</th>
-                        <th>旧供应商</th>
-                        <th>新供应商</th>
-                    </tr>
-                    {"".join(rows)}
+                    <thead>
+                        <tr>
+                            <th>包名</th>
+                            <th>旧供应商</th>
+                            <th>新供应商</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {"".join(rows)}
+                    </tbody>
                 </table>
             </div>
             """
@@ -1504,14 +1577,11 @@ class ReportGenerator:
                     if len(risk.affected_packages) > 5:
                         affected_packages += f"... 等共{len(risk.affected_packages)}个包"
                     
-                    risk_items.append(f"""
-                    <div class="risk-{level}">
-                        <div class="risk-category">{risk.category}</div>
-                        <div class="risk-description">{risk.description}</div>
-                        <div class="risk-affected"><strong>受影响的包:</strong> {affected_packages}</div>
-                        <div class="risk-recommendation"><strong>建议:</strong> {risk.recommendation}</div>
-                    </div>
-                    """)
+                    lines.append(f"{level.upper()} 级别风险:")
+                    lines.append(f"  - {risk.category}: {risk.description}")
+                    lines.append(f"    受影响的包: {affected_packages}")
+                    lines.append(f"    建议: {risk.recommendation}")
+                    lines.append("")
             
             # 处理按阶段分组的风险
             stages = ["source", "ci", "container", "end-to-end"]
@@ -1526,13 +1596,22 @@ class ReportGenerator:
                     """)
                     
                     # 按风险级别排序（高到低）
-                    sorted_risks = sorted(all_stages[stage], key=lambda x: {"high": 0, "medium": 1, "low": 2}[x[0]])
+                    stage_risks = sorted(risks, key=lambda x: 
+                                        0 if x.level == "high" else 
+                                        1 if x.level == "medium" else 2)
                     
-                    # 显示该阶段的所有风险
-                    for level, risk in sorted_risks:
-                        affected_packages = ", ".join(risk.affected_packages[:5])
-                        if len(risk.affected_packages) > 5:
-                            affected_packages += f"... 等共{len(risk.affected_packages)}个包"
+                    for risk in stage_risks:
+                        level = risk.level
+                        # 生成受影响的包列表
+                        affected_packages = ""
+                        if risk.affected_packages:
+                            # 最多显示5个包
+                            display_packages = risk.affected_packages[:5]
+                            affected_packages = ", ".join(display_packages)
+                            
+                            # 如果超过5个，显示总数
+                            if len(risk.affected_packages) > 5:
+                                affected_packages += f"... 等共{len(risk.affected_packages)}个包"
                         
                         risk_items.append(f"""
                         <div class="risk-{level}">
@@ -1542,19 +1621,6 @@ class ReportGenerator:
                             <div class="risk-recommendation"><strong>建议:</strong> {risk.recommendation}</div>
                         </div>
                         """)
-            
-            if risk_items:
-                risk_analysis_section = f"""
-                <button type="button" class="collapsible">
-                    <span style="flex-grow: 1;">风险分析 ({total_risks})</span>
-                    <span style="font-size:14px;color:#666">点击展开/收起</span>
-                </button>
-                <div class="content">
-                    <div class="risk-container">
-                        {"".join(risk_items)}
-                    </div>
-                </div>
-                """
         
         # 安全评分部分
         security_score_section = ""
@@ -2038,6 +2104,117 @@ class ReportGenerator:
                     </div>
                     """
         
+        # 文件统计部分
+        file_stats = ""
+        added_files_section = ""
+        removed_files_section = ""
+        file_changes_section = ""
+        
+        if hasattr(self.result, "file_changes"):
+            # 文件统计信息
+            file_stats = f"""
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>{len(self.sbom_a.files) if hasattr(self.sbom_a, 'files') else 0}</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>{len(self.sbom_b.files) if hasattr(self.sbom_b, 'files') else 0}</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>{len(self.result.added_files)}</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>{len(self.result.removed_files)}</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>{len(self.result.file_changes)}</td>
+                </tr>
+            </table>
+            """
+            
+            # 新增文件部分
+            if self.result.added_files:
+                display_files = self.result.added_files[:100]  # 最多显示100个文件
+                has_more = len(self.result.added_files) > 100
+                
+                rows = []
+                for file_name in display_files:
+                    rows.append(f"<tr><td>{file_name}</td></tr>")
+                
+                show_more_text = f"(仅显示前100个，共{len(self.result.added_files)}个)" if has_more else ""
+                
+                added_files_section = f"""
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 ({len(self.result.added_files)})</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>{show_more_text}</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        {"".join(rows)}
+                    </table>
+                </div>
+                """
+            
+            # 移除文件部分
+            if self.result.removed_files:
+                display_files = self.result.removed_files[:100]  # 最多显示100个文件
+                has_more = len(self.result.removed_files) > 100
+                
+                rows = []
+                for file_name in display_files:
+                    rows.append(f"<tr><td>{file_name}</td></tr>")
+                
+                show_more_text = f"(仅显示前100个，共{len(self.result.removed_files)}个)" if has_more else ""
+                
+                removed_files_section = f"""
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 ({len(self.result.removed_files)})</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>{show_more_text}</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        {"".join(rows)}
+                    </table>
+                </div>
+                """
+            
+            # 文件内容变更部分
+            if self.result.file_changes:
+                rows = []
+                for change in self.result.file_changes:
+                    change_type = "内容变更" if change.has_content_change else "校验和变更"
+                    rows.append(f"<tr><td>{change.file_name}</td><td>{change_type}</td></tr>")
+                
+                file_changes_section = f"""
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 ({len(self.result.file_changes)})</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        {"".join(rows)}
+                    </table>
+                </div>
+                """
+        
         # 在HTML模板中添加漏洞信息部分
         html_content = html_template.format(
             timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -2058,6 +2235,10 @@ class ReportGenerator:
             vulnerability_section=vulnerability_section,
             added_pkg_vulnerabilities_section=added_pkg_vulnerabilities_section,
             version_changed_vulnerabilities_section=version_changed_vulnerabilities_section,
+            file_stats=file_stats,
+            added_files_section=added_files_section,
+            removed_files_section=removed_files_section,
+            file_changes_section=file_changes_section,
             css_styles=css_styles
         )
         

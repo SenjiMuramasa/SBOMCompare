@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "mshade/kronic SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/mshade/kronic-99d0d2d8-d00c-4c5a-a080-3e2b30aa197c",
+  "name": "mshade/kronic",
+  "comment": "The simple Kubernetes CronJob Admin UI",
+  "licenseDeclared": "apache-2.0",
+  "primaryLanguage": "YAML, Python, HTML, Markdown, JSON, Shell, CSS, JavaScript",
+  "documentNamespace": "https://spdx.org/spdxdocs/mshade/kronic-cd6274fb-f48a-4caf-a608-6ee611b4f972",
   "creationInfo": {
-    "created": "2025-03-30T02:50:40.100876Z",
+    "created": "2025-04-04T10:05:32.898042Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "kronic",
-      "SPDXID": "SPDXRef-Package-kronic",
-      "downloadLocation": "https://github.com/mshade/kronic.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "apache-2.0",
-      "copyrightText": "NOASSERTION",
-      "description": "The simple Kubernetes CronJob Admin UI",
-      "comment": "Primary languages: YAML, Python, HTML, Markdown, JSON, Shell, CSS, JavaScript",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: mshade",
-      "homepage": "https://github.com/mshade/kronic"
-    },
     {
       "name": "pytest",
       "SPDXID": "SPDXRef-Package-9716e1e9a56a83837a160092cc9c51f2",

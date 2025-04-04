@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "skyth3r/automate-now SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/skyth3r/automate-now-1f7a667a-cae9-4273-9f33-8e2c6f2d4fcf",
+  "name": "skyth3r/automate-now",
+  "comment": "A script that fetches data from various sources and builds a markdown page to automate my /now page on my website",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Go, Markdown",
+  "documentNamespace": "https://spdx.org/spdxdocs/skyth3r/automate-now-590cc506-f8a1-49a0-a691-68c0fdff16b7",
   "creationInfo": {
-    "created": "2025-03-30T06:44:00.192876Z",
+    "created": "2025-04-04T10:36:54.964882Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "automate-now",
-      "SPDXID": "SPDXRef-Package-automate-now",
-      "downloadLocation": "https://github.com/skyth3r/automate-now.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "mit",
-      "copyrightText": "NOASSERTION",
-      "description": "A script that fetches data from various sources and builds a markdown page to automate my /now page on my website",
-      "comment": "Primary languages: Go, Markdown",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: skyth3r",
-      "homepage": "https://github.com/skyth3r/automate-now"
-    },
     {
       "name": "github.com/PuerkitoBio/goquery",
       "SPDXID": "SPDXRef-Package-2bb4aeb3f95fd4a0656e04a2d1f23bc9",

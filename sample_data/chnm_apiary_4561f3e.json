@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "chnm/apiary SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/chnm/apiary-1c7b91f2-6d52-4014-9477-4a94b3022df5",
+  "name": "chnm/apiary",
+  "comment": "🐝Apiary: The Data API for RRCHNM",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Go, YAML, Markdown, JSON",
+  "documentNamespace": "https://spdx.org/spdxdocs/chnm/apiary-936ff6e2-361a-4242-8f84-254c31c90d96",
   "creationInfo": {
-    "created": "2025-03-30T06:58:52.091688Z",
+    "created": "2025-04-04T09:04:07.428558Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "apiary",
-      "SPDXID": "SPDXRef-Package-apiary",
-      "downloadLocation": "https://github.com/chnm/apiary.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "mit",
-      "copyrightText": "NOASSERTION",
-      "description": "🐝Apiary: The Data API for RRCHNM",
-      "comment": "Primary languages: Go, YAML, Markdown, JSON",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: chnm",
-      "homepage": "https://github.com/chnm/apiary"
-    },
     {
       "name": "github.com/cenkalti/backoff/v4",
       "SPDXID": "SPDXRef-Package-0d38b8aac7c3b69bb88a5e655494da97",

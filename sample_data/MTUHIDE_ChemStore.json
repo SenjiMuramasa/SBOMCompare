@@ -1,0 +1,2788 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "MTUHIDE/ChemStore",
+  "comment": "Chem Store is a chemical tracking website that allows easy navigation and organization of inventory.",
+  "licenseDeclared": "NOASSERTION",
+  "primaryLanguage": "C#, CSS, JavaScript, JSON, Markdown",
+  "documentNamespace": "https://spdx.org/spdxdocs/MTUHIDE/ChemStore-6d531228-6b95-48da-8eea-47b5b74f8046",
+  "creationInfo": {
+    "created": "2025-04-04T10:06:08.182293Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [],
+  "files": [
+    {
+      "fileName": "appsettings.Development.json",
+      "SPDXID": "SPDXRef-File-3ec51493197f1d3dad73022469b458de",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1ded901c71a43b050b5b0d62c2e5621eb300a5ee"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "33f18f978d1a84d2812779ccd72050f63dcd0a6297364312ab117473b7e25c13"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e5be7d8b9ccd351b4dbccdc9ada9811f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "appsettings.json",
+      "SPDXID": "SPDXRef-File-f2fe7545be5c344aa7358601b1a70e15",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "aac5d01179e96592e0c30efe3da3cbff5549292a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "593db92505b2ddc2f30eff59e749347cb318172fe9133b2c0d178c7aeae4584d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ca4273477db24ddfdc25e2911db6225a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "libman.json",
+      "SPDXID": "SPDXRef-File-b0bda85db10deec44e782c457e55b911",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f31942761566ebd41ef73b000927116959a8a0b7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b47f295cd94c91ff2188cc128f36175383affcd374021b865ed2511bcebea8ac"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fb1e22bf7905724409cd148f95ab4bfc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Program.cs",
+      "SPDXID": "SPDXRef-File-34cffdae1474e839ffac88fe019a0155",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "073457d1456ddf774d71aa322fd5a4ecaade5f1c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "61ecb78f8c59e5b419a5c51733b537567d3ec86d8d6d436efacd7ec40d276c7e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fa4632c737652f9c676ac64e4a73e708"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f9d601b75c39dda58e53d766a99eb925bb4a4796"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6ba14c4de2980155161422af742d36862879564becf7cf01f61769ac14d11941"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "862cb9d8dcd89e6df5b8a29b9daeb5cd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Startup.cs",
+      "SPDXID": "SPDXRef-File-44faab4f65e309f07f97a11f35f4a1d0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9d2261142e7fb5492d47d10abf7c5ec9fa9b7124"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5979a6cabbec8d557dc78bbea341309fa6a4c9cef50b8ef87a98380e5a20e7c0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0a516abf4e2397e16a0e2e5322a10128"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".config\\dotnet-tools.json",
+      "SPDXID": "SPDXRef-File-14502665693c1ec77f7b09c92be45d29",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "85db16fa754b78dcf22a4059c516409135def86d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "acd509d5bbe2bf918ced28af018ee4fba78f9630efbbfeb6e2f6f802c5d01c10"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b59b9809be63642590a23428d12670db"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "API\\PUG.cs",
+      "SPDXID": "SPDXRef-File-1e3038fa78126a35f97e3728ff5dc1cc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b491b4b611df734ee8dc46bd8a77a2b303bea244"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1f778e2eba053b92713de89ef6d411ea9164fc55f3ba2246941e665d42cb3d6d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8d7fc4e0b692eab5b672f473e5205919"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Migrations\\20241013200555_DatabaseOverhaul.cs",
+      "SPDXID": "SPDXRef-File-21d9c03230d80b8b686f1b5f13013bc9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "62a6e6f851f10aca8f48851d96c346cbacfda717"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3fd8198f95376659bd93a49143d6590e8757af4c2213ecb5f237466cbc156676"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1ee9e88e7a61a5417629b9596f93c462"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Migrations\\20241013200555_DatabaseOverhaul.Designer.cs",
+      "SPDXID": "SPDXRef-File-4b64bb2b89101e05a216b146527492eb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "88eaa82b421728bd6f8eb5dd37783b43422c29b5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e0bad1137758617668afc08e0229e6bc94e0ad01784431a6b22a085652660df2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "121d1a938f4d4adeec4701e83477868c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Migrations\\20241103195400_NullableLocationParentID.cs",
+      "SPDXID": "SPDXRef-File-4ab262748e4eb6915b3753daad35b434",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "acd7e3a8ab4a67949531b6a76530fd282a03739d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d10fc7908eed3c1740610242cf789e8450dfd215bb21f52e4c9c3d720b142063"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "39bf292b38e8209146e28f053103b25c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Migrations\\20241103195400_NullableLocationParentID.Designer.cs",
+      "SPDXID": "SPDXRef-File-0dfb64b6e05cd5b425fa0e8959a482f4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "799955ce23383fa881babfd4cc116dbb97ac37e1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c6fa74157b443d96817c44e3b3decb549f061f3f72ee67257b944ac9e040d023"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "fd348db7b150ece4f99698dab23ee97d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Migrations\\chemstoreContextModelSnapshot.cs",
+      "SPDXID": "SPDXRef-File-ac0640af42b9ddd17f0779ec533037c9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c7048b4ba9756041826e82c899d141b764fb61a3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ea73331497a28c42c5e68f0ee14f02773798aa0736c8c67aa14e7ac2cde5f95"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "caf159c87ffc3358649199acdf476804"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\chemstoreContext.cs",
+      "SPDXID": "SPDXRef-File-1fc409feb636cead4b60cbff13a7841f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0c8f346c247da386a5fa7d215556f199dc46d581"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b0dc0403c8c4cba849520a290991ad0c387d06816282b1c95b3ca08577da1ccf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "61064dddca41f8ff6d3f1062ddee0294"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\ContainerChemicals.cs",
+      "SPDXID": "SPDXRef-File-0c0f52293decf7b8cf3d3f9346792f59",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a5ae4507360485c2c5955ea1942513238e85313c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "99b4419b2b5947c1bcd1ce911f52be9a55bf48eedb1317c78c1ca82c2cebd394"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dd25f451de8777077786084998df0f2c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\ContainerHazards.cs",
+      "SPDXID": "SPDXRef-File-b16fd4c13e34504bda5dff41898658b0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cd1c9b4f0c31b633bd15196cd55600504496c71e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8ddedbe129944c36872730dc1d4784e3ed767d3d20bd1ac549c7ad7cfa9fab7a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "29524396f04fd46e7ce63dc9496289bc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\Department.cs",
+      "SPDXID": "SPDXRef-File-23510d0a7f47b05db11a7e5c3e0092a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "90d9ada872b06c9cf77aea54f388b75f13916a69"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4f6a3118fea56d44f657de524ba05d1e3afb750ce98ee16bf658470e1e34a942"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "eed94965dcf3ef06569b115ac9246db9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\HazardPictogram.cs",
+      "SPDXID": "SPDXRef-File-4e813e2251a211e221978fea04fa5b09",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "307d053058b3e7c600ec459868784159120141f6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5ee91a0049ca4e2e7dff96444516df51893a1f9a8cf7ebf36d121f9806c993d3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c8be789fee670ee0698b624a741b6538"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\HazardPrecaution.cs",
+      "SPDXID": "SPDXRef-File-e33c2b4c8c01993bca248cdf72f1597d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bd92329561859f9c7e66b081cef6bff20342d4ad"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "971c9928a78cb5d6d28059763694c8d37c7e3ea6519d4fe88e676ea65e64050f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "43856a34bf35234877fa33697991b1b9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\HazardStatement.cs",
+      "SPDXID": "SPDXRef-File-e1b7f9909b289d370a45de1f0c7c7f16",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6e7cc05c9ebbfcfd5dec9e8a3494b1eb0f642b9f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a1a5fadefe47677e34e3a3867ec55ddce163fd8cd41ab956d9b38e890a89f6ff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5dc0ce3c0667921b93c96b0f807952eb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\LocationAttribute.cs",
+      "SPDXID": "SPDXRef-File-9a1dd8d757546cd6bc37c24d5c663429",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ad67fb9a08f078dbe187533d17e905949acfbd27"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "294a6a5fc7b627bccf013abfcf998a34a1969f929ed5dee31e088fd8e29762ad"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6a3ecd19a2a40848c7689e88f0959c92"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\Log.cs",
+      "SPDXID": "SPDXRef-File-d38d9cb76708ae9680bf2d11d76ae416",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "178afbfdf35e5ca1301488b72e603adc4282aa3c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9658104f5cd7ceada3cb6dff161239fac75ca0575e18bf310c3287d4f20f3c43"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5acb2ef6337f2220333fdbcb381fb835"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\PrecautionaryStatement.cs",
+      "SPDXID": "SPDXRef-File-fbfd6305c5659341618702d9bdbcd292",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6c652a5e3be1b9ed4b20adbb71c98ea2ad92f3e3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "be490fea0a0639e42d6bc1a7e4e462c01b2562b57405099277b714a576455216"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ddc3ece31dcd7ec5549a7456870a965d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\Role.cs",
+      "SPDXID": "SPDXRef-File-35862301e38172c6d76e4342e2fb084e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7fbd37e1435381ad91deb38a357cad5d3061f9a9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "003270f1b37bf35cc9d770e13087fd507a637c0d2882fd17240c4700debd9bc9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f45474b40719937f7cccef4a6257d3ea"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\RolePermissions.cs",
+      "SPDXID": "SPDXRef-File-530c3043296968de944c4e3bbe2a8cfb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0e1c4fdac137b6699c22f2c3998e7147b0fec3b8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3cb55567857e4541f3a5f3034a518b423bec4d67e7f8721d61ef1c6d338039ac"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c3b84f8dd7480d7de5d650efc6eb4ffa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\StatementPictogram.cs",
+      "SPDXID": "SPDXRef-File-cf8366d8680596bb7633c741091929c7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b4abc2db5c170bf0fd0fdff9f253b993acf2d108"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b53a5024dc88e68130903d0c1d8e9db11c91e6f775851c8e2caf1929fa2856c8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c76c1e41fdc9641a707c96400d113708"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\User.cs",
+      "SPDXID": "SPDXRef-File-72e31b03616d2dbb2eb137db4a46d88e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "42018a94f9ec0f83e9e00ba7770e20bb59b665f6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "89204e025b249286e4272e72bd4fab17fd40cc12a7d9b47d5f178c1c6a8ab1a1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5f2cdae2e8c200b1b144d84bc328a76e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\X_Container.cs",
+      "SPDXID": "SPDXRef-File-4bb2c28aba40b5587877ffac239326b8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0e64a2a1e97b4c84554630dd19f6ddeb2fc5445e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9da50926f2a261e0596e6017a00a69a8a8df55295806ec02907f433aaaf79334"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c4c96cfde96a8b77fc1e9c3a31219ffa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\X_Location.cs",
+      "SPDXID": "SPDXRef-File-031dc4ad7e06472b670c5f694e386158",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7953b0e6b3a920c661269c0261a2fdc205b1bad0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "32e30e66eb284e66de6b6bb806732f7a49d9bef5e8ff6bdb7f5dde93ad7bbbb8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "785817a55fa037768f07b0f9e39b76aa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\X_Log.cs",
+      "SPDXID": "SPDXRef-File-d9cc525c5933df2705b85fc04ac243d7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f2013854c7814782afdce8901eb6e3a51ab3343b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "af451b82de5f2850ea83e7aec783ec8f1e23be13fa8867bac6c7e0f6d5ea0825"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8aea80bdb79f27122e54694ff09dca5a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\Enums\\Departments.cs",
+      "SPDXID": "SPDXRef-File-a8d8d1db7a32c9eb5e19e1dee473e6f7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4bd2be67a0e3a9a3978ba1a0a20f6fca747ce3ff"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0a6a1e5e87118e2602642449966760e7711d5d0b5ccf81ce7a63cfb4255ddaff"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6a40faa776445519506257afbe809d7a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\Enums\\Roles.cs",
+      "SPDXID": "SPDXRef-File-61b96091871723dbb8b772384c0c36dc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6ead5c6be20b073e487575b14e4b6a0cd23c2bf0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1c0156d2756ff84270215c9a295f42cf57ad6b94d6b687295fa0482ac95c8723"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "799c56187803c6cd1974546fea335f9e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Models\\Enums\\Units.cs",
+      "SPDXID": "SPDXRef-File-31ecfb0ddd55918105ca206d8522bb55",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8ebb410f930b56516745916238e34bc85e34a57c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b39361a6fe265c0776d2ee461a5df8e19ff738afd849959d1ef4dd28bfd8d3b2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1300aaacef8a9ea02f61fec0e3553426"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\ContactUs.cshtml.cs",
+      "SPDXID": "SPDXRef-File-785e1b6baea41d1e44cba36f56744506",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "97e6c76c60f01b132ce5956ce76ed48c14ace1c5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "798da1a1e1d94332fdcdc35e764bb9df53f739d9618760a17aeaf608def1b147"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cbea3a985451ec1c00d4dd5a4e9afe90"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Error.cshtml.cs",
+      "SPDXID": "SPDXRef-File-76d7ece1cbd986aaacdbf7e26d4153a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a037d662bb94cdaa72bf7ce459b6328cade8cd1b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ef549db948610afe6ed0abe365cc6e557a9a7acf140e8392033a0ce898ca9a0b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f39464e5a77957f0d000eeaea7598825"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Index.cshtml.cs",
+      "SPDXID": "SPDXRef-File-01f8e982b21867a26705ba4f874e2938",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "031633227a0f14f991bf28aea950e0a7e427a446"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "45e7296c853b4ab2e5e8fb5edc282a3970f71325dc27aff0a1c7ffa209f36c79"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c918f1402710121240e7eae3668011bf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Log.cshtml.cs",
+      "SPDXID": "SPDXRef-File-be1ddf545f087d366bc92fa9aa00ee03",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "23de7bff3da4def789a2a8d821ba1d5cd48728b8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7f8a414f113e89f5550a1eb6c1a5c8cc8e5c088c796a45af0264a681436c2804"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "09c177f7a410241c736476e6f80c91ca"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\LoginPage.cshtml.cs",
+      "SPDXID": "SPDXRef-File-5c3c5c4bc8fb27b1d4509c12ee7debea",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c4e71095bf81bb0fa87faefcd1cebfedcf9c3a30"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d3eabd7ce0a34028f7204c74818d782876cbb1c541c6a5d31c79c612bd8eacb3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f717ca5802b4ed33431400f279676920"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Privacy.cshtml.cs",
+      "SPDXID": "SPDXRef-File-8aa087fe33f94a33575b4987d13507ec",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4d2d102f9f91f8cdb580e734ef7a3cf19410580a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a81f4d6a5e16200df56c31207d08061deb047bd08ecab8d08b4a334189677ee8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2871b9c3e2e5280bf5f7d5f3bfaf6bd4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Admin\\Departments.cshtml.cs",
+      "SPDXID": "SPDXRef-File-581c6ad48c7b07736f20691f08d73a48",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "84351db9d9789fc22d285fdbd1a7702748ffa13b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dd07c9b6e7fe05f29effc3803bd354f28e5857c14ae3ad72e54612c116af948f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6f4b7357735dcb445649c15589ef3aa7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Admin\\Index.cshtml.cs",
+      "SPDXID": "SPDXRef-File-d8ab3e05e51e1c8947d2fcb1bed9e2cd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4d0d21077a2e61d0aa4786440ffd0f40382d74ac"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e4ce5af62f2beafa50b776695a17cc0df85208062a4f885a843309352a675b97"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b53fb42be75bc60bc93fd6c77d15a87a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Admin\\Locations.cshtml.cs",
+      "SPDXID": "SPDXRef-File-4728ff8255aa4d6b1e0a52d1fe046dab",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9588f6c41a8667ee1d943e183939bee9b2b0009a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f520b67680800edf1c2c147c09c6e87f04a1b6a32f992f3d32b7633beb71aa15"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e822316cd880b9685f8bcde4efd09cc1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Admin\\Roles.cshtml.cs",
+      "SPDXID": "SPDXRef-File-a8b1572b85cb39382158be12267d520e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "68d2fb12cbc55c418ceb822f0358565d11c99358"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5596625f2d868d45843e1ae252906978ce3cae41c7179c641704466bad0fe3ac"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "44390e872ed266687f91949a9993d58c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Admin\\Users.cshtml.cs",
+      "SPDXID": "SPDXRef-File-5d42a40266a7b189a84c613986a17103",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3a604fd3e5557390016ebbca4de1bd29439fb36f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "df8015722a5ea886eed915f29f57a1ee642500e30622563148f44275f0b5fbd4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5bd5e16158820ef825717413bd3b798f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\Container.cshtml.cs",
+      "SPDXID": "SPDXRef-File-2ce0f4a268a253ae213d85759be26372",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7a0cc8a8e1a567fc342bf5651c30686535e82c04"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bde3d295906299971574885109eeb8f70a7c5ee59302714cffb285d3a59c4357"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c4db2a6564244f68ede5f649a9453966"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\ContainerChemicals.cshtml.cs",
+      "SPDXID": "SPDXRef-File-2a9380beae71c77db5bf43e8c1429ccc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "afcc4293fadd6675877f56eca1a6972212d395e8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4c6fc196cf3d6fa5b30070795ba7d9d96b6bbc3de81a2317e319e181460779bb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "45e4c13a69cf03ae3ce8f8a090efbc1c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\ContainerHazards.cshtml.cs",
+      "SPDXID": "SPDXRef-File-0ef9b80a9203f1cf75a5db72e3e454a1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "210ac37a1d9d6936014e3200fed95dcb1c46ac89"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0ad8ab0ce6ffa000aa0cf9c959ab5d21fd8cbf82d8e080043a6df9e1d0ec9c30"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6f6d120c8afb14c075e6c9878850c9cd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\Department.cshtml.cs",
+      "SPDXID": "SPDXRef-File-3f0363f5d007d9b460ad783751e101d9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "26eb3f10e0417b0b9d6da1fc675e57c610ed86a9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8aa49a468b81195895917e35d566f0c44c9bd37a715cc347c2d5bf622399c790"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6973d06a39842dafdaa2e0f9c6903547"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\HazardPictogram.cshtml.cs",
+      "SPDXID": "SPDXRef-File-887eea98b56222fec3bb8f314185383b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "912ef9ac230d015036118f11c5ee52242196f881"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f765e5d9bce57cd320c4295972e98c6070e3cfc96dbd96010bf405c5abd3354a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7e16e0fe3898470cedce69f09bff159d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\HazardPrecaution.cshtml.cs",
+      "SPDXID": "SPDXRef-File-a7b673f1fcdad6018cb5bf1d9a1857a7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "15d0f55fc9f0b676593d22f3520c0fd39b094592"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "af7b5d17aeb71a60cb9b98cbacb4b3435eef538a64f4aea6103461477d405b2a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a0a4a0bf442d9967a223e179c0859b21"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\HazardStatement.cshtml.cs",
+      "SPDXID": "SPDXRef-File-21710daf69074371f3bc5865e0a2bdad",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f98a0c0308946de96bd1d3d73bb57809b6a51cff"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "94d0200ca137b75293a55ea7f1ba3a2f91c4cefe34e2a584e7a3efb39cacda17"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "19cd0023be18ff0a8ce43b760f6424c1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\Index.cshtml.cs",
+      "SPDXID": "SPDXRef-File-5dc7d8ef728f32bb3e1ea6be559d7583",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "db1e8202a3e625e1353637a141263f58bd4cd8c3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "99d357b9eb636080f3cc8138430fc02261579af67436bcc507c9e13571bf6a77"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cdc62b6be02486927130d2e72273f2f0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\Location.cshtml.cs",
+      "SPDXID": "SPDXRef-File-cc66850bef8c671e9f7505dcb5c46cf9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d3470a68798255d9705f2a84885a6e762f7db06b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ff92604eedd8d73d485a79d25b4ab460d2042c6ca3a10ef0f686737eca7a2741"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ae9bab6bd80a4e558dbf8545f3432ef1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\LocationAttribute.cshtml.cs",
+      "SPDXID": "SPDXRef-File-f012e049636c2ce1ffccdfde80c87f71",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "881ad5e22a9faa8d2cfd357a310b1ad0af41f5bd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7f7e63a42ca1b35d528fe2389d3a6f4dca9ec58593fa3fcc91d55be8a1be310f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "419206a57afc03ae067207e0a16874db"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\PrecautionaryStatement.cshtml.cs",
+      "SPDXID": "SPDXRef-File-423c54bffbb85b3265a18666f5a93672",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b716e1d59175c752f0d9775d79b4c7562f295e19"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e12c5cd7f2a97938980c0a0f5986acaac17e9de1872f3ffa7af83a8aec515633"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cbc5beae5d1597f31ab173eeb779532d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\Role.cshtml.cs",
+      "SPDXID": "SPDXRef-File-b1855d5a7cde69f2ce1f35a111053ab0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2a8509f0399a33e993904d18e700d942f0437393"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6b5d4fe5ae56cb39de33a3ed0528c553316f3ea4e193cb7fb6ed24a7ad752249"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a39bdeeb5cf53fbe512bd2076de32bce"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\RolePermissions.cshtml.cs",
+      "SPDXID": "SPDXRef-File-6086e6f186364feaa9b8124dcfaf2417",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1963787f33021f31a4bb7d46ecb6dfcf758b2f37"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "76fcbac8641340b13dd77f92b07eeadfd8b277fb5e9f4647a2b474c99065ad2e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2396415fdf1864e5a57e479bd752791f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\StatementPictogram.cshtml.cs",
+      "SPDXID": "SPDXRef-File-e4d16e65e408b08b1bc6899afa180a44",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b98d558c053513a03266174f7b72843eda15d80c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6a4ce21805aa4cfd1389ad47f7f115ea3d6aee999ccc5d4c4fa51603102b5659"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3c608ac087592aeb78eb33e39de61332"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Pages\\Debug\\User.cshtml.cs",
+      "SPDXID": "SPDXRef-File-0b07837cd3889be6d191d2aa96e6d943",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fdf919c8e047ffd801b948e96bb143955ac48d18"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "25ece2648a03615118816228bf158712a69963bb9137a74d2baaa7067d9878c4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "94ad045de5fbebb432039fb907a822d7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Properties\\launchSettings.json",
+      "SPDXID": "SPDXRef-File-02096b1641e66dffa80f6c94851d13e4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "072b0432a996b3881774943eaeb87ee48ba9bb89"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fc2fb597747d926d343ad1d1ba8d43a78c9c9f4da9a97b4be2292fa7c46082c1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "848d701ac4bd2b59fa7d8ac783ab6ae0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Properties\\serviceDependencies.json",
+      "SPDXID": "SPDXRef-File-5506ea13e2c6cb7f36adca6b3a840370",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "818922076f334f1073adda28a251e0b4de83503e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5af2d08b0eb9415e2a665462c968ff4ad918024d5d19af3209ab0937ff2048a9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "615721a86908e09b7ff5e9aff58b3c8a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Properties\\serviceDependencies.local.json",
+      "SPDXID": "SPDXRef-File-2ef3b5d3862a6fff3454b1a70e6fcc1c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "14407ddcbfbd607dcb11b78fba983bf3603d190b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ad84f89951717b96678a4b66c490094f5991ec135c97417b68a670b98d857adb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "84159e6e30a0de269dfcd261992c65a5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Properties\\ServiceDependencies\\ChemStore - Web Deploy\\profile.arm.json",
+      "SPDXID": "SPDXRef-File-ce76e8dc0494c6d4403858b3d0d9efcb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d0edb4f1276acda28419a3d41676d50e6d335683"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "515b06536fe5e6133385ab7c2a07a7b05456f2e1765c4184115ab2b29378f6b8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "745d7651a2570cffd0455344f50e35ae"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Security\\AddRolesClaimsTransformation.cs",
+      "SPDXID": "SPDXRef-File-3fd7e5570b139e962cc612be1300bd4c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fe5d8b92b7bd2febcbcf9deef57685bde39ef654"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b55ab6cc1227c5bb55fdb399b98e80e143de19f31c417d0b9ddcfd0652281e0f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "050f82ff96128773728af1cb8676cb83"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Utilities\\DisplayContainer.cs",
+      "SPDXID": "SPDXRef-File-925cd54e66635003bdf8902bf05b0f8a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d7281a5d6349b2b37f975b79719e0255d295b3b7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cbbeb9cbac864bff42622d745db66b2fdf285d2611cfd53da333db34e9664d24"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4f6f05df99adece4afddbe8ac659bd9b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "Utilities\\EnumHelper.cs",
+      "SPDXID": "SPDXRef-File-739725d22dac5b8e69850eb46488bf46",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b0193f73c88a95e404eb4ed45b8845d0829864cd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7d2db6b5dbe926b96e004611b7bdcac38284c00b65ff79494da3382da18da504"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b0ce3945cbeefaeba42ac7d1ec93b7b7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "ViewModels\\ContainerViewModel.cs",
+      "SPDXID": "SPDXRef-File-5e2a307a3685bd87630725c311a3f2e7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "df31ad8f2d90123471704815b1663c7c12d3d858"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "28746c4435de51b3da76dc6861e1a1d9ee170640bacdd9c9eeb1162ca54d3994"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4d457bfeae60313202a11a17328ef04c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\css\\addEditModal.css",
+      "SPDXID": "SPDXRef-File-dc4270bcf80516832f11fa69fdbdce59",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dec9189ea1eb073995bb31b42ae3729e52ac6cb6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0c91ba5969d8ecd020ce853d870d600e89506ed7477ec12c81ab14f4decde178"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1c6e4e583a88c3192fe407fe2f791b7b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\css\\adminSubpageLayout.css",
+      "SPDXID": "SPDXRef-File-ca57c51d41d6c290a398025e3cedcadd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fde2f749603a62deda52a8add47c36d7cff43134"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "86cad03a84b844b34291a58fbccc366e9639a3d120cfa0a573355995c41fe527"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7daba2dfd13e96cd66c3d4e9df0632a9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\css\\logItemLayout.css",
+      "SPDXID": "SPDXRef-File-b2536a366d22cb991d098f436cb254f9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8213570dbe3463b924bd3fc06c075f8c3c383f34"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "65b98c9e8d016ab14d70cfd64ea4b2c80f6d737bc5d770179288a0a70a8dcf7e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a8b5555b2a4cf4d64cb9481e95c49b60"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\css\\searchItemLayout.css",
+      "SPDXID": "SPDXRef-File-44f8e642f1e24d30d741aa195fc10247",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d658719d1c4ee227405c965114564d6ba0f7acb2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d16cc65d8aaabb9f70b02141fe69f91e099bf08c098b4af4345a53b2d9e606e0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cfbdabd46197d993631393fd80ddf4fe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\css\\site.css",
+      "SPDXID": "SPDXRef-File-41bca114ed65b116de6856fee024c3c6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9e48296f9d1bef2a93d5f7879b70eb3a29419cf4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7da4b991a3157fc885040047596cabca717808e628decd259523f0fcae69cb99"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d001e1b4695f5bcd2362ed9e21ae6e23"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\js\\site.js",
+      "SPDXID": "SPDXRef-File-fec6096b4acf34e82d997da831f440fd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d90317c037b67dfa07c327603f113f7e28b6486e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "74b18fe344bbf579f1e86a94b61445e8d5af8ef850d673af7554b068d7201b5f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dc0eda3cd0141331ec73b748bf9b9ff5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\all.css",
+      "SPDXID": "SPDXRef-File-f4127c0f1683d8e1dd8f578bff45ff36",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4be30aa878a72ea37d99f76af756a03ea50a16a4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a82246ba1e00517e240bc6057d494d793048a14089da73825358a39db6d2811e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "08fd1509625559296154febd4304cabe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\all.min.css",
+      "SPDXID": "SPDXRef-File-5509a53955cab426bd17905561319d2d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4bc1a83a5283467abe93b4d3cc61de684ba4ea27"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "65972fba2783794692d0fcef15a8893b6badfd123d5ce90b5c35ee3a721ad649"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e60af998bf756dae0d3d967b25f73906"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\brands.css",
+      "SPDXID": "SPDXRef-File-dbea0d98c014a6151602d2b952a5af47",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b92c910fcaafc239acafb2d7e7b278b45dd8763e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "51a767d62f09987a6cfe0343958cd3a67c84445b657f98217739c8e5e43f77eb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "173b5e8600f902e3fc6037cd35bd6248"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\brands.min.css",
+      "SPDXID": "SPDXRef-File-18d98d164ed954c1184f086b3f63bffb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bab6a0e89012d50971e1fdf0d978e3cbd39bd964"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "acda207fde15d8e9b5b3d48b24195aec42966f067771f944e128ca8b3fb52cce"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e0a227ad2b03ca2b710538d5b2429a05"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\fontawesome.css",
+      "SPDXID": "SPDXRef-File-48612ea4aa1f01932f22042106953dd9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3534f65f2910c039858c749bc89631c78a03f2df"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "66bec7a2dfcc23a6948c9631aaad5bf40576e37e9d2bb545e8126b63ef5d683b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "51f6e09ad3b8542b8e70436c811c8bee"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\fontawesome.min.css",
+      "SPDXID": "SPDXRef-File-1a2967bc9e60648d3504e2654c86db41",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0d272edaf48d87d6141e7931053c666e0965ceb0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d0f1223f73e30b9b7518154219bce8cd6a4229b4d51f762e1348b83de7bc7d9b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8e06c4733ae3783529899ba8c37e90e1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\regular.css",
+      "SPDXID": "SPDXRef-File-dccd09360d0b7ac52549e2af28a16d33",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b40a25a849825a8827d19e15266ebee3c1d940f3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9cf204bec11010b7ca41ef5deea8ad99b184c587b0163b3d93927c36cea58502"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3717b3bc080cb45f75c907886d66b3b7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\regular.min.css",
+      "SPDXID": "SPDXRef-File-67b5d135400911a029f31abda3599fc2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b454871718fee52da9dd125193205ccb987dcbb2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "85172798014bd084c4d82edf677ba22707ee9eeadaefc0c1931e29c57451b84b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "982a22848578123e2102550a155f7677"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\solid.css",
+      "SPDXID": "SPDXRef-File-3ead24fe22515dc6be4ea92fb02eb9e1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a8d9584b4ab19e395a8188e48246faf147bff1d0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2a8fa0121723868a7c14e5a940c8402718c015ef8d26d8e17e116314b483e05d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "70d51521bcc5642b1540c47657ee60ab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\solid.min.css",
+      "SPDXID": "SPDXRef-File-989113ee82f641cf11e69aa6787df182",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "70c3f522bb700ba0ec0244acb1cb361add2bd804"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ddec0c97956559955aa465558d6930c56638bf332517107893266e40ad6e75df"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9dd4758b1bddb2eed4e144475327643a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\svg-with-js.css",
+      "SPDXID": "SPDXRef-File-2775995422f2b31faad8dd7b5b6ac379",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c2ba0bd7cafdc6569b6154b0967a8f9f71f2e629"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "222e4ed9587ed946f2635ef391702df5a477a93830796203d30d915f7c824d52"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "47047a8c637ed44a2223f8a349b15891"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\svg-with-js.min.css",
+      "SPDXID": "SPDXRef-File-31e129a66d8f75afe102b3d9a5a230fe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "28ff67aa04630457e1ee05e3702d925cc9cf126e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aa81b3485d25aa603a6145f4a3771bd5d6eb920a08d5cb3476cff44dd6b6121d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1efd16f31353947497f4a88d00784d84"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\v4-font-face.css",
+      "SPDXID": "SPDXRef-File-82e5a4a13b9bde6fba99ffc79689b93c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4c2725d861277f5ba8d4eb93d63acf7afc903b4a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8c34cb8aefb08302b7ecc08d7af216abb05809ddb4a84574dc27287ba065425c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9aa9958de9f0bbefad145f2012b975ca"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\v4-font-face.min.css",
+      "SPDXID": "SPDXRef-File-98cfc767f799805f45074ee545bd01bb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b12eb8c1937fba27babc28a8426ac8dc319d2939"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f4ba4e63bbc6ba69e3b0d39d957d7a0d4160e101e1adbcf675224b434afeb5f9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0fa22d385955d410573ab40052541744"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\v4-shims.css",
+      "SPDXID": "SPDXRef-File-1ba8b955f2f728bb25cbeadb62e68304",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1eb6fd973a85f21d0b49a978a829dd8cfd55e418"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "721ec1c1fd4a351d9ee513b403899e785b29c38011220fab21cacf654af7df15"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1410fbfa6f48b5a6f3bb3bf68bf8137a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\v4-shims.min.css",
+      "SPDXID": "SPDXRef-File-657c5715c0c8e3d4e2fea2cde9632c24",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2e8d528731226f7f7b96d8811e203b38cdbdffe9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "87f482d82e58ae16dbe454d65ef9c99bf0a7d683e90d41c93e03d327698aa7e8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e4068e7bed75efff32f3afa7e4775df8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\v5-font-face.css",
+      "SPDXID": "SPDXRef-File-50d0dd173d518e7c32b2eb76afa308c7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6851aec06795d987fd2bd6eddf92a9321f998006"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d6270ec0f33fc5827111b666a63ebe7cc8de35a8143ed8e4b194c8fa7366028c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8fbbf2956c9eafa5dc40fd768816d596"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\css\\v5-font-face.min.css",
+      "SPDXID": "SPDXRef-File-61f63f37eb6060b0b9c08bf7cd844da3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c77500064b7fab097b630779da518a62b304464b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aa1acec3dacb492b277b2805a5efcb08688f1a155f1050282357989e0d4833e0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7d673bc5c010b71a8d6299922fd521ff"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\all.js",
+      "SPDXID": "SPDXRef-File-9750d78ca357b9b914e8f7443ad9a92e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4a5ec6859834ab231bca8aea71ff7ae529aea50d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ecead8b15d09a0eba1160818d37cd26f77e30444a0476d459899c34b883e2ba1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "86dc6ca29d6c22f223ff53698ef1e0ba"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\all.min.js",
+      "SPDXID": "SPDXRef-File-4cbb81e2ee5ad61714346c8175651f2b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "89b2cbcb23e4787bc7bea32762899dc259ab8e6e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "74776b17ff275ee3ab6213c7d374299c7734f39eaf2a16aa24f43a7c7897ce0b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3b7cb514e581231f1a2a07380a0998d7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\brands.js",
+      "SPDXID": "SPDXRef-File-0ff22536479bc80345c74c323a0415f0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1c6795403d2e75203b4b177eb8c930e80eb88791"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5025dd380fb9a17015861997840398bd89bca55f4d45e5055c5b13c53d395a31"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b403ccc9a17fe9bfdf6a3ca1fb70b737"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\brands.min.js",
+      "SPDXID": "SPDXRef-File-04c13cc10a3b37549f55d766075fc437",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a6dccf92afd9fc4f285e62abe52075ff1bebea53"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8e1f33f0149ff8d3269ddcb9eeaecfb70a1c6b98de88996e2785f6bdc568e033"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "73e308c18cd9dbff6317c01fe40ea5c9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\conflict-detection.js",
+      "SPDXID": "SPDXRef-File-883e411da619a2a994dd297421b0466b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "08a8ccb8f46db09e79db972df2a5ee1e373fbabd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "685a29734c5b61c0cb275a85fc2957c5d81297e70ec4672d6fa9c59472dd94c9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "01133e58a8eb167b47cada5998939329"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\conflict-detection.min.js",
+      "SPDXID": "SPDXRef-File-236f4b2704348ece5a30ec46f5ff6136",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "55f42e26f760c29b6712462fff0f6bcca7c9482d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d33eabb3ee6f3c98c6236226a3f5cd5537b76d0f91671cc6307889a1d89f186e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f52a732214f6406cc5f0396dbc709072"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\fontawesome.js",
+      "SPDXID": "SPDXRef-File-94283a7ec156137c24dda845b69e69d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2c6a67a84eff1a52df671ec35a15b64920bc97a8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2ee8d9569e8624f11bd4551ae88dfb0bdf815521f9daf8609101474e40d7ddfb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "06493c6a71942ba7ae8fb8759a695e33"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\fontawesome.min.js",
+      "SPDXID": "SPDXRef-File-24730d84835ad99cd9f50617148e79a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4d3e9525386fab0d38f75b3c2bcd711b96f94bce"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e559eedd29c3bd67730e6e9589671c3c305b3cee4c40dbe6f55b79126da7d1b2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d9691b0ff40825f0892c62600c7aadbf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\regular.js",
+      "SPDXID": "SPDXRef-File-47afccbabadae9592bafd538149e1500",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0a538221a055121af9c9c6f44b45178443864c93"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8ecde0f34ec516a8e1e056738e511c50e98739f7524619f445a18ac80fd021c5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b290c1efb5d6f247a1b02abc4800f50c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\regular.min.js",
+      "SPDXID": "SPDXRef-File-c60971ba4fefbc2b9eb476222a03c80b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9e3294c410b463c45e7569bf4d7750fb6c08b3f8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "54a5b7d04a84dd69464186c7935144ba76e9be28a4218def1ea3be31eb2db744"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "826d2115bccf1bdc2f37f6e9ef1b6cf4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\solid.js",
+      "SPDXID": "SPDXRef-File-56aef1a80ddb56a9e19d28553ac3cc1c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1ba062ec8fec70412afa3c050ba6e13a99210060"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fa1d51adac446bca667a478041f4c9296bc87c7cf474e022578163fc6a07677a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "abd93b5e26f2e023648d7b47e2f50eae"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\solid.min.js",
+      "SPDXID": "SPDXRef-File-27fd0824073285cd9338f16262dacd52",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b5f1cf8f37ac220e83fefabec0ea4391ac7b3c07"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f426bd90e6e5a99b59afe9ade90ce888b055aaad335bf31fb3cf537aa49f38fd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f2dd63ec326a253feadc0f4f3d3aa234"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\v4-shims.js",
+      "SPDXID": "SPDXRef-File-44bc187b2599d68a92cb08f27d373be4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "22d8da35d146fde7f2b86415ef3a9eb8c286f9e5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b6011802938e8b102badd973dbf3dabf4078a25376976823fe3d7f463032c028"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a0622740c8ce8c8d17473b421b604479"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\font-awesome\\js\\v4-shims.min.js",
+      "SPDXID": "SPDXRef-File-ef748d404d51cf20e841dde6f7ae4300",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "81388b46e85f2c5e2179def7d345184d446315c4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "62ce6b55667f59738f5ebc1970fb8e7332407f75d0ec7a5eef9620b2ea7e64be"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c77c137f8561519a834ba3903e1f05ee"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery\\jquery.js",
+      "SPDXID": "SPDXRef-File-d62f8de9ab0db9059df7c5c454c5c68e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "279565de37d54e801a3060fe569736d7d58cc48a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6f5cbf761c8a9b09ec245c44334197842b78be51cc9485436e891e7b464bc3df"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e9fb7bec5f9bba0f8740ebf1fff7742a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery\\jquery.min.js",
+      "SPDXID": "SPDXRef-File-968a38f91b3cf46147538b329854b204",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8a738e25e113d1822eff615853ca702818fe637d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c4ae5268bef77000a0b3d189ab188bcd5a819ed731d3e2577ff75e22a5ab37b7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0c113f73b209b146473ed0a7a59307b1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery\\jquery.slim.js",
+      "SPDXID": "SPDXRef-File-eb63ca2e90ffcc38d3c1cf7d6ae12ef1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ac3a7485ff89d58e997ff21059a2a6bbcb249310"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d955272dd9740d01120ee1436b445a971ef7f5f34d78273e8155dbc285035e31"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "859a27deb7bbb3afc32f727547e7d1ef"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery\\jquery.slim.min.js",
+      "SPDXID": "SPDXRef-File-2df425523ee687828d0e5d42b0ad62ea",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5c72bc35cc2fbf78a2d04b8135a95dc08e65b891"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8637c026af6fbb6d00cf0ddb999bd0c907625f7e975c91b91a9a58425e699c74"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "336d07e28810cef19394ea5a77ec4e78"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery\\LICENSE.txt",
+      "SPDXID": "SPDXRef-File-e8781f855dcf21c0f549c4c1e071ac1e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b0d7bff2c2360f212dcd9f4ce8c9e72a1c04e327"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5ad2a50f27bfa95ebc200d96d6d1c54f25f273f1e342f40a06920ad4212e9453"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "828d0378ae850b159c2ff139fd371f9b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "SPDXID": "SPDXRef-File-d52856b72fb38b266d9b13160d783425",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d99e6f91fa6bf97f3afee1327bc263580476868a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "81e1c4930fd618f75a1d0311ab91ee358f6c9e588dcd4ff2d8e5bcc9c9e1197c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "41ef1b919db5e3aeaf47308518e7bcee"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "SPDXID": "SPDXRef-File-d3f44c11b78f8b4a22496e3f454a931e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8efc34aa83acb31c203e2d4a9f7cb0551e6ecf21"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a9b4b4daf30767174b358294b4b3d261a4875e3d7f6701f57eff5fdd7018d0b5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d8fb3a963112be9510687ba1bdc724b2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "SPDXID": "SPDXRef-File-75a5b99dfdd5a3046c5f9014472239d0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7ae67b3420c98c73c5020cc92a60108bfd6e89bb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f46c9ca499e58948c90d50ea3f4504bbf6ec9bd53eddd9d0507f3edd6d74be46"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7c8539e8ab8e1cb63ea84146a0006455"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "SPDXID": "SPDXRef-File-9094480f2ea4d199f6e9a04788d39074",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0eba9444a274d0c08ba8e55d47e224db748bd481"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "68173f9ff9cef5eb2fab47bcd06e7b94460ba27bc4e5d28a520a28cda8957cb3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "29be5faf434f4d08c3eea0f55557a5a1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jqueryui\\jquery-ui.js",
+      "SPDXID": "SPDXRef-File-8b8bf5282dba3c699cac34e02f4ea781",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8b0cd3ec0621c472961b42aed72cc628f042c082"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8021cc98f301e2eb9ff6358a0b19bad25bfe34725ba445d0047902ea78f358b8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b542085c030c4b1c7fd31775d9419ae2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jqueryui\\jquery-ui.min.js",
+      "SPDXID": "SPDXRef-File-017cc73a38cbca815cdf84f9fa970443",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cee14f8598c3c7f75ed141896f976fe94ed286a0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9d9b75e6bf99296f7797ed12f73137f52966dbb02180ff054c6c01680c7bdb1d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b4baecb73b7a75044853d7f4d363cb49"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jqueryui\\themes\\base\\jquery-ui.css",
+      "SPDXID": "SPDXRef-File-3afb363dd8a2c119808a6fe26773c0e1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e210322088c331dfa88e1ac04f24fb1cbeffcff5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "483dfd68f8d2177bdb6c6cd1b69882f7d99bc4dc48d81179254ae199681f20dc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d05406be6f7757f98a91499e292598fe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jqueryui\\themes\\base\\jquery-ui.min.css",
+      "SPDXID": "SPDXRef-File-595ba4553e49f7903b0329bd856d9f2d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fb93b851376de2d9066625453ab0bccd17142e46"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b4f3751fd015e78ad1cc3b2eb8b5c2d2770dc9e121c5049d611817932076dccc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8bfa87890ec4c52a2be3b206c948822c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jqueryui\\themes\\base\\theme.css",
+      "SPDXID": "SPDXRef-File-0331371fbbfed5340b6ac48f1253f04d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7cd3638906e71a76b250b0c37e7ae1294bce7336"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fc12b19445780af6af1d5572a4596c5510f77a1335e301e0f93929df37de2a89"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d4623278f4169040f325ee757141a4a2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "wwwroot\\lib\\jqueryui\\themes\\base\\theme.min.css",
+      "SPDXID": "SPDXRef-File-c936f6309bfcf4b9ec7e5cd9a8bdbcc4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a660d23fab348f5f787cef6967f19474dcf3aca0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1d0f4d55b82f428c878d084dee668cf747c87a42b336aa3d4a9c399e8286b32e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0bfd17c50642b5c8241d4beba7e8a1e0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-ChemStore",
+      "relationshipType": "DESCRIBES"
+    }
+  ]
+}

@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "aws-greengrass/aws-greengrass-fleet-provisioning-by-claim SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/aws-greengrass/aws-greengrass-fleet-provisioning-by-claim-a1f1322b-fb55-40a0-9762-555245feb880",
+  "name": "aws-greengrass/aws-greengrass-fleet-provisioning-by-claim",
+  "comment": "No description provided",
+  "licenseDeclared": "apache-2.0",
+  "primaryLanguage": "Java, Markdown, XML, YAML, Python",
+  "documentNamespace": "https://spdx.org/spdxdocs/aws-greengrass/aws-greengrass-fleet-provisioning-by-claim-bc1a042c-eabb-496c-b89c-22e7ca947223",
   "creationInfo": {
-    "created": "2025-03-30T06:28:00.993757Z",
+    "created": "2025-04-04T08:55:15.203725Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "aws-greengrass-fleet-provisioning-by-claim",
-      "SPDXID": "SPDXRef-Package-aws-greengrass-fleet-provisioning-by-claim",
-      "downloadLocation": "https://github.com/aws-greengrass/aws-greengrass-fleet-provisioning-by-claim.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "apache-2.0",
-      "copyrightText": "NOASSERTION",
-      "description": "No description provided",
-      "comment": "Primary languages: Java, Markdown, XML, YAML, Python",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: aws-greengrass",
-      "homepage": "https://github.com/aws-greengrass/aws-greengrass-fleet-provisioning-by-claim"
-    },
     {
       "name": "com.puppycrawl.tools:checkstyle",
       "SPDXID": "SPDXRef-Package-db7af9c985286bfb8246c3e7bd5db3af",

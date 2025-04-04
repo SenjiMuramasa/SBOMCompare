@@ -49,6 +49,14 @@ class DependencyChange:
     removed_dependencies: List[str] = field(default_factory=list)
 
 @dataclass
+class FileChange:
+    """文件变更记录"""
+    file_name: str
+    old_checksums: List[Dict[str, str]] = field(default_factory=list)
+    new_checksums: List[Dict[str, str]] = field(default_factory=list)
+    has_content_change: bool = False
+
+@dataclass
 class ComparisonResult:
     """SBOM比较结果"""
     sbom_a: SBOMData
@@ -59,6 +67,10 @@ class ComparisonResult:
     license_changes: List[LicenseChange] = field(default_factory=list)
     supplier_changes: List[SupplierChange] = field(default_factory=list)
     dependency_changes: List[DependencyChange] = field(default_factory=list)
+    # 文件变更
+    added_files: List[str] = field(default_factory=list)
+    removed_files: List[str] = field(default_factory=list)
+    file_changes: List[FileChange] = field(default_factory=list)
 
 
 class SBOMComparator:
@@ -187,6 +199,55 @@ class SBOMComparator:
                     list(deps_a - deps_b)   # 移除依赖
                 )
                 result.dependency_changes.append(dependency_change)
+        
+        # 分析文件变更
+        print("正在分析文件变更...")
+        # 获取文件名集合
+        files_a = set(self.sbom_a.file_map.keys()) if hasattr(self.sbom_a, 'file_map') else set()
+        files_b = set(self.sbom_b.file_map.keys()) if hasattr(self.sbom_b, 'file_map') else set()
+        
+        # 找出新增、删除和共有的文件
+        result.added_files = list(files_b - files_a)
+        result.removed_files = list(files_a - files_b)
+        common_files = files_a & files_b
+        
+        print(f"发现 {len(result.added_files)} 个新增文件, {len(result.removed_files)} 个移除文件")
+        print(f"分析 {len(common_files)} 个共同文件的变更...")
+        
+        # 分析文件内容变更
+        progress = tqdm(common_files, desc="分析文件内容变更", unit="文件")
+        for file_name in progress:
+            file_a = self.sbom_a.get_file_by_name(file_name)
+            file_b = self.sbom_b.get_file_by_name(file_name)
+            
+            # 比较文件校验和以检测内容变更
+            has_content_change = False
+            
+            # 获取所有校验和算法类型
+            algo_a = {chk['algorithm'] for chk in file_a.checksums if 'algorithm' in chk}
+            algo_b = {chk['algorithm'] for chk in file_b.checksums if 'algorithm' in chk}
+            common_algos = algo_a & algo_b
+            
+            # 对于每种常见的算法，比较校验和值
+            for algo in common_algos:
+                checksum_a = next((chk['checksumValue'] for chk in file_a.checksums 
+                                 if chk.get('algorithm') == algo), None)
+                checksum_b = next((chk['checksumValue'] for chk in file_b.checksums 
+                                 if chk.get('algorithm') == algo), None)
+                
+                if checksum_a and checksum_b and checksum_a != checksum_b:
+                    has_content_change = True
+                    break
+            
+            # 如果校验和有变更或算法集不同，记为内容变更
+            if has_content_change or algo_a != algo_b:
+                file_change = FileChange(
+                    file_name=file_name,
+                    old_checksums=file_a.checksums,
+                    new_checksums=file_b.checksums,
+                    has_content_change=True
+                )
+                result.file_changes.append(file_change)
                 
         # 统计变更总数
         total_changes = (
@@ -195,7 +256,10 @@ class SBOMComparator:
             len(result.version_changes) + 
             len(result.license_changes) + 
             len(result.supplier_changes) + 
-            len(result.dependency_changes)
+            len(result.dependency_changes) +
+            len(result.added_files) + 
+            len(result.removed_files) + 
+            len(result.file_changes)
         )
         
         end_time = time.time()

@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "logica0419/resigif SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/logica0419/resigif-e6550856-523c-42bc-a838-23bc0a706fec",
+  "name": "logica0419/resigif",
+  "comment": "Animated GIF resizing library w/o cgo or any third-party Libraries",
+  "licenseDeclared": "mit",
+  "primaryLanguage": "Go, YAML, Markdown, JSON",
+  "documentNamespace": "https://spdx.org/spdxdocs/logica0419/resigif-23cb3ba0-2447-4ee1-adab-4712fb0c39f7",
   "creationInfo": {
-    "created": "2025-03-30T07:07:36.009384Z",
+    "created": "2025-04-04T09:46:12.138836Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "resigif",
-      "SPDXID": "SPDXRef-Package-resigif",
-      "downloadLocation": "https://github.com/logica0419/resigif.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "mit",
-      "copyrightText": "NOASSERTION",
-      "description": "Animated GIF resizing library w/o cgo or any third-party Libraries",
-      "comment": "Primary languages: Go, YAML, Markdown, JSON",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: logica0419",
-      "homepage": "https://github.com/logica0419/resigif"
-    },
     {
       "name": "github.com/youta-t/its",
       "SPDXID": "SPDXRef-Package-067b1c498237918be43612c374df6b4c",

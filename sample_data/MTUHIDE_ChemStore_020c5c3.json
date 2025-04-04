@@ -2,32 +2,20 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "MTUHIDE/ChemStore SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/MTUHIDE/ChemStore-b5117af0-692f-4817-bfae-ef8745d967c8",
+  "name": "MTUHIDE/ChemStore",
+  "comment": "Chem Store is a chemical tracking website that allows easy navigation and organization of inventory.",
+  "licenseDeclared": "NOASSERTION",
+  "primaryLanguage": "C#, JavaScript, CSS, JSON, Markdown",
+  "documentNamespace": "https://spdx.org/spdxdocs/MTUHIDE/ChemStore-cb4206cc-8036-495e-a563-6d5592228c17",
   "creationInfo": {
-    "created": "2025-03-30T07:15:54.969398Z",
+    "created": "2025-04-04T10:05:58.919220Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
     ],
     "licenseListVersion": "3.19"
   },
-  "packages": [
-    {
-      "name": "ChemStore",
-      "SPDXID": "SPDXRef-Package-ChemStore",
-      "downloadLocation": "https://github.com/MTUHIDE/ChemStore.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "NOASSERTION",
-      "copyrightText": "NOASSERTION",
-      "description": "Chem Store is a chemical tracking website that allows easy navigation and organization of inventory.",
-      "comment": "Primary languages: C#, JavaScript, CSS, JSON, Markdown",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: MTUHIDE",
-      "homepage": "https://github.com/MTUHIDE/ChemStore"
-    }
-  ],
+  "packages": [],
   "files": [
     {
       "fileName": "appsettings.Development.json",

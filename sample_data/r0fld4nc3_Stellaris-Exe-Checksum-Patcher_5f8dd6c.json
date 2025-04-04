@@ -2,10 +2,13 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "r0fld4nc3/Stellaris-Exe-Checksum-Patcher SBOM",
-  "documentNamespace": "https://spdx.org/spdxdocs/r0fld4nc3/Stellaris-Exe-Checksum-Patcher-46b11694-f259-475d-b73c-bdcce9b8cb6c",
+  "name": "r0fld4nc3/Stellaris-Exe-Checksum-Patcher",
+  "comment": "Patch game binary to allow achievements to be earned with Ironman and Mods that modify the checksum enabled.",
+  "licenseDeclared": "gpl-3.0",
+  "primaryLanguage": "Python, Markdown",
+  "documentNamespace": "https://spdx.org/spdxdocs/r0fld4nc3/Stellaris-Exe-Checksum-Patcher-d1474ead-358a-4fc5-9413-d67a59a5039a",
   "creationInfo": {
-    "created": "2025-03-30T02:37:56.828686Z",
+    "created": "2025-04-04T10:27:10.569474Z",
     "creators": [
       "Person: SBOM Generator (sbom-generator@example.com)",
       "Tool: SimpleSBOMGenerator"
@@ -13,20 +16,6 @@
     "licenseListVersion": "3.19"
   },
   "packages": [
-    {
-      "name": "Stellaris-Exe-Checksum-Patcher",
-      "SPDXID": "SPDXRef-Package-Stellaris-Exe-Checksum-Patcher",
-      "downloadLocation": "https://github.com/r0fld4nc3/Stellaris-Exe-Checksum-Patcher.git",
-      "filesAnalyzed": true,
-      "licenseConcluded": "NOASSERTION",
-      "licenseDeclared": "gpl-3.0",
-      "copyrightText": "NOASSERTION",
-      "description": "Patch game binary to allow achievements to be earned with Ironman and Mods that modify the checksum enabled.",
-      "comment": "Primary languages: Python, Markdown",
-      "versionInfo": "commit-main",
-      "supplier": "Organization: r0fld4nc3",
-      "homepage": "https://github.com/r0fld4nc3/Stellaris-Exe-Checksum-Patcher"
-    },
     {
       "name": "PySide6",
       "SPDXID": "SPDXRef-Package-24d46029b68b443d2787cca8133ba99f",
