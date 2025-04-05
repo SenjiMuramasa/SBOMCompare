@@ -1,0 +1,507 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 09:11:46</p>
+                <p>SBOM A: sample_data\freqtrade_freqtrade_6ee500d.json</p>
+                <p>SBOM B: sample_data\freqtrade_freqtrade.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.1/10 (91.2%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.1/10.0 (91.2%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 重大版本变更, CII-Best-Practices风险, Branch-Protection风险, Security-Policy风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.4/3.5 (96.0%)</td>
+                    <td><ul class='details-list'><li>1个包发生主版本变更，可能存在API不兼容</li><li>3个包发生次版本变更</li><li>5个包发生补丁版本变更</li><li>1个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.8/1.3 (59.0%)</td>
+                    <td><ul class='details-list'><li>Binary-Artifacts需要改进</li><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr</li><li>- Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (2)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-8495-4g3g-x7pr</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr<br><br><div class="cve-header">来自 CVE-2024-52304 的附加信息:</div><br><div class="section-header">描述: aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Prior to version 3.10.11, the Python parser parses newlines in chunk extensions incorrectly which can lead to request smuggling vulnerabilities under certain conditions. If a pure Python version of aiohttp is installed (i.e. without the usual C extensions) or `AIOHTTP_NO_EXTENSIONS` is enabled, then an attacker may be able to execute a request smuggling attack to bypass certain firewalls or proxy protections. Version 3.10.11 fixes the issue.</div><br><div class="section-header">发布日期: 2024-11-18</div><br><div class="section-header">最后更新: 2024-11-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-8495-4g3g-x7pr</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/259edc369075de63e6f3a4eaade058c62af0df71</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-52304</div><br><br><div class="section-header">发布日期: 2024-11-18</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-8495-4g3g-x7pr</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52304</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/259edc369075de63e6f3a4eaade058c62af0df71</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><br><div class="section-header">影响范围:</div><br>包名: aiohttp (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-jwhx-xcg6-8xhj</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj<br><br><div class="cve-header">来自 CVE-2024-42367 的附加信息:</div><br><div class="section-header">描述: aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Prior to version 3.10.2, static routes which contain files with compressed variants (`.gz` or `.br` extension) are vulnerable to path traversal outside the root directory if those variants are symbolic links. The server protects static routes from path traversal outside the root directory when `follow_symlinks=False` (default).  It does this by resolving the requested URL to an absolute path and then checking that path relative to the root. However, these checks are not performed when looking for compressed variants in the `FileResponse` class, and symbolic links are then automatically followed when performing the `Path.stat()` and `Path.open()` to send the file. Version 3.10.2 contains a patch for the issue.</div><br><div class="section-header">发布日期: 2024-08-09</div><br><div class="section-header">最后更新: 2024-08-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-jwhx-xcg6-8xhj</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8653</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/ce2e9758814527589b10759a20783fb03b98339f</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_fileresponse.py#L177</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_urldispatcher.py#L674</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-42367</div><br><br><div class="section-header">发布日期: 2024-08-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-jwhx-xcg6-8xhj</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-42367</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8653</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/ce2e9758814527589b10759a20783fb03b98339f</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_fileresponse.py#L177</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_urldispatcher.py#L674</span><br><br><div class="section-header">影响范围:</div><br>包名: aiohttp (PyPI)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (10)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>pytz</td><td>==2025.1</td><td>==2025.2</td><td>次版本</td></tr><tr><td>pydantic</td><td>==2.10.6</td><td>==2.11.1</td><td>次版本</td></tr><tr><td>orjson</td><td>==3.10.15</td><td>==3.10.16</td><td>补丁版本</td></tr><tr><td>types-requests</td><td>==2.32.0.20250306</td><td>==2.32.0.20250328</td><td>一般变更</td></tr><tr><td>pytest-asyncio</td><td>==0.25.3</td><td>==0.26.0</td><td>次版本</td></tr><tr><td>rich</td><td>==13.9.4</td><td>==14.0.0</td><td>主版本</td></tr><tr><td>SQLAlchemy</td><td>==2.0.39</td><td>==2.0.40</td><td>补丁版本</td></tr><tr><td>humanize</td><td>==4.12.1</td><td>==4.12.2</td><td>补丁版本</td></tr><tr><td>mkdocs-material</td><td>==9.6.9</td><td>==9.6.10</td><td>补丁版本</td></tr><tr><td>ccxt</td><td>==4.4.69</td><td>==4.4.71</td><td>补丁版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>609</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>609</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>44</td>
+                </tr>
+            </table>
+            
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (44)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>freqtrade\exchange\kraken.py</td><td>内容变更</td></tr><tr><td>tests\rpc\test_rpc_telegram.py</td><td>内容变更</td></tr><tr><td>tests\rpc\test_rpc.py</td><td>内容变更</td></tr><tr><td>freqtrade\__init__.py</td><td>内容变更</td></tr><tr><td>freqtrade\commands\cli_options.py</td><td>内容变更</td></tr><tr><td>docs\freqai-configuration.md</td><td>内容变更</td></tr><tr><td>freqtrade\commands\deploy_commands.py</td><td>内容变更</td></tr><tr><td>freqtrade\data\metrics.py</td><td>内容变更</td></tr><tr><td>freqtrade\worker.py</td><td>内容变更</td></tr><tr><td>freqtrade\commands\deploy_ui.py</td><td>内容变更</td></tr><tr><td>requirements-dev.txt</td><td>内容变更</td></tr><tr><td>freqtrade\rpc\api_server\api_v1.py</td><td>内容变更</td></tr><tr><td>freqtrade\optimize\backtesting.py</td><td>内容变更</td></tr><tr><td>freqtrade\rpc\rpc.py</td><td>内容变更</td></tr><tr><td>freqtrade\rpc\telegram.py</td><td>内容变更</td></tr><tr><td>freqtrade\enums\state.py</td><td>内容变更</td></tr><tr><td>tests\exchange_online\conftest.py</td><td>内容变更</td></tr><tr><td>freqtrade\freqtradebot.py</td><td>内容变更</td></tr><tr><td>docs\configuration.md</td><td>内容变更</td></tr><tr><td>.github\workflows\ci.yml</td><td>内容变更</td></tr><tr><td>freqtrade\exchange\gate.py</td><td>内容变更</td></tr><tr><td>tests\rpc\test_rpc_apiserver.py</td><td>内容变更</td></tr><tr><td>docs\exchanges.md</td><td>内容变更</td></tr><tr><td>docs\rest-api.md</td><td>内容变更</td></tr><tr><td>requirements.txt</td><td>内容变更</td></tr><tr><td>.pre-commit-config.yaml</td><td>内容变更</td></tr><tr><td>freqtrade\exchange\binance_leverage_tiers.json</td><td>内容变更</td></tr><tr><td>build_helpers\schema.json</td><td>内容变更</td></tr><tr><td>ft_client\freqtrade_client\__init__.py</td><td>内容变更</td></tr><tr><td>freqtrade\exchange\exchange.py</td><td>内容变更</td></tr><tr><td>tests\commands\test_commands.py</td><td>内容变更</td></tr><tr><td>docs\commands\install-ui.md</td><td>内容变更</td></tr><tr><td>tests\exchange\test_kraken.py</td><td>内容变更</td></tr><tr><td>docs\requirements-docs.txt</td><td>内容变更</td></tr><tr><td>freqtrade\configuration\config_schema.py</td><td>内容变更</td></tr><tr><td>requirements-freqai-rl.txt</td><td>内容变更</td></tr><tr><td>tests\exchange\test_exchange.py</td><td>内容变更</td></tr><tr><td>docs\advanced-setup.md</td><td>内容变更</td></tr><tr><td>freqtrade\exchange\exchange_types.py</td><td>内容变更</td></tr><tr><td>docs\telegram-usage.md</td><td>内容变更</td></tr><tr><td>freqtrade\exchange\hyperliquid.py</td><td>内容变更</td></tr><tr><td>freqtrade\commands\arguments.py</td><td>内容变更</td></tr><tr><td>tests\data\test_btanalysis.py</td><td>内容变更</td></tr><tr><td>tests\freqtradebot\test_worker.py</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

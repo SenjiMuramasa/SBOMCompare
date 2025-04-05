@@ -1,0 +1,653 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:28:33</p>
+                <p>SBOM A: sample_data\hashicorp_terraform_898e397.json</p>
+                <p>SBOM B: sample_data\hashicorp_terraform.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>113</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-low">5.3/10 (52.9%) [C-]</span>
+            </button>
+            <div class="content">
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ 版本降级警告</div>
+                    <div class="warning-content">
+                        <ul>
+                            <li>1个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li>降级的包: @swc</li>
+                        </ul>
+                        <p class="warning-note">版本降级可能导致安全修复丢失，增加安全风险！</p>
+                    </div>
+                </div>
+                
+                <p class="score-summary">软件供应链安全评分为 5.3/10.0 (52.9%)，安全等级: C-。 软件供应链安全风险较高，需要采取措施改进。 主要影响因素：大量新增依赖, 大量移除依赖, 版本降级, 版本降级, CII-Best-Practices风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (98.6%)</td>
+                    <td><ul class='details-list'><li>大量新增包(15个)可能增加攻击面</li><li>大量移除包(21个)可能影响功能稳定性</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖, 大量移除依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-low">0.3/3.5 (10.0%)</td>
+                    <td><ul class='details-list'><li class='critical-detail'>1个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li class='critical-detail'>降级的包: @swc</li></ul><div class='impact-factors'><strong>影响因素:</strong> 版本降级</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-medium">1.6/2.6 (61.0%)</td>
+                    <td><ul class='details-list'><li>存在1个高风险项</li><li>存在3个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 版本降级</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (60.0%)</td>
+                    <td><ul class='details-list'><li>Branch-Protection需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2022-0635 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0635</li><li>- Warn: Project is vulnerable to: GO-2022-0646 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0646</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>- Warn: Project is vulnerable to: GHSA-223j-4rm8-mrmf (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-223j-4rm8-mrmf</li><li>- Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</li><li>- Warn: Project is vulnerable to: GHSA-w5p7-h5w8-2hfq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-w5p7-h5w8-2hfq</li><li>- Warn: Project is vulnerable to: GHSA-v4rh-8p82-6h5w (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-v4rh-8p82-6h5w</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (9)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</td>
+                            <td>The NPM package `braces` fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends &amp;quot;imbalanced braces&amp;quot; as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4068<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces/issues/35</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/37</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/40</span><br><span class="vuln-link">https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces</span><br><span class="vuln-link">https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308</span><br><br><div class="section-header">影响范围: </div><br>braces: 所有版本 &lt; 3.0.3 <br><br><br><div class="cve-header">来自 CVE-2024-4068 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-w5p7-h5w8-2hfq</td>
+                            <td>All versions of package trim lower than 0.0.3 are vulnerable to Regular Expression Denial of Service (ReDoS) via trim().<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-7753<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-7753</span><br><span class="vuln-link">https://github.com/component/trim/pull/8</span><br><span class="vuln-link">https://github.com/component/trim</span><br><span class="vuln-link">https://github.com/component/trim/blob/master/index.js</span><br><span class="vuln-link">https://github.com/component/trim/blob/master/index.js%23L6</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r10faad1ef9166d37a1a5c9142b1af7099b8ecdc5ad05c51b8ea993d9@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r51ff3c2a4c7b8402f321eae7e624672cc2295c7bc8c12c8b871f6b0b@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r75b8d0b88833d7d96afcdce3ead65e212572ead4e7a9f34d21040196@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb8462df3b6484e778905c09cd49a8912e1a302659860017ebe36da03@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rcc7c2865a52b544a8e49386c6880e9b9ab29bfce1052b5569d09ee4a@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1022132</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-TRIM-1017038</span><br><br><div class="section-header">影响范围: </div><br>trim: 所有版本 &lt; 0.0.3 <br><br><br><div class="cve-header">来自 CVE-2020-7753 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-v4rh-8p82-6h5w</td>
+                            <td>all versions of url-regex are vulnerable to Regular Expression Denial of Service. An attacker providing a very long string in String.test can cause a Denial of Service.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-7661<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-7661</span><br><span class="vuln-link">https://github.com/kevva/url-regex/issues/70</span><br><span class="vuln-link">https://github.com/kevva/url-regex</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-URLREGEX-569472</span><br><br><div class="section-header">影响范围: </div><br>url-regex: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-7661 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-223j-4rm8-mrmf</td>
+                            <td>## Summary<br>In the process of remediating [CVE-2025-29927](https://github.com/advisories/GHSA-f82v-jwr5-mffw), we looked at other possible exploits of Middleware. We independently verified this low severity vulnerability in parallel with two reports from independent researchers.<br><br>Learn more [here](https://vercel.com/changelog/cve-2025-30218-5DREmEH765PoeAsrNNQj3O).<br><br>## Credit<br><br>Thank you to Jinseo Kim [kjsman](https://hackerone.com/kjsman?type=user) and [RyotaK](https://hackerone.com/ryotak?type=user) (GMO Flatt Security Inc.) with [takumi-san.ai](https://takumi-san.ai) for the responsible disclosure. These researchers were awarded as part of our bug bounty program.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-30218<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-223j-4rm8-mrmf</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-30218</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><span class="vuln-link">https://vercel.com/changelog/cve-2025-30218-5DREmEH765PoeAsrNNQj3O</span><br><br><div class="section-header">影响范围: </div><br>next: &gt;= 12.3.5 &lt; 12.3.6 <br>next: &gt;= 13.5.9 &lt; 13.5.10 <br>next: &gt;= 14.2.25 &lt; 14.2.26 <br>next: &gt;= 15.2.3 &lt; 15.2.4 <br><br><br><div class="cve-header">来自 CVE-2025-30218 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2022-0635</td>
+                            <td>A vulnerability in the in-band key negotiation exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. An attacker with write access to the targeted bucket can change the encryption algorithm of an object in the bucket, which can then allow them to change AES-GCM to AES-CTR. Using this in combination with a decryption oracle can reveal the authentication key used by AES-GCM as decrypting the GMAC tag leaves the authentication key recoverable as an algebraic equation. It is recommended to update your SDK to V2 or later, and re-encrypt your files.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-8912<br>GHSA-7f33-f4f5-xwgw<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869801</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围: </div><br>github.com/aws/aws-sdk-go: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-8912 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2022-0646</td>
+                            <td>A padding oracle vulnerability exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. The SDK allows users to encrypt files with AES-CBC without computing a Message Authentication Code (MAC), which then allows an attacker who has write access to the target&amp;#39;s S3 bucket and can observe whether or not an endpoint with access to the key can decrypt a file, they can reconstruct the plaintext with (on average) 128*length (plaintext) queries to the endpoint, by exploiting CBC&amp;#39;s ability to manipulate the bytes of the next block and PKCS5 padding errors. It is recommended to update your SDK to V2 or later, and re-encrypt your files.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-8911<br>GHSA-f5pg-7wfw-84q9<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869800</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围: </div><br>github.com/aws/aws-sdk-go: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-8911 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</td>
+                            <td>The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn&amp;#39;t find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won&amp;#39;t start backtracking the regular expression due to greedy matching.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4067<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围: </div><br>micromatch: 所有版本 &lt; 4.0.8 <br><br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</td>
+                            <td>An issue was discovered in PostCSS before 8.4.31. It affects linters using PostCSS to parse external Cascading Style Sheets (CSS). There may be `\r` discrepancies, as demonstrated by `@font-face{ font:(\r/*);}` in a rule.<br><br>This vulnerability affects linters using PostCSS to parse external untrusted CSS. An attacker can prepare CSS in such a way that it will contains parts parsed by PostCSS as a CSS comment. After processing by PostCSS, it will be included in the PostCSS output in CSS nodes (rules, properties) despite being originally included in a comment.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-44270<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-44270</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/postcss/postcss</span><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><br><div class="section-header">影响范围: </div><br>postcss: 所有版本 &lt; 8.4.31 <br><br><br><div class="cve-header">来自 CVE-2023-44270 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (15)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.46.1</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-azure-sdk/sdk</td><td>v0.20250131.1134653</td><td>NOASSERTION</td></tr><tr><td>github.com/jackofallops/giovanni</td><td>v0.28.0</td><td>NOASSERTION</td></tr><tr><td>github.com/cli/go-gh/v2</td><td>v2.11.2</td><td>NOASSERTION</td></tr><tr><td>software.sslmate.com/src/go-pkcs12</td><td>v0.4.0</td><td>NOASSERTION</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sns</td><td>v1.33.12</td><td>NOASSERTION</td></tr><tr><td>github.com/felixge/httpsnoop</td><td>v1.0.4</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-azure-sdk/resource-manager</td><td>v0.20250131.1134653</td><td>NOASSERTION</td></tr><tr><td>@swc/counter</td><td>0.1.3</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/terraform-plugin-sdk/v2</td><td>v2.36.1</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/terraform-plugin-go</td><td>v0.26.0</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/logutils</td><td>v1.0.0</td><td>NOASSERTION</td></tr><tr><td>github.com/vmihailenco/msgpack</td><td>v4.0.4+incompatible</td><td>NOASSERTION</td></tr><tr><td>github.com/hashicorp/go-cty</td><td>v1.4.1</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (21)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/cli/go-gh</td><td>v1.2.1</td><td>NOASSERTION</td></tr><tr><td>github.com/aymanbagabas/go-osc52/v2</td><td>v2.0.1</td><td>NOASSERTION</td></tr><tr><td>github.com/muesli/termenv</td><td>v0.15.2</td><td>NOASSERTION</td></tr><tr><td>github.com/manicminer/hamilton</td><td>v0.44.0</td><td>NOASSERTION</td></tr><tr><td>watchpack</td><td>2.4.0</td><td>NOASSERTION</td></tr><tr><td>to-fast-properties</td><td>2.0.0</td><td>NOASSERTION</td></tr><tr><td>github.com/Azure/go-autorest/autorest/azure/cli</td><td>v0.4.4</td><td>NOASSERTION</td></tr><tr><td>glob-to-regexp</td><td>0.4.1</td><td>NOASSERTION</td></tr><tr><td>github.com/Azure/go-autorest/autorest/validation</td><td>v0.3.1</td><td>NOASSERTION</td></tr><tr><td>github.com/cli/shurcooL-graphql</td><td>v0.0.4</td><td>NOASSERTION</td></tr><tr><td>github.com/dimchansky/utfbom</td><td>v1.1.1</td><td>NOASSERTION</td></tr><tr><td>github.com/henvic/httpretty</td><td>v0.1.3</td><td>NOASSERTION</td></tr><tr><td>@babel/highlight</td><td>7.18.6</td><td>NOASSERTION</td></tr><tr><td>github.com/lucasb-eyer/go-colorful</td><td>v1.2.0</td><td>NOASSERTION</td></tr><tr><td>@babel/helper-hoist-variables</td><td>7.18.6</td><td>NOASSERTION</td></tr><tr><td>github.com/thlib/go-timezone-local</td><td>v0.0.3</td><td>NOASSERTION</td></tr><tr><td>github.com/tombuildsstuff/giovanni</td><td>v0.15.1</td><td>NOASSERTION</td></tr><tr><td>github.com/Azure/azure-sdk-for-go</td><td>v59.2.0+incompatible</td><td>NOASSERTION</td></tr><tr><td>github.com/Azure/go-autorest/autorest/to</td><td>v0.4.0</td><td>NOASSERTION</td></tr><tr><td>@babel/helper-function-name</td><td>7.21.0</td><td>NOASSERTION</td></tr><tr><td>github.com/manicminer/hamilton-autorest</td><td>v0.2.0</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (113)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/hashicorp/go-getter</td><td>v1.7.5</td><td>v1.7.8</td><td>补丁版本</td></tr><tr><td>github.com/Azure/go-autorest/autorest/date</td><td>v0.3.0</td><td>v0.3.1</td><td>补丁版本</td></tr><tr><td>github.com/golang-jwt/jwt/v4</td><td>v4.5.1</td><td>v4.5.2</td><td>补丁版本</td></tr><tr><td>@next/swc-linux-x64-gnu</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sqs</td><td>v1.35.0</td><td>v1.37.12</td><td>次版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.26.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>honnef.co/go/tools</td><td>v0.5.1</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/s3</td><td>v1.63.0</td><td>v1.75.2</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/s3shared</td><td>v1.17.18</td><td>v1.18.12</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.30.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/credentials</td><td>v1.17.34</td><td>v1.17.57</td><td>补丁版本</td></tr><tr><td>github.com/mattn/go-colorable</td><td>v0.1.13</td><td>v0.1.14</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/v4a</td><td>v1.3.18</td><td>v1.3.31</td><td>补丁版本</td></tr><tr><td>@jridgewell/set-array</td><td>1.1.2</td><td>1.2.1</td><td>次版本</td></tr><tr><td>github.com/Azure/go-autorest/logger</td><td>v0.2.1</td><td>v0.2.2</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-plugin</td><td>v1.6.0</td><td>v1.6.3</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-azure-helpers</td><td>v0.43.0</td><td>v0.72.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sts</td><td>v1.31.0</td><td>v1.33.12</td><td>次版本</td></tr><tr><td>@babel/traverse</td><td>7.21.3</td><td>7.26.9</td><td>次版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.11.0</td><td>v2.12.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/dynamodb</td><td>v1.35.0</td><td>v1.39.8</td><td>次版本</td></tr><tr><td>github.com/Azure/go-autorest/autorest</td><td>v0.11.27</td><td>v0.11.30</td><td>补丁版本</td></tr><tr><td>@jridgewell/trace-mapping</td><td>0.3.17</td><td>0.3.25</td><td>补丁版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.23.0</td><td>v0.27.0</td><td>次版本</td></tr><tr><td>github.com/google/go-cmp</td><td>v0.6.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding</td><td>v1.11.5</td><td>v1.12.2</td><td>次版本</td></tr><tr><td>github.com/hashicorp/cli</td><td>v1.1.6</td><td>v1.1.7</td><td>补丁版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.34.2</td><td>v1.36.5</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/iam</td><td>v1.36.0</td><td>v1.38.10</td><td>次版本</td></tr><tr><td>@next</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/hashicorp/hcl/v2</td><td>v2.23.0</td><td>v2.23.1-0.20250203194505-ba0759438da2</td><td>补丁版本</td></tr><tr><td>ws</td><td>7.5.9</td><td>7.5.10</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/ssooidc</td><td>v1.27.0</td><td>v1.28.13</td><td>次版本</td></tr><tr><td>@babel/generator</td><td>7.21.3</td><td>7.26.9</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sso</td><td>v1.23.0</td><td>v1.24.14</td><td>次版本</td></tr><tr><td>cloud.google.com/go/kms</td><td>v1.15.0</td><td>v1.15.5</td><td>补丁版本</td></tr><tr><td>semver</td><td>5.7.1</td><td>5.7.2</td><td>补丁版本</td></tr><tr><td>@babel/helper-string-parser</td><td>7.19.4</td><td>7.25.9</td><td>次版本</td></tr><tr><td>jsesc</td><td>2.5.2</td><td>3.1.0</td><td>主版本</td></tr><tr><td>@next/swc-darwin-arm64</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/hashicorp/terraform-registry-address</td><td>v0.2.3</td><td>v0.2.4</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws</td><td>v0.55.0</td><td>v0.59.0</td><td>次版本</td></tr><tr><td>@jridgewell</td><td>0.3.2</td><td>0.3.8</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20230822172742-b8732ec3820d</td><td>v0.0.0-20241015192408-796eee8c2d53</td><td>一般变更</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream</td><td>v1.6.5</td><td>v1.6.8</td><td>补丁版本</td></tr><tr><td>golang.org/x/time</td><td>v0.7.0</td><td>v0.9.0</td><td>次版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.4</td><td>v0.1.7</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery</td><td>v1.9.19</td><td>v1.10.12</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.30.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>google.golang.org/genproto</td><td>v0.0.0-20230822172742-b8732ec3820d</td><td>v0.0.0-20231211222908-989df2bf70f3</td><td>一般变更</td></tr><tr><td>@next/swc-linux-arm64-musl</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>@next/swc-win32-arm64-msvc</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/googleapis/enterprise-certificate-proxy</td><td>v0.2.3</td><td>v0.3.2</td><td>次版本</td></tr><tr><td>@babel/code-frame</td><td>7.18.6</td><td>7.26.2</td><td>次版本</td></tr><tr><td>nanoid</td><td>3.3.7</td><td>3.3.8</td><td>补丁版本</td></tr><tr><td>ejs</td><td>3.1.9</td><td>3.1.10</td><td>补丁版本</td></tr><tr><td>@next/env</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>cloud.google.com/go/iam</td><td>v1.1.1</td><td>v1.1.5</td><td>补丁版本</td></tr><tr><td>@babel/types</td><td>7.21.3</td><td>7.26.9</td><td>次版本</td></tr><tr><td>@babel/template</td><td>7.20.7</td><td>7.26.9</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.29.0</td><td>v0.38.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/presigned-url</td><td>v1.11.20</td><td>v1.12.12</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2</td><td>v1.31.0</td><td>v1.36.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.30.0</td><td>v1.31.0</td><td>次版本</td></tr><tr><td>@next/swc-linux-arm64-gnu</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>google.golang.org/grpc</td><td>v1.59.0</td><td>v1.69.4</td><td>次版本</td></tr><tr class='risk-high'><td>@swc</td><td>0.5.2</td><td>0.1.3</td><td>⚠️ 版本降级</td></tr><tr><td>golang.org/x/tools</td><td>v0.25.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.18.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.21.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>@jridgewell/gen-mapping</td><td>0.3.2</td><td>0.3.8</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-tfe</td><td>v1.70.0</td><td>v1.74.1</td><td>次版本</td></tr><tr><td>word-wrap</td><td>1.2.3</td><td>1.2.5</td><td>补丁版本</td></tr><tr><td>google.golang.org/grpc/cmd/protoc-gen-go-grpc</td><td>v1.1.0</td><td>v1.2.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>v0.46.0</td><td>v0.46.1</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.30.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/fatih/color</td><td>v1.17.0</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/feature/ec2/imds</td><td>v1.16.14</td><td>v1.16.27</td><td>补丁版本</td></tr><tr><td>zod</td><td>3.21.4</td><td>3.24.2</td><td>次版本</td></tr><tr><td>caniuse-lite</td><td>1.0.30001466</td><td>1.0.30001700</td><td>补丁版本</td></tr><tr><td>@hashicorp/platform-cli</td><td>^2.7.3</td><td>^2.8.0</td><td>一般变更</td></tr><tr><td>cross-spawn</td><td>7.0.3</td><td>7.0.6</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/jsonapi</td><td>v1.3.1</td><td>v1.3.2</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/endpoints/v2</td><td>v2.6.18</td><td>v2.6.31</td><td>补丁版本</td></tr><tr><td>@babel/helper-validator-identifier</td><td>7.19.1</td><td>7.25.9</td><td>次版本</td></tr><tr><td>github.com/hashicorp/copywrite</td><td>v0.19.0</td><td>v0.20.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.3.0</td><td>v0.5.2</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20230822172742-b8732ec3820d</td><td>v0.0.0-20241015192408-796eee8c2d53</td><td>一般变更</td></tr><tr><td>@next/swc-linux-x64-musl</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/vmihailenco/msgpack/v5</td><td>v5.3.5</td><td>v5.4.1</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/ini</td><td>v1.8.1</td><td>v1.8.2</td><td>补丁版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.8.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/configsources</td><td>v1.3.18</td><td>v1.3.31</td><td>补丁版本</td></tr><tr><td>github.com/Azure/go-autorest/autorest/adal</td><td>v0.9.20</td><td>v0.9.24</td><td>补丁版本</td></tr><tr><td>google.golang.org/api</td><td>v0.126.0</td><td>v0.155.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.27.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.24.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>@next/swc-darwin-x64</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/checksum</td><td>v1.3.20</td><td>v1.5.5</td><td>次版本</td></tr><tr><td>tough-cookie</td><td>4.1.2</td><td>4.1.4</td><td>补丁版本</td></tr><tr><td>@swc/helpers</td><td>0.5.2</td><td>0.5.5</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/aws-sdk-go-base/v2</td><td>v2.0.0-beta.58</td><td>v2.0.0-beta.62</td><td>一般变更</td></tr><tr><td>next</td><td>^14.0.4</td><td>^14.2.25</td><td>一般变更</td></tr><tr><td>github.com/Azure/go-autorest/tracing</td><td>v0.6.0</td><td>v0.6.1</td><td>补丁版本</td></tr><tr><td>@hashicorp</td><td>2.7.3</td><td>2.8.0</td><td>次版本</td></tr><tr><td>@babel/parser</td><td>7.21.3</td><td>7.26.9</td><td>次版本</td></tr><tr><td>@next/swc-win32-x64-msvc</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>github.com/ProtonMail/go-crypto</td><td>v1.0.0</td><td>v1.1.3</td><td>次版本</td></tr><tr><td>github.com/aws/smithy-go</td><td>v1.21.0</td><td>v1.22.2</td><td>次版本</td></tr><tr><td>@babel</td><td>7.18.6</td><td>7.26.2</td><td>次版本</td></tr><tr><td>@next/swc-win32-ia32-msvc</td><td>14.0.4</td><td>14.2.25</td><td>次版本</td></tr><tr><td>cloud.google.com/go</td><td>v0.110.7</td><td>v0.110.10</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/config</td><td>v1.27.36</td><td>v1.29.4</td><td>次版本</td></tr>
+                </table>
+                
+                <div class="downgrade-warning">
+                    <p>⚠️ <strong>警告</strong>: 检测到1个包发生版本降级，可能丢失安全修复或引入兼容性问题:</p>
+                    <ul>
+                        <li>@swc</li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>next</td>
+                            <td class="vuln-low">GHSA-223j-4rm8-mrmf<br>关联CVE: CVE-2025-30218</td>
+                            <td>&gt;= 12.3.5 &lt; 12.3.6&lt;br&gt;具体受影响版本: 12.3.5&lt;br&gt;&gt;= 13.5.9 &lt; 13.5.10&lt;br&gt;具体受影响版本: 13.5.9&lt;br&gt;&gt;= 14.2.25 &lt; 14.2.26&lt;br&gt;具体受影响版本: 14.2.25&lt;br&gt;&gt;= 15.2.3 &lt; 15.2.4&lt;br&gt;具体受影响版本: 15.2.3</td>
+                            <td>Next.js may leak x-middleware-subrequest-id to external hosts&lt;br&gt;&lt;br&gt;## Summary
+In the process of remediating [CVE-2025-29927](https://github.com/advisories/GHSA-f82v-jwr5-mffw), we looked at other possible exploits of Middleware. We independently verified this low severity vulnerability in parallel with two reports from independent researchers.
+
+Learn more [here](https://vercel.com/changelog/cve-2025-30218-5DREmEH765PoeAsrNNQj3O).
+
+## Credit
+
+Thank you to Jinseo Kim [kjsman](https://hackerone.com/kjsman?type=user) and [RyotaK](https://hackerone.com/ryotak?type=user) (GMO Flatt Security Inc.) with [takumi-san.ai](https://takumi-san.ai) for the responsible disclosure. These researchers were awarded as part of our bug bounty program.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/vercel/next.js/security/advisories/GHSA-223j-4rm8-mrmf' target='_blank' class='vuln-link'>https://github.com/vercel/next.js/security/advisories/GHSA-223j-4rm8-mrmf</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-30218' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-30218</a><br><a href='https://github.com/vercel/next.js' target='_blank' class='vuln-link'>https://github.com/vercel/next.js</a><br><a href='https://vercel.com/changelog/cve-2025-30218-5DREmEH765PoeAsrNNQj3O' target='_blank' class='vuln-link'>https://vercel.com/changelog/cve-2025-30218-5DREmEH765PoeAsrNNQj3O</a></div></td>
+                            <td>2025-04-02</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>2159</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>2219</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>84</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>24</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>595</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (84)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>internal\moduletest\graph\wait.go</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\client_capabilities.go</td></tr><tr><td>internal\command\state_identities_test.go</td></tr><tr><td>internal\moduletest\graph\variables.go</td></tr><tr><td>internal\lang\format\format.go</td></tr><tr><td>internal\moduletest\graph\diagnostics.go</td></tr><tr><td>.github\workflows\equivalence-test-manual-update.yml</td></tr><tr><td>internal\command\junit\junit.go</td></tr><tr><td>.changes\1.13.0.md</td></tr><tr><td>internal\moduletest\graph\transform_close_graph.go</td></tr><tr><td>internal\stacks\stackmigrate\testing.go</td></tr><tr><td>internal\command\junit\junit_internal_test.go</td></tr><tr><td>internal\command\testdata\test\junit-output\missing-provider\expected-output.xml</td></tr><tr><td>internal\lang\ephemeral\validate.go</td></tr><tr><td>internal\backend\remote-state\azure\api_client.go</td></tr><tr><td>internal\backend\remote-state\azure\storage_client_helpers.go</td></tr><tr><td>internal\moduletest\graph\node_state_cleanup.go</td></tr><tr><td>internal\configs\configschema\write_only.go</td></tr><tr><td>internal\lang\ephemeral\validate_test.go</td></tr><tr><td>internal\lang\ephemeral\strip_test.go</td></tr><tr><td>internal\moduletest\graph\eval_context.go</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_update\plan.json</td></tr><tr><td>docs\debugging-configs\vscode\launch-via-cli\launch.json</td></tr><tr><td>internal\moduletest\graph\transform_config_test.go</td></tr><tr><td>internal\lang\ephemeral\strip.go</td></tr><tr><td>docs\debugging-configs\vscode\launch-from-vscode-debugger\launch.json</td></tr><tr><td>internal\lang\ephemeral\marshal_test.go</td></tr><tr><td>.changes\v1.11\BUG FIXES-20250402-143931.yaml</td></tr><tr><td>internal\command\jsonformat\computed\renderers\write_only.go</td></tr><tr><td>internal\tfdiags\object_test.go</td></tr><tr><td>.github\workflows\equivalence-test-diff.yml</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\removed_component_config.go</td></tr><tr><td>internal\stacks\stackmigrate\resources.go</td></tr><tr><td>internal\moduletest\graph\transform_state_cleanup.go</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\removed_component.go</td></tr><tr><td>internal\command\testdata\test\junit-output\multiple-files\expected-output.xml</td></tr><tr><td>internal\tfdiags\format_test.go</td></tr><tr><td>.github\workflows\changelog.yml</td></tr><tr><td>internal\moduletest\graph\node_test_run.go</td></tr><tr><td>internal\moduletest\graph\transform_providers.go</td></tr><tr><td>internal\moduletest\graph\plan.go</td></tr><tr><td>internal\stacks\stackaddrs\stack_test.go</td></tr><tr><td>internal\configs\configschema\write_only_test.go</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_update\apply.json</td></tr><tr><td>internal\rpcapi\resource_identity_test.go</td></tr><tr><td>docs\debugging.md</td></tr><tr><td>internal\moduletest\graph\test_graph_builder.go</td></tr><tr><td>testing\equivalence-tests\README.md</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\removed_component_instance.go</td></tr><tr><td>.github\workflows\equivalence-test-update.yml</td></tr><tr><td>internal\moduletest\graph\apply.go</td></tr><tr><td>internal\moduletest\graph\transform_config.go</td></tr><tr><td>internal\addrs\module_call_test.go</td></tr><tr><td>internal\tfdiags\object.go</td></tr><tr><td>testing\equivalence-tests\tests\null_provider_update\spec.json</td></tr><tr><td>internal\tfdiags\compare.go</td></tr><tr><td>internal\command\cliconfig\plugins.go</td></tr><tr><td>internal\tfdiags\format.go</td></tr><tr><td>internal\rpcapi\resource_identity.go</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_update\state.json</td></tr><tr><td>internal\stacks\stackconfig\parser\walker.go</td></tr><tr><td>docs\debugging-configs\vscode\debug-automated-tests\launch.json</td></tr><tr><td>internal\moduletest\graph\transform_test_run.go</td></tr><tr><td>internal\tfdiags\compare_test.go</td></tr><tr><td>internal\backend\remote\cloud_integration.go</td></tr><tr><td>internal\backend\remote-state\azure\helpers.go</td></tr><tr><td>internal\backend\remote\backend_taskStages.go</td></tr><tr><td>internal\stacks\stackmigrate\load.go</td></tr><tr><td>internal\stacks\stackmigrate\components.go</td></tr><tr><td>internal\tfdiags\testing_test.go</td></tr><tr><td>.changes\v1.12\ENHANCEMENTS-20250303-171838.yaml</td></tr><tr><td>.changes\README.md</td></tr><tr><td>internal\terraform\context_plan_identity_test.go</td></tr><tr><td>internal\command\testdata\modules-nested-dependencies\.terraform\modules\modules.json</td></tr><tr><td>internal\moduletest\graph\eval_context_test.go</td></tr><tr><td>internal\command\testdata\test\junit-output\1pass-1fail\expected-output.xml</td></tr><tr><td>internal\lang\ephemeral\marshal.go</td></tr><tr><td>internal\stacks\stackmigrate\migrate.go</td></tr><tr><td>internal\terraform\context_apply_identity_test.go</td></tr><tr><td>internal\command\state_identities.go</td></tr><tr><td>internal\command\junit\junit_test.go</td></tr><tr><td>internal\stacks\stackmigrate\migrate_test.go</td></tr><tr><td>internal\stacks\stackmigrate\load_test.go</td></tr><tr><td>internal\tfdiags\testing.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (24)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>internal\rpcapi\credentials_source.go</td></tr><tr><td>internal\moduletest\config\config.go</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\removed_config.go</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_basic\state.json</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_basic\apply.json</td></tr><tr><td>internal\configs\configload\inode_windows.go</td></tr><tr><td>.changes\1.10.3.md</td></tr><tr><td>internal\moduletest\config\config_test.go</td></tr><tr><td>internal\configs\configload\inode_freebsd.go</td></tr><tr><td>testing\equivalence-tests\tests\null_provider_basic\spec.json</td></tr><tr><td>.github\workflows\crt-hook-equivalence-tests.yml</td></tr><tr><td>internal\backend\remote-state\azure\arm_client.go</td></tr><tr><td>plugins.go</td></tr><tr><td>internal\moduletest\eval_context.go</td></tr><tr><td>internal\moduletest\eval_context_test.go</td></tr><tr><td>.changes\1.10.5.md</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_basic\plan.json</td></tr><tr><td>internal\backend\remote-state\s3\testing_test.go</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\removed_instance.go</td></tr><tr><td>tools.go</td></tr><tr><td>internal\backend\remote-state\azure\sender.go</td></tr><tr><td>.changes\1.10.4.md</td></tr><tr><td>.github\workflows\manual-equivalence-tests.yml</td></tr><tr><td>internal\configs\configload\inode.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (595)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>testing\equivalence-tests\outputs\replace_within_list\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackconfig\declarations.go</td><td>内容变更</td></tr><tr><td>internal\cloud\backend_context.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stack_call_instance.go</td><td>内容变更</td></tr><tr><td>internal\plans\action.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\azure\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\command\views\modules.go</td><td>内容变更</td></tr><tr><td>internal\command\state_push.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list_null\apply.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\providers\schemas.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\oss\backend.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_validate_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\fully_populated_complex_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\rpcapi\dependencies_provider_schema.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stubs\offline.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_module_variable.go</td><td>内容变更</td></tr><tr><td>internal\dag\walk.go</td><td>内容变更</td></tr><tr><td>internal\command\refresh_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_expressions.go</td><td>内容变更</td></tr><tr><td>internal\command\views\hook_json_test.go</td><td>内容变更</td></tr><tr><td>internal\command\apply_destroy_test.go</td><td>内容变更</td></tr><tr><td>internal\plugin\grpc_provider_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_instance_test.go</td><td>内容变更</td></tr><tr><td>internal\states\state_deepcopy.go</td><td>内容变更</td></tr><tr><td>docs\dependency-upgrades.md</td><td>内容变更</td></tr><tr><td>internal\command\views\testdata\plans\redacted-plan.json</td><td>内容变更</td></tr><tr><td>internal\configs\configload\copy_dir.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_set_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\backendrun\operation.go</td><td>内容变更</td></tr><tr><td>internal\terraform\hook_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\graph_builder_plan_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\backendbase\base_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackstate\state.go</td><td>内容变更</td></tr><tr><td>internal\lang\funcs\string_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\fully_populated_complex_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\initwd\from_module_test.go</td><td>内容变更</td></tr><tr><td>internal\providercache\installer_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\evaluate_valid.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_set_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\context_functions_test.go</td><td>内容变更</td></tr><tr><td>scripts\copyright.sh</td><td>内容变更</td></tr><tr><td>internal\command\init_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_local.go</td><td>内容变更</td></tr><tr><td>internal\builtin\providers\terraform\resource_data_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\validate_test.go</td><td>内容变更</td></tr><tr><td>internal\builtin\providers\terraform\resource_data.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_plan_ephemeral_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\test_only_global_test.go</td><td>内容变更</td></tr><tr><td>internal\dag\walk_test.go</td><td>内容变更</td></tr><tr><td>internal\cloud\migration.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\plan_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackstate\applied_change_test.go</td><td>内容变更</td></tr><tr><td>internal\moduleref\resolver.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\s3\validate_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\fully_populated_complex\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\context_plan.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\test_only_global.go</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_transitive_reduction_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply_checks_test.go</td><td>内容变更</td></tr><tr><td>internal\getmodules\getter.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_plan_orphan.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_validate_test.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\rpc_friendly.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\s3\backend_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_map\plan.json</td><td>内容变更</td></tr><tr><td>internal\command\views\show_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_apply.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\applying_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_plan_partialexp.go</td><td>内容变更</td></tr><tr><td>internal\plugin6\mock_proto\generate.go</td><td>内容变更</td></tr><tr><td>internal\cloud\test_test.go</td><td>内容变更</td></tr><tr><td>internal\command\command.go</td><td>内容变更</td></tr><tr><td>internal\cloud\backend.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_config.go</td><td>内容变更</td></tr><tr><td>internal\configs\provisioner.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonformat\state_test.go</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\apply-json\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\command\jsonplan\plan.go</td><td>内容变更</td></tr><tr><td>internal\plugin6\convert\diagnostics_test.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\terraform1\dependencies\dependencies.pb.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_destroy_deposed.go</td><td>内容变更</td></tr><tr><td>internal\configs\provider.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\component.go</td><td>内容变更</td></tr><tr><td>internal\command\meta_backend_migrate.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>internal\plugin6\grpc_provider_test.go</td><td>内容变更</td></tr><tr><td>internal\tfplugin5\tfplugin5.pb.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_multiline_string_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\dag\marshal.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_list_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\configs\config.go</td><td>内容变更</td></tr><tr><td>internal\depsfile\locks.go</td><td>内容变更</td></tr><tr><td>internal\refactoring\cross_provider_move.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\drift_simple\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_with_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\command\arguments\test.go</td><td>内容变更</td></tr><tr><td>internal\lang\globalref\analyzer_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\drift_refresh_only\plan.json</td><td>内容变更</td></tr><tr><td>internal\lang\marks\paths.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_context_builtin.go</td><td>内容变更</td></tr><tr><td>internal\terraform\evaluate.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\removed.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply_ephemeral_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_plan_test.go</td><td>内容变更</td></tr><tr><td>internal\plans\planproto\planfile.pb.go</td><td>内容变更</td></tr><tr><td>internal\terraform\hook_mock.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\fully_populated_complex\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\backendrun\operation_type.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map_null\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackconfig\config.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set\apply.json</td><td>内容变更</td></tr><tr><td>internal\terraform\context_input_test.go</td><td>内容变更</td></tr><tr><td>internal\command\state_rm.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stubs\unknown.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply_overrides_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_delete\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\kubernetes\client.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackstate\applied_change.go</td><td>内容变更</td></tr><tr><td>internal\command\command_test.go</td><td>内容变更</td></tr><tr><td>internal\states\statemgr\persistent.go</td><td>内容变更</td></tr><tr><td>internal\command\version_test.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonprovider\provider.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_module_expand.go</td><td>内容变更</td></tr><tr><td>internal\plans\objchange\compatible.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set_null\plan.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\diagnostics_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_json_string_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\input_variable_config.go</td><td>内容变更</td></tr><tr><td>internal\command\test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\hooks\component_instance.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\test.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\plugin.go</td><td>内容变更</td></tr><tr><td>internal\command\meta_vars.go</td><td>内容变更</td></tr><tr><td>internal\terraform\variables.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_set\apply.json</td><td>内容变更</td></tr><tr><td>internal\command\arguments\apply.go</td><td>内容变更</td></tr><tr><td>internal\terraform\terraform_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map_empty\plan.json</td><td>内容变更</td></tr><tr><td>internal\backend\init\init.go</td><td>内容变更</td></tr><tr><td>.github\workflows\build-terraform-cli.yml</td><td>内容变更</td></tr><tr><td>commands.go</td><td>内容变更</td></tr><tr><td>internal\command\console_test.go</td><td>内容变更</td></tr><tr><td>internal\lang\globalref\analyzer_meta_references.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\handles.go</td><td>内容变更</td></tr><tr><td>internal\plugin\convert\schema_test.go</td><td>内容变更</td></tr><tr><td>internal\command\meta.go</td><td>内容变更</td></tr><tr><td>internal\builtin\providers\terraform\provider.go</td><td>内容变更</td></tr><tr><td>internal\states\statefile\version4.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackplan\plan.go</td><td>内容变更</td></tr><tr><td>internal\command\graph.go</td><td>内容变更</td></tr><tr><td>internal\configs\import_test.go</td><td>内容变更</td></tr><tr><td>internal\addrs\check_rule.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\removed_test.go</td><td>内容变更</td></tr><tr><td>internal\command\show_test.go</td><td>内容变更</td></tr><tr><td>internal\lang\funcs\string.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\main_plan.go</td><td>内容变更</td></tr><tr><td>internal\plans\changes_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_validate.go</td><td>内容变更</td></tr><tr><td>internal\plans\quality.go</td><td>内容变更</td></tr><tr><td>internal\states\statefile\version3_upgrade.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\testing\provider.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\consolidate_warnings_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\variables_and_outputs\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\apply_test.go</td><td>内容变更</td></tr><tr><td>internal\command\views\operation.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_basic\state.json</td><td>内容变更</td></tr><tr><td>internal\communicator\ssh\http_proxy.go</td><td>内容变更</td></tr><tr><td>internal\plans\changes.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_check.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackplan\planned_change.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\hooks.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\command\jsonformat\plan_test.go</td><td>内容变更</td></tr><tr><td>internal\moduleref\resolver_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stack.go</td><td>内容变更</td></tr><tr><td>internal\command\views\plan_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\backendbase\base.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\terraform1\packages\packages.pb.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonplan\values_test.go</td><td>内容变更</td></tr><tr><td>internal\providers\mock.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\command\apply_test.go</td><td>内容变更</td></tr><tr><td>internal\states\instance_object_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_with_drift\apply.json</td><td>内容变更</td></tr><tr><td>internal\providercache\package_install.go</td><td>内容变更</td></tr><tr><td>internal\builtin\providers\terraform\data_source_state_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_with_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\main_inspect.go</td><td>内容变更</td></tr><tr><td>internal\lang\checks.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\component.go</td><td>内容变更</td></tr><tr><td>internal\command\cliconfig\cliconfig.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\output_value_test.go</td><td>内容变更</td></tr><tr><td>internal\lang\eval.go</td><td>内容变更</td></tr><tr><td>internal\moduleref\record.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\implied_type_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\validate_selfref.go</td><td>内容变更</td></tr><tr><td>internal\command\views\test_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote\backend_plan.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context.go</td><td>内容变更</td></tr><tr><td>internal\plugin6\grpc_provider.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_object\apply.json</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_resource_count.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\drift_relevant_attributes\apply.json</td><td>内容变更</td></tr><tr><td>.github\CONTRIBUTING.md</td><td>内容变更</td></tr><tr><td>internal\configs\import.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackstate\from_state.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\local_value_test.go</td><td>内容变更</td></tr><tr><td>docs\plugin-protocol\README.md</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_set\apply.json</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_apply_deferred.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_type.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\azure\backend.go</td><td>内容变更</td></tr><tr><td>internal\lang\funcs\conversion.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\multiple_block_types\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_multiline_string_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\command\providers_schema_test.go</td><td>内容变更</td></tr><tr><td>scripts\changelog.sh</td><td>内容变更</td></tr><tr><td>website\package.json</td><td>内容变更</td></tr><tr><td>internal\cloud\backend_common.go</td><td>内容变更</td></tr><tr><td>internal\plugin\mock_proto\generate.go</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\plan-json-basic-no-unredacted\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\main_apply.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_refresh_test.go</td><td>内容变更</td></tr><tr><td>internal\lang\marks\paths_test.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\coerce_value.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonprovider\schema.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_refresh_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_provider.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote\backend_test.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\implied_type.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\azure\client.go</td><td>内容变更</td></tr><tr><td>internal\promising\once_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply.go</td><td>内容变更</td></tr><tr><td>internal\plugin\convert\diagnostics_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\applying.go</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend.go</td><td>内容变更</td></tr><tr><td>internal\cloud\backend_plan.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_delete\plan.json</td><td>内容变更</td></tr><tr><td>.github\workflows\main.yml</td><td>内容变更</td></tr><tr><td>internal\rpcapi\terraform1\setup\setup.pb.go</td><td>内容变更</td></tr><tr><td>internal\command\e2etest\unmanaged_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_plan.go</td><td>内容变更</td></tr><tr><td>internal\terraform\graph_builder_plan.go</td><td>内容变更</td></tr><tr><td>internal\configs\config_build_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_ephemeral_resource_close.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\s3\backend_complete_test.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\diagnostic_extra.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_json_string_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\main.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set_empty\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\refresh_instance.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_objects_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\moduletest\status.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\component_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\main_validate.go</td><td>内容变更</td></tr><tr><td>internal\depsfile\locks_file.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackconfig\config_test.go</td><td>内容变更</td></tr><tr><td>internal\provider-simple-v6\provider.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stack_call_config.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_import.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\data_read\plan.json</td><td>内容变更</td></tr><tr><td>internal\moduletest\mocking\values.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\expressions.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_abstract.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_basic\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\in_component.go</td><td>内容变更</td></tr><tr><td>scripts\staticcheck.sh</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\apply-json-with-outputs\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\addrs\move_endpoint_kind.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_output.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stack_config.go</td><td>内容变更</td></tr><tr><td>internal\provider-simple\provider.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\drift_relevant_attributes\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_objects\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stack_call.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\component_config.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply2_test.go</td><td>内容变更</td></tr><tr><td>internal\command\views\test.go</td><td>内容变更</td></tr><tr><td>.github\workflows\build.yml</td><td>内容变更</td></tr><tr><td>.github\pull_request_template.md</td><td>内容变更</td></tr><tr><td>internal\command\views\operation_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\multiple_block_types_update\apply.json</td><td>内容变更</td></tr><tr><td>scripts\exhaustive.sh</td><td>内容变更</td></tr><tr><td>internal\backend\remote\backend_context.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\expression_refs.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_map\apply.json</td><td>内容变更</td></tr><tr><td>internal\plugin\convert\schema.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\apply-json-with-provisioner-error\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\planning.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonprovider\provider_test.go</td><td>内容变更</td></tr><tr><td>internal\plans\mode.go</td><td>内容变更</td></tr><tr><td>internal\command\state_pull.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonprovider\attribute.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\walk_static.go</td><td>内容变更</td></tr><tr><td>internal\collections\set.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonformat\differ\object.go</td><td>内容变更</td></tr><tr><td>.github\workflows\checks.yml</td><td>内容变更</td></tr><tr><td>internal\command\test_test.go</td><td>内容变更</td></tr><tr><td>internal\command\import.go</td><td>内容变更</td></tr><tr><td>internal\terraform\hook.go</td><td>内容变更</td></tr><tr><td>internal\command\arguments\plan.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_list_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\providers\schema_cache.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\path_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_test.go</td><td>内容变更</td></tr><tr><td>internal\command\format\diagnostic.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_apply_test.go</td><td>内容变更</td></tr><tr><td>internal\plugin\mock_proto\mock.go</td><td>内容变更</td></tr><tr><td>internal\providers\testing\provider_mock.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_null\plan.json</td><td>内容变更</td></tr><tr><td>internal\moduletest\hcl\variable_cache.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply_test.go</td><td>内容变更</td></tr><tr><td>.changie.yaml</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\internal_validate.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\output_value.go</td><td>内容变更</td></tr><tr><td>internal\command\format\diagnostic_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_import_state_test.go</td><td>内容变更</td></tr><tr><td>internal\plans\planfile\tfplan_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list\apply.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\hooks\resource_instance.go</td><td>内容变更</td></tr><tr><td>internal\terraform\resource_provider_mock_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_context.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\component_instance.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\walk_dynamic.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_plan_import_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\drift_refresh_only\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\diagnostics.go</td><td>内容变更</td></tr><tr><td>internal\lang\funcs\collection.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_map\apply.json</td><td>内容变更</td></tr><tr><td>internal\moduletest\hcl\variable_cache_test.go</td><td>内容变更</td></tr><tr><td>internal\configs\parser_config_dir_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\fully_populated_complex_destroy\plan.json</td><td>内容变更</td></tr><tr><td>internal\command\arguments\test_test.go</td><td>内容变更</td></tr><tr><td>internal\command\meta_backend.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\config_traversals.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\expressions_test.go</td><td>内容变更</td></tr><tr><td>internal\addrs\resource.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_replace\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\in_stack.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackconfig\component.go</td><td>内容变更</td></tr><tr><td>internal\dag\dot.go</td><td>内容变更</td></tr><tr><td>internal\command\views\hook_ui.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_plan.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list_null\plan.json</td><td>内容变更</td></tr><tr><td>scripts\goimportscheck.sh</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\azure\client_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_factory.go</td><td>内容变更</td></tr><tr><td>internal\configs\parser_config.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_empty\apply.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_basic\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_partial_plan.go</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\plan-json-no-changes\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\promising\public_test.go</td><td>内容变更</td></tr><tr><td>internal\cloud\test.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\contextual.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_import_test.go</td><td>内容变更</td></tr><tr><td>internal\cloud\testing.go</td><td>内容变更</td></tr><tr><td>internal\builtin\providers\terraform\data_source_state.go</td><td>内容变更</td></tr><tr><td>internal\terraform\evaluate_test.go</td><td>内容变更</td></tr><tr><td>internal\command\state_mv.go</td><td>内容变更</td></tr><tr><td>internal\plans\objchange\objchange_test.go</td><td>内容变更</td></tr><tr><td>internal\command\state_show_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\drift_simple\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\provider_config.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_apply_instance.go</td><td>内容变更</td></tr><tr><td>internal\command\arguments\show_test.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonstate\state_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_plan2_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\apply_destroy_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_local.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\legacy\terraform\resource_mode.go</td><td>内容变更</td></tr><tr><td>internal\genconfig\generate_config.go</td><td>内容变更</td></tr><tr><td>website\package-lock.json</td><td>内容变更</td></tr><tr><td>internal\lang\funcs\crypto.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\local_value.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\local_value_config.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_list\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list_empty\apply.json</td><td>内容变更</td></tr><tr><td>internal\configs\configload\loader_load.go</td><td>内容变更</td></tr><tr><td>internal\command\views\hook_ui_test.go</td><td>内容变更</td></tr><tr><td>internal\cloud\backend_apply.go</td><td>内容变更</td></tr><tr><td>internal\command\modules.go</td><td>内容变更</td></tr><tr><td>internal\promising\once.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stack_call_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_for_each_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_abstract_instance.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\schema.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\marks.go</td><td>内容变更</td></tr><tr><td>internal\command\version.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_delete\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\hooks\component.go</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\feature_request.yml</td><td>内容变更</td></tr><tr><td>internal\rpcapi\dependencies.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_map_update\plan.json</td><td>内容变更</td></tr><tr><td>docs\plugin-protocol\object-wire-format.md</td><td>内容变更</td></tr><tr><td>.changes\footer-with-experiments.md</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\apply-json-with-provisioner\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\legacy\helper\schema\shims_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\input_variable.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackconfig\removed.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackplan\from_plan.go</td><td>内容变更</td></tr><tr><td>internal\terraform\graph_builder_apply.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote\backend.go</td><td>内容变更</td></tr><tr><td>internal\stacks\tfstackdata1\tfstackdata1.pb.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_replace\plan.json</td><td>内容变更</td></tr><tr><td>internal\configs\test_file.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_provider.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\azure\backend_state.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote\backend_common.go</td><td>内容变更</td></tr><tr><td>internal\configs\source_bundle_parser.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_with_refresh_only\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_set\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\command\modules_test.go</td><td>内容变更</td></tr><tr><td>internal\legacy\helper\schema\valuetype.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\http\server_test.go</td><td>内容变更</td></tr><tr><td>internal\states\instance_object.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_set\plan.json</td><td>内容变更</td></tr><tr><td>internal\lang\funcs\collection_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\graph_builder_apply_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_instance.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\planning_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider.go</td><td>内容变更</td></tr><tr><td>internal\command\graph_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_ephemeral.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\terraform1\stacks\stacks.pb.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_conditions.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_update\plan.json</td><td>内容变更</td></tr><tr><td>.github\actions\equivalence-test\action.yml</td><td>内容变更</td></tr><tr><td>internal\addrs\module_test.go</td><td>内容变更</td></tr><tr><td>internal\legacy\helper\schema\resource_data_get_source.go</td><td>内容变更</td></tr><tr><td>internal\configs\variable_type_hint.go</td><td>内容变更</td></tr><tr><td>internal\command\providers.go</td><td>内容变更</td></tr><tr><td>internal\providers\provider.go</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_attach_schema.go</td><td>内容变更</td></tr><tr><td>internal\terraform\reduce_plan_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_simple\apply.json</td><td>内容变更</td></tr><tr><td>internal\cloud\backend_apply_test.go</td><td>内容变更</td></tr><tr><td>internal\plugin6\convert\schema_test.go</td><td>内容变更</td></tr><tr><td>internal\command\import_test.go</td><td>内容变更</td></tr><tr><td>internal\moduletest\hcl\provider_test.go</td><td>内容变更</td></tr><tr><td>internal\configs\parser_config_dir.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_list\apply.json</td><td>内容变更</td></tr><tr><td>internal\command\arguments\refresh.go</td><td>内容变更</td></tr><tr><td>docs\planning-behaviors.md</td><td>内容变更</td></tr><tr><td>internal\addrs\remove_target_kind.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\azure\backend_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map_empty\apply.json</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_destroy_deposed_test.go</td><td>内容变更</td></tr><tr><td>docs\architecture.md</td><td>内容变更</td></tr><tr><td>internal\states\statemgr\migrate.go</td><td>内容变更</td></tr><tr><td>internal\addrs\checkable.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map_null\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_list\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\multiple_block_types\apply.json</td><td>内容变更</td></tr><tr><td>internal\terraform\context_apply_deferred_test.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\hcl.go</td><td>内容变更</td></tr><tr><td>internal\configs\configload\loader_snapshot.go</td><td>内容变更</td></tr><tr><td>internal\moduletest\mocking\values_test.go</td><td>内容变更</td></tr><tr><td>docs\README.md</td><td>内容变更</td></tr><tr><td>internal\terraform\context_eval_test.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\terraform1\terraform1.pb.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\change_exec.go</td><td>内容变更</td></tr><tr><td>internal\genconfig\generate_config_test.go</td><td>内容变更</td></tr><tr><td>internal\schemarepo\schemas.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_plan_orphan_test.go</td><td>内容变更</td></tr><tr><td>internal\command\arguments\validate_test.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\testdata\sourcebundle\terraform-sources.json</td><td>内容变更</td></tr><tr><td>internal\plans\planfile\config_snapshot.go</td><td>内容变更</td></tr><tr><td>internal\states\instance_object_src.go</td><td>内容变更</td></tr><tr><td>internal\plugin\grpc_provider.go</td><td>内容变更</td></tr><tr><td>website\data\language-nav-data.json</td><td>内容变更</td></tr><tr><td>internal\command\init.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\diagnostics_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\graph_walk_operation.go</td><td>内容变更</td></tr><tr><td>internal\moduletest\suite.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\stacks_test.go</td><td>内容变更</td></tr><tr><td>.changes\previous-releases.md</td><td>内容变更</td></tr><tr><td>internal\command\arguments\output_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\local_provider_update\state.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\stubs\errored.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\marks_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_plan_instance.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonformat\differ\attribute.go</td><td>内容变更</td></tr><tr><td>internal\configs\configschema\internal_validate_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_object\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\context_import.go</td><td>内容变更</td></tr><tr><td>internal\plans\deferring.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_null\apply.json</td><td>内容变更</td></tr><tr><td>internal\cloud\testdata\plan-json-basic\plan-redacted.json</td><td>内容变更</td></tr><tr><td>internal\command\jsonformat\state.go</td><td>内容变更</td></tr><tr><td>internal\backend\remote\testing.go</td><td>内容变更</td></tr><tr><td>internal\repl\session_test.go</td><td>内容变更</td></tr><tr><td>internal\command\plan_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_destroy_edge_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\instance_expanders.go</td><td>内容变更</td></tr><tr><td>internal\plans\objchange\plan_valid.go</td><td>内容变更</td></tr><tr><td>internal\command\testing\test_provider.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\output_value_config.go</td><td>内容变更</td></tr><tr><td>internal\addrs\module_call.go</td><td>内容变更</td></tr><tr><td>.github\scripts\equivalence-test.sh</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\null_provider_delete\plan.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\stack.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_objects\plan.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\input_variable_test.go</td><td>内容变更</td></tr><tr><td>internal\plans\objchange\objchange.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_map\plan.json</td><td>内容变更</td></tr><tr><td>internal\command\views\json\diagnostic.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set_empty\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\graph_builder.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_with_drift\plan.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_with_refresh_only\apply.json</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_set_null\apply.json</td><td>内容变更</td></tr><tr><td>internal\rpcapi\stacks.go</td><td>内容变更</td></tr><tr><td>internal\plans\objchange\plan_valid_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_plan_test.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonconfig\config.go</td><td>内容变更</td></tr><tr><td>internal\cloud\tfe_client_mock.go</td><td>内容变更</td></tr><tr><td>internal\copy\copy_file.go</td><td>内容变更</td></tr><tr><td>internal\rpcapi\dynrpcserver\stacks.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\validating.go</td><td>内容变更</td></tr><tr><td>tools\terraform-bundle\README.md</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_objects_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\tfdiags\diagnostic.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\simple_object_empty\plan.json</td><td>内容变更</td></tr><tr><td>internal\command\jsonplan\values.go</td><td>内容变更</td></tr><tr><td>internal\plugin6\mock_proto\mock.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\variables_and_outputs\plan.json</td><td>内容变更</td></tr><tr><td>website\data\internals-nav-data.json</td><td>内容变更</td></tr><tr><td>internal\command\arguments\modules_test.go</td><td>内容变更</td></tr><tr><td>internal\refactoring\mock_provider.go</td><td>内容变更</td></tr><tr><td>internal\moduletest\run.go</td><td>内容变更</td></tr><tr><td>internal\plans\changes_src.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\multiple_block_types_update\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\node_resource_import.go</td><td>内容变更</td></tr><tr><td>internal\cloudplugin\cloudproto1\cloudproto1.pb.go</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_reference_test.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\basic_list_empty\plan.json</td><td>内容变更</td></tr><tr><td>internal\terraform\upgrade_resource_state.go</td><td>内容变更</td></tr><tr><td>internal\command\validate_test.go</td><td>内容变更</td></tr><tr><td>internal\initwd\module_install_test.go</td><td>内容变更</td></tr><tr><td>internal\promising\promise.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonprovider\attribute_test.go</td><td>内容变更</td></tr><tr><td>internal\command\views\init.go</td><td>内容变更</td></tr><tr><td>internal\terraform\validate_selfref_test.go</td><td>内容变更</td></tr><tr><td>internal\terraform\hook_stop.go</td><td>内容变更</td></tr><tr><td>internal\checks\status.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\replace_within_map\plan.json</td><td>内容变更</td></tr><tr><td>internal\plans\planfile\tfplan.go</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\documentation_issue.yml</td><td>内容变更</td></tr><tr><td>internal\command\jsonformat\differ\block.go</td><td>内容变更</td></tr><tr><td>internal\grpcwrap\provider6.go</td><td>内容变更</td></tr><tr><td>internal\terraform\context_test.go</td><td>内容变更</td></tr><tr><td>website\data\cli-nav-data.json</td><td>内容变更</td></tr><tr><td>internal\grpcwrap\provider.go</td><td>内容变更</td></tr><tr><td>internal\terraform\eval_context_mock.go</td><td>内容变更</td></tr><tr><td>internal\terraform\transform_destroy_edge.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\internal\stackeval\provider_config_test.go</td><td>内容变更</td></tr><tr><td>internal\configs\config_build.go</td><td>内容变更</td></tr><tr><td>internal\dag\set.go</td><td>内容变更</td></tr><tr><td>internal\configs\mock_provider.go</td><td>内容变更</td></tr><tr><td>internal\states\remote\state_test.go</td><td>内容变更</td></tr><tr><td>internal\addrs\module_instance_test.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackruntime\testing\resource.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\testing.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\moved_simple\plan.json</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\bug_report.yml</td><td>内容变更</td></tr><tr><td>internal\moduletest\progress.go</td><td>内容变更</td></tr><tr><td>internal\tfplugin6\tfplugin6.pb.go</td><td>内容变更</td></tr><tr><td>internal\command\jsonstate\state.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\fully_populated_complex_destroy\apply.json</td><td>内容变更</td></tr><tr><td>internal\stacks\stackaddrs\removed.go</td><td>内容变更</td></tr><tr><td>internal\stacks\stackstate\statekeys\key_type.go</td><td>内容变更</td></tr><tr><td>internal\schemarepo\loadschemas\plugins.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\backend_apply.go</td><td>内容变更</td></tr><tr><td>internal\moduletest\file.go</td><td>内容变更</td></tr><tr><td>internal\tfdiags\diagnostics.go</td><td>内容变更</td></tr><tr><td>internal\terraform\evaluate_valid_test.go</td><td>内容变更</td></tr><tr><td>internal\cloudplugin\mock_cloudproto1\generate.go</td><td>内容变更</td></tr><tr><td>testing\equivalence-tests\outputs\nested_map_update\apply.json</td><td>内容变更</td></tr><tr><td>internal\backend\remote-state\s3\backend.go</td><td>内容变更</td></tr><tr><td>internal\plugin6\convert\schema.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

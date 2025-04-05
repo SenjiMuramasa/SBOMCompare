@@ -1,0 +1,599 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:12:15</p>
+                <p>SBOM A: sample_data\gohugoio_hugo_ee48d96.json</p>
+                <p>SBOM B: sample_data\gohugoio_hugo.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>52</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">7.7/10 (77.1%) [B+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 7.7/10.0 (77.1%)，安全等级: B+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：大量新增依赖, 大量移除依赖, 大量次版本变更, 缺少许可证信息, 许可证合规。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.6/1.7 (92.5%)</td>
+                    <td><ul class='details-list'><li>大量新增包(11个)可能增加攻击面</li><li>大量移除包(21个)可能影响功能稳定性</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖, 大量移除依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.8/3.5 (79.6%)</td>
+                    <td><ul class='details-list'><li>38个包发生次版本变更</li><li>11个包发生补丁版本变更</li><li>3个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-medium">0.5/0.9 (60.0%)</td>
+                    <td><ul class='details-list'><li>7个新增包缺少许可证信息</li></ul><div class='impact-factors'><strong>影响因素:</strong> 缺少许可证信息</div></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-medium">2.0/2.6 (76.0%)</td>
+                    <td><ul class='details-list'><li>存在3个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 许可证合规, 依赖扩张</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (64.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>Binary-Artifacts需要改进</li><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2022-0635 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0635</li><li>- Warn: Project is vulnerable to: GO-2022-0646 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0646</li><li>- Warn: Project is vulnerable to: GO-2025-3488 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3488</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (3)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2022-0635</td>
+                            <td>A vulnerability in the in-band key negotiation exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. An attacker with write access to the targeted bucket can change the encryption algorithm of an object in the bucket, which can then allow them to change AES-GCM to AES-CTR. Using this in combination with a decryption oracle can reveal the authentication key used by AES-GCM as decrypting the GMAC tag leaves the authentication key recoverable as an algebraic equation. It is recommended to update your SDK to V2 or later, and re-encrypt your files.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-8912<br>GHSA-7f33-f4f5-xwgw<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869801</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围: </div><br>github.com/aws/aws-sdk-go: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-8912 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2022-0646</td>
+                            <td>A padding oracle vulnerability exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. The SDK allows users to encrypt files with AES-CBC without computing a Message Authentication Code (MAC), which then allows an attacker who has write access to the target&amp;#39;s S3 bucket and can observe whether or not an endpoint with access to the key can decrypt a file, they can reconstruct the plaintext with (on average) 128*length (plaintext) queries to the endpoint, by exploiting CBC&amp;#39;s ability to manipulate the bytes of the next block and PKCS5 padding errors. It is recommended to update your SDK to V2 or later, and re-encrypt your files.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-8911<br>GHSA-f5pg-7wfw-84q9<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869800</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围: </div><br>github.com/aws/aws-sdk-go: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-8911 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3488</td>
+                            <td>An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22868<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/oauth2: 所有版本 &lt; 0.27.0 <br><br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (11)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>tailwindcss</td><td>^4.0.0</td><td>未知</td></tr><tr><td>@alpinejs/focus</td><td>^3.14.8</td><td>未知</td></tr><tr><td>@alpinejs/persist</td><td>^3.14.8</td><td>未知</td></tr><tr><td>alpinejs</td><td>^3.14.8</td><td>未知</td></tr><tr><td>@tailwindcss/cli</td><td>^4.0.0</td><td>未知</td></tr><tr><td>@tailwindcss/typography</td><td>^0.5.15</td><td>未知</td></tr><tr><td>github.com/oasdiff/yaml3</td><td>v0.0.0-20250309153720-d2182401db90</td><td>Apache-2.0</td></tr><tr><td>@hotwired/turbo</td><td>^8.0.12</td><td>未知</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>Apache-2.0</td></tr><tr><td>github.com/bep/goportabletext</td><td>v0.1.0</td><td>Apache-2.0</td></tr><tr><td>github.com/oasdiff/yaml</td><td>v0.0.0-20250309154309-f31be36b4037</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (21)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>glob-all</td><td>^3.1.0</td><td>MIT</td></tr><tr><td>typeface-muli</td><td>0.0.54</td><td>MIT</td></tr><tr><td>css-loader</td><td>^1.0.1</td><td>MIT</td></tr><tr><td>tachyons</td><td>^4.7.0</td><td>MIT</td></tr><tr><td>scrolldir</td><td>^1.4.0</td><td>MIT</td></tr><tr><td>github.com/invopop/yaml</td><td>v0.2.0</td><td>Apache-2.0</td></tr><tr><td>clipboard</td><td>^2.0.4</td><td>MIT</td></tr><tr><td>github.com/gohugoio/gohugoioTheme</td><td>v0.0.0-20250116152525-2d382cae7743</td><td>NOASSERTION</td></tr><tr><td>docsearch.js</td><td>^2.6.1</td><td>MIT</td></tr><tr><td>postcss</td><td>^7.0.5</td><td>MIT</td></tr><tr><td>github.com/cli/safeexec</td><td>v1.0.1</td><td>Apache-2.0</td></tr><tr><td>purgecss-webpack-plugin</td><td>^1.3.1</td><td>MIT</td></tr><tr><td>webpack-command</td><td>^0.4.2</td><td>MIT</td></tr><tr><td>postcss-import</td><td>^12.0.1</td><td>MIT</td></tr><tr><td>lazysizes</td><td>^5.3.2</td><td>MIT</td></tr><tr><td>mini-css-extract-plugin</td><td>^0.4.4</td><td>MIT</td></tr><tr><td>file-loader</td><td>^2.0.0</td><td>MIT</td></tr><tr><td>clean-webpack-plugin</td><td>^1.0.0</td><td>MIT</td></tr><tr><td>postcss-loader</td><td>^3.0.0</td><td>MIT</td></tr><tr><td>postcss-cssnext</td><td>^3.1.0</td><td>MIT</td></tr><tr><td>webpack</td><td>^4.25.1</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (52)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>cloud.google.com/go/auth</td><td>v0.10.2</td><td>v0.14.1</td><td>次版本</td></tr><tr><td>golang.org/x/image</td><td>v0.22.0</td><td>v0.25.0</td><td>次版本</td></tr><tr><td>google.golang.org/api</td><td>v0.206.0</td><td>v0.221.0</td><td>次版本</td></tr><tr><td>github.com/cpuguy83/go-md2man/v2</td><td>v2.0.4</td><td>v2.0.6</td><td>补丁版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.35.2</td><td>v1.36.5</td><td>次版本</td></tr><tr><td>github.com/go-openapi/jsonpointer</td><td>v0.20.2</td><td>v0.21.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.34.0</td><td>v0.37.0</td><td>次版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.29.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/aws/smithy-go</td><td>v1.22.0</td><td>v1.22.2</td><td>补丁版本</td></tr><tr><td>golang.org/x/text</td><td>v0.21.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>github.com/golang-jwt/jwt/v5</td><td>v5.2.1</td><td>v5.2.2</td><td>补丁版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.29.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/configsources</td><td>v1.3.23</td><td>v1.3.32</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.54.0</td><td>v0.58.0</td><td>次版本</td></tr><tr><td>github.com/bep/overlayfs</td><td>v0.9.2</td><td>v0.10.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2</td><td>v1.32.4</td><td>v1.36.1</td><td>次版本</td></tr><tr><td>github.com/go-openapi/swag</td><td>v0.22.8</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.5.2</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.29.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/sanity-io/litter</td><td>v1.5.5</td><td>v1.5.8</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20241104194629-dd2ea8efbc28</td><td>v0.0.0-20241209162323-e6fa225c2576</td><td>一般变更</td></tr><tr><td>github.com/tetratelabs/wazero</td><td>v1.8.2</td><td>v1.9.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/endpoints/v2</td><td>v2.6.23</td><td>v2.6.32</td><td>补丁版本</td></tr><tr><td>github.com/spf13/pflag</td><td>v1.0.5</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.10.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/evanw/esbuild</td><td>v0.24.2</td><td>v0.25.1</td><td>次版本</td></tr><tr><td>github.com/bep/lazycache</td><td>v0.7.0</td><td>v0.8.0</td><td>次版本</td></tr><tr><td>github.com/yuin/goldmark-emoji</td><td>v1.0.4</td><td>v1.0.5</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20241104194629-dd2ea8efbc28</td><td>v0.0.0-20250207221924-e9438ea467c6</td><td>一般变更</td></tr><tr><td>github.com/spf13/cobra</td><td>v1.8.1</td><td>v1.9.1</td><td>次版本</td></tr><tr><td>github.com/rogpeppe/go-internal</td><td>v1.13.1</td><td>v1.14.1</td><td>次版本</td></tr><tr><td>github.com/bep/simplecobra</td><td>v0.4.0</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/cloudfront</td><td>v1.41.0</td><td>v1.44.10</td><td>次版本</td></tr><tr><td>github.com/gohugoio/hugo-goldmark-extensions/extras</td><td>v0.2.0</td><td>v0.3.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>v0.2.5</td><td>v0.2.7</td><td>补丁版本</td></tr><tr><td>google.golang.org/grpc</td><td>v1.67.1</td><td>v1.70.0</td><td>次版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.8</td><td>v0.1.9</td><td>补丁版本</td></tr><tr><td>github.com/gohugoio/hashstructure</td><td>v0.3.0</td><td>v0.5.0</td><td>次版本</td></tr><tr><td>github.com/getkin/kin-openapi</td><td>v0.123.0</td><td>v0.131.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.32.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.8.0</td><td>v0.10.0</td><td>次版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.24.0</td><td>v0.26.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>v0.54.0</td><td>v0.58.0</td><td>次版本</td></tr><tr><td>github.com/bep/godartsass/v2</td><td>v2.3.2</td><td>v2.5.0</td><td>次版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.14.0</td><td>v2.14.1</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.29.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/spf13/afero</td><td>v1.11.0</td><td>v1.14.0</td><td>次版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.22.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>github.com/google/go-cmp</td><td>v0.6.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>katex</td><td>^0.16.11</td><td>^0.16.21</td><td>一般变更</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.29.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/bep/imagemeta</td><td>v0.8.3</td><td>v0.10.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>golang.org/x/oauth2</td>
+                            <td class="vuln-unknown">GO-2025-3488<br>关联CVE: CVE-2025-22868</td>
+                            <td>所有版本 &lt; 0.27.0</td>
+                            <td>Unexpected memory consumption during token parsing in golang.org/x/oauth2&lt;br&gt;&lt;br&gt;An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/652155' target='_blank' class='vuln-link'>https://go.dev/cl/652155</a><br><a href='https://go.dev/issue/71490' target='_blank' class='vuln-link'>https://go.dev/issue/71490</a></div></td>
+                            <td>2025-02-26</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>2111</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>2079</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>215</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>247</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>483</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (215)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共215个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>docs\layouts\partials\helpers\linkcss.html</td></tr><tr><td>docs\layouts\partials\docs\functions-aliases.html</td></tr><tr><td>docs\assets\js\alpinejs\data\explorer.js</td></tr><tr><td>docs\layouts\shortcodes\code.html</td></tr><tr><td>docs\content\en\_common\store-methods.md</td></tr><tr><td>docs\layouts\index.rss.xml</td></tr><tr><td>docs\content\en\quick-reference\glossary\l10n.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\resource.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\bundle.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\embedded-template.md</td></tr><tr><td>docs\assets\js\alpinejs\magics\helpers.js</td></tr><tr><td>docs\content\en\quick-reference\glossary\relative-permalink.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\regular-page.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\argument.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\duration.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\section-page.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\i18n.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\localization.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\array.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\string.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\page-kind.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\segment.md</td></tr><tr><td>docs\layouts\partials\layouts\home\features.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\map.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\floating-point.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\publish.md</td></tr><tr><td>docs\layouts\partials\layouts\header\theme.html</td></tr><tr><td>docs\layouts\shortcodes\datatable-filtered.html</td></tr><tr><td>docs\layouts\shortcodes\quick-reference.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\float.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\type.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\content-type.md</td></tr><tr><td>docs\assets\js\alpinejs\data\index.js</td></tr><tr><td>docs\layouts\partials\helpers\funcs\get-github-info.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\bool.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\pipe.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\raw-string-literal.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\branch-bundle.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\theme.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\page-collection.md</td></tr><tr><td>markup\goldmark\internal\extensions\attributes\attributes_integration_test.go</td></tr><tr><td>docs\layouts\partials\opengraph\get-featured-image.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\ugly-url.md</td></tr><tr><td>docs\layouts\shortcodes\code-toggle.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\term-page.md</td></tr><tr><td>docs\assets\css\components\helpers.css</td></tr><tr><td>docs\layouts\partials\docs\functions-signatures.html</td></tr><tr><td>docs\layouts\shortcodes\chroma-lexers.html</td></tr><tr><td>docs\assets\js\alpinejs\magics\index.js</td></tr><tr><td>docs\content\en\quick-reference\glossary\list-template.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\shortcode.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\identifier.md</td></tr><tr><td>docs\layouts\404.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\pagination.md</td></tr><tr><td>docs\layouts\partials\layouts\header\githubstars.html</td></tr><tr><td>docs\assets\css\components\tableofcontents.css</td></tr><tr><td>docs\content\en\quick-reference\glossary\taxonomic-weight.md</td></tr><tr><td>docs\tailwind.config.js</td></tr><tr><td>docs\content\en\quick-reference\glossary\module.md</td></tr><tr><td>docs\assets\js\helpers\index.js</td></tr><tr><td>docs\content\LICENSE.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\taxonomy-page.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\layout.md</td></tr><tr><td>docs\layouts\partials\layouts\hooks\body-start.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\permalink.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\cjk.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\fragment.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\list-page.md</td></tr><tr><td>docs\layouts\partials\layouts\search\results.html</td></tr><tr><td>docs\content\en\_common\scratch-pad-scope.md</td></tr><tr><td>docs\assets\js\helpers\helpers.js</td></tr><tr><td>docs\layouts\partials\helpers\picture.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\environment.md</td></tr><tr><td>docs\layouts\shortcodes\deprecated-in.html</td></tr><tr><td>docs\layouts\partials\layouts\search\input.html</td></tr><tr><td>docs\assets\js\body-start.js</td></tr><tr><td>docs\assets\css\components\view-transitions.css</td></tr><tr><td>docs\assets\js\alpinejs\data\navbar.js</td></tr><tr><td>docs\content\en\quick-reference\glossary\zero-time.md</td></tr><tr><td>docs\content\en\quick-reference\glossary\template-action.md</td></tr><tr><td>docs\layouts\shortcodes\imgproc.html</td></tr><tr><td>docs\layouts\partials\opengraph\opengraph.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\scratch-pad.md</td></tr><tr><td>docs\assets\js\helpers\bridgeTurboAndAlpine.js</td></tr><tr><td>docs\content\en\quick-reference\glossary\logical-path.md</td></tr><tr><td>docs\layouts\shortcodes\datatable.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\resource-type.md</td></tr><tr><td>docs\content\en\commands\_index.md</td></tr><tr><td>docs\layouts\partials\layouts\home\opensource.html</td></tr><tr><td>docs\static\browserconfig.xml</td></tr><tr><td>docs\content\en\quick-reference\glossary\taxonomy-object.md</td></tr><tr><td>docs\layouts\partials\layouts\blocks\alert.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\noop.md</td></tr><tr><td>docs\layouts\shortcodes\readfile.html</td></tr><tr><td>docs\layouts\partials\layouts\in-this-section.html</td></tr><tr><td>docs\content\en\quick-reference\glossary\content-adapter.md</td></tr><tr><td>docs\layouts\partials\layouts\head\head.html</td></tr><tr><td>docs\assets\css\components\highlight.css</td></tr><tr><td>docs\layouts\partials\layouts\footer.html</td></tr><tr><td>docs\.github\ISSUE_TEMPLATE\default.md</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (247)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共247个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\maintenance\list.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\package.json</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\output\js\app.js</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\js\clipboardjs.js</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\include.html</td></tr><tr><td>docs\content\en\getting-started\glossary\type.md</td></tr><tr><td>docs\content\en\getting-started\glossary\kind.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\news\single.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\docs\functions-signatures.html</td></tr><tr><td>docs\content\en\getting-started\glossary\cli.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\right-sidebar.html</td></tr><tr><td>docs\content\en\getting-started\glossary\internationalization.md</td></tr><tr><td>docs\content\en\getting-started\glossary\regular-page.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\_default\taxonomy.html</td></tr><tr><td>docs\content\en\getting-started\glossary\raw-string-literal.md</td></tr><tr><td>docs\content\en\getting-started\glossary\weight.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\summary.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\code-toggle.html</td></tr><tr><td>docs\content\en\getting-started\glossary\method.md</td></tr><tr><td>docs\content\en\getting-started\glossary\output-format.md</td></tr><tr><td>docs\content\en\getting-started\glossary\front-matter.md</td></tr><tr><td>docs\content\en\getting-started\glossary\term-page.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_algolia.css</td></tr><tr><td>docs\content\en\getting-started\glossary\flag.md</td></tr><tr><td>docs\content\en\getting-started\glossary\module.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\previous-next-links-in-section.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\funcsig.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\home-page-sections\open-source-involvement.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_carousel.css</td></tr><tr><td>docs\content\en\getting-started\glossary\default-sort-order.md</td></tr><tr><td>docs\content\en\getting-started\glossary\context.md</td></tr><tr><td>docs\content\en\getting-started\glossary\remote-resource.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\news\list.xml</td></tr><tr><td>docs\content\en\getting-started\glossary\pagination.md</td></tr><tr><td>docs\content\en\getting-started\glossary\chain.md</td></tr><tr><td>docs\content\en\getting-started\glossary\parameter.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\related.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\chroma-lexers.html</td></tr><tr><td>docs\content\en\getting-started\glossary\element.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_content.css</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_chroma.css</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\js\filesaver.js</td></tr><tr><td>docs\content\en\getting-started\glossary\scalar.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\eturl.html</td></tr><tr><td>docs\content\en\getting-started\glossary\paginator.md</td></tr><tr><td>docs\content\en\getting-started\glossary\object.md</td></tr><tr><td>docs\content\en\getting-started\glossary\pager.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\_default\_markup\render-heading.html</td></tr><tr><td>docs\content\en\getting-started\glossary\scratch-pad.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\svg\godoc-icon.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\datatable.html</td></tr><tr><td>docs\content\en\getting-started\glossary\page-kind.md</td></tr><tr><td>docs\src\css\_chroma.css</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\components\author-github-data.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_social-icons.css</td></tr><tr><td>docs\content\en\getting-started\glossary\taxonomy-page.md</td></tr><tr><td>docs\content\en\getting-started\glossary\field.md</td></tr><tr><td>docs\content\en\getting-started\glossary\layout.md</td></tr><tr><td>docs\content\en\getting-started\glossary\render-hook.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\new-in.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\maintenance-pages-table.html</td></tr><tr><td>docs\content\en\getting-started\glossary\relative-permalink.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\math.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_hugo-internal-template-styling.css</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\hooks\after-body-start.html</td></tr><tr><td>docs\content\en\getting-started\glossary\list-template.md</td></tr><tr><td>docs\content\en\getting-started\glossary\weighted-page.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\site-search.html</td></tr><tr><td>docs\content\en\getting-started\glossary\branch-bundle.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\_default\list.html</td></tr><tr><td>docs\content\en\getting-started\glossary\markdown-attribute.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\site-manifest.html</td></tr><tr><td>docs\content\en\getting-started\glossary\interval.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\home-page-sections\tweets.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\home-page-sections\features-single.html</td></tr><tr><td>docs\content\en\getting-started\glossary\headless-bundle.md</td></tr><tr><td>docs\static\css\style.css</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\js\tabs.js</td></tr><tr><td>docs\content\en\getting-started\glossary\global-resource.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\nav-links-global-mobile.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\articlelist.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\partials\nav-top.html</td></tr><tr><td>docs\static\css\hugofont.css</td></tr><tr><td>docs\content\en\getting-started\glossary\list-page.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\readfile.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\_default\_markup\render-codeblock-mermaid.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\robots.txt</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\_default\page.html</td></tr><tr><td>docs\content\en\getting-started\glossary\page-resource.md</td></tr><tr><td>docs\content\en\getting-started\glossary\section-page.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\img.html</td></tr><tr><td>docs\content\en\getting-started\glossary\argument.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\assets\css\_font-family.css</td></tr><tr><td>docs\content\en\getting-started\glossary\leaf-bundle.md</td></tr><tr><td>docs\content\en\getting-started\glossary\content-adapter.md</td></tr><tr><td>docs\content\en\getting-started\glossary\section.md</td></tr><tr><td>docs\content\en\getting-started\glossary\cjk.md</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\shortcodes\code.html</td></tr><tr><td>docs\_vendor\github.com\gohugoio\gohugoioTheme\layouts\index.rss.xml</td></tr><tr><td>docs\content\en\getting-started\glossary\pipeline.md</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (483)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>hugolib\filesystems\basefs_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\collections\Where.md</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\404.md</td><td>内容变更</td></tr><tr><td>config\allconfig\load.go</td><td>内容变更</td></tr><tr><td>hugolib\content_render_hooks_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\FirstSection.md</td><td>内容变更</td></tr><tr><td>resources\page\permalinks.go</td><td>内容变更</td></tr><tr><td>docs\.github\workflows\spellcheck.yml</td><td>内容变更</td></tr><tr><td>markup\goldmark\goldmark_integration_test.go</td><td>内容变更</td></tr><tr><td>common\maps\scratch_test.go</td><td>内容变更</td></tr><tr><td>commands\release.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\js.go</td><td>内容变更</td></tr><tr><td>media\mediaType_test.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\testenv\testenv_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Resources.md</td><td>内容变更</td></tr><tr><td>navigation\menu.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\css\TailwindCSS.md</td><td>内容变更</td></tr><tr><td>navigation\menu_cache_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\collections\Last.md</td><td>内容变更</td></tr><tr><td>tpl\collections\collections_integration_test.go</td><td>内容变更</td></tr><tr><td>common\tasks\tasks.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\resources\Concat.md</td><td>内容变更</td></tr><tr><td>common\hugo\hugo_test.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\transition_test.go</td><td>内容变更</td></tr><tr><td>hugolib\paginator_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\troubleshooting\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\contribute\_index.md</td><td>内容变更</td></tr><tr><td>main_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\resources\ToCSS.md</td><td>内容变更</td></tr><tr><td>related\inverted_index_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\contribute\development.md</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\param.md</td><td>内容变更</td></tr><tr><td>hugolib\site_url_test.go</td><td>内容变更</td></tr><tr><td>hugofs\walk_test.go</td><td>内容变更</td></tr><tr><td>magefile.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\shortcode\Scratch.md</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-modules\configuration.md</td><td>内容变更</td></tr><tr><td>hugolib\hugo_sites_build.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\js\Build.md</td><td>内容变更</td></tr><tr><td>config\privacy\privacyConfig_test.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\convert.go</td><td>内容变更</td></tr><tr><td>resources\page\pages_sort.go</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\embedded.md</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\postcss.md</td><td>内容变更</td></tr><tr><td>parser\metadecoders\decoder.go</td><td>内容变更</td></tr><tr><td>.circleci\config.yml</td><td>内容变更</td></tr><tr><td>resources\page\permalinks_integration_test.go</td><td>内容变更</td></tr><tr><td>navigation\menu_cache.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\autoid.go</td><td>内容变更</td></tr><tr><td>hugolib\site.go</td><td>内容变更</td></tr><tr><td>tpl\data\data.go</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\cssjs\postcss_integration_test.go</td><td>内容变更</td></tr><tr><td>hugolib\pagesfromdata\pagesfromgotmpl.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\resources\Babel.md</td><td>内容变更</td></tr><tr><td>markup\goldmark\autoid_test.go</td><td>内容变更</td></tr><tr><td>hugolib\content_map_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\Process.md</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\home.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\Lastmod.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\multi_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\go-template\try.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\testenv\testenv_windows.go</td><td>内容变更</td></tr><tr><td>main_withdeploy_off_test.go</td><td>内容变更</td></tr><tr><td>hugolib\pagebundler_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\page-resources.md</td><td>内容变更</td></tr><tr><td>resources\images\color.go</td><td>内容变更</td></tr><tr><td>common\hugo\vars_withdeploy_off.go</td><td>内容变更</td></tr><tr><td>hugolib\page.go</td><td>内容变更</td></tr><tr><td>transform\urlreplacers\absurlreplacer.go</td><td>内容变更</td></tr><tr><td>hugolib\page__common.go</td><td>内容变更</td></tr><tr><td>common\hugo\version_current.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hosting-and-deployment\hosting-on-github\index.md</td><td>内容变更</td></tr><tr><td>modules\config.go</td><td>内容变更</td></tr><tr><td>tpl\collections\collections.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\multilingual.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\template.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\template_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\shortcode\_index.md</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\tocss\dartsass\transform.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\File.md</td><td>内容变更</td></tr><tr><td>common\hugio\hasBytesWriter_test.go</td><td>内容变更</td></tr><tr><td>common\maps\ordered.go</td><td>内容变更</td></tr><tr><td>resources\images\imagetesting\testing.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\pager\PageSize.md</td><td>内容变更</td></tr><tr><td>docs\content\en\hosting-and-deployment\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\news\_index.md</td><td>内容变更</td></tr><tr><td>tpl\transform\transform.go</td><td>内容变更</td></tr><tr><td>markup\tableofcontents\tableofcontents.go</td><td>内容变更</td></tr><tr><td>modules\client_test.go</td><td>内容变更</td></tr><tr><td>hugolib\resource_chain_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\youtube.md</td><td>内容变更</td></tr><tr><td>tpl\collections\complement.go</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\types\index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_server_trust.md</td><td>内容变更</td></tr><tr><td>CONTRIBUTING.md</td><td>内容变更</td></tr><tr><td>tpl\reflect\reflect.go</td><td>内容变更</td></tr><tr><td>hugolib\rss_test.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\content_test.go</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\tocss\dartsass\dartsass_integration_test.go</td><td>内容变更</td></tr><tr><td>htesting\hqt\checkers.go</td><td>内容变更</td></tr><tr><td>docs\archetypes\glossary.md</td><td>内容变更</td></tr><tr><td>config\allconfig\configlanguage.go</td><td>内容变更</td></tr><tr><td>hugolib\page__content.go</td><td>内容变更</td></tr><tr><td>docs\content\en\installation\_index.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\doc.go</td><td>内容变更</td></tr><tr><td>common\para\para_test.go</td><td>内容变更</td></tr><tr><td>media\config.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_npm.md</td><td>内容变更</td></tr><tr><td>resources\resource_factories\create\create_integration_test.go</td><td>内容变更</td></tr><tr><td>common\hugo\vars_withdeploy.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\fmt\Warnidf.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\hugo\IsServer.md</td><td>内容变更</td></tr><tr><td>hugolib\pagesfromdata\pagesfromgotmpl_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\transform\Unmarshal.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\Opacity.md</td><td>内容变更</td></tr><tr><td>docs\content\en\troubleshooting\faq.md</td><td>内容变更</td></tr><tr><td>docs\content\en\about\features.md</td><td>内容变更</td></tr><tr><td>resources\resource_factories\bundler\bundler_test.go</td><td>内容变更</td></tr><tr><td>hugolib\site_output.go</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\tables.md</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\embedded\templates\shortcodes\instagram.html</td><td>内容变更</td></tr><tr><td>config\commonConfig_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\comment.md</td><td>内容变更</td></tr><tr><td>testscripts\commands\mod_npm_withexisting.txt</td><td>内容变更</td></tr><tr><td>docs\layouts\shortcodes\glossary-term.html</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Atan2.md</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\urls.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\escape_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\resource\Err.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\IsDescendant.md</td><td>内容变更</td></tr><tr><td>hugolib\pagecollections_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\resources\PostCSS.md</td><td>内容变更</td></tr><tr><td>docs\content\en\contribute\documentation.md</td><td>内容变更</td></tr><tr><td>markup\goldmark\toc_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\transform\XMLEscape.md</td><td>内容变更</td></tr><tr><td>commands\commandeer.go</td><td>内容变更</td></tr><tr><td>lazy\init_test.go</td><td>内容变更</td></tr><tr><td>commands\config.go</td><td>内容变更</td></tr><tr><td>internal\js\esbuild\resolve.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\link_test.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\escape.go</td><td>内容变更</td></tr><tr><td>resources\page\pages_sort_test.go</td><td>内容变更</td></tr><tr><td>snap\snapcraft.yaml</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_get.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\CurrentSection.md</td><td>内容变更</td></tr><tr><td>cache\filecache\filecache_pruner_test.go</td><td>内容变更</td></tr><tr><td>common\loggers\logger_test.go</td><td>内容变更</td></tr><tr><td>common\paths\pathparser_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\headings.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\hugo\IsMultilingual.md</td><td>内容变更</td></tr><tr><td>tpl\time\time_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\section.md</td><td>内容变更</td></tr><tr><td>cache\httpcache\httpcache_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\tools\search.md</td><td>内容变更</td></tr><tr><td>hugolib\config_test.go</td><td>内容变更</td></tr><tr><td>resources\images\webp\webp.go</td><td>内容变更</td></tr><tr><td>create\content_test.go</td><td>内容变更</td></tr><tr><td>commands\deploy_off.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\minification.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\Padding.md</td><td>内容变更</td></tr><tr><td>deploy\deploy.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Pages.md</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\x.md</td><td>内容变更</td></tr><tr><td>hugolib\doctree\nodeshiftree_test.go</td><td>内容变更</td></tr><tr><td>tpl\time\init.go</td><td>内容变更</td></tr><tr><td>docs\content\en\getting-started\configuration-build.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\examplefiles_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\IsMultiLingual.md</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_gen.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\parse\parse_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\crypto\FNV32a.md</td><td>内容变更</td></tr><tr><td>docs\layouts\shortcodes\glossary.html</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\Text.md</td><td>内容变更</td></tr><tr><td>resources\resource\resources.go</td><td>内容变更</td></tr><tr><td>hugolib\site_stats_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\documentation.md</td><td>内容变更</td></tr><tr><td>docs\content\en\getting-started\usage.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\js\_common\options.md</td><td>内容变更</td></tr><tr><td>hugolib\doctree\treeshifttree.go</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\links.md</td><td>内容变更</td></tr><tr><td>hugolib\testhelpers_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_tidy.md</td><td>内容变更</td></tr><tr><td>related\inverted_index.go</td><td>内容变更</td></tr><tr><td>common\types\evictingqueue_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\shortcode\Store.md</td><td>内容变更</td></tr><tr><td>resources\page\pagemeta\page_frontmatter.go</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\blockquotes.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\parse\lex.go</td><td>内容变更</td></tr><tr><td>internal\warpc\js\package.json</td><td>内容变更</td></tr><tr><td>resources\resource_metadata.go</td><td>内容变更</td></tr><tr><td>tpl\internal\templatefuncsRegistry.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\AutoOrient.md</td><td>内容变更</td></tr><tr><td>docs\content\en\installation\_common\01-editions.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\GoogleAnalytics.md</td><td>内容变更</td></tr><tr><td>hugofs\fileinfo.go</td><td>内容变更</td></tr><tr><td>tpl\collections\where_test.go</td><td>内容变更</td></tr><tr><td>hugolib\shortcode_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\resources\GetRemote.md</td><td>内容变更</td></tr><tr><td>config\allconfig\allconfig_integration_test.go</td><td>内容变更</td></tr><tr><td>config\security\whitelist.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\LastChange.md</td><td>内容变更</td></tr><tr><td>docs\content\en\getting-started\configuration-markup.md</td><td>内容变更</td></tr><tr><td>parser\pageparser\pagelexer_intro.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Atan.md</td><td>内容变更</td></tr><tr><td>hugolib\hugo_sites.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\cfg\cfg.go</td><td>内容变更</td></tr><tr><td>related\related_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\cross-references.md</td><td>内容变更</td></tr><tr><td>.github\workflows\image.yml</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\Mask.md</td><td>内容变更</td></tr><tr><td>hugolib\content_map_page.go</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\embedded\templates\shortcodes\youtube.html</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-modules\_index.md</td><td>内容变更</td></tr><tr><td>codegen\methods.go</td><td>内容变更</td></tr><tr><td>tpl\data\resources_test.go</td><td>内容变更</td></tr><tr><td>hugofs\glob\glob.go</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\qr.md</td><td>内容变更</td></tr><tr><td>resources\resources_integration_test.go</td><td>内容变更</td></tr><tr><td>resources\page\pages_cache.go</td><td>内容变更</td></tr><tr><td>resources\transform_test.go</td><td>内容变更</td></tr><tr><td>resources\postpub\fields.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\css\Sass.md</td><td>内容变更</td></tr><tr><td>releaser\releaser.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\resource-from-template.md</td><td>内容变更</td></tr><tr><td>output\layouts\layout.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\html_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Sin.md</td><td>内容变更</td></tr><tr><td>docs\content\en\quick-reference\methods.md</td><td>内容变更</td></tr><tr><td>resources\page\page.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\resources\PostProcess.md</td><td>内容变更</td></tr><tr><td>resources\page\site.go</td><td>内容变更</td></tr><tr><td>docs\content\en\quick-reference\page-collections.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\Store.md</td><td>内容变更</td></tr><tr><td>commands\hugobuilder.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_init.md</td><td>内容变更</td></tr><tr><td>tpl\debug\debug.go</td><td>内容变更</td></tr><tr><td>resources\image_test.go</td><td>内容变更</td></tr><tr><td>hugolib\taxonomy_test.go</td><td>内容变更</td></tr><tr><td>hugolib\filesystems\basefs.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\internal\render\context.go</td><td>内容变更</td></tr><tr><td>cache\dynacache\dynacache_test.go</td><td>内容变更</td></tr><tr><td>markup\rst\convert.go</td><td>内容变更</td></tr><tr><td>internal\warpc\warpc.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\shortcodes.md</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\tocss\scss\client_notavailable.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_verify.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Cos.md</td><td>内容变更</td></tr><tr><td>docs\README.md</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_clean.md</td><td>内容变更</td></tr><tr><td>markup\markup_config\config.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\passthrough\passthrough.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\page-bundles.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\transform\ToMath.md</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\sitemap.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Path.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\strings\Diff\index.md</td><td>内容变更</td></tr><tr><td>hugolib\segments\segments.go</td><td>内容变更</td></tr><tr><td>config\defaultConfigProvider_test.go</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\embedded\templates\_default\robots.txt</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\resource\Data.md</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\shortcodes_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_gen_doc.md</td><td>内容变更</td></tr><tr><td>common\hugo\vars_regular.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Sum.md</td><td>内容变更</td></tr><tr><td>helpers\url_test.go</td><td>内容变更</td></tr><tr><td>helpers\emoji.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\IsServer.md</td><td>内容变更</td></tr><tr><td>hugolib\site_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Scratch.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\pager\PagerSize.md</td><td>内容变更</td></tr><tr><td>resources\image_extended_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Parent.md</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_graph.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\css\PostCSS.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\_common\highlighting-options.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\exec_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod.md</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\_common\pageinner.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\testenv\exec.go</td><td>内容变更</td></tr><tr><td>common\hstrings\strings.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\Dither.md</td><td>内容变更</td></tr><tr><td>resources\page\page_nop.go</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\template.go</td><td>内容变更</td></tr><tr><td>deploy\cloudfront.go</td><td>内容变更</td></tr><tr><td>tpl\transform\transform_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\hugo\Store.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\DisqusShortname.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\hugo\IsDevelopment.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\templates\Defer.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\js_test.go</td><td>内容变更</td></tr><tr><td>docs\.cspell.json</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Ancestors.md</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\vimeo.md</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\formats.md</td><td>内容变更</td></tr><tr><td>testscripts\commands\hugo__errors.txt</td><td>内容变更</td></tr><tr><td>hugolib\pages_language_merge_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\myshowcase\index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\ToRadians.md</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\fingerprint.md</td><td>内容变更</td></tr><tr><td>resources\images\webp\webp_notavailable.go</td><td>内容变更</td></tr><tr><td>parser\pageparser\pageparser.go</td><td>内容变更</td></tr><tr><td>tpl\time\time.go</td><td>内容变更</td></tr><tr><td>testscripts\commands\gen.txt</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\image-processing\index.md</td><td>内容变更</td></tr><tr><td>resources\page\testhelpers_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\getting-started\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_npm_pack.md</td><td>内容变更</td></tr><tr><td>parser\metadecoders\decoder_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\quick-reference\_index.md</td><td>内容变更</td></tr><tr><td>common\hugo\hugo.go</td><td>内容变更</td></tr><tr><td>resources\resource_factories\bundler\bundler.go</td><td>内容变更</td></tr><tr><td>cache\httpcache\httpcache_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\getting-started\configuration.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\strings\TrimSpace.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\data\GetJSON.md</td><td>内容变更</td></tr><tr><td>tpl\collections\sort.go</td><td>内容变更</td></tr><tr><td>tpl\transform\unmarshal_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\collections\NewScratch.md</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\_index.md</td><td>内容变更</td></tr><tr><td>markup\goldmark\codeblocks\render.go</td><td>内容变更</td></tr><tr><td>common\types\convert.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Title.md</td><td>内容变更</td></tr><tr><td>scripts\fork_go_templates\main.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\transpile-sass-to-css.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\getting-started\external-learning-resources\index.md</td><td>内容变更</td></tr><tr><td>hugofs\fs.go</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\template_ast_transformers.go</td><td>内容变更</td></tr><tr><td>resources\page\pagemeta\page_frontmatter_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\hugo\IsMultihost.md</td><td>内容变更</td></tr><tr><td>markup\tableofcontents\tableofcontents_test.go</td><td>内容变更</td></tr><tr><td>config\defaultConfigProvider.go</td><td>内容变更</td></tr><tr><td>config\allconfig\allconfig.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\goldmark_config\config.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_server.md</td><td>内容变更</td></tr><tr><td>resources\page\permalinks_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\archetypes.md</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\template_funcs.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\front-matter.md</td><td>内容变更</td></tr><tr><td>docs\content\en\installation\windows.md</td><td>内容变更</td></tr><tr><td>hugolib\rebuild_test.go</td><td>内容变更</td></tr><tr><td>tpl\collections\reflect_helpers.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\hugo_template.go</td><td>内容变更</td></tr><tr><td>identity\identity_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Pi.md</td><td>内容变更</td></tr><tr><td>docs\layouts\_default\_markup\render-link.html</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\url_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\installation\_common\02-prerequisites.md</td><td>内容变更</td></tr><tr><td>markup\goldmark\hugocontext\hugocontext.go</td><td>内容变更</td></tr><tr><td>common\collections\append.go</td><td>内容变更</td></tr><tr><td>tpl\collections\index.go</td><td>内容变更</td></tr><tr><td>parser\lowercase_camel_json.go</td><td>内容变更</td></tr><tr><td>langs\language_test.go</td><td>内容变更</td></tr><tr><td>tpl\collections\symdiff.go</td><td>内容变更</td></tr><tr><td>config\allconfig\alldecoders.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\css_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\output-formats.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\exec.go</td><td>内容变更</td></tr><tr><td>common\herrors\error_locator.go</td><td>内容变更</td></tr><tr><td>internal\js\esbuild\options.go</td><td>内容变更</td></tr><tr><td>helpers\content.go</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\details.md</td><td>内容变更</td></tr><tr><td>docs\content\en\about\_index.md</td><td>内容变更</td></tr><tr><td>tpl\tplimpl\embedded\templates\shortcodes\vimeo.html</td><td>内容变更</td></tr><tr><td>cache\httpcache\httpcache.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\multi_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\sections.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\ToDegrees.md</td><td>内容变更</td></tr><tr><td>hugolib\site_render.go</td><td>内容变更</td></tr><tr><td>commands\gen.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\example_test.go</td><td>内容变更</td></tr><tr><td>hugolib\template_test.go</td><td>内容变更</td></tr><tr><td>helpers\docshelper.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\IsAncestor.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\InSection.md</td><td>内容变更</td></tr><tr><td>common\hugo\vars_extended.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\toc.go</td><td>内容变更</td></tr><tr><td>transform\urlreplacers\absurl.go</td><td>内容变更</td></tr><tr><td>cache\filecache\filecache_test.go</td><td>内容变更</td></tr><tr><td>tpl\templates\defer_integration_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\gist.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\RegularPages.md</td><td>内容变更</td></tr><tr><td>resources\page\page_matcher.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\debug\Timer.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\js\Babel.md</td><td>内容变更</td></tr><tr><td>source\fileInfo.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Sitemap.md</td><td>内容变更</td></tr><tr><td>docs\content\en\shortcodes\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\site\IsDevelopment.md</td><td>内容变更</td></tr><tr><td>common\loggers\loggerglobal.go</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\tocss\scss\tocss.go</td><td>内容变更</td></tr><tr><td>watcher\filenotify\poller_test.go</td><td>内容变更</td></tr><tr><td>deploy\deploy_azure.go</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\_index.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\htmltemplate\clone_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\hugo\IsExtended.md</td><td>内容变更</td></tr><tr><td>internal\warpc\warpc_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\about\privacy.md</td><td>内容变更</td></tr><tr><td>transform\metainject\hugogenerator.go</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\passthrough.md</td><td>内容变更</td></tr><tr><td>.github\workflows\test.yml</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\content-adapters.md</td><td>内容变更</td></tr><tr><td>identity\finder.go</td><td>内容变更</td></tr><tr><td>hugolib\doctree\nodeshifttree.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\bundling.md</td><td>内容变更</td></tr><tr><td>common\types\evictingqueue.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\render_hooks.go</td><td>内容变更</td></tr><tr><td>tpl\math\math.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\js\Batch.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Rand.md</td><td>内容变更</td></tr><tr><td>tpl\collections\where.go</td><td>内容变更</td></tr><tr><td>deploy\deploy_test.go</td><td>内容变更</td></tr><tr><td>commands\mod.go</td><td>内容变更</td></tr><tr><td>common\hreflect\helpers.go</td><td>内容变更</td></tr><tr><td>resources\page\pages_cache_test.go</td><td>内容变更</td></tr><tr><td>config\commonConfig.go</td><td>内容变更</td></tr><tr><td>docs\content\en\troubleshooting\deprecation.md</td><td>内容变更</td></tr><tr><td>docs\content\en\tools\_index.md</td><td>内容变更</td></tr><tr><td>hugolib\shortcode.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\mathematics.md</td><td>内容变更</td></tr><tr><td>internal\js\esbuild\options_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\postprocess.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Asin.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\images\QR.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Tan.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\taxonomy\Page.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Acos.md</td><td>内容变更</td></tr><tr><td>config\namespace_test.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\testenv\testenv_notwin.go</td><td>内容变更</td></tr><tr><td>tpl\collections\apply.go</td><td>内容变更</td></tr><tr><td>common\hashing\hashing_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\content-management\_index.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Sections.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\resource\Colors.md</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\math\Product.md</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\parse\lex_test.go</td><td>内容变更</td></tr><tr><td>resources\page\pagination_test.go</td><td>内容变更</td></tr><tr><td>common\collections\stack.go</td><td>内容变更</td></tr><tr><td>commands\deploy.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Type.md</td><td>内容变更</td></tr><tr><td>docs\LICENSE.md</td><td>内容变更</td></tr><tr><td>helpers\processing_stats.go</td><td>内容变更</td></tr><tr><td>internal\warpc\js\renderkatex.bundle.js</td><td>内容变更</td></tr><tr><td>common\rungroup\rungroup.go</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\ContentWithoutSummary.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\Store.md</td><td>内容变更</td></tr><tr><td>docs\content\en\methods\page\RenderShortcodes.md</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\code-blocks.md</td><td>内容变更</td></tr><tr><td>hugolib\page_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\data\GetCSV.md</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-modules\use-modules.md</td><td>内容变更</td></tr><tr><td>common\hexec\exec.go</td><td>内容变更</td></tr><tr><td>internal\warpc\js\renderkatex.js</td><td>内容变更</td></tr><tr><td>hugolib\page__new.go</td><td>内容变更</td></tr><tr><td>docs\content\en\templates\shortcode.md</td><td>内容变更</td></tr><tr><td>tpl\collections\collections_test.go</td><td>内容变更</td></tr><tr><td>tpl\page\init.go</td><td>内容变更</td></tr><tr><td>common\hreflect\helpers_test.go</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\tocss\scss\client_extended.go</td><td>内容变更</td></tr><tr><td>docs\content\en\render-hooks\images.md</td><td>内容变更</td></tr><tr><td>helpers\general.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\resource-from-string.md</td><td>内容变更</td></tr><tr><td>hugolib\page__meta.go</td><td>内容变更</td></tr><tr><td>docs\content\en\hugo-pipes\_index.md</td><td>内容变更</td></tr><tr><td>resources\resource_transformers\tocss\dartsass\client.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\examplefiles_test.go</td><td>内容变更</td></tr><tr><td>docs\content\en\functions\collections\Dictionary.md</td><td>内容变更</td></tr><tr><td>main_withdeploy_test.go</td><td>内容变更</td></tr><tr><td>deploy\google.go</td><td>内容变更</td></tr><tr><td>docs\content\en\commands\hugo_mod_vendor.md</td><td>内容变更</td></tr><tr><td>docs\data\docs.yaml</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\testenv\testenv.go</td><td>内容变更</td></tr><tr><td>modules\client.go</td><td>内容变更</td></tr><tr><td>hugolib\cascade_test.go</td><td>内容变更</td></tr><tr><td>commands\server.go</td><td>内容变更</td></tr><tr><td>markup\goldmark\internal\extensions\attributes\attributes.go</td><td>内容变更</td></tr><tr><td>deploy\deployconfig\deployConfig_test.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\example_test.go</td><td>内容变更</td></tr><tr><td>common\types\types.go</td><td>内容变更</td></tr><tr><td>transform\livereloadinject\livereloadinject.go</td><td>内容变更</td></tr><tr><td>tpl\internal\go_templates\texttemplate\exec_test.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

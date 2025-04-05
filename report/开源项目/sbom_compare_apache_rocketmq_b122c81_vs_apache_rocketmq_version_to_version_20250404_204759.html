@@ -1,0 +1,543 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 20:48:02</p>
+                <p>SBOM A: sample_data\apache_rocketmq_b122c81.json</p>
+                <p>SBOM B: sample_data\apache_rocketmq.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.6/10 (96.3%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.6/10.0 (96.3%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.7%)</td>
+                    <td><ul class='details-list'><li>新增了1个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (100.0%)</td>
+                    <td><ul class='details-list'><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.9/1.3 (72.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-w33c-445m-f8w7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-w33c-445m-f8w7</li><li>- Warn: Project is vulnerable to: GHSA-389x-839f-4rhx (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-389x-839f-4rhx</li><li>- Warn: Project is vulnerable to: GHSA-xq3w-v528-46rv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-xq3w-v528-46rv</li><li>- Warn: Project is vulnerable to: GHSA-4g8c-wm8x-jfhw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-4g8c-wm8x-jfhw</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (4)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-389x-839f-4rhx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-389x-839f-4rhx<br><br><div class="cve-header">来自 CVE-2025-25193 的附加信息:</div><br><div class="section-header">描述: Netty, an asynchronous, event-driven network application framework, has a vulnerability in versions up to and including 4.1.118.Final. An unsafe reading of environment file could potentially cause a denial of service in Netty. When loaded on an Windows application, Netty attempts to load a file that does not exist. If an attacker creates such a large file, the Netty application crash. A similar issue was previously reported as CVE-2024-47535. This issue was fixed, but the fix was incomplete in that null-bytes were not counted against the input limit. Commit d1fbda62d3a47835d3fb35db8bd42ecc205a5386 contains an updated fix.</div><br><div class="section-header">发布日期: 2025-02-10</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-389x-839f-4rhx</span><br><span class="vuln-link">https://github.com/netty/netty/commit/d1fbda62d3a47835d3fb35db8bd42ecc205a5386</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-25193</div><br><br><div class="section-header">发布日期: 2025-02-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-389x-839f-4rhx</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-25193</span><br><span class="vuln-link">https://github.com/netty/netty/commit/d1fbda62d3a47835d3fb35db8bd42ecc205a5386</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250221-0006</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-common (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-4g8c-wm8x-jfhw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-4g8c-wm8x-jfhw<br><br><div class="cve-header">来自 CVE-2025-24970 的附加信息:</div><br><div class="section-header">描述: Netty, an asynchronous, event-driven network application framework, has a vulnerability starting in version 4.1.91.Final and prior to version 4.1.118.Final. When a special crafted packet is received via SslHandler it doesn't correctly handle validation of such a packet in all cases which can lead to a native crash. Version 4.1.118.Final contains a patch. As workaround its possible to either disable the usage of the native SSLEngine or change the code manually.</div><br><div class="section-header">发布日期: 2025-02-10</div><br><div class="section-header">最后更新: 2025-02-21</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-4g8c-wm8x-jfhw</span><br><span class="vuln-link">https://github.com/netty/netty/commit/87f40725155b2f89adfde68c7732f97c153676c4</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-24970</div><br><br><div class="section-header">发布日期: 2025-02-10</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-4g8c-wm8x-jfhw</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-24970</span><br><span class="vuln-link">https://github.com/netty/netty/commit/87f40725155b2f89adfde68c7732f97c153676c4</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250221-0005</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-handler (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-w33c-445m-f8w7</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-w33c-445m-f8w7<br><br><div class="cve-header">来自 CVE-2023-3635 的附加信息:</div><br><div class="section-header">描述: GzipSource does not handle an exception that might be raised when parsing a malformed gzip buffer. This may lead to denial of service of the Okio client when handling a crafted GZIP archive, by using the GzipSource class.</div><br><br><br><div class="section-header">发布日期: 2023-07-12</div><br><div class="section-header">最后更新: 2024-10-23</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://research.jfrog.com/vulnerabilities/okio-gzip-source-unhandled-exception-dos-xray-523195/</span><br><span class="vuln-link">https://github.com/square/okio/commit/81bce1a30af244550b0324597720e4799281da7b</span><br><br><div class="section-header">相关漏洞ID: CVE-2023-3635</div><br><br><div class="section-header">发布日期: 2023-07-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-3635</span><br><span class="vuln-link">https://github.com/square/okio/pull/1280</span><br><span class="vuln-link">https://github.com/square/okio/pull/1334</span><br><span class="vuln-link">https://github.com/square/okio/commit/81bce1a30af244550b0324597720e4799281da7b</span><br><span class="vuln-link">https://github.com/square/okio/commit/b4fa875dc24950680c386e4b1c593660ce4f7839</span><br><span class="vuln-link">https://github.com/square/okio</span><br><span class="vuln-link">https://github.com/square/okio/blob/master/CHANGELOG.md#version-1176</span><br><span class="vuln-link">https://research.jfrog.com/vulnerabilities/okio-gzip-source-unhandled-exception-dos-xray-523195</span><br><br><div class="section-header">影响范围:</div><br>包名: com.squareup.okio:okio (Maven)<br>包名: com.squareup.okio:okio (Maven)<br>包名: com.squareup.okio:okio-jvm (Maven)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-xq3w-v528-46rv</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-xq3w-v528-46rv<br><br><div class="cve-header">来自 CVE-2024-47535 的附加信息:</div><br><div class="section-header">描述: Netty is an asynchronous event-driven network application framework for rapid development of maintainable high performance protocol servers & clients. An unsafe reading of environment file could potentially cause a denial of service in Netty. When loaded on an Windows application, Netty attempts to load a file that does not exist. If an attacker creates such a large file, the Netty application crashes. This vulnerability is fixed in 4.1.115.</div><br><div class="section-header">发布日期: 2024-11-12</div><br><div class="section-header">最后更新: 2024-11-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-xq3w-v528-46rv</span><br><span class="vuln-link">https://github.com/netty/netty/commit/fbf7a704a82e7449b48bd0bbb679f5661c6d61a3</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-47535</div><br><br><div class="section-header">发布日期: 2024-11-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/netty/netty/security/advisories/GHSA-xq3w-v528-46rv</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-47535</span><br><span class="vuln-link">https://github.com/netty/netty/commit/fbf7a704a82e7449b48bd0bbb679f5661c6d61a3</span><br><span class="vuln-link">https://github.com/netty/netty</span><br><br><div class="section-header">影响范围:</div><br>包名: io.netty:netty-common (Maven)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>jakarta.annotation:jakarta.annotation-api</td><td>1.3.5</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>2251</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>2328</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>87</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>284</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (87)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>store\src\test\java\org\apache\rocketmq\store\rocksdb\RocksDBOptionsFactoryTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerRecord.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\longpolling\PopLongPollingServiceTest.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\lock\BackOffReentrantLock.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerLockService.java</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\recall\SendAndRecallDelayMessageIT.java</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\CheckRocksdbCqWriteResult.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\pop\PopConsumerCacheTest.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\LmqDispatch.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\pop\PopConsumerContextTest.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\topic\TopicQueueMappingCleanServiceTest.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\pop\PopConsumerLockServiceTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v1\RocksDBLmqTopicConfigManager.java</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\config\ConfigHelper.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\exception\StoreException.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\exception\ConsumeQueueException.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\lock\BackOffSpinLock.java</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\RecallMessageRequestHeader.java</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\common\GroupCommitContextTest.java</td></tr><tr><td>proxy\src\test\java\org\apache\rocketmq\proxy\remoting\activity\RecallMessageActivityTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\ConfigHelper.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerKVStore.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\DispatchEntry.java</td></tr><tr><td>proxy\src\test\java\org\apache\rocketmq\proxy\grpc\v2\producer\RecallMessageActivityTest.java</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\lock\AdaptiveLockTest.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\coldctr\ColdDataCgCtrServiceTest.java</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueueTest.java</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\producer\RecallMessageHandle.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\ConfigStorage.java</td></tr><tr><td>remoting\src\test\java\org\apache\rocketmq\remoting\rpc\ClientMetadataTest.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\offset\OffsetEntryType.java</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\producer\RecallMessageActivity.java</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\recall\RecallWithTraceIT.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v1\RocksDBOffsetSerializeWrapper.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\OffsetInitializer.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\ConsumerOffsetManagerV2.java</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\CommandCallback.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\offset\OffsetEntry.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerService.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\pop\PopConsumerRocksdbStoreTest.java</td></tr><tr><td>remoting\src\test\java\org\apache\rocketmq\remoting\rpc\RpcClientImplTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\RecallMessageProcessor.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\config\v2\SubscriptionGroupManagerV2Test.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\TablePrefix.java</td></tr><tr><td>proxy\src\test\java\org\apache\rocketmq\proxy\common\AddressTest.java</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueueOffsetTableTest.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\pop\PopConsumerRecordTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\SubscriptionGroupManagerV2.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\pop\PopConsumerServiceTest.java</td></tr><tr><td>remoting\src\test\java\org\apache\rocketmq\remoting\protocol\header\ExportRocksDBConfigToJsonRequestHeaderTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v1\RocksDBSubscriptionGroupManager.java</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\remoting\activity\RecallMessageActivity.java</td></tr><tr><td>common\src\test\java\org\apache\rocketmq\common\producer\RecallMessageHandleTest.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\RecordPrefix.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v1\RocksDBTopicConfigManager.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\config\v2\TopicConfigManagerV2Test.java</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\consumer\NotifyResult.java</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\common\utils\GrpcUtils.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\OffsetInitializerRocksDBImpl.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\lock\AdaptiveBackOffSpinLockImpl.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\TableId.java</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\trace\hook\DefaultRecallMessageTraceHook.java</td></tr><tr><td>common\src\test\java\org\apache\rocketmq\common\config\ConfigHelperTest.java</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\RecallMessageResponseHeader.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v1\RocksDBLmqSubscriptionGroupManager.java</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\export\ExportPopRecordCommand.java</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\index\IndexServiceTest.java</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\ExportRocksDBConfigToJsonRequestHeader.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\SerializationType.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\RecallMessageProcessorTest.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\slave\SlaveSynchronizeAtomicTest.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\RocksGroupCommitService.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\longpolling\PopCommandCallback.java</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\ObjectCreator.java</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\config\v2\ConsumerOffsetManagerV2Test.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\TopicConfigManagerV2.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v2\package-info.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerContext.java</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueueTableTest.java</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\config\ConfigManagerVersion.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerCache.java</td></tr><tr><td>remoting\src\test\java\org\apache\rocketmq\remoting\protocol\header\GetConsumeStatsRequestHeaderTest.java</td></tr><tr><td>acl\src\test\resources\acl_hook\plain_acl.yml</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\common\GroupCommitContext.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\pop\PopConsumerRocksdbStore.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\lock\AdaptiveBackOffSpinLock.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\config\v1\RocksDBConsumerOffsetManager.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (10)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>broker\src\main\java\org\apache\rocketmq\broker\subscription\RocksDBLmqSubscriptionGroupManager.java</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\MultiDispatch.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\RocksDBLmqConsumerOffsetManager.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\RocksDBOffsetSerializeWrapper.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\subscription\RocksDBSubscriptionGroupManager.java</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\MultiDispatchTest.java</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\body\CheckRocksdbCqWriteProgressResponseBody.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\topic\RocksDBLmqTopicConfigManager.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\topic\RocksDBTopicConfigManager.java</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\RocksDBConsumerOffsetManager.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (284)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>example\src\main\java\org\apache\rocketmq\example\simple\PopConsumer.java</td><td>内容变更</td></tr><tr><td>.github\workflows\integration-test.yml</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueue.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\timer\TimerLog.java</td><td>内容变更</td></tr><tr><td>proxy\src\test\java\org\apache\rocketmq\proxy\processor\ProducerProcessorTest.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\provider\FileSegment.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\common\Address.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\consumer\PopStatus.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\BroadcastOffsetManagerTest.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\interceptor\RequestMapping.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\failover\EscapeBridge.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\index\IndexStoreFile.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\ConsumeQueue.java</td><td>内容变更</td></tr><tr><td>proxy\src\test\java\org\apache\rocketmq\proxy\grpc\v2\route\RouteActivityTest.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\metadata\RocksDBConfigToJsonCommand.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\CommitLog.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\processor\MessagingProcessor.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\RocksDBConsumerOffsetManagerTest.java</td><td>内容变更</td></tr><tr><td>namesrv\src\main\java\org\apache\rocketmq\namesrv\processor\ClientRequestProcessor.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\PopMessageProcessor.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\remoting\MultiProtocolTlsHelper.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\trace\hook\SendMessageTraceHookImpl.java</td><td>内容变更</td></tr><tr><td>distribution\pom.xml</td><td>内容变更</td></tr><tr><td>filter\pom.xml</td><td>内容变更</td></tr><tr><td>container\src\main\java\org\apache\rocketmq\container\BrokerContainerProcessor.java</td><td>内容变更</td></tr><tr><td>openmessaging\pom.xml</td><td>内容变更</td></tr><tr><td>acl\pom.xml</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\queue\CheckRocksdbCqWriteProgressCommand.java</td><td>内容变更</td></tr><tr><td>client\pom.xml</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\netty\NettyRemotingServer.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\stats\StatsItem.java</td><td>内容变更</td></tr><tr><td>client\src\test\java\org\apache\rocketmq\client\producer\selector\DefaultMQProducerImplTest.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\provider\MemoryFileSegment.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\AdminBrokerProcessorTest.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\index\IndexService.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\remoting\RemotingProtocolServer.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\DispatchRequest.java</td><td>内容变更</td></tr><tr><td>proxy\src\test\java\org\apache\rocketmq\proxy\service\message\LocalMessageServiceTest.java</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueueTable.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\consumer\DefaultLitePullConsumerImpl.java</td><td>内容变更</td></tr><tr><td>docs\en\Deployment.md</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\consumer\DefaultMQPullConsumerImpl.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\AckMessageProcessorTest.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\message\Message.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\RocksdbTransferOffsetAndCqTest.java</td><td>内容变更</td></tr><tr><td>filter\src\main\java\org\apache\rocketmq\filter\parser\SelectorParser.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\RequestCode.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\SendMessageProcessorTest.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\MQAdminStartup.java</td><td>内容变更</td></tr><tr><td>.github\workflows\push-ci.yml</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\GrpcMessingActivity.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\file\FlatMessageFile.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\interceptor\AuthenticationInterceptor.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\util\PerfCounter.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\client\consumer\broadcast\order\OrderMsgBroadcastIT.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\cluster\ClusterListSubCommand.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\DefaultMessageStore.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\plugin\AbstractPluginMessageStore.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\netty\NettyLogger.java</td><td>内容变更</td></tr><tr><td>broker\src\test\resources\rmq.logback-test.xml</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\TieredMessageStore.java</td><td>内容变更</td></tr><tr><td>container\pom.xml</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\service\ServiceManagerFactory.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueueOffsetTable.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\mqtrace\ConsumeMessageContext.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\utils\ServiceProvider.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\NotificationProcessor.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\factory\MQClientInstance.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\file\FlatMessageFileTest.java</td><td>内容变更</td></tr><tr><td>example\src\main\java\org\apache\rocketmq\example\lmq\LMQProducer.java</td><td>内容变更</td></tr><tr><td>client\src\test\java\org\apache\rocketmq\client\impl\mqclient\MQClientAPIExtTest.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\ResetOffsetRequestHeader.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\LmqConsumerOffsetManager.java</td><td>内容变更</td></tr><tr><td>test\pom.xml</td><td>内容变更</td></tr><tr><td>proxy\pom.xml</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\ConsumerManageProcessor.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\BroadcastOffsetManager.java</td><td>内容变更</td></tr><tr><td>.github\workflows\coverage.yml</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\BrokerOuterAPITest.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\GetConsumeStatsRequestHeader.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\SendMessageProcessor.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\netty\NettyRemotingClient.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\NotificationResponseHeader.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\consumer\DefaultMQPullConsumer.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\topic\TopicConfigManager.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\config\ConfigRocksDBStorage.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\consumer\ProcessQueue.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\producer\SendMessageActivity.java</td><td>内容变更</td></tr><tr><td>auth\src\test\java\org\apache\rocketmq\auth\authorization\builder\DefaultAuthorizationContextBuilderTest.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\longpolling\NotifyMessageArrivingListener.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\core\MessageStoreFetcherImpl.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\provider\FileSegmentTest.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\ServiceThread.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\trace\TraceDataEncoder.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\admin\DefaultMQAdminExtImpl.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\admin\MQAdminExt.java</td><td>内容变更</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\timer\TimerMessageStoreTest.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\file\FlatFileInterface.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\ConsumeQueueStore.java</td><td>内容变更</td></tr><tr><td>tieredstore\pom.xml</td><td>内容变更</td></tr><tr><td>docs\cn\RocketMQ_Example.md</td><td>内容变更</td></tr><tr><td>openmessaging\src\main\java\io\openmessaging\rocketmq\promise\DefaultPromise.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\service\message\ClusterMessageService.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\AppendMessageStatus.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\core\MessageStoreDispatcherImpl.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\RocksDBMessageStore.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\metrics\PopMetricsManager.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\statistics\StatisticsItemScheduledIncrementPrinter.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\DefaultGrpcMessingActivity.java</td><td>内容变更</td></tr><tr><td>remoting\src\test\java\org\apache\rocketmq\remoting\netty\FileRegionEncoderTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\base\IntegrationTestBase.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\netty\TlsHelper.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\config\AbstractRocksDBStorage.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\ConsumerOrderInfoManager.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\controller\ReplicasManager.java</td><td>内容变更</td></tr><tr><td>acl\src\main\java\org\apache\rocketmq\acl\plain\PlainPermissionManager.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\coldctr\ColdDataCgCtrService.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\service\message\MessageService.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\client\net\Broker2Client.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\AbstractConsumeQueueStore.java</td><td>内容变更</td></tr><tr><td>auth\src\main\java\org\apache\rocketmq\auth\authentication\chain\DefaultAuthenticationHandler.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\metrics\TieredStoreMetricsManager.java</td><td>内容变更</td></tr><tr><td>broker\pom.xml</td><td>内容变更</td></tr><tr><td>example\pom.xml</td><td>内容变更</td></tr><tr><td>store\pom.xml</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\producer\DefaultMQProducer.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\QueryAssignmentProcessor.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\ConsumeQueueStoreInterface.java</td><td>内容变更</td></tr><tr><td>docs\cn\controller\design.md</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\export\ExportMetadataInRocksDBCommand.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\core\MessageStoreDispatcherImplTest.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\RemotingCommand.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\BrokerController.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\trace\hook\SendMessageOpenTracingHookImpl.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\grpc\v2\ClusterGrpcIT.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\stats\BrokerStatsManager.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\file\FlatFileFactory.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\config\MessageStoreConfig.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\service\message\LocalMessageService.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\trace\TraceType.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\config\ProxyConfig.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\LanguageCode.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\client\ProducerManager.java</td><td>内容变更</td></tr><tr><td>test\src\main\java\org\apache\rocketmq\test\client\rmq\RMQBroadCastConsumer.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\stats\StatsItemSet.java</td><td>内容变更</td></tr><tr><td>acl\src\main\java\org\apache\rocketmq\acl\common\AclUtils.java</td><td>内容变更</td></tr><tr><td>controller\pom.xml</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\interceptor\HeaderInterceptor.java</td><td>内容变更</td></tr><tr><td>common\pom.xml</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\slave\SlaveSynchronize.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\admin\TopicStatsTable.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\stats\MomentStatsItemSet.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\common\RemotingHelper.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\producer\ProduceAccumulator.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\BrokerPathConfigHelper.java</td><td>内容变更</td></tr><tr><td>auth\pom.xml</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\timer\TimerMessageStore.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\metrics\ConsumerLagCalculator.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\AdminBrokerProcessor.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\GrpcMessagingApplication.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\ConsumeQueueExt.java</td><td>内容变更</td></tr><tr><td>.github\workflows\maven.yaml</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\RocksDBLmqConsumerOffsetManagerTest.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\ConsumerOrderInfoManagerLockFreeNotifyTest.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\CheckRocksdbCqWriteProgressRequestHeader.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\common\ReceiptHandleGroup.java</td><td>内容变更</td></tr><tr><td>docs\cn\Deployment.md</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\ConsumerOffsetManagerTest.java</td><td>内容变更</td></tr><tr><td>container\src\main\java\org\apache\rocketmq\container\InnerBrokerController.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\message\MessageExtBrokerInner.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\transaction\queue\TransactionalMessageServiceImpl.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\TieredMessageStoreTest.java</td><td>内容变更</td></tr><tr><td>remoting\pom.xml</td><td>内容变更</td></tr><tr><td>acl\src\test\java\org\apache\rocketmq\acl\common\AclUtilsTest.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\provider\PosixFileSegment.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\longpolling\PopLongPollingService.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\grpc\v2\GrpcBaseIT.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\AckMessageProcessor.java</td><td>内容变更</td></tr><tr><td>srvutil\pom.xml</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\service\ClusterServiceManager.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\netty\NettyClientConfig.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\PeekMessageProcessorTest.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\subscription\RocksdbGroupConfigTransferTest.java</td><td>内容变更</td></tr><tr><td>acl\src\main\java\org\apache\rocketmq\acl\plain\PlainAccessResource.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\message\MessageDecoder.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\service\route\ProxyTopicRouteData.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\consumer\PullMessageService.java</td><td>内容变更</td></tr><tr><td>tools\pom.xml</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\ReplyMessageProcessor.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\client\ClientActivity.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\offset\LagCalculationIT.java</td><td>内容变更</td></tr><tr><td>auth\src\main\java\org\apache\rocketmq\auth\authorization\builder\DefaultAuthorizationContextBuilder.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\ForbiddenType.java</td><td>内容变更</td></tr><tr><td>test\src\main\java\org\apache\rocketmq\test\util\MQAdminTestUtils.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\PopMessageProcessorTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\org\apache\rocketmq\test\grpc\v2\LocalGrpcIT.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\provider\FileSegmentFactory.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\topic\TopicStatusSubCommand.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\rocksdb\ConsumeQueueRocksDBStorage.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\consumer\RebalanceImpl.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\QueueOffsetOperator.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\index\IndexStoreService.java</td><td>内容变更</td></tr><tr><td>tools\src\test\java\org\apache\rocketmq\tools\admin\DefaultMQAdminExtTest.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\provider\MemoryFileSegmentTest.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\statictopic\TopicQueueMappingUtils.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\processor\ChangeInvisibleTimeProcessorTest.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\pipeline\AuthenticationPipeline.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\dledger\DLedgerCommitLog.java</td><td>内容变更</td></tr><tr><td>client\src\test\java\org\apache\rocketmq\client\impl\MQClientAPIImplTest.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\queue\RocksDBConsumeQueueStore.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\BrokerConfig.java</td><td>内容变更</td></tr><tr><td>pom.xml</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\remoting\activity\GetTopicRouteActivity.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\processor\ProducerProcessor.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\constant\PermName.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\longpolling\LmqPullRequestHoldService.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\topic\RocksdbTopicConfigManagerTest.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\route\RouteActivity.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\AllocateMappedFileService.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\BrokerControllerTest.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\MQClientAPIImpl.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\PullMessageProcessor.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\PopReviveService.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\ha\DefaultHAService.java</td><td>内容变更</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\RocksDBMessageStoreTest.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\header\SendMessageResponseHeader.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\RocksDBOffsetSerializeWrapperTest.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\ChangeInvisibleTimeProcessor.java</td><td>内容变更</td></tr><tr><td>.github\workflows\snapshot-automation.yml</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\PeekMessageProcessor.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\producer\MQProducer.java</td><td>内容变更</td></tr><tr><td>client\src\test\java\org\apache\rocketmq\client\producer\DefaultMQProducerTest.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\producer\SendResult.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\processor\DefaultMessagingProcessor.java</td><td>内容变更</td></tr><tr><td>.github\workflows\pr-e2e-test.yml</td><td>内容变更</td></tr><tr><td>namesrv\pom.xml</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\MQVersion.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\stats\LmqBrokerStatsManager.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\offset\ConsumerOffsetManager.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\MixAll.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\mqclient\MQClientAPIExt.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\longpolling\PullRequestHoldService.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\index\IndexStoreFileTest.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\rocksdb\RocksDBOptionsFactory.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\MessageStore.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\PollingInfoProcessor.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\utils\IPAddressUtils.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\protocol\ResponseCode.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\rpc\RpcClientImpl.java</td><td>内容变更</td></tr><tr><td>test\src\main\java\org\apache\rocketmq\test\clientinterface\AbstractMQConsumer.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\main\java\org\apache\rocketmq\tieredstore\file\FlatFileStore.java</td><td>内容变更</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\queue\ConsumeQueueTest.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\offset\ConsumerOrderInfoManagerTest.java</td><td>内容变更</td></tr><tr><td>srvutil\src\main\java\org\apache\rocketmq\srvutil\FileWatchService.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\stats\MomentStatsItem.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\PopBufferMergeService.java</td><td>内容变更</td></tr><tr><td>common\src\main\java\org\apache\rocketmq\common\statistics\StatisticsBriefInterceptor.java</td><td>内容变更</td></tr><tr><td>controller\src\main\java\org\apache\rocketmq\controller\impl\DLedgerController.java</td><td>内容变更</td></tr><tr><td>docs\en\Configuration_System.md</td><td>内容变更</td></tr><tr><td>store\src\test\java\org\apache\rocketmq\store\DefaultMessageStoreTest.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\schedule\ScheduleMessageService.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\GetMessageResult.java</td><td>内容变更</td></tr><tr><td>distribution\bin\runbroker.sh</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\BrokerPathConfigHelperTest.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\command\message\PrintMessageSubCommand.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\consumer\AckMessageActivity.java</td><td>内容变更</td></tr><tr><td>docs\en\Configuration_Client.md</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\processor\AbstractSendMessageProcessor.java</td><td>内容变更</td></tr><tr><td>store\src\main\java\org\apache\rocketmq\store\MessageExtEncoder.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\client\net\Broker2ClientTest.java</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\RocksDBConfigManager.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\remoting\activity\SendMessageActivity.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\producer\DefaultMQProducerImpl.java</td><td>内容变更</td></tr><tr><td>broker\src\test\java\org\apache\rocketmq\broker\topic\RocksdbTopicConfigTransferTest.java</td><td>内容变更</td></tr><tr><td>docs\en\controller\design.md</td><td>内容变更</td></tr><tr><td>broker\src\main\java\org\apache\rocketmq\broker\subscription\SubscriptionGroupManager.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\mqclient\MQClientAPIFactory.java</td><td>内容变更</td></tr><tr><td>remoting\src\main\java\org\apache\rocketmq\remoting\netty\NettyRemotingAbstract.java</td><td>内容变更</td></tr><tr><td>proxy\src\main\java\org\apache\rocketmq\proxy\grpc\v2\channel\GrpcClientChannel.java</td><td>内容变更</td></tr><tr><td>tools\src\main\java\org\apache\rocketmq\tools\admin\DefaultMQAdminExt.java</td><td>内容变更</td></tr><tr><td>acl\src\test\java\org\apache\rocketmq\acl\plain\PlainAccessResourceTest.java</td><td>内容变更</td></tr><tr><td>tieredstore\src\test\java\org\apache\rocketmq\tieredstore\provider\FileSegmentFactoryTest.java</td><td>内容变更</td></tr><tr><td>client\src\main\java\org\apache\rocketmq\client\impl\consumer\DefaultMQPushConsumerImpl.java</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -270,7 +270,11 @@ class SBOMComparator:
     
     def _normalize_version(self, version: str) -> str:
         """规范化版本字符串，移除空格、前缀'v'和版本表达式前缀"""
-        if not version or version == "NOASSERTION":
+        if not version:
+            return ""
+            
+        # 处理NOASSERTION
+        if version == "NOASSERTION":
             return ""
             
         # 标准化版本前缀符号周围的空格，如">= 1.0.0" 变为 ">=1.0.0"
@@ -288,6 +292,10 @@ class SBOMComparator:
                 version = version[len(op):]
                 break
         
+        # 处理条件版本号，去掉条件部分（如 "2.6.0 ; sys_platform != 'darwin'" -> "2.6.0"）
+        if ";" in version:
+            version = version.split(";")[0].strip()
+        
         # 去除前缀"v"
         if version.startswith('v'):
             version = version[1:]
@@ -302,6 +310,10 @@ class SBOMComparator:
     
     def _analyze_version_change(self, version_a: str, version_b: str) -> Tuple[bool, bool, bool]:
         """分析版本变更的类型 (主版本、次版本、补丁版本)"""
+        if not version_a or not version_b:
+            # 如果任一版本为空，不能确定变更类型
+            return False, False, False
+            
         try:
             # 尝试解析语义化版本
             parts_a = version_a.split('.')
@@ -328,7 +340,9 @@ class SBOMComparator:
                 if patch_a != patch_b:
                     return False, False, True  # 补丁版本变更
         
-        except (ValueError, IndexError):
+        except (ValueError, IndexError) as e:
+            # 记录无法解析版本号的问题
+            logger.debug(f"无法解析版本号 {version_a} <-> {version_b}: {str(e)}")
             # 无法解析为语义化版本，视为一般变更
             pass
         

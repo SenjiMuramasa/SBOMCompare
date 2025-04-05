@@ -1,0 +1,560 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 21:22:49</p>
+                <p>SBOM A: sample_data\authelia_authelia_271239b.json</p>
+                <p>SBOM B: sample_data\authelia_authelia.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>82</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.3/10 (83.2%) [A-]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.3/10.0 (83.2%)，安全等级: A-。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量新增依赖, 主版本变更, 大量次版本变更, 依赖扩张, 重大版本变更。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.6/1.7 (96.8%)</td>
+                    <td><ul class='details-list'><li>大量新增包(11个)可能增加攻击面</li><li>移除了6个包</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.6/3.5 (74.4%)</td>
+                    <td><ul class='details-list'><li>16个包发生主版本变更，可能存在API不兼容</li><li>35个包发生次版本变更</li><li>26个包发生补丁版本变更</li><li>5个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.2/2.6 (84.0%)</td>
+                    <td><ul class='details-list'><li>存在2个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 依赖扩张, 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">1.0/1.3 (76.0%)</td>
+                    <td><ul class='details-list'><li>CII-Best-Practices需要改进</li><li>以下项目风险较高: Branch-Protection, Code-Review</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-f82v-jwr5-mffw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-f82v-jwr5-mffw</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> Branch-Protection风险, Code-Review风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-f82v-jwr5-mffw</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-f82v-jwr5-mffw<br><br><div class="cve-header">来自 CVE-2025-29927 的附加信息:</div><br><div class="section-header">描述: Next.js is a React framework for building full-stack web applications. Prior to 14.2.25 and 15.2.3, it is possible to bypass authorization checks within a Next.js application, if the authorization check occurs in middleware. If patching to a safe version is infeasible, it is recommend that you prevent external user requests which contain the x-middleware-subrequest header from reaching your Next.js application. This vulnerability is fixed in 14.2.25 and 15.2.3.</div><br><div class="section-header">发布日期: 2025-03-21</div><br><div class="section-header">最后更新: 2025-03-28</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-f82v-jwr5-mffw</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-29927</div><br><br><div class="section-header">发布日期: 2025-03-21</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/vercel/next.js/security/advisories/GHSA-f82v-jwr5-mffw</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-29927</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/52a078da3884efe6501613c7834a3d02a91676d2</span><br><span class="vuln-link">https://github.com/vercel/next.js/commit/5fd3ae8f8542677c6294f32d18022731eab6fe48</span><br><span class="vuln-link">https://github.com/vercel/next.js</span><br><span class="vuln-link">https://github.com/vercel/next.js/releases/tag/v12.3.5</span><br><span class="vuln-link">https://github.com/vercel/next.js/releases/tag/v13.5.9</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250328-0002</span><br><span class="vuln-link">https://vercel.com/changelog/vercel-firewall-proactively-protects-against-vulnerability-with-middleware</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/23/3</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/23/4</span><br><br><div class="section-header">影响范围:</div><br>包名: next (npm)<br>包名: next (npm)<br>包名: next (npm)<br>包名: next (npm)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (11)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/google/cel-go</td><td>v0.24.1</td><td>Apache-2.0</td></tr><tr><td>github.com/otiai10/mint</td><td>v1.6.3</td><td>Apache-2.0</td></tr><tr><td>react-spinners</td><td>0.15.0</td><td>NOASSERTION</td></tr><tr><td>github.com/stoewer/go-strcase</td><td>v1.2.0</td><td>Apache-2.0</td></tr><tr><td>golang.org/x/time</td><td>v0.11.0</td><td>Apache-2.0</td></tr><tr><td>golang.org/x/exp</td><td>v0.0.0-20230515195305-f3d0a9c9a5cc</td><td>Apache-2.0</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20240826202546-f6391c0de4c7</td><td>Apache-2.0</td></tr><tr><td>cel.dev/expr</td><td>v0.19.1</td><td>Apache-2.0</td></tr><tr><td>github.com/antlr4-go/antlr/v4</td><td>v4.13.0</td><td>Apache-2.0</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20240826202546-f6391c0de4c7</td><td>Apache-2.0</td></tr><tr><td>tss-react</td><td>4.9.16</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (6)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/golang/glog</td><td>v1.2.2</td><td>Apache-2.0</td></tr><tr><td>react-test-renderer</td><td>18.3.1</td><td>NOASSERTION</td></tr><tr><td>@mui/styles</td><td>6.3.0</td><td>NOASSERTION</td></tr><tr><td>classnames</td><td>2.5.1</td><td>NOASSERTION</td></tr><tr><td>@simplewebauthn/types</td><td>10.0.0</td><td>NOASSERTION</td></tr><tr><td>react-loading</td><td>2.0.3</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (82)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/weppos/publicsuffix-go</td><td>v0.40.3-0.20241226095751-7ff70d4ea61c</td><td>v0.40.3-0.20250311103038-7794c8c0723b</td><td>一般变更</td></tr><tr><td>github.com/fasthttp/session/v2</td><td>v2.5.7</td><td>v2.5.9</td><td>补丁版本</td></tr><tr><td>@typescript-eslint/eslint-plugin</td><td>8.19.0</td><td>8.29.0</td><td>次版本</td></tr><tr><td>eslint-config-prettier</td><td>9.1.0</td><td>10.1.1</td><td>主版本</td></tr><tr><td>esbuild</td><td>0.24.2</td><td>0.25.2</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.31.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>happy-dom</td><td>15.11.7</td><td>17.4.4</td><td>主版本</td></tr><tr><td>@vitest/coverage-istanbul</td><td>2.1.8</td><td>3.1.1</td><td>主版本</td></tr><tr><td>github.com/mattn/go-sqlite3</td><td>v1.14.24</td><td>v1.14.26</td><td>补丁版本</td></tr><tr><td>github.com/fasthttp/router</td><td>v1.5.3</td><td>v1.5.4</td><td>补丁版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.28.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>@mui/material</td><td>6.3.0</td><td>7.0.1</td><td>主版本</td></tr><tr><td>i18next-browser-languagedetector</td><td>8.0.2</td><td>8.0.4</td><td>补丁版本</td></tr><tr><td>github.com/duosecurity/duo_api_golang</td><td>v0.0.0-20240408132100-cb1770897e66</td><td>v0.0.0-20250128191753-8aff7fde9979</td><td>一般变更</td></tr><tr><td>(</td><td>filippo.io/edwards25519</td><td>cel.dev/expr</td><td>一般变更</td></tr><tr><td>@react-email/components</td><td>0.0.31</td><td>0.0.35</td><td>补丁版本</td></tr><tr><td>react-email</td><td>3.0.4</td><td>4.0.3</td><td>主版本</td></tr><tr><td>i18next-http-backend</td><td>3.0.1</td><td>3.0.2</td><td>补丁版本</td></tr><tr><td>@commitlint/config-conventional</td><td>19.6.0</td><td>19.8.0</td><td>次版本</td></tr><tr><td>react-router-dom</td><td>7.1.1</td><td>7.4.1</td><td>次版本</td></tr><tr><td>@typescript-eslint/parser</td><td>8.19.0</td><td>8.29.0</td><td>次版本</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.17.11</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>react-dom</td><td>18.3.1</td><td>19.1.0</td><td>主版本</td></tr><tr><td>github.com/wneessen/go-mail</td><td>v0.5.2</td><td>v0.6.2</td><td>次版本</td></tr><tr><td>github.com/prometheus/client_golang</td><td>v1.20.5</td><td>v1.21.1</td><td>次版本</td></tr><tr><td>exec-bin</td><td>^1.0.0</td><td>1.0.0</td><td>无变更</td></tr><tr><td>authelia.com/provider/oauth2</td><td>v0.1.19</td><td>v0.2.2</td><td>次版本</td></tr><tr><td>github.com/otiai10/copy</td><td>v1.14.0</td><td>v1.14.1</td><td>补丁版本</td></tr><tr><td>vite</td><td>6.0.6</td><td>6.2.4</td><td>次版本</td></tr><tr><td>vite-plugin-istanbul</td><td>6.0.2</td><td>7.0.0</td><td>主版本</td></tr><tr><td>github.com/spf13/pflag</td><td>v1.0.5</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>@types/node</td><td>22.10.3</td><td>22.14.0</td><td>次版本</td></tr><tr><td>github.com/redis/go-redis/v9</td><td>v9.7.0</td><td>v9.7.3</td><td>补丁版本</td></tr><tr><td>axios</td><td>1.7.9</td><td>1.8.4</td><td>次版本</td></tr><tr><td>github.com/google/go-tpm</td><td>v0.9.0</td><td>v0.9.3</td><td>补丁版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.34.2</td><td>v1.36.1</td><td>次版本</td></tr><tr><td>github.com/dgraph-io/ristretto</td><td>v0.1.1</td><td>v0.2.0</td><td>次版本</td></tr><tr><td>tailwind-merge</td><td>2.6.0</td><td>3.1.0</td><td>主版本</td></tr><tr><td>github.com/jackc/pgx/v5</td><td>v5.7.2</td><td>v5.7.4</td><td>补丁版本</td></tr><tr><td>prettier</td><td>3.4.2</td><td>3.5.3</td><td>次版本</td></tr><tr><td>github.com/go-jose/go-jose/v4</td><td>v4.0.4</td><td>v4.0.5</td><td>补丁版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.10.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>tsx</td><td>4.19.2</td><td>4.19.3</td><td>补丁版本</td></tr><tr><td>react-i18next</td><td>15.4.0</td><td>15.4.1</td><td>补丁版本</td></tr><tr><td>github.com/prometheus/common</td><td>v0.55.0</td><td>v0.62.0</td><td>次版本</td></tr><tr><td>github.com/golang-jwt/jwt/v5</td><td>v5.2.1</td><td>v5.2.2</td><td>补丁版本</td></tr><tr><td>github.com/spf13/cobra</td><td>v1.8.1</td><td>v1.9.1</td><td>次版本</td></tr><tr><td>@mui/icons-material</td><td>6.3.0</td><td>7.0.1</td><td>主版本</td></tr><tr><td>@simplewebauthn/browser</td><td>10.0.0</td><td>13.1.0</td><td>主版本</td></tr><tr><td>@types/react-dom</td><td>18.3.5</td><td>19.1.1</td><td>主版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.24.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>@thulite/doks-core</td><td>1.8.0</td><td>1.8.1</td><td>补丁版本</td></tr><tr><td>github.com/deckarep/golang-set/v2</td><td>v2.7.0</td><td>v2.8.0</td><td>次版本</td></tr><tr><td>typescript</td><td>5.7.2</td><td>5.8.2</td><td>次版本</td></tr><tr><td>github.com/go-webauthn/webauthn</td><td>v0.10.2</td><td>v0.12.3</td><td>次版本</td></tr><tr><td>github.com/go-webauthn/x</td><td>v0.1.9</td><td>v0.1.20</td><td>补丁版本</td></tr><tr><td>golang.org/x/net</td><td>v0.33.0</td><td>v0.38.0</td><td>次版本</td></tr><tr><td>i18next</td><td>24.2.0</td><td>24.2.3</td><td>补丁版本</td></tr><tr><td>github.com/go-crypt/x</td><td>v0.3.2</td><td>v0.3.6</td><td>补丁版本</td></tr><tr><td>golang.org/x/text</td><td>v0.21.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>github.com/cpuguy83/go-md2man/v2</td><td>v2.0.4</td><td>v2.0.6</td><td>补丁版本</td></tr><tr><td>github.com/go-crypt/crypt</td><td>v0.3.2</td><td>v0.3.5</td><td>补丁版本</td></tr><tr><td>vitest</td><td>2.1.8</td><td>3.1.1</td><td>主版本</td></tr><tr><td>@commitlint/cli</td><td>19.6.1</td><td>19.8.0</td><td>次版本</td></tr><tr><td>github.com/valyala/fasthttp</td><td>v1.58.0</td><td>v1.60.0</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.27.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>eslint-import-resolver-typescript</td><td>3.7.0</td><td>4.3.1</td><td>主版本</td></tr><tr><td>@testing-library/react</td><td>16.1.0</td><td>16.3.0</td><td>次版本</td></tr><tr><td>@react-email/render</td><td>1.0.3</td><td>1.0.5</td><td>补丁版本</td></tr><tr><td>@tabler/icons</td><td>3.26.0</td><td>3.31.0</td><td>次版本</td></tr><tr><td>eslint-plugin-react</td><td>7.37.3</td><td>7.37.4</td><td>补丁版本</td></tr><tr><td>tailwindcss</td><td>3.4.17</td><td>4.1.2</td><td>主版本</td></tr><tr><td>eslint-plugin-prettier</td><td>5.2.1</td><td>5.2.5</td><td>补丁版本</td></tr><tr><td>react</td><td>18.3.1</td><td>19.1.0</td><td>主版本</td></tr><tr><td>broadcast-channel</td><td>7.0.0</td><td>7.1.0</td><td>次版本</td></tr><tr><td>shx</td><td>^0.3.4</td><td>0.4.0</td><td>一般变更</td></tr><tr><td>@thulite/images</td><td>3.3.0</td><td>3.3.1</td><td>补丁版本</td></tr><tr><td>github.com/go-sql-driver/mysql</td><td>v1.8.1</td><td>v1.9.1</td><td>次版本</td></tr><tr><td>github.com/tinylib/msgp</td><td>v1.2.4</td><td>v1.2.5</td><td>补丁版本</td></tr><tr><td>github.com/fxamacker/cbor/v2</td><td>v2.6.0</td><td>v2.8.0</td><td>次版本</td></tr><tr><td>eslint-plugin-react-hooks</td><td>5.1.0</td><td>5.2.0</td><td>次版本</td></tr><tr><td>@types/react</td><td>18.3.18</td><td>19.1.0</td><td>主版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>1447</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>1651</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>276</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>72</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>524</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (276)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共276个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>internal\server\locales\ko-KR\consent.json</td></tr><tr><td>internal\suites\example\compose\haproxy\compose.yml</td></tr><tr><td>internal\suites\example\compose\authelia\compose.backend.dev.yml</td></tr><tr><td>docs\content\roadmap\planning\security-assertion-markup-language-saml-2.0-identity-provider.md</td></tr><tr><td>internal\suites\example\compose\authelia\compose.frontend.dist.yml</td></tr><tr><td>internal\webauthn\metadata_blackbox_test.go</td></tr><tr><td>experimental\embed\provider\notification.go</td></tr><tr><td>web\src\services\Password.ts</td></tr><tr><td>experimental\embed\provider\general.go</td></tr><tr><td>internal\authentication\ldap_client_factory_config.go</td></tr><tr><td>internal\expression\const.go</td></tr><tr><td>internal\server\locales\fr-FR\consent.json</td></tr><tr><td>internal\suites\example\compose\caddy\compose.yml</td></tr><tr><td>internal\suites\example\compose\authelia\compose.backend.dist.yml</td></tr><tr><td>internal\suites\TwoFactor\compose.yml</td></tr><tr><td>internal\service\server.go</td></tr><tr><td>internal\server\locales\nl-NL\consent.json</td></tr><tr><td>experimental\embed\doc.go</td></tr><tr><td>internal\server\locales\zh-TW\consent.json</td></tr><tr><td>internal\suites\OneFactorOnly\compose.yml</td></tr><tr><td>internal\webauthn\credential_test.go</td></tr><tr><td>internal\configuration\test_resources\config_oidc_claims.yml</td></tr><tr><td>internal\oidc\issuer.go</td></tr><tr><td>internal\server\locales\ar-SA\consent.json</td></tr><tr><td>docs\content\reference\guides\authentication-method-references.md</td></tr><tr><td>internal\service\signal.go</td></tr><tr><td>internal\regulation\util.go</td></tr><tr><td>internal\server\locales\sk-SK\consent.json</td></tr><tr><td>internal\handlers\handler_oauth_authorization_claims.go</td></tr><tr><td>internal\suites\scenario_change_password_test.go</td></tr><tr><td>internal\suites\ShortTimeouts\compose.yml</td></tr><tr><td>internal\webauthn\util_test.go</td></tr><tr><td>docs\static\schemas\v4.39\json-schema\configuration.json</td></tr><tr><td>internal\suites\example\compose\postgres\compose.yml</td></tr><tr><td>internal\server\locales\hr-HR\consent.json</td></tr><tr><td>internal\server\locales\vec-IT\consent.json</td></tr><tr><td>internal\suites\example\compose\httpbin\compose.yml</td></tr><tr><td>internal\server\locales\zh-HK\consent.json</td></tr><tr><td>docs\content\reference\cli\authelia\authelia_storage_cache.md</td></tr><tr><td>internal\suites\Caddy\compose.yml</td></tr><tr><td>web\src\hooks\OpenIDConnect.ts</td></tr><tr><td>docs\content\reference\guides\systemd.md</td></tr><tr><td>internal\suites\MySQL\compose.yml</td></tr><tr><td>internal\suites\example\compose\authelia\compose.frontend.dev.yml</td></tr><tr><td>web\src\models\LocaleInformation.ts</td></tr><tr><td>internal\server\locales\lt-LT\consent.json</td></tr><tr><td>internal\server\locales\ga-IE\consent.json</td></tr><tr><td>internal\expression\user_attributes_whitebox_test.go</td></tr><tr><td>internal\service\const.go</td></tr><tr><td>internal\suites\example\compose\ldap\compose.yml</td></tr><tr><td>internal\server\locales\zh-CN\consent.json</td></tr><tr><td>internal\configuration\test_resources\i18n\example2\locales\en\portal.json</td></tr><tr><td>internal\server\locales\srp\consent.json</td></tr><tr><td>internal\suites\example\compose\redis-sentinel\compose.yml</td></tr><tr><td>internal\suites\Traefik\compose.yml</td></tr><tr><td>internal\suites\HighAvailability\compose.yml</td></tr><tr><td>internal\server\locales\da-DK\consent.json</td></tr><tr><td>internal\webauthn\metadata.go</td></tr><tr><td>internal\handlers\handler_firstfactor_passkey.go</td></tr><tr><td>internal\service\util.go</td></tr><tr><td>docs\static\schemas\v4.39\json-schema\exports.identifiers.json</td></tr><tr><td>internal\server\locales\vi-VN\consent.json</td></tr><tr><td>internal\suites\example\compose\nginx\portal\compose.yml</td></tr><tr><td>internal\configuration\defaults.go</td></tr><tr><td>experimental\embed\context_test.go</td></tr><tr><td>internal\authentication\cached.go</td></tr><tr><td>internal\configuration\schema\authentication_test.go</td></tr><tr><td>internal\suites\example\compose\smtp\compose.auth.yml</td></tr><tr><td>internal\suites\example\compose\mysql\compose.yml</td></tr><tr><td>internal\suites\example\compose\mariadb\compose.yml</td></tr><tr><td>internal\suites\example\compose\k3d\compose.yml</td></tr><tr><td>internal\suites\Docker\compose.yml</td></tr><tr><td>docs\content\integration\openid-connect\openid-connect-1.0-claims.md</td></tr><tr><td>internal\service\provider_test.go</td></tr><tr><td>internal\suites\NetworkACL\compose.yml</td></tr><tr><td>internal\configuration\test_resources\config_with_definitions.yml</td></tr><tr><td>internal\middlewares\const_test.go</td></tr><tr><td>web\src\hooks\CapsLock.ts</td></tr><tr><td>internal\storage\sql_provider_backend_mysql_test.go</td></tr><tr><td>internal\oidc\claims_test.go</td></tr><tr><td>internal\server\locales\sc-IT\consent.json</td></tr><tr><td>internal\suites\common\webauthn\valid-credential.yaml</td></tr><tr><td>internal\server\locales\es-ES\consent.json</td></tr><tr><td>internal\handlers\handler_oauth_device_authorization.go</td></tr><tr><td>experimental\embed\provider\storage.go</td></tr><tr><td>internal\model\regulation.go</td></tr><tr><td>internal\server\locales\lv-LV\consent.json</td></tr><tr><td>internal\middlewares\rate_limiting.go</td></tr><tr><td>docs\content\roadmap\active\openid-connect-1.0-provider.md</td></tr><tr><td>internal\server\locales\tl-PH\consent.json</td></tr><tr><td>internal\configuration\test_resources\decode_networks_abc.yml</td></tr><tr><td>internal\storage\sql_provider_backend_sqlite_test.go</td></tr><tr><td>docs\content\reference\cli\authelia\authelia_storage_cache_mds3_update.md</td></tr><tr><td>internal\server\locales\su-ID\consent.json</td></tr><tr><td>docs\content\integration\openid-connect\zipline\index.md</td></tr><tr><td>internal\server\locales\pt-PT\consent.json</td></tr><tr><td>docs\content\blog\release-notes-4.39\index.md</td></tr><tr><td>internal\suites\ActiveDirectory\compose.yml</td></tr><tr><td>docs\content\integration\openid-connect\terrakube\index.md</td></tr><tr><td>docs\content\reference\cli\authelia\authelia_storage_bans_user_list.md</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (72)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>internal\suites\Docker\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\authelia\docker-compose.frontend.dev.yml</td></tr><tr><td>internal\suites\MultiCookieDomain\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\caddy\docker-compose.yml</td></tr><tr><td>internal\model\authentication_attempt.go</td></tr><tr><td>internal\templates\src\postcss.config.js</td></tr><tr><td>internal\suites\OIDCTraefik\docker-compose.yml</td></tr><tr><td>internal\suites\docker-compose.yml</td></tr><tr><td>docs\content\roadmap\active\openid-connect.md</td></tr><tr><td>internal\oidc\keys_blackbox_test.go</td></tr><tr><td>internal\suites\example\compose\mysql\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\ldap\docker-compose.yml</td></tr><tr><td>docs\content\roadmap\active\kubernetes-documentation.md</td></tr><tr><td>internal\suites\example\compose\traefik\docker-compose.v2.yml</td></tr><tr><td>internal\suites\LDAP\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\nginx\portal\docker-compose.yml</td></tr><tr><td>examples\compose\local\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\authelia\docker-compose.backend.dist.yml</td></tr><tr><td>examples\compose\production\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\squid\docker-compose.yml</td></tr><tr><td>internal\templates\src\tailwind.config.ts</td></tr><tr><td>internal\suites\example\compose\ldap\docker-compose.admin.yml</td></tr><tr><td>internal\suites\ActiveDirectory\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\haproxy\docker-compose.yml</td></tr><tr><td>web\src\services\FirstFactor.ts</td></tr><tr><td>internal\suites\PathPrefix\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\k3d\docker-compose.yml</td></tr><tr><td>internal\suites\Standalone\docker-compose.yml</td></tr><tr><td>internal\suites\CLI\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\smtp\docker-compose.yml</td></tr><tr><td>web\src\services\Consent.ts</td></tr><tr><td>web\src\serviceWorker.ts</td></tr><tr><td>internal\suites\example\compose\oidc-client\docker-compose.yml</td></tr><tr><td>internal\suites\OneFactorOnly\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\duo-api\docker-compose.yml</td></tr><tr><td>internal\suites\MariaDB\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\postgres\docker-compose.yml</td></tr><tr><td>internal\oidc\keys_whitebox_test.go</td></tr><tr><td>internal\suites\Postgres\docker-compose.yml</td></tr><tr><td>internal\suites\Envoy\docker-compose.yml</td></tr><tr><td>internal\commands\services.go</td></tr><tr><td>internal\suites\example\compose\redis\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\samba\docker-compose.yml</td></tr><tr><td>internal\oidc\amr_test.go</td></tr><tr><td>internal\suites\example\compose\traefik\docker-compose.yml</td></tr><tr><td>internal\suites\Caddy\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\authelia\docker-compose.frontend.dist.yml</td></tr><tr><td>internal\suites\example\compose\mariadb\docker-compose.yml</td></tr><tr><td>docs\content\roadmap\active\webauthn.md</td></tr><tr><td>internal\suites\example\compose\traefik\docker-compose.v3.yml</td></tr><tr><td>examples\compose\lite\docker-compose.yml</td></tr><tr><td>internal\suites\MySQL\docker-compose.yml</td></tr><tr><td>internal\suites\HighAvailability\docker-compose.yml</td></tr><tr><td>internal\suites\ShortTimeouts\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\httpbin\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\redis-sentinel\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\envoy\docker-compose.yml</td></tr><tr><td>internal\handlers\oidc_test.go</td></tr><tr><td>internal\oidc\amr.go</td></tr><tr><td>internal\handlers\handler_firstfactor_test.go</td></tr><tr><td>internal\suites\NetworkACL\docker-compose.yml</td></tr><tr><td>internal\suites\OIDC\docker-compose.yml</td></tr><tr><td>internal\handlers\handler_firstfactor.go</td></tr><tr><td>internal\suites\TwoFactor\docker-compose.yml</td></tr><tr><td>internal\suites\DuoPush\docker-compose.yml</td></tr><tr><td>internal\oidc\keys.go</td></tr><tr><td>internal\suites\example\compose\authelia\docker-compose.backend.dev.yml</td></tr><tr><td>internal\suites\HAProxy\docker-compose.yml</td></tr><tr><td>internal\suites\example\compose\nginx\backend\docker-compose.yml</td></tr><tr><td>internal\authentication\ldap_user_provider_startup.go</td></tr><tr><td>internal\suites\BypassAll\docker-compose.yml</td></tr><tr><td>internal\suites\Traefik\docker-compose.yml</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (524)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>internal\commands\const.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\su-ID\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_high_availability_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_envoy.go</td><td>内容变更</td></tr><tr><td>internal\handlers\response.go</td><td>内容变更</td></tr><tr><td>internal\authentication\const.go</td><td>内容变更</td></tr><tr><td>examples\templates\notifications\no-preview\IdentityVerificationOTC.html</td><td>内容变更</td></tr><tr><td>internal\server\locales\ko-KR\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\it-IT\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\theme_test.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\bridge.go</td><td>内容变更</td></tr><tr><td>internal\authentication\ldap_user_provider.go</td><td>内容变更</td></tr><tr><td>internal\storage\types.go</td><td>内容变更</td></tr><tr><td>docs\content\configuration\storage\postgres.md</td><td>内容变更</td></tr><tr><td>docs\content\configuration\storage\migrations.md</td><td>内容变更</td></tr><tr><td>internal\oidc\discovery_test.go</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\cmd_docs_data.go</td><td>内容变更</td></tr><tr><td>docs\content\contributing\guidelines\commit-message.md</td><td>内容变更</td></tr><tr><td>docs\content\configuration\storage\mysql.md</td><td>内容变更</td></tr><tr><td>internal\suites\TwoFactor\configuration.yml</td><td>内容变更</td></tr><tr><td>docs\content\configuration\miscellaneous\logging.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\yi-DE\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_short_timeouts.go</td><td>内容变更</td></tr><tr><td>internal\configuration\sources.go</td><td>内容变更</td></tr><tr><td>internal\suites\LDAP\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\suites\suite_mysql.go</td><td>内容变更</td></tr><tr><td>internal\storage\sql_provider_encryption.go</td><td>内容变更</td></tr><tr><td>internal\suites\kubernetes.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\roundcube\index.md</td><td>内容变更</td></tr><tr><td>docs\content\roadmap\active\internationalization.md</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\authentication.go</td><td>内容变更</td></tr><tr><td>docs\content\roadmap\active\multi-domain-protection.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\fil-PH\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\hr-HR\settings.json</td><td>内容变更</td></tr><tr><td>docs\content\overview\authentication\security-key\index.md</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\cmd_code.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\vec-IT\portal.json</td><td>内容变更</td></tr><tr><td>internal\authorization\util_test.go</td><td>内容变更</td></tr><tr><td>docs\content\configuration\second-factor\webauthn.md</td><td>内容变更</td></tr><tr><td>internal\authentication\ldap_client_factory.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\tr-TR\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\srp\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\Envoy\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_user_info_test.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\proxies\swag.md</td><td>内容变更</td></tr><tr><td>healthcheck.sh</td><td>内容变更</td></tr><tr><td>web\src\themes\index.ts</td><td>内容变更</td></tr><tr><td>internal\server\locales\ne-NP\portal.json</td><td>内容变更</td></tr><tr><td>internal\authorization\types.go</td><td>内容变更</td></tr><tr><td>internal\storage\sql_provider_backend_postgres_test.go</td><td>内容变更</td></tr><tr><td>internal\server\server.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\no-NO\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_jwks.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\homarr\index.md</td><td>内容变更</td></tr><tr><td>docs\content\contributing\development\integration-suites.md</td><td>内容变更</td></tr><tr><td>web\src\services\Configuration.ts</td><td>内容变更</td></tr><tr><td>internal\suites\MultiCookieDomain\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\mocks\gen.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\srp\settings.json</td><td>内容变更</td></tr><tr><td>web\index.html</td><td>内容变更</td></tr><tr><td>docs\static\schemas\latest\json-schema\exports.identifiers.json</td><td>内容变更</td></tr><tr><td>web\pnpm-lock.yaml</td><td>内容变更</td></tr><tr><td>internal\server\locales\es-ES\settings.json</td><td>内容变更</td></tr><tr><td>web\src\constants\Routes.ts</td><td>内容变更</td></tr><tr><td>web\src\constants\constants.ts</td><td>内容变更</td></tr><tr><td>web\src\services\UserSessionElevation.ts</td><td>内容变更</td></tr><tr><td>internal\authorization\access_control_rule.go</td><td>内容变更</td></tr><tr><td>internal\server\template.go</td><td>内容变更</td></tr><tr><td>internal\commands\context.go</td><td>内容变更</td></tr><tr><td>internal\mocks\user_provider.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\hi-IN\portal.json</td><td>内容变更</td></tr><tr><td>web\src\services\UserInfo.ts</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-SG\portal.json</td><td>内容变更</td></tr><tr><td>internal\middlewares\require_auth.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\hu-HU\settings.json</td><td>内容变更</td></tr><tr><td>internal\authorization\util.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\ty-PF\settings.json</td><td>内容变更</td></tr><tr><td>cmd\authelia-scripts\cmd\const.go</td><td>内容变更</td></tr><tr><td>cmd\authelia-scripts\cmd\gen.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\mt-MT\settings.json</td><td>内容变更</td></tr><tr><td>internal\storage\sql_provider_queries.go</td><td>内容变更</td></tr><tr><td>web\src\i18n\index.ts</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_sign_duo.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\vec-IT\settings.json</td><td>内容变更</td></tr><tr><td>docs\content\configuration\identity-providers\openid-connect\clients.md</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\util.go</td><td>内容变更</td></tr><tr><td>docs\data\configkeys.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\nl-NL\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_cli.go</td><td>内容变更</td></tr><tr><td>internal\suites\example\kube\storage\mariadb.yml</td><td>内容变更</td></tr><tr><td>internal\middlewares\timing_attack_delay_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\cs-CZ\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_authorization_consent_implicit.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\flower\index.md</td><td>内容变更</td></tr><tr><td>internal\suites\Standalone\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\sw-KE\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\ShortTimeouts\configuration.yml</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\matomo\index.md</td><td>内容变更</td></tr><tr><td>docs\data\languages.json</td><td>内容变更</td></tr><tr><td>internal\suites\OIDCTraefik\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\en\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\no-NO\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_two_factor_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\action_login.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_register_webauthn_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\uk-UA\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_sign_totp.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\notifier.go</td><td>内容变更</td></tr><tr><td>internal\utils\const.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\require_auth_test.go</td><td>内容变更</td></tr><tr><td>internal\commands\util.go</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\storage_test.go</td><td>内容变更</td></tr><tr><td>entrypoint.sh</td><td>内容变更</td></tr><tr><td>internal\handlers\types.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\apache-guacamole\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\ms-MY\portal.json</td><td>内容变更</td></tr><tr><td>internal\commands\storage_run.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\pt-BR\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\access_control.go</td><td>内容变更</td></tr><tr><td>internal\oidc\util.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\ga-IE\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ss-ZA\portal.json</td><td>内容变更</td></tr><tr><td>docs\static\schemas\v4.38\json-schema\configuration.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_authorization.go</td><td>内容变更</td></tr><tr><td>cmd\authelia-scripts\cmd\helpers_docker.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\regulation.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\el-GR\portal.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_configuration_test.go</td><td>内容变更</td></tr><tr><td>.buildkite\pipeline.sh</td><td>内容变更</td></tr><tr><td>internal\server\locales\sw-KE\settings.json</td><td>内容变更</td></tr><tr><td>internal\logging\logger_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_traefik2.go</td><td>内容变更</td></tr><tr><td>examples\templates\notifications\no-preview\Event.html</td><td>内容变更</td></tr><tr><td>web\src\setupTests.ts</td><td>内容变更</td></tr><tr><td>internal\suites\OIDC\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\commands\helpers.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\vi-VN\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\roadmap\active\dashboard-control-panel-for-users.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\eu-ES\portal.json</td><td>内容变更</td></tr><tr><td>.github\workflows\codeql-analysis.yml</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_register_webauthn.go</td><td>内容变更</td></tr><tr><td>docs\content\overview\security\measures.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-TW\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_userinfo.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\util.go</td><td>内容变更</td></tr><tr><td>internal\suites\Postgres\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\authentication_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\MySQL\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\en\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\uk-UA\portal.json</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\const.go</td><td>内容变更</td></tr><tr><td>internal\configuration\test_resources\config_oidc_modern.yml</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\photoprism\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\nb-NO\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ko-KR\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ro-RO\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_session_elevation.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\so-SO\portal.json</td><td>内容变更</td></tr><tr><td>internal\oidc\store.go</td><td>内容变更</td></tr><tr><td>web\src\services\State.ts</td><td>内容变更</td></tr><tr><td>internal\server\locales\fil-PH\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_oidc.go</td><td>内容变更</td></tr><tr><td>internal\templates\embed\notification\IdentityVerificationOTC.txt</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\types.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\cy-GB\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\keys.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_cli_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\sc-IT\portal.json</td><td>内容变更</td></tr><tr><td>internal\configuration\const.go</td><td>内容变更</td></tr><tr><td>web\vite.config.ts</td><td>内容变更</td></tr><tr><td>internal\configuration\decode_hooks.go</td><td>内容变更</td></tr><tr><td>docs\package.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_authz_builder.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\tl-PH\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\action_settings.go</td><td>内容变更</td></tr><tr><td>docs\content\reference\guides\passwords.md</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\types.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\kubernetes\introduction.md</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\server_test.go</td><td>内容变更</td></tr><tr><td>internal\storage\const.go</td><td>内容变更</td></tr><tr><td>internal\handlers\func_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_standalone.go</td><td>内容变更</td></tr><tr><td>config.template.yml</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\keys.go</td><td>内容变更</td></tr><tr><td>internal\model\uuid.go</td><td>内容变更</td></tr><tr><td>internal\configuration\config.template.yml</td><td>内容变更</td></tr><tr><td>web\src\models\UserInfo.ts</td><td>内容变更</td></tr><tr><td>internal\utils\crypto_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\CLI\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\suites\scenario_oidc_test.go</td><td>内容变更</td></tr><tr><td>internal\templates\src\package.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_consent.go</td><td>内容变更</td></tr><tr><td>internal\mocks\authelia_ctx.go</td><td>内容变更</td></tr><tr><td>internal\regulation\const.go</td><td>内容变更</td></tr><tr><td>docs\content\contributing\development\build-and-test.md</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\configuration.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\telemetry.go</td><td>内容变更</td></tr><tr><td>api\openapi.yml</td><td>内容变更</td></tr><tr><td>web\src\services\WebAuthn.ts</td><td>内容变更</td></tr><tr><td>internal\storage\sql_provider.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_one_factor_only.go</td><td>内容变更</td></tr><tr><td>cmd\authelia-scripts\cmd\build.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\webauthn.go</td><td>内容变更</td></tr><tr><td>internal\oidc\client_policy_test.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\minio\index.md</td><td>内容变更</td></tr><tr><td>internal\metrics\prometheus.go</td><td>内容变更</td></tr><tr><td>internal\regulation\regulator_test.go</td><td>内容变更</td></tr><tr><td>docs\content\roadmap\active\dashboard-control-panel-and-cli-for-admins.md</td><td>内容变更</td></tr><tr><td>docs\static\schemas\latest\json-schema\user-database.json</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\const.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\freshrss\index.md</td><td>内容变更</td></tr><tr><td>docs\content\configuration\prologue\security-sensitive-values.md</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\identity_providers.go</td><td>内容变更</td></tr><tr><td>internal\oidc\config.go</td><td>内容变更</td></tr><tr><td>internal\authorization\const.go</td><td>内容变更</td></tr><tr><td>docs\content\configuration\miscellaneous\server.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_authz_authn.go</td><td>内容变更</td></tr><tr><td>internal\handlers\webauthn.go</td><td>内容变更</td></tr><tr><td>docs\pnpm-lock.yaml</td><td>内容变更</td></tr><tr><td>internal\suites\BypassAll\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\oidc\provider.go</td><td>内容变更</td></tr><tr><td>web\src\services\PushNotification.ts</td><td>内容变更</td></tr><tr><td>internal\configuration\koanf_provider_filtered_file.go</td><td>内容变更</td></tr><tr><td>internal\templates\embed\notification\IdentityVerificationOTC.html</td><td>内容变更</td></tr><tr><td>web\src\services\Client.ts</td><td>内容变更</td></tr><tr><td>web\src\services\OneTimePassword.ts</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\ku-TR\settings.json</td><td>内容变更</td></tr><tr><td>docs\content\configuration\first-factor\introduction.md</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\introduction.md</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\access_control_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\Traefik\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-HK\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\reference\cli\authelia\authelia_storage_user_webauthn.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\pl-PL\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\Caddy\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\oidc\types_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\lt-LT\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\MariaDB\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\templates\embed\notification\IdentityVerificationJWT.html</td><td>内容变更</td></tr><tr><td>internal\suites\suite_mariadb.go</td><td>内容变更</td></tr><tr><td>internal\oidc\store_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\cy-GB\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\contributing\development\environment.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\ar-SA\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\telemetry_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_duo_push.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\const.go</td><td>内容变更</td></tr><tr><td>internal\notification\smtp_auth.go</td><td>内容变更</td></tr><tr><td>internal\suites\Docker\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\suites\suite_docker.go</td><td>内容变更</td></tr><tr><td>internal\oidc\util_blackbox_test.go</td><td>内容变更</td></tr><tr><td>docs\data\support.json</td><td>内容变更</td></tr><tr><td>internal\session\user_session.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\hedge-doc\index.md</td><td>内容变更</td></tr><tr><td>docs\content\configuration\security\regulation.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\fi-FI\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\sc-IT\settings.json</td><td>内容变更</td></tr><tr><td>internal\templates\embed\notification\IdentityVerificationJWT.txt</td><td>内容变更</td></tr><tr><td>internal\server\locales\id-ID\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\NetworkACL\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\nl-NL\portal.json</td><td>内容变更</td></tr><tr><td>examples\templates\notifications\no-preview\IdentityVerificationJWT.html</td><td>内容变更</td></tr><tr><td>internal\model\user_info.go</td><td>内容变更</td></tr><tr><td>internal\logging\const.go</td><td>内容变更</td></tr><tr><td>web\src\i18n\detectors\localStorageCustom.ts</td><td>内容变更</td></tr><tr><td>internal\server\locales\yi-DE\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\environment.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\tr-TR\portal.json</td><td>内容变更</td></tr><tr><td>internal\storage\errors.go</td><td>内容变更</td></tr><tr><td>internal\suites\PathPrefix\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-SG\settings.json</td><td>内容变更</td></tr><tr><td>internal\model\webauthn_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\HighAvailability\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\fi-FI\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\fr-FR\portal.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\access_control.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\es-ES\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\sk-SK\settings.json</td><td>内容变更</td></tr><tr><td>internal\authentication\file_user_provider_database_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\th-TH\portal.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\regulation.go</td><td>内容变更</td></tr><tr><td>docs\layouts\partials\prefooter\features\en.html</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\cmd_locales.go</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\bug-report.yml</td><td>内容变更</td></tr><tr><td>web\src\models\WebAuthn.ts</td><td>内容变更</td></tr><tr><td>internal\suites\suite_standalone_test.go</td><td>内容变更</td></tr><tr><td>internal\model\oidc.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_sign_webauthn.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_authorization_consent_explicit.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_configuration.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\types.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\nb-NO\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ru-RU\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-CN\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\const.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_ldap_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_two_factor.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\configuration.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\pt-PT\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\id-ID\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\public_html\index.html</td><td>内容变更</td></tr><tr><td>internal\server\locales\et-EE\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\integration\proxies\nginx-proxy-manager\index.md</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\frequently-asked-questions.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\de-DE\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\jellyfin\index.md</td><td>内容变更</td></tr><tr><td>docs\content\overview\authentication\push-notification\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\th-TH\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\provider_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_bypass_all.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\sv-SE\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\webauthn.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\ga-IE\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\integration\proxies\nginx.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_webauthn_credentials_test.go</td><td>内容变更</td></tr><tr><td>docs\content\configuration\first-factor\ldap.md</td><td>内容变更</td></tr><tr><td>docs\content\configuration\identity-validation\reset-password.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\da-DK\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\storage.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\et-EE\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\fr-FR\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\server_test.go</td><td>内容变更</td></tr><tr><td>.buildkite\deployment.sh</td><td>内容变更</td></tr><tr><td>internal\server\handlers.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_multi_cookie_domain.go</td><td>内容变更</td></tr><tr><td>internal\suites\scenario_two_factor_one_time_password_test.go</td><td>内容变更</td></tr><tr><td>internal\handlers\webauthn_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\HAProxy\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\authentication\types_test.go</td><td>内容变更</td></tr><tr><td>web\tsconfig.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_authz_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\sv-SE\portal.json</td><td>内容变更</td></tr><tr><td>internal\configuration\types.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\de-DE\settings.json</td><td>内容变更</td></tr><tr><td>internal\oidc\client_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\el-GR\settings.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_pathprefix_test.go</td><td>内容变更</td></tr><tr><td>internal\authentication\ldap_client_factory_mock_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\ActiveDirectory\configuration.yml</td><td>内容变更</td></tr><tr><td>docs\static\schemas\latest\json-schema\exports.webauthn.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-TW\portal.json</td><td>内容变更</td></tr><tr><td>web\package.json</td><td>内容变更</td></tr><tr><td>web\src\services\ResetPassword.ts</td><td>内容变更</td></tr><tr><td>internal\storage\migrations_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\bg-BG\settings.json</td><td>内容变更</td></tr><tr><td>.buildkite\steps\debhelper.sh</td><td>内容变更</td></tr><tr><td>internal\regulation\types.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\authelia_context_test.go</td><td>内容变更</td></tr><tr><td>docs\content\overview\security\introduction.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_checks_safe_redirection_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\action_verify.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_traefik3.go</td><td>内容变更</td></tr><tr><td>internal\suites\DuoPush\configuration.yml</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\expressjs\index.md</td><td>内容变更</td></tr><tr><td>internal\suites\scenario_two_factor_totp_test.go</td><td>内容变更</td></tr><tr><td>docs\content\configuration\security\access-control.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_state.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\identity_providers.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\authentication.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\types_address_test.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\proxies\traefik.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\pt-BR\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\suite_ldap.go</td><td>内容变更</td></tr><tr><td>internal\suites\example\kube\authelia\configs\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\suites\suite_postgres.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_envoy_test.go</td><td>内容变更</td></tr><tr><td>internal\oidc\session.go</td><td>内容变更</td></tr><tr><td>docs\layouts\shortcodes\confkey.html</td><td>内容变更</td></tr><tr><td>internal\server\locales\hi-IN\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ja-JP\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_register_totp_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_network_acl.go</td><td>内容变更</td></tr><tr><td>web\src\models\Configuration.ts</td><td>内容变更</td></tr><tr><td>internal\handlers\oidc.go</td><td>内容变更</td></tr><tr><td>docs\content\roadmap\prologue\introduction.md</td><td>内容变更</td></tr><tr><td>docs\content\configuration\prologue\common.md</td><td>内容变更</td></tr><tr><td>internal\oidc\session_test.go</td><td>内容变更</td></tr><tr><td>web\src\utils\Configuration.ts</td><td>内容变更</td></tr><tr><td>internal\server\locales\af-ZA\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\asset.go</td><td>内容变更</td></tr><tr><td>internal\storage\provider.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\da-DK\portal.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_session_elevation_test.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\types_address.go</td><td>内容变更</td></tr><tr><td>internal\regulation\regulator.go</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\session_test.go</td><td>内容变更</td></tr><tr><td>internal\templates\src\pnpm-lock.yaml</td><td>内容变更</td></tr><tr><td>internal\server\locales\ms-MY\settings.json</td><td>内容变更</td></tr><tr><td>docs\content\configuration\identity-providers\openid-connect\provider.md</td><td>内容变更</td></tr><tr><td>internal\notification\smtp_notifier.go</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\const.go</td><td>内容变更</td></tr><tr><td>docs\data\misc.json</td><td>内容变更</td></tr><tr><td>internal\authentication\types.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\eu-ES\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ta-IN\settings.json</td><td>内容变更</td></tr><tr><td>web\src\services\UserInfoTOTPConfiguration.ts</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\util_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\sl-SI\portal.json</td><td>内容变更</td></tr><tr><td>internal\storage\sql_provider_backend_postgres.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_haproxy.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\types_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_activedirectory.go</td><td>内容变更</td></tr><tr><td>internal\suites\scenario_one_factor_test.go</td><td>内容变更</td></tr><tr><td>internal\session\provider_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\ar-SA\portal.json</td><td>内容变更</td></tr><tr><td>internal\suites\verify_is_second_factor_page.go</td><td>内容变更</td></tr><tr><td>cmd\authelia-scripts\cmd\bootstrap.go</td><td>内容变更</td></tr><tr><td>internal\model\types.go</td><td>内容变更</td></tr><tr><td>internal\commands\root.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\lt-LT\portal.json</td><td>内容变更</td></tr><tr><td>internal\session\types.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\ne-NP\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_authorization_consent_pre_configured.go</td><td>内容变更</td></tr><tr><td>docs\static\schemas\latest\json-schema\exports.totp.json</td><td>内容变更</td></tr><tr><td>web\src\services\Api.ts</td><td>内容变更</td></tr><tr><td>internal\authentication\ldap_util.go</td><td>内容变更</td></tr><tr><td>internal\logging\logger.go</td><td>内容变更</td></tr><tr><td>docs\content\configuration\miscellaneous\server-endpoints-authz.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_user_info.go</td><td>内容变更</td></tr><tr><td>docs\content\reference\guides\metrics.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\ro-RO\portal.json</td><td>内容变更</td></tr><tr><td>internal\random\cryptographical_test.go</td><td>内容变更</td></tr><tr><td>internal\utils\crypto.go</td><td>内容变更</td></tr><tr><td>internal\authentication\user_provider.go</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\helpers.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_caddy.go</td><td>内容变更</td></tr><tr><td>internal\authorization\authorizer_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\lv-LV\portal.json</td><td>内容变更</td></tr><tr><td>internal\authentication\file_user_provider_database.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\tl-PH\portal.json</td><td>内容变更</td></tr><tr><td>internal\templates\embed\notification\Event.html</td><td>内容变更</td></tr><tr><td>internal\server\locales\pt-PT\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\overview\authentication\password-policy\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\su-ID\settings.json</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_health_test.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_state_test.go</td><td>内容变更</td></tr><tr><td>internal\authentication\gen.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\pl-PL\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\cs-CZ\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ty-PF\portal.json</td><td>内容变更</td></tr><tr><td>internal\handlers\const_test.go</td><td>内容变更</td></tr><tr><td>internal\configuration\provider.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_caddy_test.go</td><td>内容变更</td></tr><tr><td>internal\commands\storage.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_reset_password.go</td><td>内容变更</td></tr><tr><td>internal\oidc\config_test.go</td><td>内容变更</td></tr><tr><td>internal\model\webauthn.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_kubernetes.go</td><td>内容变更</td></tr><tr><td>internal\suites\example\compose\samba\init.sh</td><td>内容变更</td></tr><tr><td>internal\suites\docker.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\types_addresses_nix.go</td><td>内容变更</td></tr><tr><td>docs\content\blog\release-notes-4.38\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\bg-BG\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\reference\cli\authelia\authelia_storage.md</td><td>内容变更</td></tr><tr><td>docs\static\schemas\latest\json-schema\configuration.json</td><td>内容变更</td></tr><tr><td>docs\content\roadmap\active\_index.md</td><td>内容变更</td></tr><tr><td>internal\suites\Caddy\users.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\ta-IN\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\hu-HU\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ja-JP\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\overview\authentication\first-factor\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\sl-SI\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ss-ZA\settings.json</td><td>内容变更</td></tr><tr><td>cmd\authelia-gen\cmd_docs_jsonschema.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_sign_webauthn_test.go</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\server.go</td><td>内容变更</td></tr><tr><td>docs\layouts\shortcodes\roadmap-status.html</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_authorization_consent.go</td><td>内容变更</td></tr><tr><td>internal\middlewares\authelia_context.go</td><td>内容变更</td></tr><tr><td>internal\templates\embed\notification\Event.txt</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-CN\portal.json</td><td>内容变更</td></tr><tr><td>internal\authentication\file_user_provider.go</td><td>内容变更</td></tr><tr><td>internal\oidc\client.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\nextcloud\index.md</td><td>内容变更</td></tr><tr><td>internal\server\locales\ru-RU\settings.json</td><td>内容变更</td></tr><tr><td>internal\oidc\provider_test.go</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\identity_providers_test.go</td><td>内容变更</td></tr><tr><td>internal\authentication\ldap_client_mock_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\zh-HK\settings.json</td><td>内容变更</td></tr><tr><td>web\src\services\LocalStorage.ts</td><td>内容变更</td></tr><tr><td>internal\server\locales\lv-LV\settings.json</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\server.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_authz_builder_test.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\deployment\docker.md</td><td>内容变更</td></tr><tr><td>internal\session\user_session_test.go</td><td>内容变更</td></tr><tr><td>examples\compose\local\setup.sh</td><td>内容变更</td></tr><tr><td>internal\oidc\discovery.go</td><td>内容变更</td></tr><tr><td>internal\configuration\schema\storage.go</td><td>内容变更</td></tr><tr><td>internal\oidc\client_policy.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\vi-VN\settings.json</td><td>内容变更</td></tr><tr><td>docs\content\overview\authentication\one-time-password\index.md</td><td>内容变更</td></tr><tr><td>internal\suites\action_webauthn.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\wordpress\index.md</td><td>内容变更</td></tr><tr><td>internal\suites\suite_oidc_traefik.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\af-ZA\portal.json</td><td>内容变更</td></tr><tr><td>internal\oidc\types.go</td><td>内容变更</td></tr><tr><td>internal\mocks\storage.go</td><td>内容变更</td></tr><tr><td>api\index.html</td><td>内容变更</td></tr><tr><td>internal\configuration\koanf_util.go</td><td>内容变更</td></tr><tr><td>internal\configuration\validator\webauthn_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\scenario_two_factor_webauthn_test.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\node-red\index.md</td><td>内容变更</td></tr><tr><td>internal\suites\suite_high_availability.go</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_oidc_wellknown.go</td><td>内容变更</td></tr><tr><td>internal\handlers\util.go</td><td>内容变更</td></tr><tr><td>internal\authentication\file_user_provider_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\sk-SK\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\cloudflare-zerotrust\index.md</td><td>内容变更</td></tr><tr><td>internal\suites\OneFactorOnly\configuration.yml</td><td>内容变更</td></tr><tr><td>internal\server\locales\so-SO\settings.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\it-IT\portal.json</td><td>内容变更</td></tr><tr><td>docs\content\configuration\first-factor\file.md</td><td>内容变更</td></tr><tr><td>internal\handlers\handler_sign_totp_test.go</td><td>内容变更</td></tr><tr><td>internal\suites\suite_pathprefix.go</td><td>内容变更</td></tr><tr><td>docs\content\integration\openid-connect\synapse\index.md</td><td>内容变更</td></tr><tr><td>internal\configuration\decode_hooks_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\hr-HR\portal.json</td><td>内容变更</td></tr><tr><td>internal\configuration\deprecation.go</td><td>内容变更</td></tr><tr><td>internal\authentication\ldap_user_provider_test.go</td><td>内容变更</td></tr><tr><td>internal\server\locales\mt-MT\portal.json</td><td>内容变更</td></tr><tr><td>internal\server\locales\ku-TR\portal.json</td><td>内容变更</td></tr><tr><td>internal\oidc\const.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

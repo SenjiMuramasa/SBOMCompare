@@ -1,0 +1,759 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 21:31:25</p>
+                <p>SBOM A: sample_data\ansible_ansible_a046ef5.json</p>
+                <p>SBOM B: sample_data\ansible_ansible.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.0/10 (80.3%) [A-]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.0/10.0 (80.3%)，安全等级: A-。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 大量次版本变更, 重大版本变更, CII-Best-Practices风险, Vulnerabilities风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.6/1.7 (93.6%)</td>
+                    <td><ul class='details-list'><li>新增了5个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.4/3.5 (68.5%)</td>
+                    <td><ul class='details-list'><li>3个包发生主版本变更，可能存在API不兼容</li><li>6个包发生次版本变更</li><li>3个包发生补丁版本变更</li><li>4个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.8/1.3 (58.0%)</td>
+                    <td><ul class='details-list'><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Dangerous-Workflow, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-3ww4-gg4f-jr7f (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3ww4-gg4f-jr7f</li><li>- Warn: Project is vulnerable to: GHSA-9v9h-cgj8-h64p (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9v9h-cgj8-h64p</li><li>- Warn: Project is vulnerable to: PYSEC-2021-62 / GHSA-hggm-jpg3-v476 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-62 / GHSA-hggm-jpg3-v476</li><li>- Warn: Project is vulnerable to: PYSEC-2017-8 / GHSA-q3cj-2r34-2cwc (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2017-8 / GHSA-q3cj-2r34-2cwc</li><li>- Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</li><li>- Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699</li><li>- Warn: Project is vulnerable to: GHSA-h5c8-rqwp-cp95 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-h5c8-rqwp-cp95</li><li>- Warn: Project is vulnerable to: GHSA-h75v-3vvj-5mfj (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-h75v-3vvj-5mfj</li><li>- Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h</li><li>- Warn: Project is vulnerable to: PYSEC-2020-176 / GHSA-3pqx-4fqf-j49f (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-176 / GHSA-3pqx-4fqf-j49f</li><li>- Warn: Project is vulnerable to: PYSEC-2020-96 / GHSA-6757-jp84-gxfx (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-96 / GHSA-6757-jp84-gxfx</li><li>- Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Dangerous-Workflow风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (12)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-3ww4-gg4f-jr7f</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-3ww4-gg4f-jr7f<br><br><div class="cve-header">来自 CVE-2023-50782 的附加信息:</div><br><div class="section-header">描述: A flaw was found in the python-cryptography package. This issue may allow a remote attacker to decrypt captured messages in TLS servers that use RSA key exchanges, which may lead to exposure of confidential or sensitive data.</div><br><div class="section-header">发布日期: 2024-02-05</div><br><div class="section-header">最后更新: 2024-11-25</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://access.redhat.com/security/cve/CVE-2023-50782</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=2254432</span><br><br><div class="section-header">相关漏洞ID: CGA-45f3-3fmq-7h5w, CVE-2023-50782</div><br><br><div class="section-header">发布日期: 2024-02-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-50782</span><br><span class="vuln-link">https://github.com/pyca/cryptography/issues/9785</span><br><span class="vuln-link">https://access.redhat.com/security/cve/CVE-2023-50782</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=2254432</span><br><span class="vuln-link">https://github.com/pyca/cryptography</span><br><br><div class="section-header">影响范围:</div><br>包名: cryptography (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-9v9h-cgj8-h64p</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-9v9h-cgj8-h64p<br><br><div class="cve-header">来自 CVE-2024-0727 的附加信息:</div><br><div class="section-header">描述: Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL</div><br>to crash leading to a potential Denial of Service attack<br><br>Impact summary: Applications loading files in the PKCS12 format from untrusted<br>sources might terminate abruptly.<br><br>A file in PKCS12 format can contain certificates and keys and may come from an<br>untrusted source. The PKCS12 specification allows certain fields to be NULL, but<br>OpenSSL does not correctly check for this case. This can lead to a NULL pointer<br>dereference that results in OpenSSL crashing. If an application processes PKCS12<br>files from an untrusted source using the OpenSSL APIs then that application will<br>be vulnerable to this issue.<br><br>OpenSSL APIs that are vulnerable to this are: PKCS12_parse(),<br>PKCS12_unpack_p7data(), PKCS12_unpack_p7encdata(), PKCS12_unpack_authsafes()<br>and PKCS12_newpass().<br><br>We have also fixed a similar issue in SMIME_write_PKCS7(). However since this<br>function is related to writing data we do not consider it security significant.<br><br>The FIPS modules in 3.2, 3.1 and 3.0 are not affected by this issue.<br><div class="section-header">发布日期: 2024-01-26</div><br><div class="section-header">最后更新: 2024-10-14</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://www.openssl.org/news/secadv/20240125.txt</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/775acfdbd0c6af9ac855f34969cdab0c0c90844a</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/d135eeab8a5dbf72b3da5240bab9ddb7678dbd2c</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/09df4395b5071217b76dc7d3d2e630eb8c5a79c2</span><br><span class="vuln-link">https://github.openssl.org/openssl/extended-releases/commit/03b3941d60c4bce58fab69a0c22377ab439bc0e8</span><br><br><div class="section-header">相关漏洞ID: CGA-v739-9xhw-5vmf, CVE-2024-0727</div><br><br><div class="section-header">发布日期: 2024-01-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-0727</span><br><span class="vuln-link">https://github.com/github/advisory-database/pull/3472</span><br><span class="vuln-link">https://github.com/openssl/openssl/pull/23362</span><br><span class="vuln-link">https://github.com/alexcrichton/openssl-src-rs/commit/add20f73b6b42be7451af2e1044d4e0e778992b2</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/09df4395b5071217b76dc7d3d2e630eb8c5a79c2</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/775acfdbd0c6af9ac855f34969cdab0c0c90844a</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/d135eeab8a5dbf72b3da5240bab9ddb7678dbd2c</span><br><span class="vuln-link">https://github.com/pyca/cryptography/commit/3519591d255d4506fbcd0d04037d45271903c64d</span><br><span class="vuln-link">https://github.openssl.org/openssl/extended-releases/commit/03b3941d60c4bce58fab69a0c22377ab439bc0e8</span><br><span class="vuln-link">https://github.openssl.org/openssl/extended-releases/commit/aebaa5883e31122b404e450732dc833dc9dee539</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240208-0006</span><br><span class="vuln-link">https://www.openssl.org/news/secadv/20240125.txt</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2024/03/11/1</span><br><br><div class="section-header">影响范围:</div><br>包名: cryptography (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-cpwx-vrp4-4pq7</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7<br><br><div class="cve-header">来自 CVE-2025-27516 的附加信息:</div><br><div class="section-header">描述: Jinja is an extensible templating engine. Prior to 3.1.6, an oversight in how the Jinja sandboxed environment interacts with the |attr filter allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates. Jinja's sandbox does catch calls to str.format and ensures they don't escape the sandbox. However, it's possible to use the |attr filter to get a reference to a string's plain format method, bypassing the sandbox. After the fix, the |attr filter no longer bypasses the environment's attribute lookup. This vulnerability is fixed in 3.1.6.</div><br><div class="section-header">发布日期: 2025-03-05</div><br><div class="section-header">最后更新: 2025-03-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-27516</div><br><br><div class="section-header">发布日期: 2025-03-05</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27516</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><br><div class="section-header">影响范围:</div><br>包名: jinja2 (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-gmj6-6f8f-6699</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699<br><br><div class="cve-header">来自 CVE-2024-56201 的附加信息:</div><br><div class="section-header">描述: Jinja is an extensible templating engine. In versions on the 3.x branch prior to 3.1.5, a bug in the Jinja compiler allows an attacker that controls both the content and filename of a template to execute arbitrary Python code, regardless of if Jinja's sandbox is used. To exploit the vulnerability, an attacker needs to control both the filename and the contents of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates where the template author can also choose the template filename. This vulnerability is fixed in 3.1.5.</div><br><div class="section-header">发布日期: 2024-12-23</div><br><div class="section-header">最后更新: 2025-02-18</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699</span><br><span class="vuln-link">https://github.com/pallets/jinja/issues/1792</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-56201</div><br><br><div class="section-header">发布日期: 2024-12-23</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56201</span><br><span class="vuln-link">https://github.com/pallets/jinja/issues/1792</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">影响范围:</div><br>包名: jinja2 (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-h5c8-rqwp-cp95</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-h5c8-rqwp-cp95<br><br><div class="cve-header">来自 CVE-2024-22195 的附加信息:</div><br><div class="section-header">描述: Jinja is an extensible templating engine. Special placeholders in the template allow writing code similar to Python syntax. It is possible to inject arbitrary HTML attributes into the rendered HTML template, potentially leading to Cross-Site Scripting (XSS). The Jinja `xmlattr` filter can be abused to inject arbitrary HTML attribute keys and values, bypassing the auto escaping mechanism and potentially leading to XSS. It may also be possible to bypass attribute validation checks if they are blacklist-based.</div><br><div class="section-header">发布日期: 2024-01-11</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-h5c8-rqwp-cp95</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.3</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/5XCWZD464AJJJUBOO7CMPXQ4ROBC6JX2/</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/01/msg00010.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/O7YWRBX6JQCWC2XXCTZ55C7DPMGICCN3/</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-22195</div><br><br><div class="section-header">发布日期: 2024-01-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-h5c8-rqwp-cp95</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-22195</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/716795349a41d4983a9a4771f7d883c96ea17be7</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.3</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/01/msg00010.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/5XCWZD464AJJJUBOO7CMPXQ4ROBC6JX2</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/DELCVUUYX75I5K4Q5WMJG4MUZJA6VAIP</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/O7YWRBX6JQCWC2XXCTZ55C7DPMGICCN3</span><br><br><div class="section-header">影响范围:</div><br>包名: jinja2 (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-h75v-3vvj-5mfj</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-h75v-3vvj-5mfj<br><br><div class="cve-header">来自 CVE-2024-34064 的附加信息:</div><br><div class="section-header">描述: Jinja is an extensible templating engine. The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `>`, or `=`, as each would then be interpreted as starting a separate attribute. If an application accepts keys (as opposed to only values) as user input, and renders these in pages that other users see as well, an attacker could use this to inject other attributes and perform XSS. The fix for CVE-2024-22195 only addressed spaces but not other characters. Accepting keys as user input is now explicitly considered an unintended use case of the `xmlattr` filter, and code that does so without otherwise validating the input should be flagged as insecure, regardless of Jinja version. Accepting _values_ as user input continues to be safe. This vulnerability is fixed in 3.1.4.</div><br><div class="section-header">发布日期: 2024-05-06</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-h75v-3vvj-5mfj</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/0668239dc6b44ef38e7a6c9f91f312fd4ca581cb</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/SSCBHIL6BYKR5NRCBXP4XMP2CEEKGFVS/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/GCLF44KY43BSVMTE6S53B4V5WP3FRRSE/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZALNWE3TXPPHVPSI3AZ5CTMSTAVN5UMS/</span><br><br><div class="section-header">相关漏洞ID: CGA-g5xx-83xq-8g5j, CVE-2024-34064</div><br><br><div class="section-header">发布日期: 2024-05-06</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-h75v-3vvj-5mfj</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-34064</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/0668239dc6b44ef38e7a6c9f91f312fd4ca581cb</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/567XIGSZMABG6TSMYWD7MIYNJSUQQRUC</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/GCLF44KY43BSVMTE6S53B4V5WP3FRRSE</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/SSCBHIL6BYKR5NRCBXP4XMP2CEEKGFVS</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZALNWE3TXPPHVPSI3AZ5CTMSTAVN5UMS</span><br><br><div class="section-header">影响范围:</div><br>包名: jinja2 (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-q2x7-8rv6-6q7h</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h<br><br><div class="cve-header">来自 CVE-2024-56326 的附加信息:</div><br><div class="section-header">描述: Jinja is an extensible templating engine. Prior to 3.1.5, An oversight in how the Jinja sandboxed environment detects calls to str.format allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates. Jinja's sandbox does catch calls to str.format and ensures they don't escape the sandbox. However, it's possible to store a reference to a malicious string's format method, then pass that to a filter that calls it. No such filters are built-in to Jinja, but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox. This vulnerability is fixed in 3.1.5.</div><br><div class="section-header">发布日期: 2024-12-23</div><br><div class="section-header">最后更新: 2024-12-27</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-56326</div><br><br><div class="section-header">发布日期: 2024-12-23</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56326</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">影响范围:</div><br>包名: jinja2 (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2017-8 / GHSA-q3cj-2r34-2cwc</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2017-8 / GHSA-q3cj-2r34-2cwc<br><br><div class="cve-header">来自 CVE-2016-9243 的附加信息:</div><br><div class="section-header">描述: HKDF in cryptography before 1.5.2 returns an empty byte-string if used with a length less than algorithm.digest_size.</div><br><div class="section-header">发布日期: 2017-03-27</div><br><div class="section-header">最后更新: 2024-08-06</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/U23KDR2M2N7W2ZSREG63BVW7D4VC6CIZ/</span><br><span class="vuln-link">http://www.ubuntu.com/usn/USN-3138-1</span><br><span class="vuln-link">https://github.com/pyca/cryptography/commit/b924696b2e8731f39696584d12cceeb3aeb2d874</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WQ5G7KHKZC4SI23JE7277KZXM57GEQKT/</span><br><span class="vuln-link">http://www.securityfocus.com/bid/94216</span><br><br><div class="section-header">相关漏洞ID: CVE-2016-9243, GHSA-q3cj-2r34-2cwc</div><br><br><div class="section-header">发布日期: 2017-03-27</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/WQ5G7KHKZC4SI23JE7277KZXM57GEQKT/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/U23KDR2M2N7W2ZSREG63BVW7D4VC6CIZ/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/5R2ZOBMPWDFFHUZ6QOZZY36A6H5CGJXL/</span><br><span class="vuln-link">https://github.com/pyca/cryptography/issues/3211</span><br><span class="vuln-link">https://github.com/pyca/cryptography/commit/b924696b2e8731f39696584d12cceeb3aeb2d874</span><br><span class="vuln-link">https://cryptography.io/en/latest/changelog</span><br><span class="vuln-link">http://www.ubuntu.com/usn/USN-3138-1</span><br><span class="vuln-link">http://www.securityfocus.com/bid/94216</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2016/11/09/2</span><br><span class="vuln-link">https://github.com/advisories/GHSA-q3cj-2r34-2cwc</span><br><br><div class="section-header">影响范围:</div><br>包名: cryptography (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2020-176 / GHSA-3pqx-4fqf-j49f</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-176 / GHSA-3pqx-4fqf-j49f<br><br><div class="cve-header">来自 CVE-2019-20477 的附加信息:</div><br><div class="section-header">描述: PyYAML 5.1 through 5.1.2 has insufficient restrictions on the load and load_all functions because of a class deserialization issue, e.g., Popen is a class in the subprocess module. NOTE: this issue exists because of an incomplete fix for CVE-2017-18342.</div><br><div class="section-header">发布日期: 2020-02-19</div><br><div class="section-header">最后更新: 2024-08-05</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/yaml/pyyaml/blob/master/CHANGES</span><br><span class="vuln-link">https://www.exploit-db.com/download/47655</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/52N5XS73Z5S4ZN7I7R56ICCPCTKCUV4H/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/33VBUY73AA6CTTYL3LRWHNFDULV7PFPN/</span><br><br><div class="section-header">相关漏洞ID: CVE-2019-20477, GHSA-3pqx-4fqf-j49f</div><br><br><div class="section-header">发布日期: 2020-02-19</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://www.exploit-db.com/download/47655</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/blob/master/CHANGES</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/52N5XS73Z5S4ZN7I7R56ICCPCTKCUV4H/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/33VBUY73AA6CTTYL3LRWHNFDULV7PFPN/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-3pqx-4fqf-j49f</span><br><br><div class="section-header">影响范围:</div><br>包名: pyyaml (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2020-96 / GHSA-6757-jp84-gxfx</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-96 / GHSA-6757-jp84-gxfx<br><br><div class="cve-header">来自 CVE-2020-1747 的附加信息:</div><br><div class="section-header">描述: A vulnerability was discovered in the PyYAML library in versions before 5.3.1, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vulnerable to this flaw. An attacker could use this flaw to execute arbitrary code on the system by abusing the python/object/new constructor.</div><br><div class="section-header">发布日期: 2020-03-24</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WORRFHPQVAFKKXXWLSSW6XKUYLWM6CSH/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBJA3SGNJKCAYPSHOHWY3KBCWNM5NYK2/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/K5HEPD7LEVDPCITY5IMDYWXUMX37VFMY/</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2020-04/msg00017.html</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00017.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-1747, GHSA-6757-jp84-gxfx</div><br><br><div class="section-header">发布日期: 2020-03-24</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2020-1747</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/pull/386</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/WORRFHPQVAFKKXXWLSSW6XKUYLWM6CSH/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZBJA3SGNJKCAYPSHOHWY3KBCWNM5NYK2/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/K5HEPD7LEVDPCITY5IMDYWXUMX37VFMY/</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2020-04/msg00017.html</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00017.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MMQXSZXNJT6ERABJZAAICI3DQSQLCP3D/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/7PPAS6C4SZRDQLR7C22A5U3QOLXY33JX/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-6757-jp84-gxfx</span><br><br><div class="section-header">影响范围:</div><br>包名: pyyaml (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2021-142 / GHSA-8q59-q68h-6hv4</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4<br><br><div class="cve-header">来自 CVE-2020-14343 的附加信息:</div><br><div class="section-header">描述: A vulnerability was discovered in the PyYAML library in versions before 5.4, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vulnerable to this flaw. This flaw allows an attacker to execute arbitrary code on the system by abusing the python/object/new constructor. This flaw is due to an incomplete fix for CVE-2020-1747.</div><br><div class="section-header">发布日期: 2021-02-09</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/yaml/pyyaml/issues/420</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuapr2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujul2022.html</span><br><span class="vuln-link">https://github.com/SeldonIO/seldon-core/issues/2252</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-14343, GHSA-8q59-q68h-6hv4</div><br><br><div class="section-header">发布日期: 2021-02-09</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8q59-q68h-6hv4</span><br><br><div class="section-header">影响范围:</div><br>包名: pyyaml (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2021-62 / GHSA-hggm-jpg3-v476</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-62 / GHSA-hggm-jpg3-v476<br><br><div class="cve-header">来自 CVE-2020-25659 的附加信息:</div><br><div class="section-header">描述: python-cryptography 3.2 is vulnerable to Bleichenbacher timing attacks in the RSA decryption API, via timed processing of valid PKCS#1 v1.5 ciphertext.</div><br><div class="section-header">发布日期: 2021-01-11</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/pyca/cryptography/pull/5507/commits/ce1bef6f1ee06ac497ca0c837fbd1c7ef6c2472b</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuapr2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujul2022.html</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-25659, GHSA-hggm-jpg3-v476</div><br><br><div class="section-header">发布日期: 2021-01-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/pyca/cryptography/pull/5507/commits/ce1bef6f1ee06ac497ca0c837fbd1c7ef6c2472b</span><br><span class="vuln-link">https://github.com/advisories/GHSA-hggm-jpg3-v476</span><br><br><div class="section-header">影响范围:</div><br>包名: cryptography (PyPI)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (5)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>pytest-mock</td><td>==3.14.0</td><td>MIT License</td></tr><tr><td>pathspec</td><td>==0.12.1</td><td>Mozilla Public License 2.0 (MPL 2.0)</td></tr><tr><td>click</td><td>==8.1.8</td><td>BSD License</td></tr><tr><td>platformdirs</td><td>==4.3.7</td><td>MIT License</td></tr><tr><td>black</td><td>==25.1.0</td><td>MIT License</td></tr>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (16)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>types-requests</td><td>==2.32.0.20240914</td><td>==2.32.0.20250306</td><td>一般变更</td></tr><tr><td>mypy</td><td>==1.11.2</td><td>==1.15.0</td><td>次版本</td></tr><tr><td>cryptography</td><td>==43.0.1</td><td>==44.0.2</td><td>主版本</td></tr><tr><td>Jinja2</td><td>==3.1.4</td><td>==3.1.6</td><td>补丁版本</td></tr><tr><td>pytest</td><td>==8.3.3</td><td>==8.3.5</td><td>补丁版本</td></tr><tr><td>build</td><td>==1.2.2</td><td>==1.2.2.post1</td><td>一般变更</td></tr><tr><td>tomli</td><td>==2.0.2</td><td>==2.2.1</td><td>次版本</td></tr><tr><td>pymarkdownlnt</td><td>==0.9.23</td><td>==0.9.29</td><td>补丁版本</td></tr><tr><td>packaging</td><td>==24.1</td><td>==24.2</td><td>次版本</td></tr><tr><td>types-setuptools</td><td>==75.1.0.20240917</td><td>==76.0.0.20250313</td><td>主版本</td></tr><tr><td>typing_extensions</td><td>==4.12.2</td><td>NOASSERTION ; python_version < '3.11'</td><td>一般变更</td></tr><tr><td>iniconfig</td><td>==2.0.0</td><td>==2.1.0</td><td>次版本</td></tr><tr><td>urllib3</td><td>==2.2.3</td><td>==2.3.0</td><td>次版本</td></tr><tr><td>types-PyYAML</td><td>==6.0.12.20240917</td><td>==6.0.12.20241230</td><td>一般变更</td></tr><tr><td>jinja2</td><td>>= 3.0.0</td><td>>= 3.1.0</td><td>无变更</td></tr><tr><td>MarkupSafe</td><td>==2.1.5</td><td>==3.0.2</td><td>主版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (15)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-high">GHSA-462w-v97r-4m45<br>关联CVE: CVE-2019-10906</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6</td>
+                            <td>Jinja2 sandbox escape via string formatting<br><br>In Pallets Jinja before 2.10.1, `str.format_map` allows a sandbox escape.
+
+The sandbox is used to restrict what code can be evaluated when rendering untrusted, user-provided templates. Due to the way string formatting works in Python, the `str.format_map` method could be used to escape the sandbox.
+
+This issue was previously addressed for the `str.format` method in Jinja 2.8.1, which discusses the issue in detail. However, the less-common `str.format_map` method was overlooked. This release applies the same sandboxing to both methods.
+
+If you cannot upgrade Jinja, you can override the `is_safe_attribute` method on the sandbox and explicitly disallow the `format_map` method on string objects.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2019-10906' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2019-10906</a><br><a href='https://usn.ubuntu.com/4011-2' target='_blank' class='vuln-link'>https://usn.ubuntu.com/4011-2</a><br><a href='https://usn.ubuntu.com/4011-1' target='_blank' class='vuln-link'>https://usn.ubuntu.com/4011-1</a><br><a href='https://palletsprojects.com/blog/jinja-2-10-1-released' target='_blank' class='vuln-link'>https://palletsprojects.com/blog/jinja-2-10-1-released</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TS7IVZAJBWOHNRDMFJDIZVFCMRP6YIUQ' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TS7IVZAJBWOHNRDMFJDIZVFCMRP6YIUQ</a></div></td>
+                            <td>2019-04-10</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-high">GHSA-8r7q-cvjq-x353<br>关联CVE: CVE-2014-1402</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1</td>
+                            <td>Incorrect Privilege Assignment in Jinja2<br><br>The default configuration for `bccache.FileSystemBytecodeCache` in Jinja2 before 2.7.2 does not properly create temporary files, which allows local users to gain privileges via a crafted .cache file with a name starting with `__jinja2_` in `/tmp`.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2014-1402' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2014-1402</a><br><a href='https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=734747' target='_blank' class='vuln-link'>https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=734747</a><br><a href='https://bugzilla.redhat.com/show_bug.cgi?id=1051421' target='_blank' class='vuln-link'>https://bugzilla.redhat.com/show_bug.cgi?id=1051421</a><br><a href='https://github.com/advisories/GHSA-8r7q-cvjq-x353' target='_blank' class='vuln-link'>https://github.com/advisories/GHSA-8r7q-cvjq-x353</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/jinja2/PYSEC-2014-8.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/jinja2/PYSEC-2014-8.yaml</a></div></td>
+                            <td>2022-05-14</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-cpwx-vrp4-4pq7<br>关联CVE: CVE-2025-27516</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.10.1, 2.10.2, 2.10.3, 2.11.0, 2.11.1, 2.11.2, 2.11.3, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6, 3.0.0, 3.0.0a1, 3.0.0rc1, 3.0.0rc2, 3.0.1, 3.0.2, 3.0.3, 3.1.0, 3.1.1, 3.1.2, 3.1.3, 3.1.4, 3.1.5</td>
+                            <td>Jinja2 vulnerable to sandbox breakout through attr filter selecting format method<br><br>An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to execute arbitrary Python code.
+
+To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.
+
+Jinja's sandbox does catch calls to `str.format` and ensures they don't escape the sandbox. However, it's possible to use the `|attr` filter to get a reference to a string's plain format method, bypassing the sandbox. After the fix, the `|attr` filter no longer bypasses the environment's attribute lookup.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-27516' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-27516</a><br><a href='https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a></div></td>
+                            <td>2025-03-05</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-fqh9-2qgg-h84h<br>关联CVE: CVE-2014-0012</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1</td>
+                            <td>Insecure Temporary File in Jinja2<br><br>FileSystemBytecodeCache in Jinja2 prior to version 2.7.2 does not properly create temporary directories, which allows local users to gain privileges by pre-creating a temporary directory with a user's uid. NOTE: this vulnerability exists because of an incomplete fix for CVE-2014-1402.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2014-0012' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2014-0012</a><br><a href='https://github.com/mitsuhiko/jinja2/pull/292' target='_blank' class='vuln-link'>https://github.com/mitsuhiko/jinja2/pull/292</a><br><a href='https://github.com/mitsuhiko/jinja2/pull/296' target='_blank' class='vuln-link'>https://github.com/mitsuhiko/jinja2/pull/296</a><br><a href='https://github.com/pallets/jinja2/pull/292' target='_blank' class='vuln-link'>https://github.com/pallets/jinja2/pull/292</a><br><a href='https://github.com/pallets/jinja2/pull/296' target='_blank' class='vuln-link'>https://github.com/pallets/jinja2/pull/296</a></div></td>
+                            <td>2022-05-17</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-g3rq-g295-4j3m<br>关联CVE: CVE-2020-28493</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.10.1, 2.10.2, 2.10.3, 2.11.0, 2.11.1, 2.11.2, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6</td>
+                            <td>Regular Expression Denial of Service (ReDoS) in Jinja2<br><br>This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDOS vulnerability of the regex is mainly due to the sub-pattern [a-zA-Z0-9._-]+.[a-zA-Z0-9._-]+ This issue can be mitigated by Markdown to format user content instead of the urlize filter, or by implementing request timeouts and limiting process memory.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2020-28493' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2020-28493</a><br><a href='https://github.com/pallets/jinja/pull/1343' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/pull/1343</a><br><a href='https://github.com/pallets/jinja/commit/15ef8f09b659f9100610583938005a7a10472d4d' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/15ef8f09b659f9100610583938005a7a10472d4d</a><br><a href='https://github.com/advisories/GHSA-g3rq-g295-4j3m' target='_blank' class='vuln-link'>https://github.com/advisories/GHSA-g3rq-g295-4j3m</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a></div></td>
+                            <td>2021-03-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-gmj6-6f8f-6699<br>关联CVE: CVE-2024-56201</td>
+                            <td>具体受影响版本: 3.0.0, 3.0.1, 3.0.2, 3.0.3, 3.1.0, 3.1.1, 3.1.2, 3.1.3, 3.1.4</td>
+                            <td>Jinja has a sandbox breakout through malicious filenames<br><br>A bug in the Jinja compiler allows an attacker that controls both the content and filename of a template to execute arbitrary Python code, regardless of if Jinja's sandbox is used.
+
+To exploit the vulnerability, an attacker needs to control both the filename and the contents of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates where the template author can also choose the template filename.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-56201' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-56201</a><br><a href='https://github.com/pallets/jinja/issues/1792' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/issues/1792</a><br><a href='https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a></div></td>
+                            <td>2024-12-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-h5c8-rqwp-cp95<br>关联CVE: CVE-2024-22195</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.10.1, 2.10.2, 2.10.3, 2.11.0, 2.11.1, 2.11.2, 2.11.3, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6, 3.0.0, 3.0.0a1, 3.0.0rc1, 3.0.0rc2, 3.0.1, 3.0.2, 3.0.3, 3.1.0, 3.1.1, 3.1.2</td>
+                            <td>Jinja vulnerable to HTML attribute injection when passing user input as keys to xmlattr filter<br><br>The `xmlattr` filter in affected versions of Jinja accepts keys containing spaces. XML/HTML attributes cannot contain spaces, as each would then be interpreted as a separate attribute. If an application accepts keys (as opposed to only values) as user input, and renders these in pages that other users see as well, an attacker could use this to inject other attributes and perform XSS. Note that accepting keys as user input is not common or a particularly intended use case of the `xmlattr` filter, and an application doing so should already be verifying what keys are provided regardless of this fix.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-h5c8-rqwp-cp95' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-h5c8-rqwp-cp95</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-22195' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-22195</a><br><a href='https://github.com/pallets/jinja/commit/716795349a41d4983a9a4771f7d883c96ea17be7' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/716795349a41d4983a9a4771f7d883c96ea17be7</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a><br><a href='https://github.com/pallets/jinja/releases/tag/3.1.3' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/releases/tag/3.1.3</a></div></td>
+                            <td>2024-01-11</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-h75v-3vvj-5mfj<br>关联CVE: CVE-2024-34064</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.10.1, 2.10.2, 2.10.3, 2.11.0, 2.11.1, 2.11.2, 2.11.3, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6, 3.0.0, 3.0.0a1, 3.0.0rc1, 3.0.0rc2, 3.0.1, 3.0.2, 3.0.3, 3.1.0, 3.1.1, 3.1.2, 3.1.3</td>
+                            <td>Jinja vulnerable to HTML attribute injection when passing user input as keys to xmlattr filter<br><br>The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `>`, or `=`, as each would then be interpreted as starting a separate attribute. If an application accepts keys (as opposed to only values) as user input, and renders these in pages that other users see as well, an attacker could use this to inject other attributes and perform XSS. The fix for the previous GHSA-h5c8-rqwp-cp95 CVE-2024-22195 only addressed spaces but not other characters.
+
+Accepting keys as user input is now explicitly considered an unintended use case of the `xmlattr` filter, and code that does so without otherwise validating the input should be flagged as insecure, regardless of Jinja version. Accepting _values_ as user input continues to be safe.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-h75v-3vvj-5mfj' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-h75v-3vvj-5mfj</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-34064' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-34064</a><br><a href='https://github.com/pallets/jinja/commit/0668239dc6b44ef38e7a6c9f91f312fd4ca581cb' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/0668239dc6b44ef38e7a6c9f91f312fd4ca581cb</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/567XIGSZMABG6TSMYWD7MIYNJSUQQRUC' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/567XIGSZMABG6TSMYWD7MIYNJSUQQRUC</a></div></td>
+                            <td>2024-05-06</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-high">GHSA-hj2j-77xm-mc5v<br>关联CVE: CVE-2016-10745</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8</td>
+                            <td>Jinja2 sandbox escape vulnerability<br><br>In Pallets Jinja before 2.8.1, str.format allows a sandbox escape.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2016-10745' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2016-10745</a><br><a href='https://github.com/pallets/jinja/commit/9b53045c34e61013dc8f09b7e52a555fa16bed16' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/9b53045c34e61013dc8f09b7e52a555fa16bed16</a><br><a href='https://access.redhat.com/errata/RHSA-2019:1022' target='_blank' class='vuln-link'>https://access.redhat.com/errata/RHSA-2019:1022</a><br><a href='https://access.redhat.com/errata/RHSA-2019:1237' target='_blank' class='vuln-link'>https://access.redhat.com/errata/RHSA-2019:1237</a><br><a href='https://access.redhat.com/errata/RHSA-2019:1260' target='_blank' class='vuln-link'>https://access.redhat.com/errata/RHSA-2019:1260</a></div></td>
+                            <td>2019-04-10</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">GHSA-q2x7-8rv6-6q7h<br>关联CVE: CVE-2024-56326</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.10.1, 2.10.2, 2.10.3, 2.11.0, 2.11.1, 2.11.2, 2.11.3, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6, 3.0.0, 3.0.0a1, 3.0.0rc1, 3.0.0rc2, 3.0.1, 3.0.2, 3.0.3, 3.1.0, 3.1.1, 3.1.2, 3.1.3, 3.1.4</td>
+                            <td>Jinja has a sandbox breakout through indirect reference to format method<br><br>An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execute arbitrary Python code.
+
+To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.
+
+Jinja's sandbox does catch calls to `str.format` and ensures they don't escape the sandbox. However, it's possible to store a reference to a malicious string's `format` method, then pass that to a filter that calls it. No such filters are built-in to Jinja, but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-56326' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-56326</a><br><a href='https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a><br><a href='https://github.com/pallets/jinja/releases/tag/3.1.5' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/releases/tag/3.1.5</a></div></td>
+                            <td>2024-12-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">PYSEC-2014-8<br>关联CVE: CVE-2014-1402</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1</td>
+                            <td><br><br>The default configuration for bccache.FileSystemBytecodeCache in Jinja2 before 2.7.2 does not properly create temporary files, which allows local users to gain privileges via a crafted .cache file with a name starting with __jinja2_ in /tmp.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=734747' target='_blank' class='vuln-link'>https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=734747</a><br><a href='http://advisories.mageia.org/MGASA-2014-0028.html' target='_blank' class='vuln-link'>http://advisories.mageia.org/MGASA-2014-0028.html</a><br><a href='http://jinja.pocoo.org/docs/changelog/' target='_blank' class='vuln-link'>http://jinja.pocoo.org/docs/changelog/</a><br><a href='http://openwall.com/lists/oss-security/2014/01/10/3' target='_blank' class='vuln-link'>http://openwall.com/lists/oss-security/2014/01/10/3</a><br><a href='https://bugzilla.redhat.com/show_bug.cgi?id=1051421' target='_blank' class='vuln-link'>https://bugzilla.redhat.com/show_bug.cgi?id=1051421</a></div></td>
+                            <td>2014-05-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">PYSEC-2014-82<br>关联CVE: CVE-2014-0012</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2</td>
+                            <td><br><br>FileSystemBytecodeCache in Jinja2 2.7.2 does not properly create temporary directories, which allows local users to gain privileges by pre-creating a temporary directory with a user's uid.  NOTE: this vulnerability exists because of an incomplete fix for CVE-2014-1402.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://bugzilla.redhat.com/show_bug.cgi?id=1051421' target='_blank' class='vuln-link'>https://bugzilla.redhat.com/show_bug.cgi?id=1051421</a><br><a href='https://github.com/mitsuhiko/jinja2/pull/292' target='_blank' class='vuln-link'>https://github.com/mitsuhiko/jinja2/pull/292</a><br><a href='https://github.com/mitsuhiko/jinja2/commit/acb672b6a179567632e032f547582f30fa2f4aa7' target='_blank' class='vuln-link'>https://github.com/mitsuhiko/jinja2/commit/acb672b6a179567632e032f547582f30fa2f4aa7</a><br><a href='http://seclists.org/oss-sec/2014/q1/73' target='_blank' class='vuln-link'>http://seclists.org/oss-sec/2014/q1/73</a><br><a href='https://github.com/mitsuhiko/jinja2/pull/296' target='_blank' class='vuln-link'>https://github.com/mitsuhiko/jinja2/pull/296</a></div></td>
+                            <td>2014-05-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">PYSEC-2019-217<br>关联CVE: CVE-2019-10906</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.10, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6</td>
+                            <td><br><br>In Pallets Jinja before 2.10.1, str.format_map allows a sandbox escape.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://palletsprojects.com/blog/jinja-2-10-1-released' target='_blank' class='vuln-link'>https://palletsprojects.com/blog/jinja-2-10-1-released</a><br><a href='https://lists.apache.org/thread.html/b2380d147b508bbcb90d2cad443c159e63e12555966ab4f320ee22da@%3Ccommits.airflow.apache.org%3E' target='_blank' class='vuln-link'>https://lists.apache.org/thread.html/b2380d147b508bbcb90d2cad443c159e63e12555966ab4f320ee22da@%3Ccommits.airflow.apache.org%3E</a><br><a href='https://lists.apache.org/thread.html/46c055e173b52d599c648a98199972dbd6a89d2b4c4647b0500f2284@%3Cdevnull.infra.apache.org%3E' target='_blank' class='vuln-link'>https://lists.apache.org/thread.html/46c055e173b52d599c648a98199972dbd6a89d2b4c4647b0500f2284@%3Cdevnull.infra.apache.org%3E</a><br><a href='https://lists.apache.org/thread.html/f0c4a03418bcfe70c539c5dbaf99c04c98da13bfa1d3266f08564316@%3Ccommits.airflow.apache.org%3E' target='_blank' class='vuln-link'>https://lists.apache.org/thread.html/f0c4a03418bcfe70c539c5dbaf99c04c98da13bfa1d3266f08564316@%3Ccommits.airflow.apache.org%3E</a><br><a href='https://lists.apache.org/thread.html/7f39f01392d320dfb48e4901db68daeece62fd60ef20955966739993@%3Ccommits.airflow.apache.org%3E' target='_blank' class='vuln-link'>https://lists.apache.org/thread.html/7f39f01392d320dfb48e4901db68daeece62fd60ef20955966739993@%3Ccommits.airflow.apache.org%3E</a></div></td>
+                            <td>2019-04-07</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">PYSEC-2019-220<br>关联CVE: CVE-2016-10745</td>
+                            <td>具体受影响版本: 2.0, 2.0rc1, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8</td>
+                            <td><br><br>In Pallets Jinja before 2.8.1, str.format allows a sandbox escape.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://palletsprojects.com/blog/jinja-281-released/' target='_blank' class='vuln-link'>https://palletsprojects.com/blog/jinja-281-released/</a><br><a href='https://github.com/pallets/jinja/commit/9b53045c34e61013dc8f09b7e52a555fa16bed16' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/9b53045c34e61013dc8f09b7e52a555fa16bed16</a><br><a href='https://access.redhat.com/errata/RHSA-2019:1022' target='_blank' class='vuln-link'>https://access.redhat.com/errata/RHSA-2019:1022</a><br><a href='http://lists.opensuse.org/opensuse-security-announce/2019-05/msg00030.html' target='_blank' class='vuln-link'>http://lists.opensuse.org/opensuse-security-announce/2019-05/msg00030.html</a><br><a href='https://access.redhat.com/errata/RHSA-2019:1237' target='_blank' class='vuln-link'>https://access.redhat.com/errata/RHSA-2019:1237</a></div></td>
+                            <td>2019-04-08</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jinja2</td>
+                            <td class="vuln-unknown">PYSEC-2021-66<br>关联CVE: CVE-2020-28493</td>
+                            <td>具体受影响版本: 2.0rc1, 2.0, 2.1, 2.1.1, 2.2, 2.2.1, 2.3, 2.3.1, 2.4, 2.4.1, 2.5, 2.5.1, 2.5.2, 2.5.3, 2.5.4, 2.5.5, 2.6, 2.7, 2.7.1, 2.7.2, 2.7.3, 2.8, 2.8.1, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6, 2.10, 2.10.1, 2.10.2, 2.10.3, 2.11.0, 2.11.1, 2.11.2</td>
+                            <td><br><br>This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDoS vulnerability is mainly due to the `_punctuation_re regex` operator and its use of multiple wildcards. The last wildcard is the most exploitable as it searches for trailing punctuation. This issue can be mitigated by Markdown to format user content instead of the urlize filter, or by implementing request timeouts and limiting process memory.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/blob/ab81fd9c277900c85da0c322a2ff9d68a235b2e6/src/jinja2/utils.py%23L20' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/blob/ab81fd9c277900c85da0c322a2ff9d68a235b2e6/src/jinja2/utils.py%23L20</a><br><a href='https://github.com/pallets/jinja/pull/1343' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/pull/1343</a><br><a href='https://snyk.io/vuln/SNYK-PYTHON-JINJA2-1012994' target='_blank' class='vuln-link'>https://snyk.io/vuln/SNYK-PYTHON-JINJA2-1012994</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PVAKCOO7VBVUBM3Q6CBBTPBFNP5NDXF4/' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PVAKCOO7VBVUBM3Q6CBBTPBFNP5NDXF4/</a><br><a href='https://github.com/advisories/GHSA-g3rq-g295-4j3m' target='_blank' class='vuln-link'>https://github.com/advisories/GHSA-g3rq-g295-4j3m</a></div></td>
+                            <td>2021-02-01</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>4051</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>4127</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>84</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>475</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (84)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>changelogs\fragments\81812-ansible-galaxy-negative-spec-is-pinned.yml</td></tr><tr><td>test\integration\targets\ansible-test-sanity-validate-modules\ansible_collections\ns\ps_only\plugins\modules\util_ansible_requires.yml</td></tr><tr><td>test\integration\targets\connection_local\test_become_password_handling.yml</td></tr><tr><td>test\integration\targets\become_su\files\sushim.sh</td></tr><tr><td>changelogs\fragments\uri_httpexception.yml</td></tr><tr><td>test\integration\targets\interpreter_discovery_python\bad-connection.yml</td></tr><tr><td>.github\ISSUE_TEMPLATE\fallible_dt.yml</td></tr><tr><td>test\integration\targets\strategy-external\runme.sh</td></tr><tr><td>test\units\module_utils\facts\hardware\fixtures\sysctl_darwin_silicon.txt</td></tr><tr><td>changelogs\fragments\84578-dnf5-is_installed-provides.yml</td></tr><tr><td>changelogs\fragments\no-inherit-stdio.yml</td></tr><tr><td>test\units\module_utils\facts\hardware\fixtures\sysctl_darwin_intel.txt</td></tr><tr><td>test\integration\targets\apt\vars\arch\arm64.yml</td></tr><tr><td>test\integration\targets\become_su\tasks\main.yml</td></tr><tr><td>changelogs\fragments\ps-import-sanity.yml</td></tr><tr><td>changelogs\fragments\local-become-fixes.yml</td></tr><tr><td>changelogs\fragments\84660-fix-meta-end_role-linear-strategy.yml</td></tr><tr><td>changelogs\fragments\Ansible.Basic-required_if-null.yml</td></tr><tr><td>changelogs\fragments\ansible-test-curl.yml</td></tr><tr><td>test\integration\targets\interpreter_discovery_python\runme.sh</td></tr><tr><td>changelogs\fragments\ssh_raise_exception.yml</td></tr><tr><td>changelogs\fragments\darwin_pagesize.yml</td></tr><tr><td>test\integration\targets\ansible-doc\lookup_plugins\broken_docs.py</td></tr><tr><td>changelogs\fragments\openrc-status.yml</td></tr><tr><td>changelogs\fragments\deprecate_api.yml</td></tr><tr><td>changelogs\fragments\gather_facts_smart_fix.yml</td></tr><tr><td>test\integration\targets\setup_test_user\tasks\sudo_config.yml</td></tr><tr><td>changelogs\fragments\83936-ssh-askpass.yml</td></tr><tr><td>test\sanity\code-smell\black.json</td></tr><tr><td>test\integration\targets\connection_ssh\test_ssh_askpass.yml</td></tr><tr><td>changelogs\fragments\vault_docs_fix.yaml</td></tr><tr><td>test\integration\targets\become_sudo\files\sudoshim.sh</td></tr><tr><td>.github\ISSUE_TEMPLATE\internal_issue.md</td></tr><tr><td>changelogs\fragments\dnf5-remove-usage-deprecated-option.yml</td></tr><tr><td>changelogs\fragments\find_enoent.yml</td></tr><tr><td>test\integration\targets\setup_become_user_pair\defaults\main.yml</td></tr><tr><td>changelogs\fragments\81874-deprecate-datetime-compat.yml</td></tr><tr><td>test\integration\targets\var_reserved\tasks\include_vars.yml</td></tr><tr><td>changelogs\fragments\implicit_flush_handlers_parents.yml</td></tr><tr><td>changelogs\fragments\apt_key_bye.yml</td></tr><tr><td>changelogs\fragments\set_ipv4_and_ipv6_simultaneously.yml</td></tr><tr><td>changelogs\fragments\jinja-version.yml</td></tr><tr><td>changelogs\fragments\respawn-min-python.yml</td></tr><tr><td>test\units\galaxy\test_collection_dataclasses.py</td></tr><tr><td>changelogs\fragments\winrm-kinit-pexpect.yml</td></tr><tr><td>changelogs\fragments\84468-timeout_become_unreachable.yml</td></tr><tr><td>test\integration\targets\gathering_facts\smart_added.yml</td></tr><tr><td>lib\ansible\cli\_ssh_askpass.py</td></tr><tr><td>test\integration\targets\strategy-external\ansible_collections\ns\col\plugins\strategy\external.py</td></tr><tr><td>changelogs\fragments\hide-loop-vars-debug-vars.yml</td></tr><tr><td>test\sanity\code-smell\black.py</td></tr><tr><td>changelogs\fragments\interpreter-discovery-auto-legacy.yml</td></tr><tr><td>test\integration\targets\var_reserved\vars\set_host_variable.yml</td></tr><tr><td>changelogs\fragments\win-wdac-audit.yml</td></tr><tr><td>changelogs\fragments\84705-error-message-malformed-plugin-documentation.yml</td></tr><tr><td>changelogs\fragments\ssh-clixml.yml</td></tr><tr><td>test\integration\targets\setup_become_user_pair\tasks\main.yml</td></tr><tr><td>test\integration\targets\setup_test_user\defaults\main.yml</td></tr><tr><td>test\integration\targets\connection_ssh\test_unreachable_become_timeout.yml</td></tr><tr><td>test\integration\targets\roles\75240.yml</td></tr><tr><td>test\integration\targets\service_facts\handlers\main.yml</td></tr><tr><td>changelogs\fragments\windows-exec.yml</td></tr><tr><td>test\sanity\code-smell\black.requirements.txt</td></tr><tr><td>changelogs\fragments\84685-add-opensuse-microos.yml</td></tr><tr><td>changelogs\fragments\81709-ansible-galaxy-slow-resolution-hints.yml</td></tr><tr><td>test\integration\targets\interpreter_discovery_python\discovery.yml</td></tr><tr><td>test\units\module_utils\facts\hardware\fixtures\vm_stat_darwin_intel.txt</td></tr><tr><td>test\integration\targets\connection_local\files\sudoshim.sh</td></tr><tr><td>test\integration\targets\become_sudo\tasks\main.yml</td></tr><tr><td>changelogs\fragments\user_module.yml</td></tr><tr><td>changelogs\fragments\84213-ansible-galaxy-url-building.yml</td></tr><tr><td>changelogs\fragments\84725-deprecate-strategy-plugins.yml</td></tr><tr><td>test\units\module_utils\facts\system\distribution\fixtures\opensuse-microos-20241205.json</td></tr><tr><td>changelogs\fragments\win-async-refactor.yml</td></tr><tr><td>changelogs\fragments\ansible-test-added-macos-15.3.yml</td></tr><tr><td>lib\ansible\module_utils\csharp\Ansible._Async.cs</td></tr><tr><td>test\integration\targets\roles\roles\error_handler\tasks\main.yml</td></tr><tr><td>test\integration\targets\apt\vars\arch\amd64.yml</td></tr><tr><td>test\units\module_utils\facts\hardware\fixtures\vm_stat_darwin_silicon.txt</td></tr><tr><td>test\integration\targets\ansible-test-sanity-validate-modules\ansible_collections\ns\ps_only\plugins\modules\util_optional.yml</td></tr><tr><td>changelogs\fragments\83757-deprecate-paramiko.yml</td></tr><tr><td>changelogs\fragments\playiterator-add_tasks-optimize.yml</td></tr><tr><td>changelogs\fragments\config_dump.yml</td></tr><tr><td>changelogs\fragments\84540-uri-relative-redirect.yml</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (8)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>lib\ansible\executor\discovery\python_target.py</td></tr><tr><td>test\units\module_utils\facts\hardware\fixtures\vm_stat_darwin.txt</td></tr><tr><td>test\integration\targets\egg-info\tasks\main.yml</td></tr><tr><td>test\integration\targets\egg-info\lookup_plugins\import_pkg_resources.py</td></tr><tr><td>test\units\module_utils\facts\hardware\fixtures\sysctl_darwin.txt</td></tr><tr><td>test\units\executor\test_interpreter_discovery.py</td></tr><tr><td>test\integration\targets\become_su\runme.sh</td></tr><tr><td>test\integration\targets\apt_repository\meta\main.yml</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (475)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>test\lib\ansible_test\_util\controller\sanity\integration-aliases\yaml_to_json.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt\tasks\downgrade.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-doc\test.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\common\respawn.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\runtime-metadata.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\symlinks.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\parsers\key_value_parsers.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\template\undefined_in_import.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\integration\network.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\core_ci.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\dnf\tasks\test_sos_removal.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\async\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\source\installed.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\inventory\runme.sh</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\action\gather_facts.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\util.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_utils_facts.system.selinux\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\undefined\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\user\tasks\main.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\lookup\pipe.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-inventory\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\group_by\test_group_by.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\azure.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_subelements\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\use-compat-six.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\prepare_http_tests\tasks\kerberos.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\converters.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_vars\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\targets\combine.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-vault\roles\test_vault_file_encrypted_embedded\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\containers.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\blocks\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\parsers\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\connection_ssh\runme.sh</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\connection\ssh.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\loader.py</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\compat\paramiko.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_rpm_repo\library\create_repo.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\shell\sh.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\service_facts\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\no-unwanted-files.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\coverage.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\no-illegal-filenames.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\io.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\user\tasks\test_no_home_fallback.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\command_shell\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\validate-modules\validate_modules\main.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\coverage_util.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\hostname\tasks\test_check_mode.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_deb_repo\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\sanity.validate-modules.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\parsers\value_parsers.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\find\tasks\main.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\become\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\jinja2_native_types\test_casting.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\include_vars\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\shell.py</td><td>内容变更</td></tr><tr><td>test\units\module_utils\facts\hardware\test_darwin_facts.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\systemd\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\copy\tasks\tests.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\environment\test_environment.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\wait_for\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\pep8\current-ignore.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\parsers\base_argument_parsers.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\service\tasks\tests.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\targets\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\tasks\redirect-all.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\line-endings.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provisioning.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\hash\roles\test_hash_behaviour\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\opennebula.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\debugger\test_run_once.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\ci\azp.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\strategy\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\changelog.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\completers.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\erase.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_env\runme.sh</td><td>内容变更</td></tr><tr><td>test\integration\targets\win_fetch\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\jinja2_native_types\test_none.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\vault.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\no-assert.py</td><td>内容变更</td></tr><tr><td>test\sanity\ignore.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\report.py</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\powershell\module_manifest.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\compat.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt\tasks\main.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\become\runas.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_cron\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\units\plugins\connection\test_ssh.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_test_user\tasks\macosx.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\classification\csharp.py</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\no-unwanted-characters.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\file\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\unarchive\tasks\test_unprivileged_user.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_utils\module_utils_basic_setcwd.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\include_import\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\compat\yaml.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\ansible_doc.py</td><td>内容变更</td></tr><tr><td>packaging\cli-doc\build.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\env.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\var_precedence\test_var_precedence.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\async_fail\library\async_test.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\expect\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_url\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\git.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\units\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\pylint\plugins\string_format.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\validate_modules.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\pslint.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\inventory_yaml\success.json</td><td>内容变更</td></tr><tr><td>test\units\module_utils\compat\test_datetime.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\replace-urlopen.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\targets\filter.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\payload.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\b64decode.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\windows.py</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\task_executor.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\var_precedence\ansible-var-precedence-check.py</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\task_queue_manager.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\var_reserved\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_varnames\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\git\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\connection_winrm\tests.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_defaults\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\tasks\unexpected-failures.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\classification\python.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\report.py</td><td>内容变更</td></tr><tr><td>test\units\modules\test_iptables.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt\tasks\upgrade.yml</td><td>内容变更</td></tr><tr><td>changelogs\fragments\ansible-test-remotes.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\interpreter_discovery.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\source\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\result_pickle_error\runme.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible_log\logit.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\facts\hardware\darwin.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\verify.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\human_to_bytes.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\aws.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\layout\unsupported.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\ci\local.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_ini\test_lookup_properties.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\httptester.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\parsers\host_config_parsers.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\sanity.ansible-doc.txt</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\update-bundled.requirements.txt</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\shell\powershell.py</td><td>内容变更</td></tr><tr><td>lib\ansible\vars\reserved.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\unarchive\tasks\test_mode.yml</td><td>内容变更</td></tr><tr><td>packaging\release.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\roles\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\venv.py</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\csharp\Ansible.Become.cs</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\argparsing\actions.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\import_role.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_test_user\handlers\main.yml</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\obsolete-files.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\filter_mathstuff\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\playbook\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\bootstrap.py</td><td>内容变更</td></tr><tr><td>test\units\plugins\become\test_su.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\dev\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\inventory_yaml\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\no-get-exception.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\tags\ansible_run_tags.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\tasks\redirect-none.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\metadata.py</td><td>内容变更</td></tr><tr><td>requirements.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\vultr.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\jinja2_native_types\test_concatentation.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\facts\system\date_time.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\nios.py</td><td>内容变更</td></tr><tr><td>test\units\executor\test_task_executor.py</td><td>内容变更</td></tr><tr><td>lib\ansible\cli\config.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\group\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\integration_aliases.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\classification\powershell.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\dnf\tasks\skip_broken_and_nobest.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\dpkg_selections\tasks\dpkg_selections.yaml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\connection\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\network.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\sanity.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\validate-modules\validate_modules\utils.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\delegate_to\test_random_delegate_to_with_loop.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\blockinfile\tasks\create_dir.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\interpreter_discovery_python\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\action-plugin-docs.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\pypi_proxy.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\target.py</td><td>内容变更</td></tr><tr><td>test\units\template\test_templar.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\iptables.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\targets\generate.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\pylint.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\constants.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\hash\test_hash.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\targets\missing.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\sanity.import.plugin.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\galaxy.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\pep8.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\python_requirements.py</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\mypy.requirements.txt</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\apt_repository.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\changelog\sphinx.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\host_configs.py</td><td>内容变更</td></tr><tr><td>test\units\plugins\become\test_sudo.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\ci\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\classification\common.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\win_raw\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\sanity.changelog.txt</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_url\tasks\use_netrc.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\become\sudo.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\host_profiles.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\hash\test_inventory_hash.yml</td><td>内容变更</td></tr><tr><td>test\units\plugins\shell\test_powershell.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\file\tasks\state_link.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\compile.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\use-argspec-type-path.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\unarchive\tasks\test_zip.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\html.py</td><td>内容变更</td></tr><tr><td>lib\ansible\config\base.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible_log\runme.sh</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\install_offline.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\pylint\plugins\deprecated.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\targets\__init__.py</td><td>内容变更</td></tr><tr><td>test\units\requirements.txt</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\fail_fast_resolvelib.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\plugin_namespace\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\__init__.py</td><td>内容变更</td></tr><tr><td>lib\ansible\galaxy\token.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\dev\container_probe.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\apt.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\async\library\async_test.py</td><td>内容变更</td></tr><tr><td>lib\ansible\galaxy\dependency_resolution\dataclasses.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\integration\posix.py</td><td>内容变更</td></tr><tr><td>lib\ansible\playbook\play.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\dpkg_selections\tasks\main.yaml</td><td>内容变更</td></tr><tr><td>test\integration\targets\service\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\roles\end_role.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\init.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\debug\runme.sh</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\lookup\lines.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection-scm\tasks\scm_dependency_deduplication.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\openshift.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_test_user\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\hcloud.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\collections\test_task_resolved_plugin\callback_plugins\display_resolved_action.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\service_facts\tasks\systemd_setup.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\facts\ansible_collector.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\hostname\tasks\Debian.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\systemd\tasks\test_systemd_version.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\action\script.py</td><td>内容变更</td></tr><tr><td>test\units\plugins\action\test_action.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\uri.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\copy\tasks\acls.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\compat\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\docker_util.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\connection\winrm.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\dnf\tasks\repo.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\executor.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\result_pickle_error\action_plugins\result_pickle_error.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\sanity.yamllint.txt</td><td>内容变更</td></tr><tr><td>test\integration\targets\slurp\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\register\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\ansible_util.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible\runme.sh</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-test-coverage-windows\test-coverage.py</td><td>内容变更</td></tr><tr><td>test\units\plugins\connection\test_psrp.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\subversion\vars\Debian.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\completion\docker.txt</td><td>内容变更</td></tr><tr><td>test\integration\targets\includes\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\no-smart-quotes.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\targets\missing.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\test.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\become\su.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\completion.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\diff.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt_repository\tasks\apt.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\git\tasks\archive.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\loops\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\combine.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-vault\single_vault_as_string.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\git\tasks\depth.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_precedence\multiple_roles\foo\tasks\main.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\vars\host_group_vars.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\ignores.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\get_url.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\flatten.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\var_blending\test_var_blending.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\actions.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt\tasks\apt-multiarch.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\library\setup_collections.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\targets\generate.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-playbook-callbacks\all-callbacks.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\content_config.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\argparsing\argcompletion.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\git\tasks\submodules.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\combine.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_test_user\tasks\default.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\source\unsupported.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_precedence\modules_test_multiple_roles_reverse_order.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\mount_facts\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-test-cloud-aws\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\targets\expand.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\doc_fragments\template_common.py</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\module_common.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\env\__init__.py</td><td>内容变更</td></tr><tr><td>.azure-pipelines\scripts\report-coverage.sh</td><td>内容变更</td></tr><tr><td>test\units\plugins\connection\test_winrm.py</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\compat\datetime.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\unarchive\tasks\test_missing_binaries.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\source\git.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\strategy\linear.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\sanity.pylint.txt</td><td>内容变更</td></tr><tr><td>test\integration\targets\inventory_constructed\constructed.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\galaxy\dependency_resolution\reporters.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cache.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_precedence\multiple_roles\bar\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\package-data.requirements.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\argparsing\parsers.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\loop_control\inner.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\timeout.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\environments.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\dnf5.py</td><td>内容变更</td></tr><tr><td>lib\ansible\cli\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\roles_arg_spec\test.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_sequence\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\connections.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\classification\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\install.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\xml.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\xml.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\bin_symlinks.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt_key\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\filters.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\inventory\inventory_plugins\constructed_with_hostvars.py</td><td>内容变更</td></tr><tr><td>lib\ansible\galaxy\api.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\layout\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\subversion\roles\subversion\tasks\setup.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\requirements\ansible.txt</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\user.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\win_script\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\integration\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\inventory_constructed\runme.sh</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\connection\psrp.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-test-coverage-windows\ansible_collections\ns\col\tests\integration\targets\win_collection\tasks\main.yml</td><td>内容变更</td></tr><tr><td>.azure-pipelines\azure-pipelines.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\gathering_facts\test_gathering_facts.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\win_basename.yml</td><td>内容变更</td></tr><tr><td>test\units\module_utils\facts\test_date_time.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\util_common.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\handlers\runme.sh</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\process\worker.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\apt_key.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt\defaults\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\shell\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-pull\cleanup.yml</td><td>内容变更</td></tr><tr><td>test\units\plugins\action\test_raw.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\callback\__init__.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\service_facts.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_first_found\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\filter_urls\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\delegate_to\test_random_delegate_to_without_loop.yml</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\pymarkdown.requirements.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\ssh.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\connection_local\runme.sh</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\mount_facts.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\html.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\pylint\plugins\unwanted.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\validate-modules\validate_modules\module_args.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\__init__.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\action\__init__.py</td><td>内容变更</td></tr><tr><td>lib\ansible\vars\fact_cache.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\unsupported_resolvelib.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\layout\collection.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\inventory.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cgroup.py</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\csharp\Ansible.Basic.cs</td><td>内容变更</td></tr><tr><td>hacking\ticket_stubs\no_thanks.md</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\win_dirname.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\template\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\tasks\redirect-urllib2.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\find.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\shebang.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\config.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\units.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\apt\tasks\apt.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\posix.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\acme.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\argparsing\__init__.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\pylint\plugins\hide_unraisable.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\epilog.py</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\pymarkdown.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\git\tasks\localmods.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\script\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\config\lookup_plugins\casting_individual.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\yamllint\yamllinter.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-config\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\gathering_facts\verify_subset.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\analyze\targets\filter.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\encoding.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\__init__.py</td><td>内容变更</td></tr><tr><td>lib\ansible\playbook\block.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\dpkg_selections\defaults\main.yaml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\delegation.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\source\unversioned.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\sanity\code-smell\empty-init.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection-scm\tasks\requirements.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\var_reserved\tasks\task_vars_used.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\vars\manager.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\shellcheck.py</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\package-data.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\integration\windows.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\connection\local.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\win_become\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\gathering_facts\runme.sh</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\vcenter.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\win_exec_wrapper\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\sanity\code-smell\deprecated-config.requirements.txt</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_data\completion\remote.txt</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\tasks\redirect-safe.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\__init__.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\failed_when\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-vault\roles\test_vault_embedded\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\find\tasks\mode.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\executor\play_iterator.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\compat\packaging.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_together\tasks\main.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\filter\b64encode.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\targets\expand.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\list.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\connection_psrp\tests.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\import.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-test-cloud-azure\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\commands\coverage\analyze\targets\combine.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\uri\files\testserver.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\scaleway.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\coverage\erase.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\lookup_csvfile\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\roles\roles\end_role_inside\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\data.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\http.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\setup_rpm_repo\files\comps.xml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\become.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\windows-minimal\tasks\main.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\wait_for.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\var_precedence\runme.sh</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-test-cloud-openshift\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\any_errors_fatal\test_fatal.yml</td><td>内容变更</td></tr><tr><td>changelogs\fragments\ansible-test-update.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\digitalocean.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\sanity\yamllint.py</td><td>内容变更</td></tr><tr><td>lib\ansible\modules\meta.py</td><td>内容变更</td></tr><tr><td>lib\ansible\plugins\connection\paramiko_ssh.py</td><td>内容变更</td></tr><tr><td>lib\ansible\config\manager.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\ansible-galaxy-collection\tasks\supported_resolvelib.yml</td><td>内容变更</td></tr><tr><td>test\integration\targets\module_precedence\modules_test_multiple_roles.yml</td><td>内容变更</td></tr><tr><td>lib\ansible\keyword_desc.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\cli\parsers\helpers.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\config\lookup_plugins\casting.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\tools\yaml_to_json.py</td><td>内容变更</td></tr><tr><td>test\integration\targets\filter_core\tasks\main.yml</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\commands\integration\cloud\cs.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\thread.py</td><td>内容变更</td></tr><tr><td>lib\ansible\module_utils\facts\system\distribution.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_internal\provider\layout\ansible.py</td><td>内容变更</td></tr><tr><td>test\lib\ansible_test\_util\controller\tools\collection_detail.py</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

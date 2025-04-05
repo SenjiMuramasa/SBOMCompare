@@ -1,0 +1,657 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 21:58:33</p>
+                <p>SBOM A: sample_data\chnm_apiary_4561f3e.json</p>
+                <p>SBOM B: sample_data\chnm_apiary.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>14</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>17</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">7.8/10 (77.6%) [B+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 7.8/10.0 (77.6%)，安全等级: B+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：大量新增依赖, 主版本变更, 大量次版本变更, 依赖扩张, 重大版本变更。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.4/1.7 (82.2%)</td>
+                    <td><ul class='details-list'><li>大量新增包(14个)可能增加攻击面</li><li>移除了3个包</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.5/3.5 (71.5%)</td>
+                    <td><ul class='details-list'><li>1个包发生主版本变更，可能存在API不兼容</li><li>13个包发生次版本变更</li><li>3个包发生补丁版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.2/2.6 (84.0%)</td>
+                    <td><ul class='details-list'><li>存在2个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 依赖扩张, 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (60.0%)</td>
+                    <td><ul class='details-list'><li>无法获取Scorecard评分数据</li></ul><div class='impact-factors'><strong>影响因素:</strong> 缺少Scorecard评估</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (14)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/moby/docker-image-spec</td><td>v1.3.1</td><td>NOASSERTION</td></tr><tr><td>google.golang.org/grpc</td><td>v1.65.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.28.0</td><td>NOASSERTION</td></tr><tr><td>github.com/go-logr/stdr</td><td>v1.2.2</td><td>NOASSERTION</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.34.2</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlptrace</td><td>v1.28.0</td><td>NOASSERTION</td></tr><tr><td>github.com/distribution/reference</td><td>v0.6.0</td><td>NOASSERTION</td></tr><tr><td>github.com/go-logr/logr</td><td>v1.4.2</td><td>NOASSERTION</td></tr><tr><td>github.com/rogpeppe/go-internal</td><td>v1.12.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.28.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.28.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.28.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/proto/otlp</td><td>v1.3.1</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.50.0</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (3)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>go.uber.org/atomic</td><td>v1.10.0</td><td>NOASSERTION</td></tr><tr><td>github.com/docker/distribution</td><td>v2.8.2+incompatible</td><td>NOASSERTION</td></tr><tr><td>github.com/kr/text</td><td>v0.2.0</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (17)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/felixge/httpsnoop</td><td>v1.0.3</td><td>v1.0.4</td><td>补丁版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.6.0</td><td>v0.13.0</td><td>次版本</td></tr><tr><td>github.com/orlangure/gnomock</td><td>v0.21.1</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>go.uber.org/multierr</td><td>v1.9.0</td><td>v1.10.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.23.0</td><td>v0.25.0</td><td>次版本</td></tr><tr><td>go.uber.org/zap</td><td>v1.24.0</td><td>v1.27.0</td><td>次版本</td></tr><tr><td>github.com/kr/pretty</td><td>v0.2.1</td><td>v0.3.1</td><td>次版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.18.0</td><td>v0.21.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.21.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>github.com/gorilla/mux</td><td>v1.8.0</td><td>v1.8.1</td><td>补丁版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.8.0</td><td>v0.17.0</td><td>次版本</td></tr><tr><td>github.com/lib/pq</td><td>v1.10.7</td><td>v1.10.9</td><td>补丁版本</td></tr><tr><td>github.com/docker/docker</td><td>v24.0.9+incompatible</td><td>v27.1.0+incompatible</td><td>主版本</td></tr><tr><td>github.com/google/uuid</td><td>v1.3.0</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.1.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.14.0</td><td>v0.15.0</td><td>次版本</td></tr><tr><td>github.com/stretchr/testify</td><td>v1.8.1</td><td>v1.9.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (8)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>golang.org/x/crypto</td>
+                            <td class="vuln-critical">GHSA-v778-237x-gjrc<br>关联CVE: CVE-2024-45337</td>
+                            <td>所有版本 < 0.31.0</td>
+                            <td>Misuse of ServerConfig.PublicKeyCallback may cause authorization bypass in golang.org/x/crypto<br><br>Applications and libraries which misuse the ServerConfig.PublicKeyCallback callback may be susceptible to an authorization bypass.
+
+The documentation for ServerConfig.PublicKeyCallback says that "A call to this function does not guarantee that the key offered is in fact used to authenticate." Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallback may be called with multiple keys, and the order in which the keys were provided cannot be used to infer which key the client successfully authenticated with, if any. Some applications, which store the key(s) passed to PublicKeyCallback (or derived information) and make security relevant determinations based on it once the connection is established, may make incorrect assumptions.
+
+For example, an attacker may send public keys A and B, and then authenticate with A. PublicKeyCallback would be called only twice, first with A and then with B. A vulnerable application may then make authorization decisions based on key B for which the attacker does not actually control the private key.
+
+Since this API is widely misused, as a partial mitigation golang.org/x/crypto@v0.31.0 enforces the property that, when successfully authenticating via public key, the last key passed to ServerConfig.PublicKeyCallback will be the key used to authenticate the connection. PublicKeyCallback will now be called multiple times with the same key, if necessary. Note that the client may still not control the last key passed to PublicKeyCallback if the connection is then authenticated with a different method, such as PasswordCallback, KeyboardInteractiveCallback, or NoClientAuth.
+
+Users should be using the Extensions field of the Permissions return value from the various authentication callbacks to record data associated with the authentication attempt instead of referencing external state. Once the connection is established the state corresponding to the successful authentication attempt can be retrieved via the ServerConn.Permissions field. Note that some third-party libraries misuse the Permissions type by sharing it across authentication attempts; users of third-party libraries should refer to the relevant projects for guidance.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-45337' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-45337</a><br><a href='https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909' target='_blank' class='vuln-link'>https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</a><br><a href='https://github.com/golang/crypto' target='_blank' class='vuln-link'>https://github.com/golang/crypto</a><br><a href='https://go.dev/cl/635315' target='_blank' class='vuln-link'>https://go.dev/cl/635315</a><br><a href='https://go.dev/issue/70779' target='_blank' class='vuln-link'>https://go.dev/issue/70779</a></div></td>
+                            <td>2024-12-11</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/crypto</td>
+                            <td class="vuln-unknown">GO-2024-3321<br>关联CVE: CVE-2024-45337</td>
+                            <td>所有版本 < 0.31.0</td>
+                            <td>Misuse of connection.serverAuthenticate may cause authorization bypass in golang.org/x/crypto<br><br>Applications and libraries which misuse connection.serverAuthenticate (via callback field ServerConfig.PublicKeyCallback) may be susceptible to an authorization bypass.
+
+The documentation for ServerConfig.PublicKeyCallback says that "A call to this function does not guarantee that the key offered is in fact used to authenticate." Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallback may be called with multiple keys, and the order in which the keys were provided cannot be used to infer which key the client successfully authenticated with, if any. Some applications, which store the key(s) passed to PublicKeyCallback (or derived information) and make security relevant determinations based on it once the connection is established, may make incorrect assumptions.
+
+For example, an attacker may send public keys A and B, and then authenticate with A. PublicKeyCallback would be called only twice, first with A and then with B. A vulnerable application may then make authorization decisions based on key B for which the attacker does not actually control the private key.
+
+Since this API is widely misused, as a partial mitigation golang.org/x/cry...@v0.31.0 enforces the property that, when successfully authenticating via public key, the last key passed to ServerConfig.PublicKeyCallback will be the key used to authenticate the connection. PublicKeyCallback will now be called multiple times with the same key, if necessary. Note that the client may still not control the last key passed to PublicKeyCallback if the connection is then authenticated with a different method, such as PasswordCallback, KeyboardInteractiveCallback, or NoClientAuth.
+
+Users should be using the Extensions field of the Permissions return value from the various authentication callbacks to record data associated with the authentication attempt instead of referencing external state. Once the connection is established the state corresponding to the successful authentication attempt can be retrieved via the ServerConn.Permissions field. Note that some third-party libraries misuse the Permissions type by sharing it across authentication attempts; users of third-party libraries should refer to the relevant projects for guidance.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909' target='_blank' class='vuln-link'>https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</a><br><a href='https://go.dev/cl/635315' target='_blank' class='vuln-link'>https://go.dev/cl/635315</a><br><a href='https://go.dev/issue/70779' target='_blank' class='vuln-link'>https://go.dev/issue/70779</a><br><a href='https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ' target='_blank' class='vuln-link'>https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ</a></div></td>
+                            <td>2024-12-11</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/crypto</td>
+                            <td class="vuln-unknown">GO-2025-3487<br>关联CVE: CVE-2025-22869</td>
+                            <td>所有版本 < 0.35.0</td>
+                            <td>Potential denial of service in golang.org/x/crypto<br><br>SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/652135' target='_blank' class='vuln-link'>https://go.dev/cl/652135</a><br><a href='https://go.dev/issue/71931' target='_blank' class='vuln-link'>https://go.dev/issue/71931</a></div></td>
+                            <td>2025-02-26</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>github.com/docker/docker</td>
+                            <td class="vuln-critical">GHSA-v23v-6jw2-98fq<br>关联CVE: CVE-2024-41110</td>
+                            <td>>= 19.03.0 < 23.0.15<br>>= 26.0.0 < 26.1.5<br>>= 27.0.0 < 27.1.1<br>>= 24.0.0 < 25.0.6</td>
+                            <td>Authz zero length regression<br><br>A security vulnerability has been detected in certain versions of Docker Engine, which could allow an attacker to bypass [authorization plugins (AuthZ)](https://docs.docker.com/engine/extend/plugins_authorization/) under specific circumstances. The base likelihood of this being exploited is low. This advisory outlines the issue, identifies the affected versions, and provides remediation steps for impacted users.
+
+### Impact
+
+Using a specially-crafted API request, an Engine API client could make the daemon forward the request or response to an [authorization plugin](https://docs.docker.com/engine/extend/plugins_authorization/) without the body. In certain circumstances, the authorization plugin may allow a request which it would have otherwise denied if the body had been forwarded to it.
+
+
+A security issue was discovered In 2018,  where an attacker could bypass AuthZ plugins using a specially crafted API request. This could lead to unauthorized actions, including privilege escalation. Although this issue was fixed in Docker Engine [v18.09.1](https://docs.docker.com/engine/release-notes/18.09/#security-fixes-1) in January 2019, the fix was not carried forward to later major versions, resulting in a regression. Anyone who depends on authorization plugins that introspect the request and/or response body to make access control decisions is potentially impacted.
+
+Docker EE v19.03.x and all versions of Mirantis Container Runtime **are not vulnerable.**
+
+### Vulnerability details
+
+- **AuthZ bypass and privilege escalation:** An attacker could exploit a bypass using an API request with Content-Length set to 0, causing the Docker daemon to forward the request without the body to the AuthZ plugin, which might approve the request incorrectly.
+- **Initial fix:** The issue was fixed in Docker Engine [v18.09.1](https://docs.docker.com/engine/release-notes/18.09/#security-fixes-1) January 2019..
+- **Regression:** The fix was not included in Docker Engine v19.03 or newer versions. This was identified in April 2024 and patches were released for the affected versions on July 23, 2024. The issue was assigned [CVE-2024-41110](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-41110).
+
+### Patches
+
+- docker-ce v27.1.1 containes patches to fix the vulnerability.
+- Patches have also been merged into the master, 19.0, 20.0, 23.0, 24.0, 25.0, 26.0, and 26.1 release branches.
+
+### Remediation steps
+
+- If you are running an affected version, update to the most recent patched version.
+- Mitigation if unable to update immediately:
+    - Avoid using AuthZ plugins.
+    - Restrict access to the Docker API to trusted parties, following the principle of least privilege.
+
+
+### References
+
+- https://github.com/moby/moby/commit/fc274cd2ff4cf3b48c91697fb327dd1fb95588fb
+- https://github.com/moby/moby/commit/a79fabbfe84117696a19671f4aa88b82d0f64fc1
+- https://www.docker.com/blog/docker-security-advisory-docker-engine-authz-plugin/<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/moby/moby/security/advisories/GHSA-v23v-6jw2-98fq' target='_blank' class='vuln-link'>https://github.com/moby/moby/security/advisories/GHSA-v23v-6jw2-98fq</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-41110' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-41110</a><br><a href='https://github.com/moby/moby/commit/411e817ddf710ff8e08fa193da80cb78af708191' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/411e817ddf710ff8e08fa193da80cb78af708191</a><br><a href='https://github.com/moby/moby/commit/42f40b1d6dd7562342f832b9cd2adf9e668eeb76' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/42f40b1d6dd7562342f832b9cd2adf9e668eeb76</a><br><a href='https://github.com/moby/moby/commit/65cc597cea28cdc25bea3b8a86384b4251872919' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/65cc597cea28cdc25bea3b8a86384b4251872919</a></div></td>
+                            <td>2024-07-30</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>github.com/docker/docker</td>
+                            <td class="vuln-unknown">GO-2024-3005<br>关联CVE: CVE-2024-41110</td>
+                            <td>>= 20.10.0+incompatible < 25.0.6+incompatible >= 26.0.0+incompatible < 26.1.5+incompatible >= 27.0.0+incompatible < 27.1.1+incompatible</td>
+                            <td>Moby authz zero length regression in github.com/moby/moby<br><br>Moby authz zero length regression in github.com/moby/moby<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-41110' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-41110</a><br><a href='https://github.com/moby/moby/commit/411e817ddf710ff8e08fa193da80cb78af708191' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/411e817ddf710ff8e08fa193da80cb78af708191</a><br><a href='https://github.com/moby/moby/commit/42f40b1d6dd7562342f832b9cd2adf9e668eeb76' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/42f40b1d6dd7562342f832b9cd2adf9e668eeb76</a><br><a href='https://github.com/moby/moby/commit/65cc597cea28cdc25bea3b8a86384b4251872919' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/65cc597cea28cdc25bea3b8a86384b4251872919</a><br><a href='https://github.com/moby/moby/commit/852759a7df454cbf88db4e954c919becd48faa9b' target='_blank' class='vuln-link'>https://github.com/moby/moby/commit/852759a7df454cbf88db4e954c919becd48faa9b</a></div></td>
+                            <td>2024-07-29</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2024-3333<br>关联CVE: CVE-2024-45338</td>
+                            <td>所有版本 < 0.33.0</td>
+                            <td>Non-linear parsing of case-insensitive content in golang.org/x/net/html<br><br>An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/637536' target='_blank' class='vuln-link'>https://go.dev/cl/637536</a><br><a href='https://go.dev/issue/70906' target='_blank' class='vuln-link'>https://go.dev/issue/70906</a><br><a href='https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ' target='_blank' class='vuln-link'>https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</a></div></td>
+                            <td>2024-12-18</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GHSA-qxp5-gwg8-xv66<br>关联CVE: CVE-2025-22870</td>
+                            <td>所有版本 < 0.36.0</td>
+                            <td>HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net<br><br>Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to "*.example.com", a request to "[::1%25.example.com]:80` will incorrectly match and not be proxied.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-22870' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-22870</a><br><a href='https://go-review.googlesource.com/q/project:net' target='_blank' class='vuln-link'>https://go-review.googlesource.com/q/project:net</a><br><a href='https://go.dev/cl/654697' target='_blank' class='vuln-link'>https://go.dev/cl/654697</a><br><a href='https://go.dev/issue/71984' target='_blank' class='vuln-link'>https://go.dev/issue/71984</a><br><a href='https://pkg.go.dev/vuln/GO-2025-3503' target='_blank' class='vuln-link'>https://pkg.go.dev/vuln/GO-2025-3503</a></div></td>
+                            <td>2025-03-12</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2025-3503<br>关联CVE: CVE-2025-22870</td>
+                            <td>所有版本 < 0.36.0</td>
+                            <td>HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net<br><br>Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to "*.example.com", a request to "[::1%25.example.com]:80` will incorrectly match and not be proxied.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/654697' target='_blank' class='vuln-link'>https://go.dev/cl/654697</a><br><a href='https://go.dev/issue/71984' target='_blank' class='vuln-link'>https://go.dev/issue/71984</a></div></td>
+                            <td>2025-03-12</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>43</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>45</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>5</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (2)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>bom-shapefiles.go</td></tr><tr><td>.github\workflows\cicd.yml</td></tr>
+                    </table>
+                </div>
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (5)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>bom-christenings.go</td><td>内容变更</td></tr><tr><td>endpoints.go</td><td>内容变更</td></tr><tr><td>bom-causes.go</td><td>内容变更</td></tr><tr><td>bom-bills.go</td><td>内容变更</td></tr><tr><td>routes.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

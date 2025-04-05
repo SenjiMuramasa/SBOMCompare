@@ -1,0 +1,650 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 22:05:21</p>
+                <p>SBOM A: sample_data\code-philia_CoEdPilot_887cb40.json</p>
+                <p>SBOM B: sample_data\code-philia_CoEdPilot.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.0/10 (89.5%) [A]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.0/10.0 (89.5%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：缺少Scorecard评估。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-medium">1.3/1.7 (79.2%)</td>
+                    <td><ul class='details-list'><li>新增了5个包</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.3/3.5 (95.0%)</td>
+                    <td><ul class='details-list'><li>1个包发生其他版本变更</li><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (60.0%)</td>
+                    <td><ul class='details-list'><li>无法获取Scorecard评分数据</li></ul><div class='impact-factors'><strong>影响因素:</strong> 缺少Scorecard评估</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (5)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>accelerate</td><td>==0.28.0</td><td>Apache Software License</td></tr><tr><td>ipywidgets</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>ipykernel</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>huggingface_hub</td><td>==0.17.3</td><td>Apache Software License</td></tr><tr><td>jupyter</td><td>NOASSERTION</td><td>BSD License</td></tr>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>transformers</td><td>NOASSERTION</td><td>==4.34.1</td><td>一般变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (12)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-low">GHSA-37q5-v5qm-c9v8<br>关联CVE: CVE-2024-3568</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.4.0, 4.4.1, 4.4.2, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>Transformers Deserialization of Untrusted Data vulnerability<br><br>The huggingface/transformers library is vulnerable to arbitrary code execution through deserialization of untrusted data within the `load_repo_checkpoint()` function of the `TFPreTrainedModel()` class. Attackers can execute arbitrary code and commands by crafting a malicious serialized payload, exploiting the use of `pickle.load()` on data from potentially untrusted sources. This vulnerability allows for remote code execution (RCE) by deceiving victims into loading a seemingly harmless checkpoint during a normal training process, thereby enabling attackers to execute arbitrary code on the targeted machine.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-3568' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-3568</a><br><a href='https://github.com/huggingface/transformers/commit/693667b8ac8138b83f8adb6522ddaf42fa07c125' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/commit/693667b8ac8138b83f8adb6522ddaf42fa07c125</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://huntr.com/bounties/b3c36992-5264-4d7f-9906-a996efafba8f' target='_blank' class='vuln-link'>https://huntr.com/bounties/b3c36992-5264-4d7f-9906-a996efafba8f</a></div></td>
+                            <td>2024-04-10</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-critical">GHSA-3863-2447-669p<br>关联CVE: CVE-2023-6730</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.4.0, 4.4.1, 4.4.2, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>transformers has a Deserialization of Untrusted Data vulnerability<br><br>Deserialization of Untrusted Data in GitHub repository huggingface/transformers prior to 4.36.0.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-6730' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-6730</a><br><a href='https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2023-300.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2023-300.yaml</a><br><a href='https://huntr.com/bounties/423611ee-7a2a-442a-babb-3ed2f8385c16' target='_blank' class='vuln-link'>https://huntr.com/bounties/423611ee-7a2a-442a-babb-3ed2f8385c16</a></div></td>
+                            <td>2023-12-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-unknown">GHSA-6rvg-6v2m-4j46<br>关联CVE: CVE-2024-12720</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>Transformers Regular Expression Denial of Service (ReDoS) vulnerability<br><br>A Regular Expression Denial of Service (ReDoS) vulnerability was identified in the huggingface/transformers library, specifically in the file tokenization_nougat_fast.py. The vulnerability occurs in the post_process_single() function, where a regular expression processes specially crafted input. The issue stems from the regex exhibiting exponential time complexity under certain conditions, leading to excessive backtracking. This can result in significantly high CPU usage and potential application downtime, effectively creating a Denial of Service (DoS) scenario. The affected version is v4.46.3.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-12720' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-12720</a><br><a href='https://github.com/huggingface/transformers/commit/deac971c469bcbb182c2e52da0b82fb3bf54cccf' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/commit/deac971c469bcbb182c2e52da0b82fb3bf54cccf</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://huntr.com/bounties/4bed1214-7835-4252-a853-22bbad891f98' target='_blank' class='vuln-link'>https://huntr.com/bounties/4bed1214-7835-4252-a853-22bbad891f98</a></div></td>
+                            <td>2025-03-20</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-high">GHSA-hxxf-235m-72v3<br>关联CVE: CVE-2024-11394</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>Deserialization of Untrusted Data in Hugging Face Transformers<br><br>Hugging Face Transformers Trax Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file.
+
+The specific flaw exists within the handling of model files. The issue results from the lack of proper validation of user-supplied data, which can result in deserialization of untrusted data. An attacker can leverage this vulnerability to execute code in the context of the current user. Was ZDI-CAN-25012.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-11394' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-11394</a><br><a href='https://github.com/huggingface/transformers/issues/34840' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/issues/34840</a><br><a href='https://github.com/huggingface/transformers/pull/35296' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/pull/35296</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2024-229.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2024-229.yaml</a></div></td>
+                            <td>2024-11-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-high">GHSA-qxrp-vhvm-j765<br>关联CVE: CVE-2024-11392</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>Deserialization of Untrusted Data in Hugging Face Transformers<br><br>Hugging Face Transformers MobileViTV2 Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file.
+
+The specific flaw exists within the handling of configuration files. The issue results from the lack of proper validation of user-supplied data, which can result in deserialization of untrusted data. An attacker can leverage this vulnerability to execute code in the context of the current user. Was ZDI-CAN-24322.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-11392' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-11392</a><br><a href='https://github.com/huggingface/transformers/issues/34840' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/issues/34840</a><br><a href='https://github.com/huggingface/transformers/pull/35296' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/pull/35296</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2024-227.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2024-227.yaml</a></div></td>
+                            <td>2024-11-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-high">GHSA-v68g-wm8c-6x7j<br>关联CVE: CVE-2023-7018</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.4.0, 4.4.1, 4.4.2, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>transformers has a Deserialization of Untrusted Data vulnerability<br><br>Deserialization of Untrusted Data in GitHub repository huggingface/transformers prior to 4.36.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-7018' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-7018</a><br><a href='https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2023-301.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2023-301.yaml</a><br><a href='https://huntr.com/bounties/e1a3e548-e53a-48df-b708-9ee62140963c' target='_blank' class='vuln-link'>https://huntr.com/bounties/e1a3e548-e53a-48df-b708-9ee62140963c</a></div></td>
+                            <td>2023-12-20</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-high">GHSA-wrfc-pvp9-mr9g<br>关联CVE: CVE-2024-11393</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td>Deserialization of Untrusted Data in Hugging Face Transformers<br><br>Hugging Face Transformers MaskFormer Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file.
+
+The specific flaw exists within the parsing of model files. The issue results from the lack of proper validation of user-supplied data, which can result in deserialization of untrusted data. An attacker can leverage this vulnerability to execute code in the context of the current user. Was ZDI-CAN-25191.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-11393' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-11393</a><br><a href='https://github.com/huggingface/transformers/issues/34840' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/issues/34840</a><br><a href='https://github.com/huggingface/transformers/pull/35296' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/pull/35296</a><br><a href='https://github.com/huggingface/transformers' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2024-228.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/transformers/PYSEC-2024-228.yaml</a></div></td>
+                            <td>2024-11-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-unknown">PYSEC-2023-300<br>关联CVE: CVE-2023-6730</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.4.0, 4.4.1, 4.4.2, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td><br><br>Deserialization of Untrusted Data in GitHub repository huggingface/transformers prior to 4.36.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://huntr.com/bounties/423611ee-7a2a-442a-babb-3ed2f8385c16' target='_blank' class='vuln-link'>https://huntr.com/bounties/423611ee-7a2a-442a-babb-3ed2f8385c16</a><br><a href='https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce</a></div></td>
+                            <td>2023-12-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-unknown">PYSEC-2023-301<br>关联CVE: CVE-2023-7018</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.4.0, 4.4.1, 4.4.2, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td><br><br>Deserialization of Untrusted Data in GitHub repository huggingface/transformers prior to 4.36.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://huntr.com/bounties/e1a3e548-e53a-48df-b708-9ee62140963c' target='_blank' class='vuln-link'>https://huntr.com/bounties/e1a3e548-e53a-48df-b708-9ee62140963c</a><br><a href='https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce' target='_blank' class='vuln-link'>https://github.com/huggingface/transformers/commit/1d63b0ec361e7a38f1339385e8a5a855085532ce</a></div></td>
+                            <td>2023-12-20</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-unknown">PYSEC-2024-227<br>关联CVE: CVE-2024-11392</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td><br><br>Hugging Face Transformers MobileViTV2 Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file.
+
+The specific flaw exists within the handling of configuration files. The issue results from the lack of proper validation of user-supplied data, which can result in deserialization of untrusted data. An attacker can leverage this vulnerability to execute code in the context of the current user. Was ZDI-CAN-24322.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://www.zerodayinitiative.com/advisories/ZDI-24-1513/' target='_blank' class='vuln-link'>https://www.zerodayinitiative.com/advisories/ZDI-24-1513/</a></div></td>
+                            <td>2024-11-22</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-unknown">PYSEC-2024-228<br>关联CVE: CVE-2024-11393</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td><br><br>Hugging Face Transformers MaskFormer Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file.
+
+The specific flaw exists within the parsing of model files. The issue results from the lack of proper validation of user-supplied data, which can result in deserialization of untrusted data. An attacker can leverage this vulnerability to execute code in the context of the current user. Was ZDI-CAN-25191.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://www.zerodayinitiative.com/advisories/ZDI-24-1514/' target='_blank' class='vuln-link'>https://www.zerodayinitiative.com/advisories/ZDI-24-1514/</a></div></td>
+                            <td>2024-11-22</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>transformers</td>
+                            <td class="vuln-unknown">PYSEC-2024-229<br>关联CVE: CVE-2024-11394</td>
+                            <td>具体受影响版本: 0.1, 2.0.0, 2.1.0, 2.1.1, 2.10.0, 2.11.0, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.9.1, 3.0.0, 3.0.1, 3.0.2, 3.1.0, 3.2.0, 3.3.0, 3.3.1, 3.4.0, 3.5.0, 3.5.1, 4.0.0, 4.0.0rc1, 4.0.1, 4.1.0, 4.1.1, 4.10.0, 4.10.1, 4.10.2, 4.10.3, 4.11.0, 4.11.1, 4.11.2, 4.11.3, 4.12.0, 4.12.1, 4.12.2, 4.12.3, 4.12.4, 4.12.5, 4.13.0, 4.14.0, 4.14.1, 4.15.0, 4.16.0, 4.16.1, 4.16.2, 4.17.0, 4.18.0, 4.19.0, 4.19.1, 4.19.2, 4.19.3, 4.19.4, 4.2.0, 4.2.1, 4.2.2, 4.20.0, 4.20.1, 4.21.0, 4.21.1, 4.21.2, 4.21.3, 4.22.0, 4.22.1, 4.22.2, 4.23.0, 4.23.1, 4.24.0, 4.25.0, 4.25.1, 4.26.0, 4.26.1, 4.27.0, 4.27.1, 4.27.2, 4.27.3, 4.27.4, 4.28.0, 4.28.1, 4.29.0, 4.29.1, 4.29.2, 4.3.0, 4.3.0rc1, 4.3.1, 4.3.2, 4.3.3, 4.30.0, 4.30.1, 4.30.2, 4.31.0, 4.32.0, 4.32.1, 4.33.0, 4.33.1, 4.33.2, 4.33.3, 4.34.0, 4.34.1, 4.35.0, 4.35.1, 4.35.2, 4.36.0, 4.36.1, 4.36.2, 4.37.0, 4.37.1, 4.37.2, 4.38.0, 4.38.1, 4.38.2, 4.39.0, 4.39.1, 4.39.2, 4.39.3, 4.4.0, 4.4.1, 4.4.2, 4.40.0, 4.40.1, 4.40.2, 4.41.0, 4.41.1, 4.41.2, 4.42.0, 4.42.1, 4.42.2, 4.42.3, 4.42.4, 4.43.0, 4.43.1, 4.43.2, 4.43.3, 4.43.4, 4.44.0, 4.44.1, 4.44.2, 4.45.0, 4.45.1, 4.45.2, 4.46.0, 4.46.1, 4.46.2, 4.46.3, 4.47.0, 4.47.1, 4.5.0, 4.5.1, 4.6.0, 4.6.1, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.9.0, 4.9.1, 4.9.2</td>
+                            <td><br><br>Hugging Face Transformers Trax Model Deserialization of Untrusted Data Remote Code Execution Vulnerability. This vulnerability allows remote attackers to execute arbitrary code on affected installations of Hugging Face Transformers. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file.
+
+The specific flaw exists within the handling of model files. The issue results from the lack of proper validation of user-supplied data, which can result in deserialization of untrusted data. An attacker can leverage this vulnerability to execute code in the context of the current user. Was ZDI-CAN-25012.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://www.zerodayinitiative.com/advisories/ZDI-24-1515/' target='_blank' class='vuln-link'>https://www.zerodayinitiative.com/advisories/ZDI-24-1515/</a></div></td>
+                            <td>2024-11-22</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>26</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>32</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>18</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (7)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>generator\download.sh</td></tr><tr><td>generator\transform.py</td></tr><tr><td>line_locator\transform.py</td></tr><tr><td>.github\workflows\unittest.yml</td></tr><tr><td>line_locator\download.sh</td></tr><tr><td>line_locator\Quick_start_api.py</td></tr><tr><td>generator\Quick_start_api.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (1)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>.github\workflows\autopep8.yml</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (18)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>generator\generator_metric.py</td><td>内容变更</td></tr><tr><td>line_locator\test_locator_metric.py</td><td>内容变更</td></tr><tr><td>generator\bleu.py</td><td>内容变更</td></tr><tr><td>line_locator\locator_metric.py</td><td>内容变更</td></tr><tr><td>generator\README.md</td><td>内容变更</td></tr><tr><td>line_locator\README.md</td><td>内容变更</td></tr><tr><td>line_locator\bleu.py</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>line_locator\test_bleu.py</td><td>内容变更</td></tr><tr><td>file_locator\main.py</td><td>内容变更</td></tr><tr><td>requirements.txt</td><td>内容变更</td></tr><tr><td>generator\model.py</td><td>内容变更</td></tr><tr><td>generator\run.py</td><td>内容变更</td></tr><tr><td>line_locator\model.py</td><td>内容变更</td></tr><tr><td>file_locator\siamese_net.py</td><td>内容变更</td></tr><tr><td>line_locator\run.py</td><td>内容变更</td></tr><tr><td>.github\workflows\lint.yml</td><td>内容变更</td></tr><tr><td>file_locator\dependency_analyzer.py</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

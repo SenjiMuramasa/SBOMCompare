@@ -1,0 +1,560 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:47:10</p>
+                <p>SBOM A: sample_data\jenkinsci_jenkins_d6b52cb.json</p>
+                <p>SBOM B: sample_data\jenkinsci_jenkins.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>17</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>34</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.7/10 (87.3%) [A]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.7/10.0 (87.3%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量新增依赖, 大量移除依赖, 主版本变更, 大量次版本变更, 重大版本变更。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (98.2%)</td>
+                    <td><ul class='details-list'><li>大量新增包(17个)可能增加攻击面</li><li>大量移除包(16个)可能影响功能稳定性</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖, 大量移除依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.4/3.5 (96.4%)</td>
+                    <td><ul class='details-list'><li>15个包发生主版本变更，可能存在API不兼容</li><li>8个包发生次版本变更</li><li>7个包发生补丁版本变更</li><li>4个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-medium">2.0/2.6 (76.0%)</td>
+                    <td><ul class='details-list'><li>存在3个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更, 依赖扩张</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (62.0%)</td>
+                    <td><ul class='details-list'><li>CII-Best-Practices需要改进</li><li>以下项目风险较高: Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> Branch-Protection风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (17)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>isaacs/fs-minipass</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>org.jenkins-ci:commons-jelly-tags-xml</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>hookified</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>cacheable</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>org.jenkins-ci:commons-jelly</td><td>${jelly.version}</td><td>NOASSERTION</td></tr><tr><td>keyv/serialize</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>org.jenkins-ci:commons-jelly-tags-fmt</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>parcel/watcher-linux-arm-musl</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>buffer</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>org.jenkins-ci.plugins:variant</td><td>70.va_d9f17f859e0</td><td>NOASSERTION</td></tr><tr><td>eslint/config-helpers</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>postcss-media-query-parser</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>base64-js</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>stylelint-scss</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>stylelint-config-recommended-scss</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>ieee754</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>stylelint-config-standard-scss</td><td>NOASSERTION</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (16)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>org.jvnet.robust-http-client:robust-http-client</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>aggregate-error</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>clean-stack</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>commons-jelly:commons-jelly-tags-fmt</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>com.sun.solaris:embedded_su4j</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>find-cache-dir</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>org.samba.jcifs:jcifs</td><td>1.3.18-kohsuke-1</td><td>NOASSERTION</td></tr><tr><td>indent-string</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>babel/helper-builder-binary-assignment-operator-visitor</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>babel/helper-simple-access</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>com.jcraft:jzlib</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>common-path-prefix</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>io.jenkins.stapler:jenkins-stapler-support</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>org.kohsuke.jinterop:j-interop</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>commons-jelly:commons-jelly-tags-xml</td><td>NOASSERTION</td><td>NOASSERTION</td></tr><tr><td>is-lambda</td><td>NOASSERTION</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (34)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>org.awaitility:awaitility</td><td>4.2.2</td><td>4.3.0</td><td>次版本</td></tr><tr><td>io.jenkins.plugins:commons-lang3-api</td><td>3.17.0-84.vb_b_938040b_078</td><td>3.17.0-87.v5cf526e63b_8b_</td><td>一般变更</td></tr><tr><td>org.jenkins-ci.plugins:scm-api</td><td>698.v8e3b_c788f0a_6</td><td>704.v3ce5c542825a_</td><td>主版本</td></tr><tr><td>org.springframework.security:spring-security-bom</td><td>6.4.2</td><td>6.4.4</td><td>补丁版本</td></tr><tr><td>org.springframework:spring-framework-bom</td><td>6.2.1</td><td>6.2.5</td><td>补丁版本</td></tr><tr><td>io.jenkins.plugins:commons-text-api</td><td>1.12.0-129.v99a_50df237f7</td><td>1.13.0-153.v91dcd89e2a_22</td><td>次版本</td></tr><tr><td>org.jenkins-ci.plugins:bouncycastle-api</td><td>2.30.1.78.1-248.ve27176eb_46cb_</td><td>2.30.1.80-256.vf98926042a_9b_</td><td>一般变更</td></tr><tr><td>io.jenkins.plugins:plugin-util-api</td><td>5.1.0</td><td>6.1.0</td><td>主版本</td></tr><tr><td>org.jenkins-ci.plugins.workflow:workflow-support</td><td>936.v9fa_77211ca_e1</td><td>963.va_600813d04a_a_</td><td>主版本</td></tr><tr><td>@babel/core</td><td>7.26.0</td><td>7.26.10</td><td>补丁版本</td></tr><tr><td>org.jenkins-ci.plugins:matrix-project</td><td>840.v812f627cb_578</td><td>847.v88a_f90ff9f20</td><td>主版本</td></tr><tr><td>io.jenkins.plugins:ionicons-api</td><td>74.v93d5eb_813d5f</td><td>82.v0597178874e1</td><td>主版本</td></tr><tr><td>org.slf4j:slf4j-bom</td><td>2.0.16</td><td>2.0.17</td><td>补丁版本</td></tr><tr><td>org.jenkins-ci.plugins:structs</td><td>338.v848422169819</td><td>343.vdcf37b_a_c81d5</td><td>主版本</td></tr><tr><td>org.jenkins-ci.plugins:matrix-auth</td><td>3.2.3</td><td>3.2.6</td><td>补丁版本</td></tr><tr><td>commons-logging:commons-logging</td><td>1.3.4</td><td>1.3.5</td><td>补丁版本</td></tr><tr><td>org.jenkins-ci.plugins.workflow:workflow-step-api</td><td>678.v3ee58b_469476</td><td>700.v6e45cb_a_5a_a_21</td><td>主版本</td></tr><tr><td>io.jenkins.plugins:font-awesome-api</td><td>6.6.0-2</td><td>6.7.2-1</td><td>次版本</td></tr><tr><td>org.jenkins-ci.plugins.workflow:workflow-api</td><td>1336.vee415d95c521</td><td>1366.vf1fb_e1a_f6b_22</td><td>主版本</td></tr><tr><td>org.jenkins-ci.plugins:junit</td><td>1311.v39e1716e4eb_e</td><td>1319.v000471ca_e5e2</td><td>主版本</td></tr><tr><td>org.jenkins-ci.main:jenkins-test-harness</td><td>2364.v163897b_238b_3</td><td>2427.v186cd47d9b_e0</td><td>主版本</td></tr><tr><td>org.jenkins-ci.plugins:script-security</td><td>1369.v9b_98a_4e95b_2d</td><td>1373.vb_b_4a_a_c26fa_00</td><td>主版本</td></tr><tr><td>org.ow2.asm:asm</td><td>9.7.1</td><td>9.8</td><td>次版本</td></tr><tr><td>org.jenkins-ci.plugins:ant</td><td>511.v0a_a_1a_334f41b_</td><td>513.vde9e7b_a_0da_0f</td><td>主版本</td></tr><tr><td>org.jenkins-ci.modules:instance-identity</td><td>201.vd2a_b_5a_468a_a_6</td><td>203.v15e81a_1b_7a_38</td><td>主版本</td></tr><tr><td>@eslint/js</td><td>9.16.0</td><td>9.23.0</td><td>次版本</td></tr><tr><td>@babel/cli</td><td>7.26.4</td><td>7.27.0</td><td>次版本</td></tr><tr><td>@babel/preset-env</td><td>7.26.0</td><td>7.26.9</td><td>补丁版本</td></tr><tr><td>org.jenkins-ci.plugins:antisamy-markup-formatter</td><td>162.v0e6ec0fcfcf6</td><td>173.v680e3a_b_69ff3</td><td>主版本</td></tr><tr><td>com.puppycrawl.tools:checkstyle</td><td>10.21.0</td><td>10.23.0</td><td>次版本</td></tr><tr><td>io.jenkins.plugins:javax-activation-api</td><td>1.2.0-7</td><td>1.2.0-8</td><td>一般变更</td></tr><tr><td>io.jenkins.plugins:javax-mail-api</td><td>1.6.2-10</td><td>1.6.2-11</td><td>一般变更</td></tr><tr><td>org.jenkins-ci.plugins:credentials</td><td>1393.v6017143c1763</td><td>1413.va_51c53703df1</td><td>主版本</td></tr><tr><td>org.jenkins-ci.plugins:cloudbees-folder</td><td>6.975.v4161e479479f</td><td>6.999.v42253c105443</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>3274</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>3190</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>32</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>116</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>228</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (32)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>core\src\main\java\jenkins\model\details\DetailGroup.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\dynamic_extension_loading\CustomPeriodicWork.java</td></tr><tr><td>core\src\main\java\jenkins\security\stapler\StaplerFragments.java</td></tr><tr><td>core\src\main\java\jenkins\security\stapler\StaplerNotDispatchable.java</td></tr><tr><td>core\src\main\java\jenkins\search\SearchGroup.java</td></tr><tr><td>core\src\main\java\jenkins\model\details\Detail.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\dynamic_extension_loading\CustomExtensionLoadedViaConstructor.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\optional_depender\OptionalDepender.java</td></tr><tr><td>test\src\test\java\jenkins\security\Security3501Test.java</td></tr><tr><td>core\src\main\resources\META-INF\web-fragment.xml</td></tr><tr><td>core\src\main\java\jenkins\model\details\DurationDetail.java</td></tr><tr><td>core\src\main\java\jenkins\cli\listeners\CLIListener.java</td></tr><tr><td>test\src\test\java\hudson\ExtensionListRjrTest.java</td></tr><tr><td>test\src\test\java\jenkins\security\Security3512Test.java</td></tr><tr><td>core\src\main\java\jenkins\security\stapler\StaplerDispatchable.java</td></tr><tr><td>test\src\test\java\jenkins\agents\InboundAgentTlsTest.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\dependee\DependeeExtensionPoint.java</td></tr><tr><td>core\src\main\java\jenkins\model\details\GeneralDetailGroup.java</td></tr><tr><td>test\src\test\java\jenkins\cli\DefaultCLIListenerTest.java</td></tr><tr><td>core\src\main\java\jenkins\model\details\DetailFactory.java</td></tr><tr><td>core\src\main\java\jenkins\cli\listeners\DefaultCLIListener.java</td></tr><tr><td>core\src\main\java\jenkins\security\stapler\StaplerAccessibleType.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\dependee\Dependee.java</td></tr><tr><td>core\src\main\java\jenkins\cli\listeners\CLIContext.java</td></tr><tr><td>src\main\js\components\command-palette\utils.js</td></tr><tr><td>core\src\main\java\jenkins\security\stapler\StaplerViews.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\dynamic_extension_loading\CustomExtensionLoadedViaListener.java</td></tr><tr><td>core\src\main\java\jenkins\model\experimentalflags\NewBuildPageUserExperimentalFlag.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\dynamic_extension_loading\package-info.java</td></tr><tr><td>.github\workflows\require-changelog-label.yml</td></tr><tr><td>core\src\main\java\jenkins\model\details\TimestampDetail.java</td></tr><tr><td>test\src\test\java\jenkins\plugins\optional_depender\OptionalDependerExtension.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (116)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共116个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>war\src\main\webapp\scripts\yui\connection\connection-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\assets\container-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\menu\assets\skins\sam\menu.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\storage\storage-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\treeview\assets\skins\sam\treeview-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\assets\skins\sam\tabview-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\assets\skin-sam.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\container.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\layout.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\storage\storage-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\resize\assets\resize-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\connection\connection_core-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\container-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\assets\skins\sam\editor.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\base\base.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\animation\animation-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\simpleeditor-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\treeview.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\tabview-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\logger\logger-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\logger.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\profilerviewer.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\dom\dom-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\logger\assets\skins\sam\logger.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\slider.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\imagecropper.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\animation\animation-debug.js</td></tr><tr><td>test\src\test\java\jenkins\model\RunIdMigratorTest.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\container_core-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\yuitest.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\assets\skins\sam\tabview.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\connection\connection-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\treeview\assets\skins\sam\treeview.css</td></tr><tr><td>core\src\main\java\jenkins\model\experimentalflags\RemoveYuiUserExperimentalFlag.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\assets\skins\sam\container-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\resize.css</td></tr><tr><td>core\src\main\java\jenkins\model\RunIdMigrator.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\editor.css</td></tr><tr><td>core\src\test\java\hudson\os\SUTester.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\carousel.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\container-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\menu.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\container_core-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\menu\assets\skins\sam\menu-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\menu\menu-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\assets\skins\sam\editor-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\autocomplete\assets\autocomplete-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\autocomplete\autocomplete-min.js</td></tr><tr><td>core\src\main\java\hudson\util\jna\DotNet.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\menu\assets\menu.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\autocomplete\assets\skins\sam\autocomplete.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\autocomplete\autocomplete-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\button\button-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\editor-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\datasource\datasource-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\paginator.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\logger\assets\logger.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\simpleeditor-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\assets\skins\sam\simpleeditor.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\resize\resize-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\datasource\datasource-min.js</td></tr><tr><td>core\src\main\java\hudson\lifecycle\WindowsInstallerLink.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\assets\tabview-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\assets\simpleeditor-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\assets\tabview.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\container\assets\skins\sam\container.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\logger\assets\skins\sam\logger-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\button\assets\button-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\cutdown.sh</td></tr><tr><td>war\src\main\webapp\scripts\yui\editor\assets\skins\sam\simpleeditor-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\tabview\assets\border_tabs.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\colorpicker.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\event\event-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\logger\logger-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\logger\assets\logger-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\fonts\fonts.css</td></tr><tr><td>core\src\test\java\hudson\os\DCOMSandbox.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\fonts\fonts-min.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\element\element-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\autocomplete.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\dragdrop\dragdrop-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\menu\menu-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\cookie\cookie-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\treeview\assets\treeview-core.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\yahoo\yahoo-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\cookie\cookie-debug.js</td></tr><tr><td>core\src\main\java\hudson\os\SU.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\treeview\treeview-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\calendar.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\treeview\treeview-min.js</td></tr><tr><td>core\src\test\java\jenkins\model\RunIdMigratorTest.java</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\simpleeditor.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\event\event-debug.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\button\assets\skins\sam\button-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\base\base-min.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\resize\assets\skins\sam\resize.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\button\button-min.js</td></tr><tr><td>war\src\main\webapp\scripts\yui\resize\assets\skins\sam\resize-skin.css</td></tr><tr><td>war\src\main\webapp\scripts\yui\assets\skins\sam\tabview.css</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (228)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>core\src\main\java\jenkins\model\lazy\LazyBuildMixIn.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\NodeOptionHandler.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\jna\Advapi32.java</td><td>内容变更</td></tr><tr><td>.github\workflows\announce-lts-rc.yml</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\layout\IconTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\userproperty\UserPropertyCategory.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\userproperty\UserPropertyCategoryAppearanceAction.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\View.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\ComputerTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\GlobalComputerRetentionCheckIntervalConfiguration.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\security\Security3430Test.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\tasks\Fingerprinter.java</td><td>内容变更</td></tr><tr><td>war\pom.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\tools\ToolInstallation.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\GlobalBuildDiscarderStrategy.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\cli\DisconnectNodeCommandTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\ModifiableItemGroup.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\ClassicPluginStrategy.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\IdStrategy.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\model\GlobalComputerRetentionCheckIntervalConfigurationTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\User.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\telemetry\Telemetry.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\BuildDiscarder.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\CLICommand.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\ComputerSetTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\UpdateSite.java</td><td>内容变更</td></tr><tr><td>core\src\test\java\jenkins\security\DefaultConfidentialStoreTest.java</td><td>内容变更</td></tr><tr><td>test\pom.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\util\io\PathRemover.java</td><td>内容变更</td></tr><tr><td>bom\pom.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\ReflectionUtils.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\AuthorizationStrategy.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\agents\IOfflineCause.java</td><td>内容变更</td></tr><tr><td>src\main\js\components\command-palette\index.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\scm\SCMCheckoutStrategy.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\jenkins\management\AdministrativeMonitorsDecorator\resources.css</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\util\ScriptListener.java</td><td>内容变更</td></tr><tr><td>package.json</td><td>内容变更</td></tr><tr><td>core\src\test\java\hudson\scheduler\CronTabTest.java</td><td>内容变更</td></tr><tr><td>.github\renovate.json</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Computer.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\UsageStatistics.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\model\JenkinsTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\GlobalBuildDiscarderConfiguration.java</td><td>内容变更</td></tr><tr><td>src\main\js\components\command-palette\models.js</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\DirectoryBrowserSupportTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\jenkins\security\ApiTokenProperty\resources.css</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\CreateJobCommand.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\form\EnumSetTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\scm\RepositoryBrowser.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\fingerprints\FileFingerprintStorage.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\ExtensionList.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\Connection.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\tasks\BuildWrapper.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Descriptor.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\NodeList.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\declarative\OptionHandlerExtension.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\AbstractItemOptionHandler.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\os\WindowsUtil.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\PluginManagerTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\form\secretTextarea\secret.js</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\form\secretTextarea\secret.css</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\JNLPLauncher.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\Permission.java</td><td>内容变更</td></tr><tr><td>core\src\spotbugs\excludesFilter.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\lifecycle\WindowsServiceLifecycle.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\DescriptorExtensionList.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\formelementpath\FormElementPathPageDecorator.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\AccessDeniedException3.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\cli\EnablePluginCommandTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\cli\DisablePluginCommandTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\layout\copyButton\copyButton.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\FileParameterValue.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\BasicAuthenticationFilter.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\ComputerConnector.java</td><td>内容变更</td></tr><tr><td>src\main\js\components\dropdowns\utils.js</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\layout\task\task.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\UpdateCenter.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\appearance\AppearanceGlobalConfiguration.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\form\ComboBoxTest.java</td><td>内容变更</td></tr><tr><td>websocket\spi\pom.xml</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\bugs\Jenkins14749Test.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\Graph.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\CopyJobCommand.java</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\AuthenticationProcessingFilter2.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\jenkins\security\whitelisted-classes.txt</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\views\MyViewsTabBar.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Item.java</td><td>内容变更</td></tr><tr><td>ath.sh</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\userproperty\UserPropertyCategorySecurityAction.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\util\RobustReflectionConverterTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\form\RowVisibilityGroupTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Run.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\search\SearchTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\layout\AjaxTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\SecurityRealm.java</td><td>内容变更</td></tr><tr><td>src\main\js\components\command-palette\datasources.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\ParameterizedJobOptionHandler.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\RelativePathTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\FileParameterValueTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\Nodes.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\HudsonPrivateSecurityRealm.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\AbstractBuild.java</td><td>内容变更</td></tr><tr><td>core\src\test\java\jenkins\monitor\OperatingSystemEndOfLifeAdminMonitorTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\scheduler\CronTab.java</td><td>内容变更</td></tr><tr><td>.stylelintrc.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\mvn\GlobalSettingsProvider.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\PluginTest.java</td><td>内容变更</td></tr><tr><td>pom.xml</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\form\PasswordTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Slave.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\form\repeatable\repeatable.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\org\jenkins\ui\symbol\Symbol.java</td><td>内容变更</td></tr><tr><td>websocket\jetty12-ee9\src\main\java\jenkins\websocket\Jetty12EE9Provider.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\IComputer.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\telemetry\TelemetryTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\UserPropertyDescriptor.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\AbstractProjectTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\UserPropertyTest.java</td><td>内容变更</td></tr><tr><td>core\pom.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\GenericItemOptionHandler.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\slaves\restarter\JnlpSlaveRestarterInstallerTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\console\ConsoleNote.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\form\RepeatablePropertyTest.java</td><td>内容变更</td></tr><tr><td>websocket\spi\src\main\java\jenkins\websocket\Provider.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\search\Search.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\SetBuildDescriptionCommand.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\NodeProperty.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\markup\MarkupFormatter.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\seed\UserSeedProperty.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\console\ModelHyperlinkNote.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\model\NodesTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\hudson\progressive-text.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\userproperty\UserPropertyCategoryExperimentalAction.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Node.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\install\SetupWizard.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\ViewOptionHandler.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\HttpResponses.java</td><td>内容变更</td></tr><tr><td>.github\workflows\run-since-updater.yml</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\fingerprints\FingerprintStorage.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\AbstractPasswordBasedSecurityRealm.java</td><td>内容变更</td></tr><tr><td>core\src\test\java\hudson\MarkupTextTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\SetBuildDisplayNameCommand.java</td><td>内容变更</td></tr><tr><td>src\main\js\components\search-bar\index.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\TcpSlaveAgentListener.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\widgets\HistoryWidget.java</td><td>内容变更</td></tr><tr><td>.github\workflows\publish-release-artifact.yml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\TopLevelItemOptionHandler.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\hudson\widget-refresh.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\MyViewsProperty.java</td><td>内容变更</td></tr><tr><td>cli\pom.xml</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\form\password\password.css</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\JobOptionHandler.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\userproperty\UserPropertyCategoryAccountAction.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\apitoken\ApiTokenStore.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\StringParameterValue.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\widgets\HistoryPageFilter.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\SlaveComputer.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\RetentionStrategy.java</td><td>内容变更</td></tr><tr><td>src\main\js\components\tooltips\index.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\AbstractDescribableImpl.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\RobustReflectionConverter.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Describable.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\PluginManager.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\util\FormFieldValidatorTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\GetViewCommand.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\websocket\WebSocketSession.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\handlers\AbstractProjectOptionHandler.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\model\NodeListenerTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\declarative\CLIRegisterer.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\cli\GetNodeCommand.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\AutoCompletionCandidates.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\hudson\model\Job\buildTimeTrend_resources.js</td><td>内容变更</td></tr><tr><td>core\src\test\java\hudson\UtilTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\slaves\restarter\WinswSlaveRestarter.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\ComputerSet.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\CryptoConfidentialKey.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\jenkins\security\StackTraceSuppressionTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\Util.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\ProxyConfiguration.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\userproperty\UserPropertyCategoryPreferencesAction.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\Jenkins.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\stapler\StaplerDispatchValidator.java</td><td>内容变更</td></tr><tr><td>.github\PULL_REQUEST_TEMPLATE.md</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\console\ConsoleUrlProvider.java</td><td>内容变更</td></tr><tr><td>src\main\js\add-item.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\mvn\SettingsProvider.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\Launcher.java</td><td>内容变更</td></tr><tr><td>war\src\main\webapp\scripts\hudson-behavior.js</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\jna\SHELLEXECUTEINFO.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\DescriptorTest.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\layout\LayoutTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\util\JSONSignatureValidator.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\ArtifactManagerFactory.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\QueueItemAuthenticator.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\tasks\Maven.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\AtomicFileWriter.java</td><td>内容变更</td></tr><tr><td>coverage\pom.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\model\GlobalConfiguration.java</td><td>内容变更</td></tr><tr><td>core\src\site\site.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\labels\LabelAtomProperty.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\security\HudsonPrivateSecurityRealmFIPSTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\triggers\Trigger.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\DefaultConfidentialStore.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\TextFile.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\search\SearchItem.java</td><td>内容变更</td></tr><tr><td>core\src\main\resources\lib\hudson\editable-description.js</td><td>内容变更</td></tr><tr><td>cli\src\main\java\hudson\cli\CLI.java</td><td>内容变更</td></tr><tr><td>test\src\test\java\lib\form\BooleanRadioTest.java</td><td>内容变更</td></tr><tr><td>websocket\jetty12-ee9\pom.xml</td><td>内容变更</td></tr><tr><td>src\main\js\components\dropdowns\templates.js</td><td>内容变更</td></tr><tr><td>war\src\main\webapp\WEB-INF\web.xml</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\ApiTokenProperty.java</td><td>内容变更</td></tr><tr><td>src\main\js\pages\project\builds-card.js</td><td>内容变更</td></tr><tr><td>test\src\test\java\hudson\model\NodeTest.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\Channels.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\UserIdMapper.java</td><td>内容变更</td></tr><tr><td>.github\workflows\label-conflicting-pr.yml</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\util\RemotingDiagnostics.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\jenkins\security\s2m\JarURLValidatorImpl.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\Functions.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\views\ViewsTabBar.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\RunMap.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\node_monitors\DiskSpaceMonitor.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\slaves\ComputerLauncher.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\model\Job.java</td><td>内容变更</td></tr><tr><td>core\src\main\java\hudson\security\captcha\CaptchaSupport.java</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

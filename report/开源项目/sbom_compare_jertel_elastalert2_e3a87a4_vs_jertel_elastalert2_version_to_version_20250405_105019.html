@@ -1,0 +1,528 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:50:30</p>
+                <p>SBOM A: sample_data\jertel_elastalert2_e3a87a4.json</p>
+                <p>SBOM B: sample_data\jertel_elastalert2.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.5/10 (95.3%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.5/10.0 (95.3%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (100.0%)</td>
+                    <td><ul class='details-list'><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (64.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</li><li>- Warn: Project is vulnerable to: PYSEC-2013-22 / GHSA-27x4-j476-jp5f (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2013-22 / GHSA-27x4-j476-jp5f</li><li>- Warn: Project is vulnerable to: GHSA-cx63-2mw6-8hw5 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cx63-2mw6-8hw5</li><li>- Warn: Project is vulnerable to: PYSEC-2022-43012 / GHSA-r9hx-vwmv-q579 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-43012 / GHSA-r9hx-vwmv-q579</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (4)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-cx63-2mw6-8hw5</td>
+                            <td>A vulnerability in the `package_index` module of pypa/setuptools versions up to 69.1.1 allows for remote code execution via its download functions. These functions, which are used to download packages from URLs provided by users or retrieved from package index servers, are susceptible to code injection. If these functions are exposed to user-controlled inputs, such as package URLs, they can execute arbitrary commands on the system. The issue is fixed in version 70.0.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-setuptools-2024-6345<br>CVE-2024-6345<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-6345</span><br><span class="vuln-link">https://github.com/pypa/setuptools/pull/4332</span><br><span class="vuln-link">https://github.com/pypa/setuptools/commit/88807c7062788254f654ea8c03427adc859321f0</span><br><span class="vuln-link">https://github.com/pypa/setuptools</span><br><span class="vuln-link">https://huntr.com/bounties/d6362117-ad57-4e83-951f-b8141c6e7ca5</span><br><br><div class="section-header">影响范围: </div><br>setuptools: 所有版本 &lt; 70.0.0 <br><br><br><div class="cve-header">来自 CVE-2024-6345 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</td>
+                            <td>An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to execute arbitrary Python code.<br><br>To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.<br><br>Jinja&amp;#39;s sandbox does catch calls to `str.format` and ensures they don&amp;#39;t escape the sandbox. However, it&amp;#39;s possible to use the `|attr` filter to get a reference to a string&amp;#39;s plain format method, bypassing the sandbox. After the fix, the `|attr` filter no longer bypasses the environment&amp;#39;s attribute lookup.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27516<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27516</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.6 <br><br><br><div class="cve-header">来自 CVE-2025-27516 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2013-22 / GHSA-27x4-j476-jp5f</td>
+                            <td>easy_install in setuptools before 0.7 uses HTTP to retrieve packages from the PyPI repository, and does not perform integrity checks on package contents, which allows man-in-the-middle attackers to execute arbitrary code via a crafted response to the default use of the product.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2013-1633<br>GHSA-27x4-j476-jp5f<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://www.reddit.com/r/Python/comments/17rfh7/warning_dont_use_pip_in_an_untrusted_network_a/</span><br><span class="vuln-link">https://pypi.python.org/pypi/setuptools/0.9.8#changes</span><br><br><div class="section-header">影响范围: </div><br>setuptools: 所有版本 &lt; 0.7 <br><br><br><div class="cve-header">来自 CVE-2013-1633 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-43012 / GHSA-r9hx-vwmv-q579</td>
+                            <td>Python Packaging Authority (PyPA) setuptools before 65.5.1 allows remote attackers to cause a denial of service via HTML in a crafted package or custom PackageIndex page. There is a Regular Expression Denial of Service (ReDoS) in package_index.py.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-setuptools-2022-40897<br>CVE-2022-40897<br>GHSA-r9hx-vwmv-q579<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pypa/setuptools/blob/fe8a98e696241487ba6ac9f91faa38ade939ec5d/setuptools/package_index.py#L200</span><br><span class="vuln-link">https://pyup.io/posts/pyup-discovers-redos-vulnerabilities-in-top-python-packages/</span><br><span class="vuln-link">https://github.com/pypa/setuptools/compare/v65.5.0...v65.5.1</span><br><span class="vuln-link">https://github.com/pypa/setuptools/commit/43a9c9bfa6aa626ec2a22540bea28d2ca77964be</span><br><span class="vuln-link">https://pyup.io/vulnerabilities/CVE-2022-40897/52495/</span><br><br><div class="section-header">影响范围: </div><br>setuptools: 所有版本 &lt; 43a9c9bfa6aa626ec2a22540bea28d2ca77964be <br>setuptools: 所有版本 &lt; 65.5.1 <br><br><br><div class="cve-header">来自 CVE-2022-40897 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>197</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>201</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>16</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (6)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>tests\alerters\webex_webhook_test.py</td></tr><tr><td>elastalert\alerters\webex_webhook.py</td></tr><tr><td>elastalert\alerters\flashduty.py</td></tr><tr><td>tests\alerters\flashduty_test.py</td></tr><tr><td>elastalert\alerters\yzj.py</td></tr><tr><td>tests\alerters\yzj_test.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (2)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>elastalert\alerters\line.py</td></tr><tr><td>tests\alerters\line_test.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (16)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>CHANGELOG.md</td><td>内容变更</td></tr><tr><td>elastalert\ruletypes.py</td><td>内容变更</td></tr><tr><td>elastalert\util.py</td><td>内容变更</td></tr><tr><td>tests\alerters\powerautomate_test.py</td><td>内容变更</td></tr><tr><td>tests\rules_test.py</td><td>内容变更</td></tr><tr><td>elastalert\alerters\alertmanager.py</td><td>内容变更</td></tr><tr><td>tests\alerters\alertmanager_test.py</td><td>内容变更</td></tr><tr><td>elastalert\alerters\iris.py</td><td>内容变更</td></tr><tr><td>elastalert\alerters\powerautomate.py</td><td>内容变更</td></tr><tr><td>elastalert\loaders.py</td><td>内容变更</td></tr><tr><td>chart\elastalert2\README.md</td><td>内容变更</td></tr><tr><td>tests\alerters\iris_test.py</td><td>内容变更</td></tr><tr><td>tests\util_test.py</td><td>内容变更</td></tr><tr><td>elastalert\schema.yaml</td><td>内容变更</td></tr><tr><td>chart\elastalert2\templates\deployment.yaml</td><td>内容变更</td></tr><tr><td>chart\elastalert2\values.yaml</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

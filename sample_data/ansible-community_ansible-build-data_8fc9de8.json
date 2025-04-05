@@ -1,0 +1,4663 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "ansible-community/ansible-build-data",
+  "comment": "Holds generated but persistent results from building the ansible community package",
+  "licenseDeclared": "gpl-3.0",
+  "primaryLanguage": "YAML, Markdown, Python",
+  "documentNamespace": "https://spdx.org/spdxdocs/ansible-community/ansible-build-data-16d16f82-bed4-4867-97c5-8012170f2ef8",
+  "creationInfo": {
+    "created": "2025-04-04T13:25:06.731346Z",
+    "creators": [
+      "Person: SBOM Generator (sbom-generator@example.com)",
+      "Tool: SimpleSBOMGenerator"
+    ],
+    "licenseListVersion": "3.19"
+  },
+  "packages": [
+    {
+      "name": "mkdocs",
+      "SPDXID": "SPDXRef-Package-3d273138746b0811f4e91a27699dee93",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/mkdocs/",
+      "licenseConcluded": "BSD License",
+      "licenseDeclared": "BSD License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From docs-requirements.txt; From docs-requirements.txt",
+      "description": "Project documentation with Markdown."
+    },
+    {
+      "name": "mkdocs-ansible",
+      "SPDXID": "SPDXRef-Package-6093d6656c144e037bd78da36151de98",
+      "versionInfo": "NOASSERTION",
+      "downloadLocation": "https://pypi.org/project/mkdocs-ansible/",
+      "licenseConcluded": "MIT License",
+      "licenseDeclared": "MIT License",
+      "copyrightText": "Copyright (c) None",
+      "supplier": "Organization: PyPI",
+      "comment": "From docs-requirements.txt; From docs-requirements.txt",
+      "description": "Ansible MkDocs Theme based on mkdocs-material"
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".readthedocs.yml",
+      "SPDXID": "SPDXRef-File-e3b87b9ac78b8654ec8ee32806cfcf02",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "36bf1e3e80077837b93332f7f3ebcb8a8693eca9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0f2e652538fca8b3d30f758c495e3d47d0f5ae7294a514abd3adfd7b20288627"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "634c92763b6553daeb62c10dfc9189b6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs-requirements.txt",
+      "SPDXID": "SPDXRef-File-266a113efa7cc01e0979dcb60992b675",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fc3cd23701ec4091f2517dd8be4d754b9c045276"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5cdfc3f140017e6be71c4081b5d262493aab0c1511cc60d6e7272453995776ec"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7bef0e959b995f811ad283ad42120bf3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "mkdocs.yml",
+      "SPDXID": "SPDXRef-File-45ee620855dad847bea76b49932ad7db",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c133e8bffa062b21ccb71421946cd2475547e209"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "de16df0c5b66d53286bb1dca2d58b4ef60c65983fa13b07d946b169a30847fa8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9a4a781f7c387f50823a7ba5cf1bc950"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "noxfile.py",
+      "SPDXID": "SPDXRef-File-37409d3afed5d01396a659e1b20bdf08",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "350c054929893d73cc2f05ee52465927ec5bd967"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1a8f3fe51b64b4066c5fef057fd1e15b04b3e85da8bca9e5b41c45ef10e7a4ae"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "41c5d5b22170018e0845212d7cc4ad42"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "README.md",
+      "SPDXID": "SPDXRef-File-04c6e90faac2675aa89e2176d2eec7d8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "746eadb9a61cfcfae98955ee5d4d634d4ed2b52b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ce4d96046202da039e18e53359586234a2b55e7e009067aaabbfece70ed8ce09"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ab180d93b4680f3d27c94eceb68b9a3a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\dependabot.yml",
+      "SPDXID": "SPDXRef-File-b2278af54caf287130ae0a47650e49e6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b9a33767d0cb40e79496782b12313e8a31c28b9d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d3e6406bfa90be2caa3cb3fe12b2ea0db1188990dbe0ac6ce5ec7b8a74ba7e05"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4d110d2801cda5456bfad90ef055d1cc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\ansible-release.yml",
+      "SPDXID": "SPDXRef-File-c343bbb31cf317ade8c56bfa2e71f63f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c0eee18d3ba5629d529bd3b47458b9636afdd9c2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "096d1b669347261eb3e98243bb240145100708b0007ec65a2b3fc1e73a9cf1f4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1fd9dd16e957c920843c2181ea43f3b1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\antsibull-build.yml",
+      "SPDXID": "SPDXRef-File-37207bde75294eb3749be1eb7850e04e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "da410dc122319e13bc6da968f2c1ab390b31113f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "35515a69e6f4528192d3d9d161231068601cbfd9c3c246087ad45689497aea03"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cdc80587f106b74a9670e9b25e42d013"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".github\\workflows\\nox.yml",
+      "SPDXID": "SPDXRef-File-81418c628d9bdc784055db6c1f892444",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f9dc29a58219a241cc92391b0ec21a915fcc853d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4af66e6059acec5603bf7dd0d8ea18c7d520e1931b5d867ca6dea2d9d25c4aa2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "24297566d7879347257a90458c94ded7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-bac092c4cf3528ff551256318d16e384",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3cc13ce40bb47f25b67fefecd8e6925d0559b927"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b61aacce7369c35eef50f8d5f6bcab4a2a2dba7a30d86c10f23afb61c78e984f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a64827bef23558764d9fccd4e8dcb533"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0.yaml",
+      "SPDXID": "SPDXRef-File-826a0ae88d020f345fcd98275b969b74",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4afcd366fdcb223e6ce2c21663f0f276b1fca97f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f5bb6103d836d58b5f2fb72798951b2e4bf482274e0d7b451b7a09c58c1ec229"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b244ba047a7900d36fdd98c8d311439d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0a1-tags.yaml",
+      "SPDXID": "SPDXRef-File-d584e9003946821e86130254bd4e101b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "569a49daf5d0d3947492355314465ba4bf29d4c4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bf21dec709a2dc109f462ae56ab9f6eb61ef3ecf514f61c8cb719317734575b6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3439c5d30b021448676eb67aef4a7319"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0a1.yaml",
+      "SPDXID": "SPDXRef-File-9f27c38046ce62d582e0b6bf4cecb0fe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f8223805267f5d31aa514647b6cd594ea8d6f98d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c71288e000d00460385ab7b44bcb58952ac0d5260817bf00f5ea18aabfc4add7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "67d23b6cd8f81c58c4ac9230f8c9b1df"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0a2-tags.yaml",
+      "SPDXID": "SPDXRef-File-0cd9c36b5b06c89e0f169a3c1307c75a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8ce99b27ee7387114ee2ab9dbf3afc0978f8fa25"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9b0ad87734e43e808e87de90d9dcf156ca615498458df41e6ebdbaa827d19f14"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1ff4775bcc1e0f24c9f0c30b22a187cc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0a2.yaml",
+      "SPDXID": "SPDXRef-File-46d05c07fbaa44000877c26cd04e51a6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7ffddf0edaf5d02ccbe4309e251d94793e489fa4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0078fb676f8ac111af1fe79228ddf2172b7f2f29b53831e6775518f9f7dbd734"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c1c02d3b264710389b81fc9ccbfe59ab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0a3-tags.yaml",
+      "SPDXID": "SPDXRef-File-325c5e8722b98e8db938c1e3a216de28",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c2b78366b5a397b42546681489e24dc8c9a4d8ab"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0ac90dcd681c6dc5580a0aac12d217f6becaaf6d6a16ffa18ee84b50171f2a1d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0c415342b0ffefd3b0efc5dd529e5b0e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0a3.yaml",
+      "SPDXID": "SPDXRef-File-7b6125f138e12c42e67bc665a6bd6736",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dc93d14b5a47577d97c1a486af795ff85f2bafd2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7bf733e1254f987d81aebbcfa431d157d8b9bc89ac5a7f93f6faf1b0763fe3d1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4065d2a0b4f8cd9f43d737dc70894cba"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0b1-tags.yaml",
+      "SPDXID": "SPDXRef-File-5c6f0330af1d7c901eedd48ed0f35360",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0ebd26af460a83a360c7ab5f5fef0ba75ac7ec0d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "948a174ea6a8c317804c31cf4d8a80f2832067d54fcabb600d19e3d80a80b384"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "05b55d68caecbadc6931d32b68d4149f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0b1.yaml",
+      "SPDXID": "SPDXRef-File-6b79aa5cb888329b3c585fbf223c919e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0a36c6a87ed2c02607b6a61fed96008c0c811a6d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c0d80346bd510a36ff9bc5714c4774182885b74afc892009efab4cb6be3e40f1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b6a84d72832ea3ef5fefc21245ac0cd5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0rc1-tags.yaml",
+      "SPDXID": "SPDXRef-File-350549541ffac897120d001ba43e981c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3cc13ce40bb47f25b67fefecd8e6925d0559b927"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b61aacce7369c35eef50f8d5f6bcab4a2a2dba7a30d86c10f23afb61c78e984f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a64827bef23558764d9fccd4e8dcb533"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.0rc1.yaml",
+      "SPDXID": "SPDXRef-File-4d48a95e04124d81fb0420cff41aa033",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4afcd366fdcb223e6ce2c21663f0f276b1fca97f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f5bb6103d836d58b5f2fb72798951b2e4bf482274e0d7b451b7a09c58c1ec229"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b244ba047a7900d36fdd98c8d311439d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.1-tags.yaml",
+      "SPDXID": "SPDXRef-File-6b7e2d072affd6553fbdd8a1736c7ecf",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f8416bba7e23c8afd487488ad039056f1aef223c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ebbb35dfe4dbb1b47a7f3348cf359db209e26cb8b8ee7c45b200d5ab9dcb0712"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4050dce22ae8319061bc4322b80c8200"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.0.1.yaml",
+      "SPDXID": "SPDXRef-File-9fbf994e889cd9edd4dfcd6df7927d2f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5035555a10e17f9a18a42a43da1f9e3e833c0dab"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c9cdd9d312faff94690e7249ae5a527bd3779babb5f3f1be9d4c7ab412a6192f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "08303b5b237d66172192bfdf2eba73cd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.1.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-7addd11e783ab563bf3e854b93d6cf21",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c4305026c6540119b94689effe177c34c501fdd2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cb0aecbf51eac7a50210e1c694349488983b5ff48fb5993b2696e37f032a4b67"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6a7dceac3d6222e37812c408d349e94b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.1.0.yaml",
+      "SPDXID": "SPDXRef-File-033def1caeae592cf82120a63c46b3f9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "91e58244f7f29a0a5d9efbed56175dbf16777f24"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ce627d9809e1c28c4edf476c1d26de69ac8d3df2c1d87452adc8067f04f06f24"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ce334adaea88ccca6cf0059719af69a8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.2.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-80f6353c85d8da484f55b9e10f5ca55e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "839dade77d45bea1f83eebdcf442ad5e7551673e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "37f92c6084bb6d3c1bd86ddf0de559409e99b1cb87b744ed508e63ad46465cf6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "415ea87bbd9e74055c50c270cc609a1a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.2.0.yaml",
+      "SPDXID": "SPDXRef-File-37c24f03eb329f797a9c0a85df4885e3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5fb446ff5fb8515249d9be8f65dc2061ecdd663c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "89c264d3ed63fa88b181005a372195171d917b10ab874cdfa97e95e8087c9abc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dca5e3dd4356abe23a238a63a1096074"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.3.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-84e034f5088de530351cf9154c45ef3e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8e3d10006199ea8b5354d63fceb12a316ef0792d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6d80689c3455841a40b61ed8c67e3db2ed6030fd3533f8ab53c3b107532bca3a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0b9beaed469b96eab0f50ec04b20090f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.3.0.yaml",
+      "SPDXID": "SPDXRef-File-b36c4b9378179576fdce79315fa7c6ce",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f372c6fbc37a1416a8c68f51c4975abd925a475e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "af001c6f226ac5366cca9d681197e83e0576897550a02d300498890726655027"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cacb9f4226809e5c6dbebe06550314ef"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.4.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-85e012c93c3860f0f2f4b82de60fee17",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a6c32239a402beae2eddb9bee2fe01b435bb6157"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bf0ca1ec2f64c7cb3b4e620153a69d89eb38f4accc6e25ad8b5836982871efde"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "64fdd67159f79a5ef9367dcbfcd5075d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.4.0.yaml",
+      "SPDXID": "SPDXRef-File-0372949d88f25904460b76fdd1f3c1e7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "968a67e5a89eb1d913fd8b5bbad4371d8698cac7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3cf86dd8cdd1f4046484493c0cc9fa4b2fa3d5400b13f380c9b4bb1b74e161ca"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d7a2c63d54afe7df375dbef856ec5a29"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.5.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-247d3793cf5c9cd5a209b4c6099df6c5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7dfcc5af41e0adeee3226e7a8df530fce317f326"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "20f13147d72ba5ecfe9f78ed91264f5a5a489b5e989f401f36710b5527e73c82"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ccea0738d383f822ec4ac134b5ed40fc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.5.0.yaml",
+      "SPDXID": "SPDXRef-File-583d848078abf0fb32882e5948282916",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c76fc6aece811bf17ad5861822adf3609d6f651f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ae5e8123f1f62b535896b665f17845304784d5c6909dc473eac80bf122a74b5d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9fa1aa2a6da3e8f16c62fddfd93955fd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.6.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-4227fcf5cbf6916cdfcb3577403b3229",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e307748501b78643d7791a0aa355be8017e21124"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1f72367dee15f0715dc8f5a6ab78e17847a787421640d788ff74c73a401641bb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dd7f72fb9cd375c47acf21369a999f78"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.6.0.yaml",
+      "SPDXID": "SPDXRef-File-5efdcd5bf2c7046f0290f85b7d22a3c3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dc6a88b1b4922cb0ed62c912e292ff4f7e21b834"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5576aceeb238e08303dd95bc0724dadf7f9b8e15ebe482e03898dbdfdea24328"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b81abe81cd2254eac80bd20091e02ddf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.7.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-e9048fe63ff2e1b3b6c57469f3c058ac",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "eccdd919197ac48ec45d1a68191684803edf7ec6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "949cae63790f6c49f99f5b42d263eefa81ef21f360c4c3b07cc9b76bd4e96057"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ff7afc67abb54caed9ddf79b84cd27ec"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\ansible-10.7.0.yaml",
+      "SPDXID": "SPDXRef-File-ebdc6ec96546c5a1e488344a461a92a0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6ba5e270a996949ff5a7f498943b007ad2576f7d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e9ca981c478f9bd3ab0b7ba27fff653a8faf7bdb408b1bc7750c6e072e2c2af9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8443c5f3b8b5b828017b9ff277b2cb99"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\CHANGELOG-v10.md",
+      "SPDXID": "SPDXRef-File-db1fad91dba20443ffae29b1007459b9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "60f4f14728bd77546bbeabde23ddfc079d4c1b97"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3a1877c61625026981268283c0fc81f714f67b5c80a3fdb70f0762efadd4493d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "92f94f0630fc9dfa5a028fa68f173cb1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-6e40622bbe50a0b11d0186ce5a9a230e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7fb87e2bc21c25573b270254ac7117a18e277c57"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "368de9c1200f6513263efa1283a062817a2eff099ffaa64d96fa5b2a2dd72311"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "273e28ddd161886bcce2eaafffa6a435"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-45d6188f90e8c4c360be15418c97326b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "caf5d929b85410621140de57e0470d2b091b09f1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ce45cf415a17aadad48a966659a30e64f3c0d9a80663e35564b91aa9303e1b13"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ef0b52a75870c3bf03182c8b64362727"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "10\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-61ce4113e54891afda40ed099794b1fc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5b3bf12c0856470c1fbf1b25e6a497b12753d085"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e32b33cdf2d9ac5beecbddc36a30169b3c5ce53809e6cc2fb754ebb835744413"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9061a56bb9b5e68dd99cacaf9736c95b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-cf7262f3cea50002b1080e866e3704ac",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5201213459a162bc57dcc4144c2892f4cef776a1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a275e99604bb90c6e04953acd50845e31cab41030a774e0376a7bc886bafa4c4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "289eb07441f85c11ab98ddc187057770"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0.yaml",
+      "SPDXID": "SPDXRef-File-283f9641386a772ca18394b58e588456",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e178be84a64925687fdf9572329eab43b921ceb3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2ce6192eb733fefe656ab554cdfda80546b2cc0858d8f244433762afcd30c873"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a5b930ca06b96bbfd7ee61d68b287d89"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0a1-tags.yaml",
+      "SPDXID": "SPDXRef-File-94136a90d08e4c683d6e49cc97fcd4ae",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4f1e91dfe099afb066250aa2808563bd5f3fc679"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "647c027a7c3704978b87cdf802fade784ea1b5c5d2675024feefbfe27239acf3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ba6cea9eb8dd59b03908bfffa63dbac3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0a1.yaml",
+      "SPDXID": "SPDXRef-File-8248aca1b0a03bff3489c96814262fd2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "780bec75382ca6026b5e0f90f1001f6acb2f58e9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "570bcf40dc82dec16de07cb526ee84875bf013e8a7c0b8902828830202a9d7a7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8e4fe54b28859471cb4e36b68dd7223a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0a2-tags.yaml",
+      "SPDXID": "SPDXRef-File-ea21d22e8ae552aea92de2e1dee85ea1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0d004762e5e018c62d2dfcc66da99fc9142cc51a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4b07595ab94396d47b44350629c6bd410c1e0676299af5b03546e4e81f8783bc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e1c15d6b7b00df2c9609c16c332bf962"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0a2.yaml",
+      "SPDXID": "SPDXRef-File-8f1904b44df6692bfc809c57d3da5e72",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b864cdc73f28af7d13f77d7514d659c6e9be7c16"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b68c8d76f3676cb808d8b2363f659b835d0756bef4e0106eff700171c76fb147"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "887caf9e3f341f232115204493c67caa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0b1-tags.yaml",
+      "SPDXID": "SPDXRef-File-70f7940119d02f8f8a78a92d45ddf203",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "73002bdb2df5a9a297e9303b1d646fb2b53c8fda"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c6aad4e717295ef1d34a046e41ef08db05f73a6147ec911f7fd74e0d073e2434"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ec69a69f84c455273c5cd5e76a35d807"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0b1.yaml",
+      "SPDXID": "SPDXRef-File-f51d643b4f6512e1dc7ea7009444f2ff",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5ea864b26d8b85cd88e218e773fa282263d965a7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2c7f4bd70a9058b8d10f51464aea7c23f6669ec34c864be40f5cf55258575cca"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "77accd73982e4aff35a21d4fc8ca79ff"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0b2-tags.yaml",
+      "SPDXID": "SPDXRef-File-55b5b4c3fd033cf1818bcea98a53a1e0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a27c5591bc4ac5402d9de4fb904d5823b2eaaedd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "00a1f168d1db08208bf915b177460a5fef9e4cea0b7f4b58d4d01a738307362f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "609e9e30b091323314eef7c0bb1bb5fa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0b2.yaml",
+      "SPDXID": "SPDXRef-File-d65ba6a799bc45ea20ed403a4f5e8bbe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7a0e108f1fdcfa8ec571edafe9851263f833f9f3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f723961e1f821691c962d735738da08374ff344a5ff80664cfb04c86d8e7c9a3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6d97548ea7c0d8309cea1fd870915876"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0rc1-tags.yaml",
+      "SPDXID": "SPDXRef-File-80cc4793321483046b2a0ea1adfb8534",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5201213459a162bc57dcc4144c2892f4cef776a1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a275e99604bb90c6e04953acd50845e31cab41030a774e0376a7bc886bafa4c4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "289eb07441f85c11ab98ddc187057770"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.0.0rc1.yaml",
+      "SPDXID": "SPDXRef-File-91080916d3135c33fd4d3b124e068947",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e178be84a64925687fdf9572329eab43b921ceb3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2ce6192eb733fefe656ab554cdfda80546b2cc0858d8f244433762afcd30c873"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a5b930ca06b96bbfd7ee61d68b287d89"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.1.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-a0995223002e5aba49a2ece7bd8e06ac",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0d29ff4974642df39ccf0df4cc65a3ffc114d992"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4b2c3e100633a247454dbb8e5082de114723e8df33e42943a4a0ab8d44aaea64"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "15d05a8c46992f3e58f0a906ab208e5a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.1.0.yaml",
+      "SPDXID": "SPDXRef-File-b0677434d4e261cf20e532f30c224907",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "645b81f42af713f37e8e8adccf51b68ddcd5cbe0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a8b790e5c442aea20d81d752b63cd7f7294c517694f89370b58ae54bc595f3c1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8bfa9c1fe019dce7e1aa108ae66664a2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.2.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-3f6a6fb5bfb7ec59a94c0ae0cd2f3679",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ded940b37a0e96a6e098bcce1b883d1f863655d1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9be5042a18177e6ab3dbc779866336453da674070bea59d4a74f0894a024272d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b15805f8a4ce5aaf99434cf5203236df"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.2.0.yaml",
+      "SPDXID": "SPDXRef-File-f1d060455fac7dc70825c8d8f12a8e4c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6e862ff473dc42cd8cf4d3fd360f54bc9cd97d52"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3fa32205714936233f081429a9f42bf6a28573062eeee30c2d5e08379e827f62"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1cc85fccd8161dbed2a1b04475cf900b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.3.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-375e1144acf892c1e7ec5f858e92dc60",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3526148cc5fa26ae45eb28d60d3228abb9c2abc8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "72c079db7316b1386f0f1fbfe05bf5550e9005060ef12b1c4e5bb6d509d2fe23"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d0401908431f81d43554e8abac9465ae"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.3.0.yaml",
+      "SPDXID": "SPDXRef-File-0ca704c6bf33ab313e0914edf30aec17",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7ab7f6a3bec939ca3c4bafe8af352cbc4ebb04ce"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2cb2fbb09aad13dd22abdf7646acdacbf9507590467f93b38eb6aad3cb2268be"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "eabbd5229832671d17afe7408dc7f11b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.4.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-feac05afcec7fc9ba3fcf066cd82821c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c2d8f92de2e864f70af2d9bce248939c3128cce6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1d30508af0684b0123f23671b11f7850cbebaa2adbb4505cf5ebf27f543a46fd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c06a1dd48a0d06ce24be3bc7694a50fd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\ansible-11.4.0.yaml",
+      "SPDXID": "SPDXRef-File-1720e77981fcc5fae10ff117ecdd370d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7fc21c8543eede0c82e5bb5de446caf11e0b3ace"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "711d67bdefce933b0ade474050f854dda11cabe6ff5b17ebaa02130627b3219e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6122f9fd8d6b4865a27d3c4ce2083002"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\CHANGELOG-v11.md",
+      "SPDXID": "SPDXRef-File-7b3c1556faf53fb3d623fcb3ae68f6ec",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4c4bf29a4fd0434f27c2820589b4fb6664b27f28"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ce54f66d7adeda6b06010253052f6afde7e74d80210ea3487fed1314c7073df0"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9eac0f493716efa3c0418a8aa1222292"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-4f9ae42d56176e8188c7978d7a629bfd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "061a8c36800687fac87f423d453ec19da1f435d0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "569031c7c0823d19ec71a49d328c6016071f3a35805ea9b716eec23498cbfaf5"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "69e93676c3b9ddd81f7fb4a4663ea3bd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-60cfaa823351982dd601fc7eb74d56c6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3ab90b294a917b3d0efd0f49f9c691d8404f3650"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6d560e335b12f61207cff97e6104e4a08d5d9f0e8c962accb2374885a72a703d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ffed728467c31341b4b8a24d58c718a0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "11\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-78693bd6361ec86cd0f2149c9772e0ed",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9b5e671de985dca3fbe399a17b6caac1135622de"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "39ea65c75ae6926cacca9eb3182a2ce6f5ae297eb5c108b2c8932d5ca9fa1a2e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d24a500d79307410544a83fa195962fe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "12\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-e6c88fc3d5ef8cbdca8f19ec7bae26e0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0a988d792f5e98e0e720753208764a255923aad3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d572172e19926a5181ef5e44bd8854a4adb33b2e0e5e4a1ac2bc9a6e231854b3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dd8c5dfcb7780b2e4938e9471fcbb43f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "12\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-bfc2194d30cba4df41066ff0166940c6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "318f1ac1b6e4d881a13c530bcd212aa6d6154d47"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7ef3b0e819c4e1422a46404e10bd6fff41fa6bde0970bf5196846ec6dd3e0b0d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f87eb7e8e383c5d034bdeb0dde42454b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "2.10\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-90bf29f36fd975f33cedecb5ff33371c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2e7ec46e2749a38e43c782a6b31b9902189b52af"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6b0f5173f3be7e487853da831ceaa8c5601b3fe1498b89f0639ca009fbf171f2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "35ce5198b5a19c48a202fc1bdac3bab6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "2.10\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-7c9e5c0a0ac2be6dd3e100650d61921e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c4b8f00d427dc7f77b4efc87b96d6eba36b73e2b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c971bc2949326f8d823ef8300e05655ffbf7563b84e3f18aa510384ce67a4daf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3e85342b16a806463eee1d3aea3774e8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "3\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-709833165af5e672455d1df9acc8c93b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "22ee9261bbfcb041c6ae0314971e390294d4d173"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a367f275b3f49a23fb20506513cc5bad2487faf4e45c73fcc6187194d70c5ba2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9b8c4144668bd8654ff2581f9d544993"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "3\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-6ac3144c6729532336c2594b17c3a57e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d111e72a5c063f1215607b6d96038c028da4e771"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4268449ab9870504ccd8e1d64886dc07872e4922fe9e966bd4783c9d07345a25"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6ae2272881d3ce0805b1e3da40a89a2b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "4\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-4a873929c4871cbdd9f6a914aff209a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "934406a74b3446481858a4eb33a3711cad9e4d2b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "83387d3d8c3357f333df20576d38b274d950ca66cccf203e041b9873c92d443a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "31e000ddd2d76bf834f814ee26715f72"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "4\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-d9cb8594e0cd5438e68f4d368cfa89f0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "12354e42c61142c42bf23822f643b1288c253943"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d687b5d6122e98ca26c791f4b9a3db06475f84b27d35faea4971536ef7980298"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "aa9d765e22f8539ca6b45399444d2e8c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "4\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-5c8335242be5a6f88900eb1dcafc4d66",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cdb68aba84d1a05d0ea0e7bddded222531d88cf6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f92d358c969d7ae594de2487172e530d39df4cd47d2bd2e6db5cc1663cb106b4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "80908a211dfba2af3cf19d7c1853b027"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "5\\ansible-5.10.0.yaml",
+      "SPDXID": "SPDXRef-File-3620e7ef599de454bea67160250ea73c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "863eee56a13af2e13c69164724bf69862ca25062"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ca2ae2b2654ce8c8a6bda3cf42e20295c0d9f8f832e9f5ac02d1b69e194577a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ecabe6a2364cf8f2f59e881c019cf08d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "5\\ansible-5.8.0.yaml",
+      "SPDXID": "SPDXRef-File-699feaf29d58af06947721af46c74d48",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dff75037a8bd6969de53ae730ff6395bbcbf7a56"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "deeb266b947947d1f06af46d0b14d216a347d7fea3fc51320f8d6a6698d3384b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "167a46aa20b46e778c934800081705eb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "5\\ansible-5.9.0.yaml",
+      "SPDXID": "SPDXRef-File-d325be0aa6416f3d055da501490031c1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2643e80b63bd43f77c4d622a94a8458933ae6a56"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5bfdf35f42ec143db5f0e871576555820f387e3d8f7b200173ad8081fa4593d1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "edda2e55318244c3cdc1a42a1a4713d1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "5\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-9c92d584891bc879aa1e750721e974ad",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d219ae941cb84900126d6b73e608d70a43c73928"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "17fc07a0e309d4cfbfae5dc9b207ba1eafa3446dc9e1e45cb1e0c947b1531b24"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a0883695d69987bc7feaa8be5e57f208"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "5\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-7604e421e49c7249f72ba9853348f43a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3a7f92644a6168c8138fc08948490e29ac3a8e6a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4f39ce8fe312a6b25fc202a7d867a61ae8a538a6579542a993cc8bb89d739043"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "daef7f1041f8b25aa119bffc9d2ee35a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "5\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-2a1e0ade60ad14613aed491c06bf2bb3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d1d6fabddc1c4adbcecca321f08df3c64dcf8a37"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "82ba8377b7f5a46173bca19a155ecffd25d3d0387018874ebf7efb5ae6d8e130"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bbb526d9b97461911408c6f3e109dab4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.0.0.yaml",
+      "SPDXID": "SPDXRef-File-aefb2e436402f2ab6ab4f3dd22d41b09",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a123d607d15f30bed7b86e3d4f08465993aa0673"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b59d4d4e1498f4e249e2e1e1af6e00db26b1f40b07fd13bd8790287bb122a7bb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b49ff719092ce5eb1eafb8750caf23b6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.0.0a2.yaml",
+      "SPDXID": "SPDXRef-File-f2506e63023c478f32d688b3beb18c53",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ea3a0e570ebddac2d155b3309824347fa4974fff"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "31a9b9ee9909837f01ee94ba92715da8dd8d657a56d519e57e4a5054cbaf1386"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "840bf9a13edcf64360ea54738fa9b40f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.0.0a3.yaml",
+      "SPDXID": "SPDXRef-File-f1aa1d3d9ab0716e5e47ce5600d018dc",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4fff95b3e7cb29a7fad82aec7ac46deaedbb8006"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9335674cf1d9c408c7e7b4941cdcb03228524521caacaa9e9a2a57ce1b23538d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bdf59a18dbe38a62d8d99cf9fd225200"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.0.0b1.yaml",
+      "SPDXID": "SPDXRef-File-0b9d992b3e849bca8481816717b47a6b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "80791f68ff7ea0ce8b640beebac352bff2f3d0ee"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bf674de5da9fcbe064d51c2d56c40e797fc949e3b033b3a4241ac3301f295bc6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7301733d598f1e91ce2093edc4d99ab6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.0.0b2.yaml",
+      "SPDXID": "SPDXRef-File-c29bfb9f8fe41014f21b5b7c5f58f313",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3ef504bce079941b05208d8785e9f3e48c90e0cc"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "14e66ad9559d328c67d658dd2f6f87e7139b59d68a3c9eaefcae3f94b1c15832"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "92ae78e4522c1a1ad10695e629655213"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.0.0rc1.yaml",
+      "SPDXID": "SPDXRef-File-5264bc4e9cd9ecd0a9a72e43a0fef936",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a123d607d15f30bed7b86e3d4f08465993aa0673"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b59d4d4e1498f4e249e2e1e1af6e00db26b1f40b07fd13bd8790287bb122a7bb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b49ff719092ce5eb1eafb8750caf23b6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.1.0.yaml",
+      "SPDXID": "SPDXRef-File-b3dc6a7bddd679740620bddc2a56340f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "73c267f36d121d8bfb8c27d5a1f307f773caa788"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "31e100b2af46f91e82f06a07099a48fbe7938de37c1554703dc014a15abcec8d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b6cf630e4f415d9068f3cdebb413c74d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.2.0.yaml",
+      "SPDXID": "SPDXRef-File-37e16f6674013643c326334d953c0494",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f31d19428beabeadd972e2463e777678a4ed8a5b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d8c0919f57dcf6c25df083b19e1212da5c7be1a8c413772bfbae50285796598f"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "01efccd9efacf18b9d9740c151cefd26"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.3.0.yaml",
+      "SPDXID": "SPDXRef-File-bbcf5b2dfe1cc30cdcc5e0fc9edab69b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3dbfff94482758cc11daaee37a8d4faad92dbec7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ea06857cde8d0cb37f508158efa21048784cf0359263b3f5bafc38789ed1a8e2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "edb5edd5a75348fc9756150cbf82413e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.4.0.yaml",
+      "SPDXID": "SPDXRef-File-ebc646e3987dc66d0cb2324ac9980895",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7e6e124d9caac68f38629c2c5394f4a28651f5a8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "69ca3c85a3bc352db0305f73d9e97e8b71a63c8227085300f3a511a3e9667d89"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1ed3819944ca75456865dd3e4ce48a65"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.5.0.yaml",
+      "SPDXID": "SPDXRef-File-807d943d49fd3ebbf343131f8471eed7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d497673bbf66334da1c9757961814fb5e8e84e4d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b1b3874f18703e015ee53fddc0c6ac137687dfbdb2bfe67929d93f813106eeb1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c53b6e7439dd21d59db5ed1878957900"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.6.0.yaml",
+      "SPDXID": "SPDXRef-File-d1d48f1b032f06866c212e33a31d19e3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "feef9cf5ffbfb283e3242f3cea17c06a9a921f71"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d35856f56b15abcdb2fb2aed132da079b7b4bcce19f8a8237aab4c41d451addf"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f0c63b20a0c6925fb4ba9e0ccaf1f5ac"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\ansible-6.7.0.yaml",
+      "SPDXID": "SPDXRef-File-ca9daaa75af2a49a7e4e00d242b2fcdb",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "53cc1be264eefb6d932afd5a0881f1fb3b76dd6c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1fcf062693d5148b67a66bbad11fb213f8d94ab1c24967362a3a81bdb9a3e334"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "917369dec67af73c31e79fa122044bea"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-6790658d97165cbc465f6ac2048d3d2c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9ac169142853169293a19d01f748273ce2b2f98d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f10c2581bfaeea9ba1d983d7377602c9ce27c6bcd43e59a3f330b30a4b82726d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "55addc9cf4d0963e830319088b9a04a6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-64d9cd600b26d670800d570236153a41",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c5a3651c60f1dadd1aaa2898465b69ba66e3730c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ce197312952e12e0c220d11d816500e5ac2b8feb28f3b4b89ffb64b29a374e60"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0c65d28799375c99de14a61a5da761dd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "6\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-dc326ac96225ee69c3ff4e51a313c6dd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1475395e04a8ccba22f861930d1aaf3732e93127"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dcb2783ac50d54c196aeea5d62e7fd630fec83cfbf790ea289ceff74ce9a8ef4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e4f2bdf1b0d4b42c6e4f1e070b1c9e31"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.0.0.yaml",
+      "SPDXID": "SPDXRef-File-68782b7e67f283c4464250057402b174",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1dbd7eaa3b87d3b5f0332d08368c05405523a45a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ddcdecbd97ccb2defbf910c9edfd8cf597db9a438ec9eaeafbc65cd70560ba86"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "af536c29f96716d61d1dc82d4851bd81"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.0.0a1.yaml",
+      "SPDXID": "SPDXRef-File-e64fbbf81d32d648cbff7a75251c5138",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b4aa4d6a53ab7e2616b87d5af8e258f8e50606f1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d73dc211e7939330351fcae9a3432e700b66023614e40327a5ae940f9e3aa0d3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ec1794790b2ec71e8067bf0712da901f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.0.0a2.yaml",
+      "SPDXID": "SPDXRef-File-29df782c398adb13d61776cb38cb11d9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "828c7f6912352781add5e2035dcc831a29bb22cd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "57f33ade02381d295692705383c7c24c356d188264d22d3ebb734701b041dcfa"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ccee2da10fea001b16b5c525adcd7015"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.0.0b1.yaml",
+      "SPDXID": "SPDXRef-File-224122a2fc087419f2d14d4182652c32",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0749d0364599c5a5c8ba05b61b6565ae7e2c006a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "013bc0a01c83d08b367457c1965a92340e00155e2c7bc89ad30e9225c9cf0eae"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "175d9ea5779d56e17172641ca8263c29"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.0.0rc1.yaml",
+      "SPDXID": "SPDXRef-File-6655ba7c86673c0c43ff27ef26176095",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1dbd7eaa3b87d3b5f0332d08368c05405523a45a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ddcdecbd97ccb2defbf910c9edfd8cf597db9a438ec9eaeafbc65cd70560ba86"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "af536c29f96716d61d1dc82d4851bd81"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.1.0.yaml",
+      "SPDXID": "SPDXRef-File-3294d5c332da26a56d916f9bbbdfaca9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8e8fe3bb9166afe1424ba7c2692065e2bdc98a64"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "97154379964e370637a1c336c15346387c0c940869797aa0ae401c8d0918cac2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dab8385c17561d1307b88ac59a187f9a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.2.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-16a0924354d77e8bc882e68a45b0c48f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7ab8915c848f603fb71beb68f0cb2436a5a8f7be"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8f23c964693a22a76eb658d97411ce3017738ff291656a8a6278e5756a325ad4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "59f34265169da794f5bec883f5f9fab4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.2.0.yaml",
+      "SPDXID": "SPDXRef-File-7bb8cd4084ced175491114f8cb8bef1b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c47cf74dd7bb9b3e6dcedbe5a5ac04a321d78071"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5eb2dd14638a33c9952a1d5f617c4fe4c56e0b625b7d2bad1f4e5a9f0a8ec5bc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3b5ecc2b2a2c680431f49f42add1f562"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.3.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-a1567bbb3c7e8fc4f3626c216034fe29",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3e07ba03cc75fc86a2656b05b94594526cadd15a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dc1bb77c47e147d969c40c0006b29ec3c3531bd2a21bf19654e4a3b02665a922"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "cb13a63fa598609f9feb1194d0c4170d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.3.0.yaml",
+      "SPDXID": "SPDXRef-File-01278beaeea8b7abef3bec120054307b",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6458d59ccdf802904280adb525907d56915e07aa"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e5488b94978aed6474a32a2e12f3841530f3d9640e7c71a324349519998d688e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "02643b52efc0e57be7041b2b816ffa72"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.4.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-f77ccb7c7d2ab68d3e0e529e7f38be5d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1be34300e1fb7d608d92ff56f09a76f349432d44"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bcd91fc240c1e87b5f6572ef494a9834120fccf2be2d2eece0afe20046ab36f4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "95c3f0423d90bc818ba69371d44a8d6a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.4.0.yaml",
+      "SPDXID": "SPDXRef-File-5ff1b06d5942580a59b7e38f1cffc743",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "457ff50bdd84a159bc957bbd9dd53bde4634f514"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3c02f37f25cc3955be00b7af38a6cf44aec045ad7ea21e964d3deb4db41c0ae3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "73820d64fc59d1187a0751041c49aef6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.5.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-840af5adb92d42eb7fb4d5f1867ca3db",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7f304d0119aeb95ff8604d9069d0ae32b52ec860"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aa68f078585bcba9edbb4793d274a7d93e48f530f5e1c79c7bfa987fbc02b4e4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "844e818bd090d16622d889858240db22"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.5.0.yaml",
+      "SPDXID": "SPDXRef-File-506825437f10dda646b6eb1a75d0f5da",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4b671b0b5e960314082fbddb1b504a36ae5437eb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d62ef3282245aae2a207ac8e7b14ed05739b46c8fc47d8e45a0d9aaa68cd4a90"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c1ca30a76e8501fd771093ba068f9225"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.6.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-e7ed4c25dde4731f9cd854a034499bb7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6cb57806e23d0304c05fa7c91ca323437b14a191"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "889a5af07ade9a509b850762277dd0000cecac81a293b999bfec456e56c3d6e8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1685c318bff2435772469a47989e985a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.6.0.yaml",
+      "SPDXID": "SPDXRef-File-e473b3a4007b08e88f278e9ff8361227",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2170bb37b7b1c8354e7e53f1653acd98eaa3c433"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b225a2be8758d6a77effc6bbc7fb367b1088a786454504e851db18d133683e6e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9e2b4ca0ee947e7f47c74f468ba7762d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.7.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-c5b914230e4cf7d9cec047a77e301bc7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8e708ab862d8a9c71a909ed661c72a1552cb4242"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a22bfce34493381c5e6db4cf685278081abe28a551920807d6dd92b219d98c66"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "72bb621b010ff18a6f24689d661e20fd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\ansible-7.7.0.yaml",
+      "SPDXID": "SPDXRef-File-0d5a057b6f553f719c2ed1df73d0d67d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "46ee52955a21b2feae6e967294881c44ba142779"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cf76348ab6efbb2c13cdabda8fb49616eab1e7bd886648cd3da8ed8d367056c1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4071d5dfe6c13752e3e730416920259e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-6a4f44492ff0500697d33ec7423b40ee",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f01e190de7d48c2d21dc9613433e591e7b13bfab"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9d05f73c9c69623035836cd7813338ff1a33ea15590cd6e8fa46ee5a15c5ac1e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "52362f404c32d9d76e6a08c814ae64df"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-d62ec699808633d03fe07ef77f6b1023",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a443b7311658f999403592c2101898ff6153bd62"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "67bd5d1b29d072289794bdac516b47c28ac51be23e370cbdcf949fb0a6bce866"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5f6ed1eaa9e11d79b0fa23d8c4643522"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "7\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-f8751466502dd0947bfd4ae01293d584",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "20a628ead4f156f1aad97cf428cfaae5b3598902"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c3d9c388f408fec246e8b43a9ff6d6749314e36341e1857a9a60cc5337afa4f1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4c26290353a76cd47162113af8150ef2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-d8ea15f115872f13538c548974f464e7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1775b1f1f32585560e77d464f24960fd598df1e8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6abb5023d1e52be436b2f3aef810ad9928d785bb8dfd500935f108b6155d4b76"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f7f09b13c2cc19b6127d51226b06d688"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0.yaml",
+      "SPDXID": "SPDXRef-File-d255f46787832e666e210d42e2d5569c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1a5bf9bb962cb2bb3ba4ef27d85defb9cef4e5eb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "af20930e4356d75009b31aa0cc555a457bed3ba10534d947e19d86917dcadb88"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3576b0fd142ee4ccf4b89ea2e92db9fc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0a1-tags.yaml",
+      "SPDXID": "SPDXRef-File-7aa022131aec80a6b02d1a14c9b3100a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bd8d10a38d3d9342583201e200b165c11376c141"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9bbda664ea84f3f5c42144a45d16333f8ecfc3ae215e728ab75e403f73d26d3e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "da6f4bfe2e480fa6832b6f9784e01bbc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0a1.yaml",
+      "SPDXID": "SPDXRef-File-58edefa9e64d8781fc5e0c93d7188241",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cd972fbdaf54dcea482f0c0b72dc91fa64830db6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ef08e3081e0871b80803bde6b2834e2ca47919f7d5892ad21b5db68fa7eb55f2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4e379c2b8e5721235a343ce66bafbc47"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0a2-tags.yaml",
+      "SPDXID": "SPDXRef-File-e0b91f9f8fb2cfe004cce0c59c23d682",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f35d8cd0a5010e6eb2bc3bad85877ee2e0f37ac6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a22fc590a509e249edfdf045e1dc3d21c6043aca6b674f250a9c14d5232309b4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "88f576300a276f2577416e3a7793f8e7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0a2.yaml",
+      "SPDXID": "SPDXRef-File-38c52f0768aea1aa328c21eae3a56028",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "62051c731ab3b5f20423ccca9afc84917dc2c545"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7b5d01a7f65882a3761b51476c5e12a36d372c5b6514a3faae355ef5bfbb3c63"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ced440cb9635c6024d1659e15724b487"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0a3-tags.yaml",
+      "SPDXID": "SPDXRef-File-52948d38dbec9dcf1883513fa05f594d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "410fff1abac9b4d4dad92e5d9ec25d3bdb75d654"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ad88361bd9f3d72a22e7943dc52618e8b66a650febfeaca0d6fb5444179db224"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6e6a6f6012c7d43d6ebea8e1e6fabb45"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0a3.yaml",
+      "SPDXID": "SPDXRef-File-e6cf6a19f67f6ad66098dddc195486e3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0990277b347112e1e8f9aa09864cfc2d530eaec4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8ae8df5dc0c20ef9cd51e3840766339af84ef7d6df5515e3c2148833034f9a73"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5d9a46ae971f0811c581f5639d45ac2f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0b1-tags.yaml",
+      "SPDXID": "SPDXRef-File-96f01ee654c6243b3076f4df8f1dc4cf",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a7644c4e7e1e630af2ddf2962176ab18b9b7558c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a33c855ff1a31f3e491a88eadd767d519783dd398a6c9b314f853dc65778f9cc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "a2cef970ade0d0228ef6e1df507d3b9a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0b1.yaml",
+      "SPDXID": "SPDXRef-File-1eb53469724b86fd4cc975385b71bd8e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2728c578fd4884319da419ec65b69508bccbd0d5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ef1177800bf95249da9db26bf2a20c20efb6ffc3cc0e4e19d990f2c5bc34d8ab"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "32fbc7d166739bca2ac11b8bbd641124"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0rc1-tags.yaml",
+      "SPDXID": "SPDXRef-File-ca3ff26ccd91d9edc23adc7e7f492b80",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5487d50e13758c680cec91187ff50e08943872a9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "38ce28bf9b74315a7f22a69539867e14d4dfbc1f1e88aadfdeff8a2e3baad4e6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "efb20fda55be936e2568af1047294505"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.0.0rc1.yaml",
+      "SPDXID": "SPDXRef-File-ef9a3570cbfb528e843ff53e860f0732",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1a5bf9bb962cb2bb3ba4ef27d85defb9cef4e5eb"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "af20930e4356d75009b31aa0cc555a457bed3ba10534d947e19d86917dcadb88"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3576b0fd142ee4ccf4b89ea2e92db9fc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.1.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-2ebce5a1080d6cb91e3735ad22169723",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dc8249f0745ca16039759d607367a580c58f54b8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c8d19ce6ae1f363b0380e7035e72b241cbcdff26633b3a197d6b987039fafdf6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "68b9bcb27db62f74637fa11bc61009df"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.1.0.yaml",
+      "SPDXID": "SPDXRef-File-5d13272153ccf7dc967a780f1378fb49",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f476acbc4f61dbe969d8e36195e11e77b101e2f6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d4474255f367cf1a89b01ebbeec8624f93e303e9e7236333372f3a921ec900ab"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b6727066c1ab8e6a6d3c09229b58b30a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.2.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-c029f8c314f3e550988538c6e310ec32",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "40b72544078cdb903c5137b974544ce694f00148"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0ee1013684c84d377607f7015f90985093019b7743045f959d6d5e9d94941466"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "12e5b5c326b06bc6eaa99554ae102200"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.2.0.yaml",
+      "SPDXID": "SPDXRef-File-956a9410e2768bc450f1167d1700f3d9",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5aebfb81ddf399d4f50b5901637b567c1a52ed44"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8fd4b6de56b800e23fad5dad6f8a23e6a55000e9642d08318280b69af71bd781"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7f933dc940b62b5fae0519078567e711"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.3.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-497ddf4fefb51b9e013a7ae79ec1cb4d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "848e6e3685659e87b0d71429f5f8d8458f66ded7"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "63f0865710c93b9f4f2b3d248db95bf9f4cca106574a8fe4e6c1f77b984e2406"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b129319cf1c61e4d7f5217de9e544965"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.3.0.yaml",
+      "SPDXID": "SPDXRef-File-750b2feed8d9954055dc4d3a419fdc20",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "305f3cdc51bf505c4c7b78203b81663758e035d3"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "710d72dc31b0038c4511c920e3ec82698e25fd0d98b577512913aa56ba0c6ee3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2589a87e6383e5b57f898f96c503656f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.4.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-248bf31949819fd8e3ebc91267307a16",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fb1f27c1cec0e80b07ff2ab4c3511d09b51f17e6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "429e0ad2582a791a15380dfafee12fd0d0876a942f30d3cb49d98a3770fb8cda"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "27d4c2d12ff55ffdf094e66e08c53a38"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.4.0.yaml",
+      "SPDXID": "SPDXRef-File-5d6c437e8120f068554b513cda5a5ddf",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "eda458fa02bd65aacf8567ca4919e53f2d10d69c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bd80dd26b625f9441efc71dffd24d579546fdff4af62224f4e253dbd1793999b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4093e0e2e5d1694cd478156c226f1477"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.5.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-3e1ed739c83ee13cb8e81617bcb3d0cd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3634fde7f7650c9870c8f84193bb94aea0dfa458"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d47eda810bfcbca543fe64830c0bcbba3932e823c068df0449c45615600b7008"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8b1e793e4c71c9809d93eee8b9a507ae"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.5.0.yaml",
+      "SPDXID": "SPDXRef-File-8128aa20bfebc98b6731890ab9329cc4",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "4a0afc1f2edd34da925bfc0b0e6f3e2f2b6b1976"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "69a3deb102131395e7dfb2a7abd3702cf8249f953816c15c939b912031c67025"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7783e3e6e1313b9ca1ae467ec8825f7e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.6.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-62edbd868b365355312cef37f55d62df",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "7d4f0ea27b0f21695982a851cd2fd03a3dd27a0c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "134ca42523f632fa05920620d32f5ff268bb247c89e3a68f064f37d115a548f2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "46e71ec4dbdb584b53b1b228970b97e0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.6.0.yaml",
+      "SPDXID": "SPDXRef-File-cad58dcd61e022629df5263fd446c734",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0a65e7f80831ea48e2790a6669aec4aff03abef5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bb1455fe643e93985479ac8f5a97e1c1d16d143beeff817f269f66d088f48fb8"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f4210053e7ad0cc12de6eae6c95b0b4f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.6.1-tags.yaml",
+      "SPDXID": "SPDXRef-File-4450a8f2cf564397df8a44ed41ce9c00",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "53327600931e7d8714227c683491f032ea71c41f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7cd2998394c043254da4e4e05b67c7a400a8c183865f5d6eba5c4a0b992262b7"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d6610a01a77d231ef36db579bfb97eaf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.6.1.yaml",
+      "SPDXID": "SPDXRef-File-765d98b3dc5db0bd0f374b33f2e8e2e0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6bcf9006327c6d57dbdb26aaf32c609c9e6f55a5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6ad9b79f6fc1517c4b4e172a9c932738a06ddb783c1586226822f715da498103"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "15cd828052860ed7229c067f0cd359dd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.7.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-37ad5814861ba42c1f53036a9406abc5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0fd6b2f394ce70457ac64320fae40c5dd337f1ec"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "de8596a1505edc46d6572502a3c87ab2dcc764c1babd302ec77d2e122a1aa462"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f6d35621463b1ebce45704febe8bde1b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\ansible-8.7.0.yaml",
+      "SPDXID": "SPDXRef-File-3f0f45099fa5c236efaea95b96f80e2c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "37bc73f7f981bfcffdd25a7214a6afdc147a3de4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "050dfc365310f17e8d471b237c5886c18c4e323574de31feca90d7d0b68cfd78"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6933599cde45ba55ef914b952d41710b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-b34e3910e5a041bdc16009cb2fb6b1d3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2c2efa1e08db5081fccc10c5ec3c6bf6e2700f2f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9841d030b2842fe02d48ad4d28af20bfd46e690facd8759cee4137e807e8b428"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4c95f486bf7759257dc79bbf69b699b6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-600aa99ad9e261fee55e5e47e7fae39d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "dc9509b07829484aefa87ff8115f2346ec3d76d5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6bc589ed524b704ff834bc271b2bb6bc8becaa5a9c6e93c6814ac95d0c5d315b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0fbc7afd7fc0c5fb4487893f2d3e31c2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "8\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-d3a678f3c776733add79fe66da0be2a8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6ca8d67c9bf9f93455e47faeb2a05101d77f23d9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a1f474ee2a9d39428c8fa1f5dce82b6afbf4d21032477f98ba97427298b4c8fc"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5f3f9749f322689c1afb90ad0fced412"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-6de2b7f9d8f4ee0032a2182d6bb91d9c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "85cdc90864fd856e1e676d8806b4b8bd172b8a5f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a77147f46f329a53371cbdc3c3f96ac7e663087c4a285a686d8ca7c5ad8cbe70"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bdef6a6691ff25ea27b65bc8a45cb4e2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0.yaml",
+      "SPDXID": "SPDXRef-File-500af7d35482b59514afb63b75b68d52",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "454bc8500f2df388f11757010e7567233a62cab6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5f9b89e75aa2cfa75c0ff5c3909cd7562d7a26d56ca3c534b7a38cd75939b8be"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ed96e2627a30fe8d99656d092384baa8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0a1-tags.yaml",
+      "SPDXID": "SPDXRef-File-dba00b02e1f181e44bcc42a359e26322",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "34ab9c5f0f970227c40f2ebfc300ab99c35de9c2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d0c5e650da3bbdfe18f50faeddcd10841bd02b77565ba59eae5a7bdd3e2db9cb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ad441327e57895e2b63497578a37f0a2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0a1.yaml",
+      "SPDXID": "SPDXRef-File-306c89e977eb9d76d26990158b3ba01a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0dd1a6d82af561da6cb7f6e453d74e319ec4027c"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6ada1a5e4685e3e71da052816e7e46ea189a887e169ce29b0fb731666ec0428e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "574415611e22c8b1f3a096d5386b7812"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0a2-tags.yaml",
+      "SPDXID": "SPDXRef-File-7553880dca34b55255cc282ed7262b93",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "095049219e8c267567f6194810f785a22762bac5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2493e4686bb0773fdbd1d2a1407abd4cb7d8e5673d189b3ed194414279026b2b"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "694b9122bdfdb850ffacb124214310c6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0a2.yaml",
+      "SPDXID": "SPDXRef-File-c3995ffa426731adf6be77d8353d7341",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "b25834c7b7759fe6d902bc7adc7601f3a2caeda1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7a85ebc63c0afd7e89dc73cd5bbe03f7c2336f4c26fde0204355b8dc5d248775"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "e73ce777e32d01168fc5f5e06b6fbaa3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0a3-tags.yaml",
+      "SPDXID": "SPDXRef-File-c8733b8480bd6b8a60095647729814ca",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5e3c07f43587e095fc182f997079c1f8bee01743"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "249f8229d91ad7ef40522e845fd8dcd9b0e6546380917ac3d5f36c1b3f9f4ac4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "32da5e995056b263ab9991161566a603"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0a3.yaml",
+      "SPDXID": "SPDXRef-File-75d2349d41019045a8383249ba0415fe",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5152683f95f1ce2fcd3b97e1534f9d797ec5b00f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "62df59b3ef246c848356bd04fd76d383b6a27cf5c3541fc86188ad0a2350d003"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2d45ec22ecf1b87bb36ef468d50a29e2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0b1-tags.yaml",
+      "SPDXID": "SPDXRef-File-0224ee6c360f12a5d10b9375d5b5a57c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ce9ee47feb7b06341718030b95630b0e93c8758a"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2772201ada95f25200d5f6f1a78d5235fd475a4aefdef9166bcb14cb7c55c5c2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "574722f09d5a6a6c647fe421f30d636b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0b1.yaml",
+      "SPDXID": "SPDXRef-File-eabae8835cd24652fd12db44f33408ff",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "882216c1dab677897eb3ed75c597ad4eaca87c99"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6527200be0ef44636c3952d9e5b41f1450a8d95e0bee45b65737ac351e5005fb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "6aa83f141a430b1b75023fb7ae1bdae3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0rc1-tags.yaml",
+      "SPDXID": "SPDXRef-File-993db8f03fe1ee1af36892fe3c0afbc8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "170bebd89538dd8f9729a6bcd451d33f1a90e86b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e4bb8277812b6ec5fdefff291e641f5890529f624d0765ddd3c646005c86a7d3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "b9aea9d440b8cd5eaa0b9e3f5145c47b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.0rc1.yaml",
+      "SPDXID": "SPDXRef-File-7bb11013e3c2023de26d0a75864142d7",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "454bc8500f2df388f11757010e7567233a62cab6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5f9b89e75aa2cfa75c0ff5c3909cd7562d7a26d56ca3c534b7a38cd75939b8be"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ed96e2627a30fe8d99656d092384baa8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.1-tags.yaml",
+      "SPDXID": "SPDXRef-File-caa064e024a87aa3a40a542f5da484aa",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "85cdc90864fd856e1e676d8806b4b8bd172b8a5f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a77147f46f329a53371cbdc3c3f96ac7e663087c4a285a686d8ca7c5ad8cbe70"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "bdef6a6691ff25ea27b65bc8a45cb4e2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.0.1.yaml",
+      "SPDXID": "SPDXRef-File-67869966d66c9a8a8b18b601a2e6ab45",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "454bc8500f2df388f11757010e7567233a62cab6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5f9b89e75aa2cfa75c0ff5c3909cd7562d7a26d56ca3c534b7a38cd75939b8be"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ed96e2627a30fe8d99656d092384baa8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.1.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-c9ccef5743618b1b7c32cb39916683d1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f85d00442fd4f9e4a7aee0202f283bffb49c310e"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c2fc254ad2acfd02a3baf5cc82752d4d627672d4dac14be2de06cefb8ecc2991"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5984d4266222d54362b651bff52006f2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.1.0.yaml",
+      "SPDXID": "SPDXRef-File-e855a6e27eb3d4e40aee65eb441648f2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0be18c0aae1e046ebf3cd2a9d30dc7878a523a0d"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a02616386327618bedb27602c0e79185b5198769737f0e9b5cb985b4d4aa02df"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "63c8965c710ae0afddecfb9b8e469582"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.10.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-82a8423c467ed5a887762d836a65c8cd",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a9d26c948176ecc7be2002fd312190c08599cbb5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "92dc3cfe08bedf1d3729c3fb8589d9d3f5c83d9ea117dc3ef851fc600e70ba84"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9cc007ada9b410bdc2633f264ee786e7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.10.0.yaml",
+      "SPDXID": "SPDXRef-File-d40171020ba2cd4c3f9a854b80a34f5e",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "c5e4afb82756aa0741643aad59f6ad4dccdec7b4"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "97807c60ba5a1dc77e1e3a9f426e3e93709fb64848c8d1585f713f03bd71cf73"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "9ffcb9c0ab308ef536ea027f3636aa00"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.11.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-960118b68556344e492c27e46293fc61",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0ef7bad7b736d6cb2f91adc3749a11534d969140"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c67981620c9e24069cac378d94c7c075b7509a7cc62141035993ce5f5415b481"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "130f5eacbf62c369c857912772e1ced4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.11.0.yaml",
+      "SPDXID": "SPDXRef-File-7489a5c070f076d0f8455659b833f7c0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "bfad2c8d786ac60c02ec0bf6b49fb8342f33e8c5"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f762b4ea938d5034dfbef36bc547bd24fa2eab9a251d23a4941131b432e42c81"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "89b24307a0808f938999475d93043eb4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.12.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-aefb18f32a4ec8c2a8912d95ca2721e6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fcc35847305c38375be96a4b5047d10961d94566"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5cca256c035f8b5a565225c2c682bad618bdcbfc7134df6a83ecf2953792735c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ae749d4ecb371dc59e614a87f2e913f9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.12.0.yaml",
+      "SPDXID": "SPDXRef-File-672a91fd01ce5e51a0f561c9bdf78f67",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "12139ac7474d20f793136e8a3e3c49bbf96e41a8"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "888dcf0208ee83bb859a0f95bd0267a6213069d202b3da0eff4afb80d23ba7aa"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ac466f67c26d8bdfd7a5be88bf5a8039"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.13.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-263eee03ddaa33e99c16d3de58f505c2",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "93a740635a85e2e077066929fcf632b437e8981f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4e67b0bdb6d872adf13273f0ba1d6145598d175f83ba7be659472cbb09d8f883"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "045e3fdb85af85c28c265d8e1a6cdd1f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.13.0.yaml",
+      "SPDXID": "SPDXRef-File-349f1cb9514e8a3c872f3a773186a088",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0c3f5e6c3427b0d6fc369b2559a68d9fff343837"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "22f5e8e571ec37dec69be948ce117a9ca82cbf133da178f90fb58ce1e74b26f9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "07bbf7843546462b93878288fe207f50"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.2.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-b4b207d064ac7b7a02fb8da5382c5be5",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "00e8662424d2b7f080e259887b8c7a25a49228d6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a3794e352ec7844de2ecd209991bbf6be8becc85510e5384bdc4e86102b71794"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5b3bbe1438ddf2f90f75afde3f0d6746"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.2.0.yaml",
+      "SPDXID": "SPDXRef-File-d3d03f343fe788c23b15ee075a48d0a3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "00dba5a96305d8e67f87dbdf88b40f754fbbbe15"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "87637f133754a2693594fe179e5a89c15ea1040061463ef7f1a0c675738075d1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "1c8e7ac6c5d6d422f932ef672a2d2211"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.3.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-34e969c3fc26936fc36c39cfe9aece93",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "73fe691c3396ee0746c9e00a54c8b567928c7562"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "70f955ec2d953d119cd775bfbf4573b18209e32ffb4b747a61248fd24306ff73"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "c39c33ef8359b7d9b268812d472a0e4c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.3.0.yaml",
+      "SPDXID": "SPDXRef-File-a31e07cda4fe5bb4ea74773ee04aaeaa",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3a5d5d6686a9dbf8b8f251369cdc285f73b16f92"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "20efb21f920732d2826f455ae0d5d4dd5a6b4209360288b299a3506b12e537b6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "5cc158b8f18d41b5cc95ed9f86ff2669"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.4.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-606d0504dc7e77340d923b618d0cf282",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1f19dab024be5bbf11eadcf11b2749f6e296f658"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "02a41e79fea4c6f1a109af84c8af1d9e16711955bd8ec7af258c8eb092cb1d6a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "8309c0cb1cbd613b3070f79798771a5e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.4.0.yaml",
+      "SPDXID": "SPDXRef-File-48a5e399690ffe431b513ce05157fb33",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "14a4667790bcc7a1876131ee437e9671e6f46dd6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b2252efe8eb15c81dba3cc721298a4163fbba981a7200031a5fcbe011c638d3e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "f41bb3389997154042c00557aaebca81"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.5.1-tags.yaml",
+      "SPDXID": "SPDXRef-File-eea99284cfb04e4642a266ca9d50e947",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f98fc0e90440acd59082df1fa24df7001a951788"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a3b56637f98897040992e2faf7ce55b5c5ba224cac4af2b6dbe1edfb653526e1"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0b2eda3acc9b68912f701bd4b82e9e2a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.5.1.yaml",
+      "SPDXID": "SPDXRef-File-00a18d56080133b11e0e92730bad56e8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a21111a83eb83aff6f47dff4a0806c0b9120d8b6"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "411d9b296d09ddf15dce6a27eb43a35c1da1d6f023c45fb0a6005259ee7be059"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "632deb4a38276f24ac38c0562f834faa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.6.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-05a3ec325473ecbee8a82c591532f12d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1403f0c2e2d81bd01a9226ffde3057ec6be397bd"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9b8a227ce3945aaef79d169936bad6d52610df5e2f9fd22e1109a92f98d282c9"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "ffafcca2e6220b89f68ad63f224348da"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.6.0.yaml",
+      "SPDXID": "SPDXRef-File-908018cd32487e3a9578122dcf1a9821",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0a37d4683a22764d375735a1f9a6036908ee8341"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4c86585b29fe367259c8443997524ef5b6b06fad818d4e699f8713265b535cef"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "205766dbaee5be0da4697b3c1e2eb4ac"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.6.1-tags.yaml",
+      "SPDXID": "SPDXRef-File-086ed4dd28a533652ad694553d29f88c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "6bdd3112723faf6eb6e9dcb8200de26084bd52d0"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bab36036d07ba47887c3c767e0957491a12be6a390b0c500c543cf99002a4b1a"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0a618d87ceb05ea10e6043659221c35a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.6.1.yaml",
+      "SPDXID": "SPDXRef-File-f144a125afd999fe88011f4d430cbe0f",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "391c9c2f93aa1045c30fb0cc68c3b467a3fde350"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "51b19f3538d780611b931d3529f8c6a3ae41895089c206689114ba6e21ce3808"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "0d46082084a3c3542fd357f31ac4188f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.7.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-6567d541990f15b8e43595c99ccad0f1",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "86e6ec9e3e14a1d22e9448c3e215a13d927cc366"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "85e49b2d8aa21e57c904054f3b5adbd50185c15a03a564ef882b926823d09b95"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dbddc6c1fe7eb9aa26e9512b60cdabab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.7.0.yaml",
+      "SPDXID": "SPDXRef-File-9d1f2e6006afddbe642ee2ac7fdc5ef3",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "50659d366586b44b533460e2e2176430192315d9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3b10e56bb069b822d77f350057a02324b44f45e4be143402f095de4c843a4a91"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "2ac398e6def5b5e70253a07cfc617b6b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.8.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-b199cd5005e5b0e860e1d8232560d92a",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1871d4ad6dfe70bf01de85d9b27d884917fd214f"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "30dc6b8486e0cbb20e5a49acac5ecacbb5cc5c5e694dcfb67ad5a963cb0e842d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "d1719580d88ed92e32d16dfe5f70fc2b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.8.0.yaml",
+      "SPDXID": "SPDXRef-File-63b98ac0bdf00a4b7f72b6a6e5ed2171",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "73c9b87e07368d100415df292894128fa2a57f18"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "efc26f308763fb29ad09ff6cc330226e38a77d18f93b432815dc28e1fac31b5c"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "20fd9251ab91e84d1ec400b81c706fea"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.9.0-tags.yaml",
+      "SPDXID": "SPDXRef-File-e3bc86f5b4d1117e1735e545bbe98608",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "938e8bfea33a749db922dee93013ad42981f76ba"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fc0d9c021e13ea7de173c083a1f81f66d5b653f7dd369ad56b013369576602c4"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "850b1ba7a648bbade46a7a3a76ad250f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\ansible-9.9.0.yaml",
+      "SPDXID": "SPDXRef-File-2daa96bcc6359c339972c7168e21f1ac",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3ee6c0e24b9b68bd9415cfdcfc4a6df4aaa61dea"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1a05efa822bf63889303729c7f26d8a8a354895475eaa77ef9705a5fb2d8d33d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "96e665956680aff030cf18223cff267c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\CHANGELOG-v9.md",
+      "SPDXID": "SPDXRef-File-c561236cb1ee17e40dbdef007a9a8956",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "aaf873bbe2bbfd4a9fb550576a18cc47da959212"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "909548f7445ed8b202e76368314aa97c1aeedbb7ce30a1ba4c05d583e4172ca6"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "576cd7803e1d2fffe1939f2f89f25b29"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\changelog.yaml",
+      "SPDXID": "SPDXRef-File-d768d4d7ff6a2aad773b46fb74df3091",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "1d5dae621bb2be54980bdd180147f1b2167bf775"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1bd14037790867dbc4b6f8fb949cf0b752672467343641051807e267bbac2fa2"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3b242e476c5257083a93406bf1e489cd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\collection-meta.yaml",
+      "SPDXID": "SPDXRef-File-7eca40e0062bc9c490672d65c118ba96",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "ab5a63f3e3cc648350b00f8816a6c0a01dfb31e2"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "79bbc0c4783e71c96548a6bd057005f63d9f2efa3a7193e22a1dbcbf11e6ff51"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "435d161029b9b9eebc7cce06461ecccd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "9\\galaxy-requirements.yaml",
+      "SPDXID": "SPDXRef-File-682752ced566b7d14aae3bb2340ba6b0",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "47996ee05bacbb72c69ed41b4cb2ba014384bd36"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8028312bf0deff2e77476cc994b4fbb3b2bf0276fea164e953dea3620fc0cb10"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "254ac0789b46cb1da1b026658759e3ea"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\automated-process.md",
+      "SPDXID": "SPDXRef-File-78f15879ea14dd6a52b8fe3baa5ef863",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "fc390f0fda2070593ca239078f176a28dbe871a1"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fa10f3e866b2d47c5c45a91230aaeee3b4a4888ca21361b9ffe0c00f39690ddb"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "87f897c89a88d2a33698bea15bce1ea4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\CONVENTIONS.md",
+      "SPDXID": "SPDXRef-File-523125a4e8781e7efde2c9d22d65c80d",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "929d87ca28807b40d3895d8a07fe4138b5b812c9"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c14251830ec30b300ae2e45ed565984b34a45fd0e443c03e9fd92ea17717029d"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "7720350312d5d69cb467b65c0487991c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\new-ansible.md",
+      "SPDXID": "SPDXRef-File-eb95494a2b42deea24f53664b22ec4f6",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "8e626bb85aacb850879c107dc26bf01de7da4554"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e8efdd1144aa117751942fa6a12e1ff28dff94e321208d5a62130619e4d50eb3"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "4eac557ee68a2d6b9a9e7fd0e1800b44"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\policies.md",
+      "SPDXID": "SPDXRef-File-f05f4e49bb44b9a6e9aea5b27efd6090",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "caa9866eb8de94d87986d16e27840bec7575c83b"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "77e9391b6f661d0e9293de31356b1bd8a5f452f4400e17273aa79923f784c0ce"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "34975f35600a0027acac29b08889d9d7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\README.md",
+      "SPDXID": "SPDXRef-File-5982ce580a70b1ecf21f07b96a737c0c",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "56ba1eeff10fc6bb5a9e2efe0fa53f119c3d2bba"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dbcc210d7f4962499db6d4cfa18658e26d05ee700c962a811cac911f095e22fd"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "3af88e2d5f99b5321c2ed95978e7bab3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "docs\\release-process.md",
+      "SPDXID": "SPDXRef-File-66594c481807277a6310a4a24b9dd2e8",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "d1f9d12a69e32f9c4915321e83ece53cbb7c7930"
+        },
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "71a5fcf8d2f973e6c947a0fa253c4d1782c53ec73f4ab2477d0e2e96a2cf624e"
+        },
+        {
+          "algorithm": "MD5",
+          "checksumValue": "dca5d3bb237925ba7e7b5e4787cf7e90"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-ansible-build-data",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ansible-build-data",
+      "relatedSpdxElement": "SPDXRef-Package-3d273138746b0811f4e91a27699dee93",
+      "relationshipType": "DEPENDS_ON"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ansible-build-data",
+      "relatedSpdxElement": "SPDXRef-Package-6093d6656c144e037bd78da36151de98",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}

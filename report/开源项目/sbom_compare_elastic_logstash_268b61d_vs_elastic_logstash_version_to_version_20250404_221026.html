@@ -1,0 +1,521 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 22:10:28</p>
+                <p>SBOM A: sample_data\elastic_logstash_268b61d.json</p>
+                <p>SBOM B: sample_data\elastic_logstash.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.3/10 (92.9%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.3/10.0 (92.9%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 重大版本变更, CII-Best-Practices风险, Token-Permissions风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.0%)</td>
+                    <td><ul class='details-list'><li>新增了2个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.4/3.5 (97.6%)</td>
+                    <td><ul class='details-list'><li>2个包发生主版本变更，可能存在API不兼容</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.9/1.3 (69.0%)</td>
+                    <td><ul class='details-list'><li>Branch-Protection需要改进</li><li>以下项目风险较高: CII-Best-Practices, Token-Permissions</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Token-Permissions风险</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>logstash-filter-one_no_dependencies</td><td>~> 0.1</td><td>NOASSERTION</td></tr><tr><td>logstash-filter-three_no_dependencies</td><td>~> 0.1</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>net.sf.jopt-simple:jopt-simple</td><td>4.6</td><td>5.0.4</td><td>主版本</td></tr><tr><td>logstash-core-plugin-api</td><td>>= 1.60</td><td>>= 2.1.12</td><td>无变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>2755</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>1683</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>145</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>1217</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>182</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (145)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共145个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>docs\reference\monitoring-with-elastic-agent.md</td></tr><tr><td>docs\reference\logstash-geoip-database-management.md</td></tr><tr><td>docs\reference\config-setting-files.md</td></tr><tr><td>docs\extend\java-filter-plugin.md</td></tr><tr><td>docs\reference\event-api.md</td></tr><tr><td>.buildkite\scripts\health-report-tests\tests\backpressure-5m.yaml</td></tr><tr><td>docs\reference\using-logstash-with-elastic-integrations.md</td></tr><tr><td>docs\reference\docker-config.md</td></tr><tr><td>docs\reference\logstash-to-logstash-communications.md</td></tr><tr><td>docs\reference\core-operations.md</td></tr><tr><td>docs\reference\dead-letter-queues.md</td></tr><tr><td>docs\reference\logstash-monitoring-ui.md</td></tr><tr><td>docs\reference\multiline.md</td></tr><tr><td>qa\integration\fixtures\plugins\generate-gems.sh</td></tr><tr><td>docs\reference\multiple-input-output-plugins.md</td></tr><tr><td>docs\reference\plugin-concepts.md</td></tr><tr><td>.pre-commit-config.yaml</td></tr><tr><td>.buildkite\scripts\benchmark\save-objects\README.md</td></tr><tr><td>docs\reference\logstash-settings-file.md</td></tr><tr><td>.buildkite\benchmark_marathon_pipeline.yml</td></tr><tr><td>docs\reference\use-filebeat-modules-kafka.md</td></tr><tr><td>.github\workflows\docs-build.yml</td></tr><tr><td>docs\reference\how-logstash-works.md</td></tr><tr><td>docs\extend\output-new-plugin.md</td></tr><tr><td>docs\reference\tuning-logstash.md</td></tr><tr><td>docs\release-notes\known-issues.md</td></tr><tr><td>docs\reference\performance-tuning.md</td></tr><tr><td>docs\reference\working-with-plugins.md</td></tr><tr><td>docs\reference\use-ingest-pipelines.md</td></tr><tr><td>docs\reference\monitoring-internal-collection-legacy.md</td></tr><tr><td>docs\reference\monitoring-with-metricbeat.md</td></tr><tr><td>.buildkite\scripts\benchmark\README.md</td></tr><tr><td>docs\extend\java-codec-plugin.md</td></tr><tr><td>docs\reference\index.md</td></tr><tr><td>docs\reference\memory-queue.md</td></tr><tr><td>docs\extend\filter-new-plugin.md</td></tr><tr><td>docs\reference\environment-variables.md</td></tr><tr><td>docs\extend\plugin-doc.md</td></tr><tr><td>ci\partition-files.lib.sh</td></tr><tr><td>docs\reference\logstash-centralized-pipeline-management.md</td></tr><tr><td>.github\workflows\docs-cleanup.yml</td></tr><tr><td>docs\reference\monitoring-logstash-with-elastic-agent.md</td></tr><tr><td>docs\reference\dashboard-monitoring-with-elastic-agent.md</td></tr><tr><td>docs\reference\upgrading-logstash.md</td></tr><tr><td>docs\reference\ls-to-ls-native.md</td></tr><tr><td>docs\reference\shutdown.md</td></tr><tr><td>docs\reference\processing.md</td></tr><tr><td>docs\reference\installing-logstash.md</td></tr><tr><td>docs\reference\toc.yml</td></tr><tr><td>docs\extend\community-maintainer.md</td></tr><tr><td>docs\reference\creating-logstash-pipeline.md</td></tr><tr><td>docs\extend\contribute-to-core.md</td></tr><tr><td>docs\extend\java-output-plugin.md</td></tr><tr><td>logstash-core\src\test\java\org\logstash\common\BufferedTokenizerExtTest.java</td></tr><tr><td>docs\reference\offline-plugins.md</td></tr><tr><td>docs\reference\multiple-pipelines.md</td></tr><tr><td>docs\reference\docker.md</td></tr><tr><td>logstash-core\src\test\java\org\logstash\settings\SettingNumericTest.java</td></tr><tr><td>docs\docset.yml</td></tr><tr><td>docs\static\spec\openapi\redocly.yaml</td></tr><tr><td>docs\extend\plugin-listing.md</td></tr><tr><td>logstash-core\src\main\java\org\logstash\settings\SettingString.java</td></tr><tr><td>docs\reference\running-logstash-kubernetes.md</td></tr><tr><td>docs\reference\secure-connection.md</td></tr><tr><td>docs\reference\running-logstash.md</td></tr><tr><td>docs\extend\index.md</td></tr><tr><td>logstash-core\src\main\java\org\logstash\settings\SettingNumeric.java</td></tr><tr><td>docs\reference\private-rubygem.md</td></tr><tr><td>docs\reference\ecs-ls.md</td></tr><tr><td>docs\extend\create-logstash-plugins.md</td></tr><tr><td>logstash-core\src\test\java\org\logstash\common\BufferedTokenizerExtWithSizeLimitTest.java</td></tr><tr><td>docs\reference\lookup-enrichment.md</td></tr><tr><td>.buildkite\scripts\health-report-tests\tests\multipipeline.yaml</td></tr><tr><td>docs\reference\logstash-pipeline-viewer.md</td></tr><tr><td>docs\reference\upgrading-minor-versions.md</td></tr><tr><td>docs\reference\managing-logstash.md</td></tr><tr><td>docs\reference\ls-to-ls-lumberjack.md</td></tr><tr><td>.github\dependabot.yml</td></tr><tr><td>.buildkite\scripts\benchmark\core.sh</td></tr><tr><td>docs\reference\tips-best-practices.md</td></tr><tr><td>docs\extend\toc.yml</td></tr><tr><td>docs\extend\input-new-plugin.md</td></tr><tr><td>docs\reference\upgrading-using-package-managers.md</td></tr><tr><td>docs\reference\performance-troubleshooting.md</td></tr><tr><td>logstash-core\src\main\java\org\logstash\settings\SettingNullableString.java</td></tr><tr><td>docs\reference\first-event.md</td></tr><tr><td>docs\reference\monitoring-logstash.md</td></tr><tr><td>docs\release-notes\index.md</td></tr><tr><td>docs\reference\jvm-settings.md</td></tr><tr><td>qa\integration\fixtures\update_spec.yml</td></tr><tr><td>docs\reference\keystore.md</td></tr><tr><td>docs\reference\configuring-geoip-database-management.md</td></tr><tr><td>docs\reference\running-logstash-command-line.md</td></tr><tr><td>.buildkite\scripts\health-report-tests\tests\backpressure-1m.yaml</td></tr><tr><td>logstash-core\src\test\java\org\logstash\settings\SettingStringTest.java</td></tr><tr><td>docs\reference\running-logstash-windows.md</td></tr><tr><td>docs\reference\working-with-winlogbeat-modules.md</td></tr><tr><td>docs\reference\configuring-centralized-pipelines.md</td></tr><tr><td>docs\reference\persistent-queues.md</td></tr><tr><td>docs\reference\glob-support.md</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (1217)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共1217个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>modules\netflow\configuration\kibana\7.x\visualization\ef7699a0-6719-11e7-b5b8-29fbded8e37c.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\7.x\index-pattern\azure.json</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\visualization\26e166f0-2fe2-11e7-9d02-3f49bde5c1d5.json</td></tr><tr><td>x-pack\spec\modules\azure\samples\activity_log\administrative3.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\d07a2870-2fcc-11e7-9bae-a35d2fe38fc2.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\8a52f7a0-2fc7-11e7-8936-6f5fd5520124.json</td></tr><tr><td>tools\ingest-converter\src\main\java\org\logstash\ingest\IngestAppend.java</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\6.x\visualization\eafc2880-0850-11e8-93e5-299e2b5c963a.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\6.x\index-pattern\azure.json</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\dashboard\a932b600-2fd2-11e7-99ed-49759aed30f5.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\cd462cc0-3e55-11e7-96c4-0d3a291ec93a.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\8bdaafe0-454e-11e7-86b6-95298e9da6dc.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\35ce1310-3989-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\16438600-2fcb-11e7-befb-31e033c79e4e.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\d6d526f0-395b-11e7-ae19-21fb91585845.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\7.x\dashboard\9adef750-08b0-11e8-93e5-299e2b5c963a.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\99382ab0-6555-11e7-8d48-19b0c51bbbbd.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\91ae4100-6288-11e7-bcd8-a16ef1d32773.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\3026fe40-658f-11e7-bfc3-d74b7bb89482.json</td></tr><tr><td>modules\fb_apache\configuration\kibana\dashboard\Filebeat-Apache2-Dashboard.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\1026edb0-2fcc-11e7-842d-39925ea8ac40.json</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\dashboard\04157d70-6591-11e7-bfc3-d74b7bb89482.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\bfec6260-6592-11e7-9bf4-ed832088be20.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\73c37440-658e-11e7-bfc3-d74b7bb89482.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\8d2cb120-6233-11e7-aa4b-5f8c56ec33b8.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\8f8d6230-454f-11e7-86b6-95298e9da6dc.json</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\visualization\326fae40-671a-11e7-b5b8-29fbded8e37c.json</td></tr><tr><td>modules\fb_apache\configuration\kibana\visualization\Apache2-response-codes-of-top-URLs.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\search\7a2fc9c0-454d-11e7-86b6-95298e9da6dc.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\ebfd45a0-75a4-11e7-b440-f1d91dc5774d.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\7e9a7980-622e-11e7-b0a5-e9bda2f6d168.json</td></tr><tr><td>logstash-core\lib\logstash\config\source\modules.rb</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\264fb270-2fdb-11e7-84e6-333bd21ad9fd.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\45387480-3989-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\2c9567c0-6289-11e7-bcd8-a16ef1d32773.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\00248240-6593-11e7-b8de-af19b696fa44.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\9de87d40-3e4e-11e7-af78-9fc514b4e118.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\3ee07620-6556-11e7-995a-3584c2c6482c.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\161e27e0-3988-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\7.x\visualization\381c5ad0-120c-11e8-8c94-a3d8d0cfd62b.json</td></tr><tr><td>logstash-core\spec\logstash\elasticsearch_client_spec.rb</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\dashboard\netflow.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\d72d7940-7529-11e7-9445-91c40765092f.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\16438600-2fcb-11e7-befb-31e033c79e4e.json</td></tr><tr><td>modules\netflow\configuration\elasticsearch\netflow.json</td></tr><tr><td>x-pack\spec\modules\azure\samples\yaml\logstash.basic_invalid1.yml</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\3026fe40-658f-11e7-bfc3-d74b7bb89482.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\bfa45650-3e55-11e7-96c4-0d3a291ec93a.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\search\6315e7a0-34be-11e7-95dc-4f6090d732f6.json</td></tr><tr><td>x-pack\spec\modules\azure\samples\yaml\logstash.basic.yml</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\4ee62420-7523-11e7-871d-5f0fb978413c.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\2b369910-4553-11e7-83ea-67cb6920446d.json</td></tr><tr><td>tools\ingest-converter\src\main\java\org\logstash\ingest\IngestGeoIp.java</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\801fff70-395a-11e7-ae19-21fb91585845.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\ac4cbc90-622d-11e7-b0a5-e9bda2f6d168.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\23d6dc80-2fd6-11e7-bc99-41245d9394f2.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\fd081e50-6556-11e7-be5f-c5cca8dd73b6.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\3ee07620-6556-11e7-995a-3584c2c6482c.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\1418ce10-6592-11e7-bfc3-d74b7bb89482.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\45387480-3989-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>x-pack\spec\modules\azure\samples\activity_log\auto_scale1.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\6.x\visualization\68bd4dd0-0851-11e8-93e5-299e2b5c963a.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\bb8e3d90-2fca-11e7-9fcf-99b4b8159f98.json</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\visualization\3fa5f6f0-2fca-11e7-ab32-99f279b941ef.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\ad802c10-3973-11e7-ae19-21fb91585845.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\8cda1c30-752a-11e7-9445-91c40765092f.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\6.x\visualization\820e7fb0-11f8-11e8-8c94-a3d8d0cfd62b.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\4cf91f90-3d5c-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\7.x\visualization\23e31d20-1215-11e8-8c94-a3d8d0cfd62b.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\39e3dab0-2fcb-11e7-befb-31e033c79e4e.json</td></tr><tr><td>tools\ingest-converter\src\test\resources\org\logstash\ingest\ingestDateExtraFields.json</td></tr><tr><td>x-pack\modules\README.md</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\9e4c5ca0-76cc-11e7-9fc0-830beaf5fb4b.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\4f3525d0-2fc7-11e7-8936-6f5fd5520124.json</td></tr><tr><td>tools\ingest-converter\src\test\resources\org\logstash\ingest\ingestSet.json</td></tr><tr><td>tools\ingest-converter\src\test\resources\org\logstash\ingest\ingestConvertString.json</td></tr><tr><td>modules\netflow\configuration\kibana\5.x\visualization\b3e2af90-657b-11e7-8471-e5432f50acbd.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\5.x\visualization\93531890-4556-11e7-83ea-67cb6920446d.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\2c9567c0-6289-11e7-bcd8-a16ef1d32773.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\87dbc0a0-657e-11e7-99b6-af4533b21b46.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\cc8affd0-3e65-11e7-899c-f940f646009b.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\4ff86ee0-4549-11e7-86b6-95298e9da6dc.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\f99c22e0-3e4e-11e7-96c4-0d3a291ec93a.json</td></tr><tr><td>tools\ingest-converter\src\test\java\org\logstash\ingest\DateTest.java</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\ddef4fc0-3e55-11e7-96c4-0d3a291ec93a.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\4cf91f90-3d5c-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\d297fe60-2fd7-11e7-af27-99e728e71e91.json</td></tr><tr><td>modules\netflow\configuration\kibana\6.x\visualization\69f864d0-2fd7-11e7-97a8-85d8d5a99269.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\08ee04d0-4556-11e7-83ea-67cb6920446d.json</td></tr><tr><td>tools\ingest-converter\src\test\resources\org\logstash\ingest\ingestComplexCase3.json</td></tr><tr><td>x-pack\spec\modules\azure\samples\sql_diagnostics\sql_insights.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\6.x\visualization\74680350-1382-11e8-8c94-a3d8d0cfd62b.json</td></tr><tr><td>modules\netflow\configuration\kibana\7.x\visualization\a8eadac0-658c-11e7-bfc3-d74b7bb89482.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\47c2a140-454f-11e7-86b6-95298e9da6dc.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\a13402f0-6557-11e7-a3eb-4b30743c9370.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\6.x\visualization\a8ce0ef0-4556-11e7-83ea-67cb6920446d.json</td></tr><tr><td>x-pack\modules\arcsight\configuration\kibana\7.x\visualization\ed2f5570-3d5b-11e7-8b9d-ddc45b5f6d00.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\7.x\visualization\849be630-0985-11e8-93e5-299e2b5c963a.json</td></tr><tr><td>x-pack\modules\azure\configuration\kibana\7.x\visualization\1c509130-0853-11e8-93e5-299e2b5c963a.json</td></tr><tr><td>modules\netflow\configuration\kibana\visualization\ef7699a0-6719-11e7-b5b8-29fbded8e37c.json</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (182)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>qa\rspec\commands.rb</td><td>内容变更</td></tr><tr><td>.buildkite\snyk_report_pipeline.yml</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\secret\cli\Terminal.java</td><td>内容变更</td></tr><tr><td>ci\docker_acceptance_tests.sh</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\monitoring\persisted_queue_is_enabled_spec.rb</td><td>内容变更</td></tr><tr><td>lib\bootstrap\bundler.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\Event.java</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\jackson\StreamReadConstraintsUtil.java</td><td>内容变更</td></tr><tr><td>x-pack\lib\x-pack\logstash_registry.rb</td><td>内容变更</td></tr><tr><td>logstash-core\locales\en.yml</td><td>内容变更</td></tr><tr><td>ci\integration_tests.sh</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\benchmark\main.sh</td><td>内容变更</td></tr><tr><td>qa\integration\specs\cli\install_spec.rb</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\generate.rb</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\util.rb</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\webserver_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\test\java\org\logstash\ObjectMappersTest.java</td><td>内容变更</td></tr><tr><td>ci\serverless\es_output_tests.sh</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\runner_spec.rb</td><td>内容变更</td></tr><tr><td>versions.yml</td><td>内容变更</td></tr><tr><td>bin\logstash.lib.sh</td><td>内容变更</td></tr><tr><td>ci\serverless\common.sh</td><td>内容变更</td></tr><tr><td>ci\serverless\cpm_tests.sh</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\persisted_queue_config_validator.rb</td><td>内容变更</td></tr><tr><td>NOTICE.TXT</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\queue_factory_spec.rb</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\test-failure.md</td><td>内容变更</td></tr><tr><td>x-pack\spec\monitoring\pipeline_register_hook_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\util\settings_helper.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\common\vm-images.json</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\benchmark\config\logstash.yml</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\remove.rb</td><td>内容变更</td></tr><tr><td>.buildkite\pull_request_pipeline.yml</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\support\shared_examples.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\test\java\org\logstash\plugins\pipeline\PipelineBusTest.java</td><td>内容变更</td></tr><tr><td>spec\spec_helper.rb</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\install.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\StringInterpolation.java</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\common\Util.java</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\settings\nullable_spec.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\scenario_executor.py</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\setup_java.sh</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>qa\rspec\commands\base.rb</td><td>内容变更</td></tr><tr><td>qa\docker\shared_examples\container.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\config\source_loader.rb</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\install.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\plugins\registry.rb</td><td>内容变更</td></tr><tr><td>spec\unit\plugin_manager\update_spec.rb</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\integration_plugin.rb</td><td>内容变更</td></tr><tr><td>x-pack\spec\config_management\elasticsearch_source_spec.rb</td><td>内容变更</td></tr><tr><td>x-pack\lib\config_management\elasticsearch_source.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\dra\generatesteps.py</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\remove.rb</td><td>内容变更</td></tr><tr><td>qa\integration\specs\secret_store_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\benchmarks\src\main\java\org\logstash\benchmark\BufferedTokenizerExtBenchmark.java</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\monitoring\no_ssl_create_monitoring_indexes_spec.rb</td><td>内容变更</td></tr><tr><td>x-pack\lib\geoip_database_management\extension.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\dra\build_packages.sh</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\settings.rb</td><td>内容变更</td></tr><tr><td>qa\integration\framework\settings.rb</td><td>内容变更</td></tr><tr><td>x-pack\lib\config_management\hooks.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\test\java\org\logstash\settings\BooleanTest.java</td><td>内容变更</td></tr><tr><td>x-pack\spec\config_management\bootstrap_check_spec.rb</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\update.rb</td><td>内容变更</td></tr><tr><td>x-pack\lib\monitoring\internal_pipeline_source.rb</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\settings\numeric_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\util\buftok_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\settings\SettingWithDeprecatedAlias.java</td><td>内容变更</td></tr><tr><td>x-pack\lib\config_management\bootstrap_check.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\util\JavaVersion.java</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\config\source\multi_local.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\exhaustive-tests\generate-steps.py</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\config_validator.py</td><td>内容变更</td></tr><tr><td>tools\jvm-options-parser\src\main\java\org\logstash\launchers\JavaVersion.java</td><td>内容变更</td></tr><tr><td>ci\logstash_releases.json</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\templates\output-plugin\README.md</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\config\source\base.rb</td><td>内容变更</td></tr><tr><td>.github\workflows\version_bumps.yml</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\plugins\registry_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\java_pipeline.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\jdk-matrix-tests\generate-steps.py</td><td>内容变更</td></tr><tr><td>x-pack\lib\config_management\extension.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\execution\AbstractPipelineExt.java</td><td>内容变更</td></tr><tr><td>qa\integration\fixtures\beats_input_spec.yml</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\main.sh</td><td>内容变更</td></tr><tr><td>tools\jvm-options-parser\src\main\java\org\logstash\launchers\JvmOptionsParser.java</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\api\commands\default_metadata.rb</td><td>内容变更</td></tr><tr><td>qa\integration\specs\dlq_spec.rb</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\monitoring\multiple_host_defined_spec.rb</td><td>内容变更</td></tr><tr><td>x-pack\spec\helpers\elasticsearch_options_spec.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\dra\build_docker.sh</td><td>内容变更</td></tr><tr><td>x-pack\spec\config_management\extension_spec.rb</td><td>内容变更</td></tr><tr><td>ci\serverless\kibana_api_tests.sh</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\settings_spec.rb</td><td>内容变更</td></tr><tr><td>qa\docker\spec\full\container_spec.rb</td><td>内容变更</td></tr><tr><td>qa\integration\specs\logstash_to_logstash_spec.rb</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\templates\input-plugin\README.md</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\monitoring\es_documents_structure_validation_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\config\source\local_spec.rb</td><td>内容变更</td></tr><tr><td>spec\unit\plugin_manager\proxy_support_spec.rb</td><td>内容变更</td></tr><tr><td>tools\dependencies-report\src\test\resources\expectedNoticeOutput.txt</td><td>内容变更</td></tr><tr><td>logstash-core\src\test\java\org\logstash\EventTest.java</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\management\multiple_pipelines_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\dependency_report.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\common\check-files-changed.sh</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\persisted_queue_config_validator_spec.rb</td><td>内容变更</td></tr><tr><td>docker\data\logstash\config\logstash-oss.yml</td><td>内容变更</td></tr><tr><td>.github\workflows\add-docs-preview-link.yml</td><td>内容变更</td></tr><tr><td>.fossa.yml</td><td>内容变更</td></tr><tr><td>.buildkite\windows_jdk_matrix_pipeline.yml</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\util\EscapeHandler.java</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\gemfile.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\common\trigger-pipeline-generate-steps.sh</td><td>内容变更</td></tr><tr><td>ci\serverless\metricbeat_monitoring_tests.sh</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\list.rb</td><td>内容变更</td></tr><tr><td>qa\integration\fixtures\logstash_to_logstash_spec.yml</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\pipeline_action\reload_spec.rb</td><td>内容变更</td></tr><tr><td>.buildkite\aarch64_pipeline.yml</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\environment.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\snyk\report.sh</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\bundler\logstash_uninstall.rb</td><td>内容变更</td></tr><tr><td>ci\serverless\monitoring_tests.sh</td><td>内容变更</td></tr><tr><td>qa\integration\specs\beats_input_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\settings\BaseSetting.java</td><td>内容变更</td></tr><tr><td>tools\release\generate_release_notes.rb</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\config\mixin_spec.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\dra\publish.sh</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\api\commands\default_metadata_spec.rb</td><td>内容变更</td></tr><tr><td>qa\integration\services\logstash_service.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\dra\common.sh</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\plugins\pipeline\PipelineBus.java</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\templates\filter-plugin\README.md</td><td>内容变更</td></tr><tr><td>qa\acceptance\spec\shared_examples\cli\logstash-plugin\uninstall.rb</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\support\helpers.rb</td><td>内容变更</td></tr><tr><td>qa\integration\fixtures\persistent_queues\logstash.yml</td><td>内容变更</td></tr><tr><td>qa\docker\spec\spec_helper.rb</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\list.rb</td><td>内容变更</td></tr><tr><td>.buildkite\pull-requests.json</td><td>内容变更</td></tr><tr><td>qa\integration\services\monitoring_api.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\tests\slow-start.yaml</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\tests\abnormal-termination.yaml</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\command.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\config\source\local.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\ackedqueue\Queue.java</td><td>内容变更</td></tr><tr><td>tools\dependencies-report\src\test\resources\expectedOutput.txt</td><td>内容变更</td></tr><tr><td>x-pack\qa\integration\monitoring\direct_shipping_spec.rb</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\templates\codec-plugin\README.md</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\config\mixin.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\runner.rb</td><td>内容变更</td></tr><tr><td>x-pack\spec\config_management\hooks_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\lib\logstash\api\commands\stats.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\benchmark\util.sh</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\tests\normal-termination.yaml</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\settings\string_spec.rb</td><td>内容变更</td></tr><tr><td>qa\integration\specs\cli\remove_spec.rb</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\config\ir\PipelineConfig.java</td><td>内容变更</td></tr><tr><td>.buildkite\linux_jdk_matrix_pipeline.yml</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\update.rb</td><td>内容变更</td></tr><tr><td>lib\bootstrap\patches\jar_dependencies.rb</td><td>内容变更</td></tr><tr><td>catalog-info.yaml</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\bootstrap.py</td><td>内容变更</td></tr><tr><td>qa\docker\spec\oss\container_spec.rb</td><td>内容变更</td></tr><tr><td>x-pack\lib\monitoring\monitoring.rb</td><td>内容变更</td></tr><tr><td>x-pack\lib\helpers\elasticsearch_options.rb</td><td>内容变更</td></tr><tr><td>docker\data\logstash\env2yaml\env2yaml.go</td><td>内容变更</td></tr><tr><td>logstash-core\src\test\java\org\logstash\StringInterpolationTest.java</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\plugins\AliasRegistry.java</td><td>内容变更</td></tr><tr><td>lib\pluginmanager\proxy_support.rb</td><td>内容变更</td></tr><tr><td>qa\docker\shared_examples\image_metadata.rb</td><td>内容变更</td></tr><tr><td>config\logstash.yml</td><td>内容变更</td></tr><tr><td>spec\unit\bootstrap\bundler_spec.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\snyk\resolve_stack_version.sh</td><td>内容变更</td></tr><tr><td>ci\serverless\elastic_integration_filter_tests.sh</td><td>内容变更</td></tr><tr><td>logstash-core\src\main\java\org\logstash\common\BufferedTokenizerExt.java</td><td>内容变更</td></tr><tr><td>qa\integration\specs\reserved_tags_field_spec.rb</td><td>内容变更</td></tr><tr><td>docker\data\logstash\config\logstash-full.yml</td><td>内容变更</td></tr><tr><td>logstash-core\spec\logstash\settings\setting_with_deprecated_alias_spec.rb</td><td>内容变更</td></tr><tr><td>.buildkite\scripts\health-report-tests\main.py</td><td>内容变更</td></tr><tr><td>logstash-core\src\test\java\org\logstash\jackson\StreamReadConstraintsUtilTest.java</td><td>内容变更</td></tr><tr><td>rakelib\plugins-metadata.json</td><td>内容变更</td></tr><tr><td>.buildkite\dra_pipeline.yml</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

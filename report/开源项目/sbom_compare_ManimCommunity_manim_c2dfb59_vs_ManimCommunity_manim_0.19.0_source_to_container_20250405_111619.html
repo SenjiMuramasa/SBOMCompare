@@ -1,0 +1,646 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 11:16:30</p>
+                <p>SBOM A: sample_data\ManimCommunity_manim_c2dfb59.json</p>
+                <p>SBOM B: sample_data\ManimCommunity_manim_0.19.0.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.0/10 (89.5%) [A]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链源代码到容器的端到端安全评分为 9.0/10.0 (89.5%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：端到端缺失依赖, CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">2.7/3.1 (85.6%)</td>
+                    <td><ul class='details-list'><li>源代码中定义但容器中缺少8个包</li></ul><div class='impact-factors'><strong>影响因素:</strong> 端到端缺失依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">1.8/1.8 (98.5%)</td>
+                    <td><ul class='details-list'><li>1个包发生其他版本变更</li><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">1.4/1.4 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.3/2.3 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.8/1.4 (59.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-44cc-43rp-5947 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-44cc-43rp-5947</li><li>- Warn: Project is vulnerable to: PYSEC-2021-130 / GHSA-4952-p58q-6crx (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-130 / GHSA-4952-p58q-6crx</li><li>- Warn: Project is vulnerable to: GHSA-9q39-rmj3-p4r2 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9q39-rmj3-p4r2</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (3)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-44cc-43rp-5947</td>
+                            <td>### Impact<br>Users of JupyterLab who click on a malicious link may get their `Authorization` and `XSRFToken` tokens exposed to a third party when running an older `jupyter-server` version.<br><br>### Patches<br>JupyterLab 4.1.0b2, 4.0.11, and 3.6.7 were patched.<br><br>### Workarounds<br>No workaround has been identified, however users should ensure to upgrade `jupyter-server` to version 2.7.2 or newer which includes a redirect vulnerability fix.<br><br>### References<br><br>Vulnerability reported by user @davwwwx via the [bug bounty program](https://app.intigriti.com/programs/jupyter/jupyter/detail) [sponsored by the European Commission](https://commission.europa.eu/news/european-commissions-open-source-programme-office-starts-bug-bounties-2022-01-19_en) and hosted on the [Intigriti platform](https://www.intigriti.com/).<br><br><br><div class="section-header">相关漏洞ID: </div><br>BIT-jupyter-base-notebook-2024-22421<br>BIT-jupyter-notebook-2024-22421<br>BIT-jupyterlab-2024-22421<br>CVE-2024-22421<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-44cc-43rp-5947</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-22421</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/19bd9b96cb2e77170a67e43121637d0b5619e8c6</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/1ef7a4fa0202ebdf663e1cc0b45c8813a34a0b96</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/fccd83dc4441da0384ee3fd1322c3b2d9ad4caaa</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UQJKNRDRFMKGVRIYNNN6CKMNJDNYWO2H</span><br><br><div class="section-header">影响范围: </div><br>jupyterlab: &gt;= 4.0.0 &lt; 4.0.11 <br>jupyterlab: 所有版本 &lt; 3.6.7 <br>notebook: &gt;= 7.0.0 &lt; 7.0.7 <br><br><br><div class="cve-header">来自 CVE-2024-22421 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9q39-rmj3-p4r2</td>
+                            <td>### Impact<br><br>The vulnerability depends on user interaction by opening a malicious notebook with Markdown cells, or Markdown file using JupyterLab preview feature.<br><br>A malicious user can access any data that the attacked user has access to as well as perform arbitrary requests acting as the attacked user.<br><br>### Patches<br><br>JupyterLab v3.6.8, v4.2.5 and Jupyter Notebook v7.2.2 were patched.<br><br>### Workarounds<br><br>There is no workaround for the underlying DOM Clobbering susceptibility. However, select plugins can be disabled on deployments which cannot update in a timely fashion to minimise the risk. These are:<br>`@jupyterlab/mathjax-extension:plugin` - users will loose ability to preview mathematical equations <br>`@jupyterlab/markdownviewer-extension:plugin` - users will loose ability to open Markdown previews<br>`@jupyterlab/mathjax2-extension:plugin` (if installed with optional `jupyterlab-mathjax2` package) - an older version of the mathjax plugin for JupyterLab 4.x<br><br>To disable these extensions run:<br><br>```bash<br>jupyter labextension disable @jupyterlab/markdownviewer-extension:plugin<br>jupyter labextension disable @jupyterlab/mathjax-extension:plugin<br>jupyter labextension disable @jupyterlab/mathjax2-extension:plugin<br>```<br><br>To confirm that the plugins were disabled run:<br><br>```bash<br>jupyter labextension list<br>```<br><br>### References<br><br>None<br><br>### Notes<br><br>This change has a potential to break rendering of some markdown. There is a setting in Sanitizer which allows to revert to the previous sanitizer settings (`allowNamedProperties`).<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-jupyter-base-notebook-2024-43805<br>BIT-jupyter-notebook-2024-43805<br>BIT-jupyterlab-2024-43805<br>CVE-2024-43805<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-9q39-rmj3-p4r2</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43805</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/06ad9de836f155add7d3d651ef936cc4c5ea8093</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/88e24baac551196f9cb3de16bd060a7ab1597674</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab</span><br><br><div class="section-header">影响范围: </div><br>jupyterlab: 所有版本 &lt; 3.6.8 <br>notebook: &gt;= 7.0.0 &lt; 7.2.2 <br>jupyterlab: &gt;= 4.0.0 &lt; 4.2.5 <br><br><br><div class="cve-header">来自 CVE-2024-43805 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-130 / GHSA-4952-p58q-6crx</td>
+                            <td>JupyterLab is a user interface for Project Jupyter which will eventually replace the classic Jupyter Notebook. In affected versions untrusted notebook can execute code on load. In particular JupyterLab doesn’t sanitize the action attribute of html `&amp;lt;form&amp;gt;`. Using this it is possible to trigger the form validation outside of the form itself. This is a remote code execution, but requires user action to open a notebook.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-jupyterlab-2021-32797<br>CVE-2021-32797<br>GHSA-4952-p58q-6crx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed</span><br><span class="vuln-link">https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx</span><br><br><div class="section-header">影响范围: </div><br>jupyterlab: 所有版本 &lt; 504825938c0abfa2fb8ff8d529308830a5ae42ed <br>jupyterlab: 所有版本 &lt; 1.2.21 &gt;= 2 &lt; 2.2.10 &gt;= 2.3 &lt; 2.3.2 &gt;= 3 &lt; 3.0.17 &gt;= 3.1 &lt; 3.1.4 <br><br><br><div class="cve-header">来自 CVE-2021-32797 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (8)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>sphinxext-opengraph</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>furo</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>sphinxcontrib-programoutput</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>sphinx-reredirects</td><td>NOASSERTION</td><td>BSD License</td></tr><tr><td>sphinx-copybutton</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>sphinx-design</td><td>NOASSERTION</td><td>MIT License</td></tr><tr><td>sphinx</td><td>>=7.3</td><td>NOASSERTION</td></tr><tr><td>myst-parser</td><td>NOASSERTION</td><td>MIT License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>jupyterlab</td><td>NOASSERTION</td><td>>=3.0.0</td><td>一般变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (4)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>jupyterlab</td>
+                            <td class="vuln-high">GHSA-44cc-43rp-5947<br>关联CVE: CVE-2024-22421</td>
+                            <td>具体受影响版本: 4.0.0, 4.0.1, 4.0.10, 4.0.2, 4.0.3, 4.0.4, 4.0.5, 4.0.6, 4.0.7, 4.0.8, 4.0.9&lt;br&gt;具体受影响版本: 0.0.1, 0.0.10, 0.0.13, 0.0.2, 0.0.3, 0.0.4, 0.0.5, 0.0.6, 0.0.7, 0.0.8, 0.0.9, 0.1.1, 0.1.2, 0.10.0, 0.11.0, 0.11.1, 0.11.2, 0.11.3, 0.12.0, 0.12.1, 0.13.0, 0.13.1, 0.13.2, 0.14.0, 0.15.0, 0.15.1, 0.16.0, 0.16.2, 0.17.0, 0.17.1, 0.17.2, 0.17.4, 0.17.5, 0.18.0, 0.18.0.dev1, 0.18.1, 0.19.0, 0.2.0, 0.20.0, 0.20.0rc1, 0.20.1, 0.20.2, 0.20.3, 0.20.4, 0.21.0, 0.21.0rc1, 0.21.0rc2, 0.21.0rc3, 0.21.0rc4, 0.21.0rc5, 0.22.0, 0.22.0rc0, 0.22.1, 0.23.0, 0.23.0rc0, 0.23.0rc1, 0.23.1, 0.23.2, 0.24.0, 0.24.0rc0, 0.24.0rc1, 0.24.0rc2, 0.24.1, 0.25.0, 0.25.0rc0, 0.25.0rc1, 0.25.1, 0.25.2, 0.25.2rc0, 0.26.0, 0.26.0rc0, 0.26.0rc1, 0.26.1, 0.26.2, 0.26.3, 0.26.4, 0.26.5, 0.27.0, 0.27.0rc0, 0.27.0rc1, 0.27.0rc2, 0.27.0rc3, 0.27.0rc4, 0.27.0rc5, 0.27.1, 0.27.2, 0.28.0, 0.28.0rc0, 0.28.0rc1, 0.28.0rc2, 0.28.0rc3, 0.28.1, 0.28.10, 0.28.11, 0.28.12, 0.28.13, 0.28.14, 0.28.15, 0.28.2, 0.28.3, 0.28.4, 0.28.5, 0.28.6, 0.28.7, 0.28.8, 0.29.0, 0.29.0rc0, 0.29.1, 0.29.2, 0.3.0, 0.30.0, 0.30.0rc0, 0.30.0rc1, 0.30.1, 0.30.2, 0.30.3, 0.30.4, 0.30.5, 0.30.6, 0.31.0, 0.31.0rc0, 0.31.0rc1, 0.31.0rc2, 0.31.1, 0.31.10, 0.31.11, 0.31.12, 0.31.2, 0.31.3, 0.31.4, 0.31.5, 0.31.6, 0.31.7, 0.31.8, 0.31.9, 0.32.0, 0.32.0rc0, 0.32.0rc1, 0.32.1, 0.33.0, 0.33.0rc0, 0.33.0rc1, 0.33.1, 0.33.10, 0.33.11, 0.33.12, 0.33.2, 0.33.3, 0.33.4, 0.33.5, 0.33.6, 0.33.7, 0.33.8, 0.33.9, 0.34.0, 0.34.0rc0, 0.34.0rc1, 0.34.0rc2, 0.34.1, 0.34.10, 0.34.11, 0.34.12, 0.34.2, 0.34.3, 0.34.4, 0.34.5, 0.34.6, 0.34.7, 0.34.8, 0.34.9, 0.35.0, 0.35.0rc0, 0.35.0rc1, 0.35.0rc2, 0.35.1, 0.35.2, 0.35.3, 0.35.4, 0.35.5, 0.35.6, 0.4.0, 0.4.1, 0.5.0, 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.9.1, 1.0.0, 1.0.0a0, 1.0.0a1, 1.0.0a10, 1.0.0a2, 1.0.0a3, 1.0.0a4, 1.0.0a5, 1.0.0a6, 1.0.0a7, 1.0.0a8, 1.0.0a9, 1.0.0rc0, 1.0.0rc1, 1.0.1, 1.0.10, 1.0.2, 1.0.3, 1.0.4, 1.0.5, 1.0.6, 1.0.7, 1.0.9, 1.1.0, 1.1.0a0, 1.1.0a1, 1.1.0a2, 1.1.0rc0, 1.1.1, 1.1.2, 1.1.3, 1.1.4, 1.1.5, 1.2.0, 1.2.0a0, 1.2.0a1, 1.2.0a2, 1.2.0a3, 1.2.0rc0, 1.2.1, 1.2.10, 1.2.11, 1.2.12, 1.2.13, 1.2.14, 1.2.15, 1.2.16, 1.2.17, 1.2.18, 1.2.19, 1.2.2, 1.2.20, 1.2.21, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.2.7, 1.2.8, 1.2.9, 2.0.0, 2.0.0a0, 2.0.0a1, 2.0.0a3, 2.0.0a4, 2.0.0b1, 2.0.0b2, 2.0.0b3, 2.0.0rc0, 2.0.0rc1, 2.0.0rc2, 2.0.1, 2.0.1rc0, 2.0.2, 2.1.0, 2.1.0a0, 2.1.0b0, 2.1.0rc0, 2.1.1, 2.1.2, 2.1.3, 2.1.4, 2.1.5, 2.2.0, 2.2.0a0, 2.2.0a1, 2.2.0rc1, 2.2.1, 2.2.10, 2.2.2, 2.2.4, 2.2.5, 2.2.6, 2.2.7, 2.2.8, 2.2.9, 2.3.0, 2.3.0a0, 2.3.0a1, 2.3.0a2, 2.3.0rc0, 2.3.1, 2.3.2, 3.0.0, 3.0.0a0, 3.0.0a10, 3.0.0a11, 3.0.0a12, 3.0.0a13, 3.0.0a14, 3.0.0a3, 3.0.0a4, 3.0.0a5, 3.0.0a6, 3.0.0a7, 3.0.0a8, 3.0.0a9, 3.0.0b1, 3.0.0b2, 3.0.0b3, 3.0.0b4, 3.0.0b6, 3.0.0b7, 3.0.0b8, 3.0.0rc0, 3.0.0rc1, 3.0.0rc10, 3.0.0rc11, 3.0.0rc12, 3.0.0rc13, 3.0.0rc14, 3.0.0rc15, 3.0.0rc2, 3.0.0rc3, 3.0.0rc4, 3.0.0rc5, 3.0.0rc6, 3.0.0rc7, 3.0.0rc8, 3.0.0rc9, 3.0.1, 3.0.10, 3.0.11, 3.0.12, 3.0.13, 3.0.14, 3.0.15, 3.0.16, 3.0.17, 3.0.18, 3.0.2, 3.0.3, 3.0.4, 3.0.5, 3.0.6, 3.0.7, 3.0.8, 3.0.9, 3.1.0, 3.1.0a0, 3.1.0a1, 3.1.0a10, 3.1.0a11, 3.1.0a12, 3.1.0a13, 3.1.0a2, 3.1.0a3, 3.1.0a4, 3.1.0a5, 3.1.0a6, 3.1.0a7, 3.1.0a8, 3.1.0a9, 3.1.0b0, 3.1.0b1, 3.1.0rc1, 3.1.0rc2, 3.1.1, 3.1.10, 3.1.11, 3.1.12, 3.1.13, 3.1.14, 3.1.16, 3.1.17, 3.1.18, 3.1.19, 3.1.2, 3.1.4, 3.1.6, 3.1.7, 3.1.8, 3.1.9, 3.2.0, 3.2.0a0, 3.2.0a1, 3.2.0b0, 3.2.0rc0, 3.2.1, 3.2.2, 3.2.3, 3.2.4, 3.2.5, 3.2.6, 3.2.7, 3.2.8, 3.2.9, 3.3.0, 3.3.0a1, 3.3.0a2, 3.3.0a3, 3.3.0b0, 3.3.0rc0, 3.3.1, 3.3.2, 3.3.3, 3.3.4, 3.4.0, 3.4.0a0, 3.4.0b0, 3.4.0rc0, 3.4.1, 3.4.2, 3.4.3, 3.4.4, 3.4.5, 3.4.6, 3.4.7, 3.4.8, 3.5.0, 3.5.0a0, 3.5.0b0, 3.5.0rc0, 3.5.1, 3.5.2, 3.5.3, 3.6.0, 3.6.0a0, 3.6.0a1, 3.6.0a2, 3.6.0a3, 3.6.0a4, 3.6.0a5, 3.6.0b0, 3.6.0rc0, 3.6.0rc1, 3.6.1, 3.6.2, 3.6.3, 3.6.4, 3.6.5, 3.6.6</td>
+                            <td>JupyterLab vulnerable to potential authentication and CSRF tokens leak&lt;br&gt;&lt;br&gt;### Impact
+Users of JupyterLab who click on a malicious link may get their `Authorization` and `XSRFToken` tokens exposed to a third party when running an older `jupyter-server` version.
+
+### Patches
+JupyterLab 4.1.0b2, 4.0.11, and 3.6.7 were patched.
+
+### Workarounds
+No workaround has been identified, however users should ensure to upgrade `jupyter-server` to version 2.7.2 or newer which includes a redirect vulnerability fix.
+
+### References
+
+Vulnerability reported by user @davwwwx via the [bug bounty program](https://app.intigriti.com/programs/jupyter/jupyter/detail) [sponsored by the European Commission](https://commission.europa.eu/news/european-commissions-open-source-programme-office-starts-bug-bounties-2022-01-19_en) and hosted on the [Intigriti platform](https://www.intigriti.com/).
+<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-44cc-43rp-5947' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-44cc-43rp-5947</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-22421' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-22421</a><br><a href='https://github.com/jupyterlab/jupyterlab/commit/19bd9b96cb2e77170a67e43121637d0b5619e8c6' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/19bd9b96cb2e77170a67e43121637d0b5619e8c6</a><br><a href='https://github.com/jupyterlab/jupyterlab/commit/1ef7a4fa0202ebdf663e1cc0b45c8813a34a0b96' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/1ef7a4fa0202ebdf663e1cc0b45c8813a34a0b96</a><br><a href='https://github.com/jupyterlab/jupyterlab/commit/fccd83dc4441da0384ee3fd1322c3b2d9ad4caaa' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/fccd83dc4441da0384ee3fd1322c3b2d9ad4caaa</a></div></td>
+                            <td>2024-01-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jupyterlab</td>
+                            <td class="vuln-unknown">GHSA-4952-p58q-6crx<br>关联CVE: CVE-2021-32797</td>
+                            <td>具体受影响版本: 0.0.1, 0.0.10, 0.0.13, 0.0.2, 0.0.3, 0.0.4, 0.0.5, 0.0.6, 0.0.7, 0.0.8, 0.0.9, 0.1.1, 0.1.2, 0.10.0, 0.11.0, 0.11.1, 0.11.2, 0.11.3, 0.12.0, 0.12.1, 0.13.0, 0.13.1, 0.13.2, 0.14.0, 0.15.0, 0.15.1, 0.16.0, 0.16.2, 0.17.0, 0.17.1, 0.17.2, 0.17.4, 0.17.5, 0.18.0, 0.18.0.dev1, 0.18.1, 0.19.0, 0.2.0, 0.20.0, 0.20.0rc1, 0.20.1, 0.20.2, 0.20.3, 0.20.4, 0.21.0, 0.21.0rc1, 0.21.0rc2, 0.21.0rc3, 0.21.0rc4, 0.21.0rc5, 0.22.0, 0.22.0rc0, 0.22.1, 0.23.0, 0.23.0rc0, 0.23.0rc1, 0.23.1, 0.23.2, 0.24.0, 0.24.0rc0, 0.24.0rc1, 0.24.0rc2, 0.24.1, 0.25.0, 0.25.0rc0, 0.25.0rc1, 0.25.1, 0.25.2, 0.25.2rc0, 0.26.0, 0.26.0rc0, 0.26.0rc1, 0.26.1, 0.26.2, 0.26.3, 0.26.4, 0.26.5, 0.27.0, 0.27.0rc0, 0.27.0rc1, 0.27.0rc2, 0.27.0rc3, 0.27.0rc4, 0.27.0rc5, 0.27.1, 0.27.2, 0.28.0, 0.28.0rc0, 0.28.0rc1, 0.28.0rc2, 0.28.0rc3, 0.28.1, 0.28.10, 0.28.11, 0.28.12, 0.28.13, 0.28.14, 0.28.15, 0.28.2, 0.28.3, 0.28.4, 0.28.5, 0.28.6, 0.28.7, 0.28.8, 0.29.0, 0.29.0rc0, 0.29.1, 0.29.2, 0.3.0, 0.30.0, 0.30.0rc0, 0.30.0rc1, 0.30.1, 0.30.2, 0.30.3, 0.30.4, 0.30.5, 0.30.6, 0.31.0, 0.31.0rc0, 0.31.0rc1, 0.31.0rc2, 0.31.1, 0.31.10, 0.31.11, 0.31.12, 0.31.2, 0.31.3, 0.31.4, 0.31.5, 0.31.6, 0.31.7, 0.31.8, 0.31.9, 0.32.0, 0.32.0rc0, 0.32.0rc1, 0.32.1, 0.33.0, 0.33.0rc0, 0.33.0rc1, 0.33.1, 0.33.10, 0.33.11, 0.33.12, 0.33.2, 0.33.3, 0.33.4, 0.33.5, 0.33.6, 0.33.7, 0.33.8, 0.33.9, 0.34.0, 0.34.0rc0, 0.34.0rc1, 0.34.0rc2, 0.34.1, 0.34.10, 0.34.11, 0.34.12, 0.34.2, 0.34.3, 0.34.4, 0.34.5, 0.34.6, 0.34.7, 0.34.8, 0.34.9, 0.35.0, 0.35.0rc0, 0.35.0rc1, 0.35.0rc2, 0.35.1, 0.35.2, 0.35.3, 0.35.4, 0.35.5, 0.35.6, 0.4.0, 0.4.1, 0.5.0, 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.9.1, 1.0.0, 1.0.0a0, 1.0.0a1, 1.0.0a10, 1.0.0a2, 1.0.0a3, 1.0.0a4, 1.0.0a5, 1.0.0a6, 1.0.0a7, 1.0.0a8, 1.0.0a9, 1.0.0rc0, 1.0.0rc1, 1.0.1, 1.0.10, 1.0.2, 1.0.3, 1.0.4, 1.0.5, 1.0.6, 1.0.7, 1.0.9, 1.1.0, 1.1.0a0, 1.1.0a1, 1.1.0a2, 1.1.0rc0, 1.1.1, 1.1.2, 1.1.3, 1.1.4, 1.1.5, 1.2.0, 1.2.0a0, 1.2.0a1, 1.2.0a2, 1.2.0a3, 1.2.0rc0, 1.2.1, 1.2.10, 1.2.11, 1.2.12, 1.2.13, 1.2.14, 1.2.15, 1.2.16, 1.2.17, 1.2.18, 1.2.19, 1.2.2, 1.2.20, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.2.7, 1.2.8, 1.2.9&lt;br&gt;具体受影响版本: 2.0.0, 2.0.0a0, 2.0.0a1, 2.0.0a3, 2.0.0a4, 2.0.0b1, 2.0.0b2, 2.0.0b3, 2.0.0rc0, 2.0.0rc1, 2.0.0rc2, 2.0.1, 2.0.1rc0, 2.0.2, 2.1.0, 2.1.0a0, 2.1.0b0, 2.1.0rc0, 2.1.1, 2.1.2, 2.1.3, 2.1.4, 2.1.5, 2.2.0, 2.2.0a0, 2.2.0a1, 2.2.0rc1, 2.2.1, 2.2.2, 2.2.4, 2.2.5, 2.2.6, 2.2.7, 2.2.8, 2.2.9&lt;br&gt;具体受影响版本: 2.3.0, 2.3.0a0, 2.3.0a1, 2.3.0a2, 2.3.0rc0, 2.3.1&lt;br&gt;具体受影响版本: 3.0.0, 3.0.0a0, 3.0.0a10, 3.0.0a11, 3.0.0a12, 3.0.0a13, 3.0.0a14, 3.0.0a3, 3.0.0a4, 3.0.0a5, 3.0.0a6, 3.0.0a7, 3.0.0a8, 3.0.0a9, 3.0.0b1, 3.0.0b2, 3.0.0b3, 3.0.0b4, 3.0.0b6, 3.0.0b7, 3.0.0b8, 3.0.0rc0, 3.0.0rc1, 3.0.0rc10, 3.0.0rc11, 3.0.0rc12, 3.0.0rc13, 3.0.0rc14, 3.0.0rc15, 3.0.0rc2, 3.0.0rc3, 3.0.0rc4, 3.0.0rc5, 3.0.0rc6, 3.0.0rc7, 3.0.0rc8, 3.0.0rc9, 3.0.1, 3.0.10, 3.0.11, 3.0.12, 3.0.13, 3.0.14, 3.0.15, 3.0.16, 3.0.2, 3.0.3, 3.0.4, 3.0.5, 3.0.6, 3.0.7, 3.0.8, 3.0.9&lt;br&gt;具体受影响版本: 3.1.0, 3.1.0a0, 3.1.0a1, 3.1.0a10, 3.1.0a11, 3.1.0a12, 3.1.0a13, 3.1.0a2, 3.1.0a3, 3.1.0a4, 3.1.0a5, 3.1.0a6, 3.1.0a7, 3.1.0a8, 3.1.0a9, 3.1.0b0, 3.1.0b1, 3.1.0rc1, 3.1.0rc2, 3.1.1, 3.1.2</td>
+                            <td>JupyterLab: XSS due to lack of sanitization of the action attribute of an html &lt;form&gt;&lt;br&gt;&lt;br&gt;### Impact
+
+Untrusted notebook can execute code on load. This is a remote code execution, but requires user action to open a notebook.
+
+### Patches
+
+Patched in the following versions: 3.1.4, 3.0.17, 2.3.2, 2.2.10, 1.2.21.
+
+### References
+
+[OWASP Page on Restricting Form Submissions](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
+
+### For more information
+
+If you have any questions or comments about this advisory, or vulnerabilities to report, please email our security list security@ipython.org.
+
+Credit: Guillaume Jeanne from Google
+<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/google/security-research/security/advisories/GHSA-c469-p3jp-2vhx' target='_blank' class='vuln-link'>https://github.com/google/security-research/security/advisories/GHSA-c469-p3jp-2vhx</a><br><a href='https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2021-32797' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2021-32797</a><br><a href='https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/jupyterlab/PYSEC-2021-130.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/jupyterlab/PYSEC-2021-130.yaml</a></div></td>
+                            <td>2021-08-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jupyterlab</td>
+                            <td class="vuln-high">GHSA-9q39-rmj3-p4r2<br>关联CVE: CVE-2024-43805</td>
+                            <td>具体受影响版本: 0.0.1, 0.0.10, 0.0.13, 0.0.2, 0.0.3, 0.0.4, 0.0.5, 0.0.6, 0.0.7, 0.0.8, 0.0.9, 0.1.1, 0.1.2, 0.10.0, 0.11.0, 0.11.1, 0.11.2, 0.11.3, 0.12.0, 0.12.1, 0.13.0, 0.13.1, 0.13.2, 0.14.0, 0.15.0, 0.15.1, 0.16.0, 0.16.2, 0.17.0, 0.17.1, 0.17.2, 0.17.4, 0.17.5, 0.18.0, 0.18.0.dev1, 0.18.1, 0.19.0, 0.2.0, 0.20.0, 0.20.0rc1, 0.20.1, 0.20.2, 0.20.3, 0.20.4, 0.21.0, 0.21.0rc1, 0.21.0rc2, 0.21.0rc3, 0.21.0rc4, 0.21.0rc5, 0.22.0, 0.22.0rc0, 0.22.1, 0.23.0, 0.23.0rc0, 0.23.0rc1, 0.23.1, 0.23.2, 0.24.0, 0.24.0rc0, 0.24.0rc1, 0.24.0rc2, 0.24.1, 0.25.0, 0.25.0rc0, 0.25.0rc1, 0.25.1, 0.25.2, 0.25.2rc0, 0.26.0, 0.26.0rc0, 0.26.0rc1, 0.26.1, 0.26.2, 0.26.3, 0.26.4, 0.26.5, 0.27.0, 0.27.0rc0, 0.27.0rc1, 0.27.0rc2, 0.27.0rc3, 0.27.0rc4, 0.27.0rc5, 0.27.1, 0.27.2, 0.28.0, 0.28.0rc0, 0.28.0rc1, 0.28.0rc2, 0.28.0rc3, 0.28.1, 0.28.10, 0.28.11, 0.28.12, 0.28.13, 0.28.14, 0.28.15, 0.28.2, 0.28.3, 0.28.4, 0.28.5, 0.28.6, 0.28.7, 0.28.8, 0.29.0, 0.29.0rc0, 0.29.1, 0.29.2, 0.3.0, 0.30.0, 0.30.0rc0, 0.30.0rc1, 0.30.1, 0.30.2, 0.30.3, 0.30.4, 0.30.5, 0.30.6, 0.31.0, 0.31.0rc0, 0.31.0rc1, 0.31.0rc2, 0.31.1, 0.31.10, 0.31.11, 0.31.12, 0.31.2, 0.31.3, 0.31.4, 0.31.5, 0.31.6, 0.31.7, 0.31.8, 0.31.9, 0.32.0, 0.32.0rc0, 0.32.0rc1, 0.32.1, 0.33.0, 0.33.0rc0, 0.33.0rc1, 0.33.1, 0.33.10, 0.33.11, 0.33.12, 0.33.2, 0.33.3, 0.33.4, 0.33.5, 0.33.6, 0.33.7, 0.33.8, 0.33.9, 0.34.0, 0.34.0rc0, 0.34.0rc1, 0.34.0rc2, 0.34.1, 0.34.10, 0.34.11, 0.34.12, 0.34.2, 0.34.3, 0.34.4, 0.34.5, 0.34.6, 0.34.7, 0.34.8, 0.34.9, 0.35.0, 0.35.0rc0, 0.35.0rc1, 0.35.0rc2, 0.35.1, 0.35.2, 0.35.3, 0.35.4, 0.35.5, 0.35.6, 0.4.0, 0.4.1, 0.5.0, 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.9.1, 1.0.0, 1.0.0a0, 1.0.0a1, 1.0.0a10, 1.0.0a2, 1.0.0a3, 1.0.0a4, 1.0.0a5, 1.0.0a6, 1.0.0a7, 1.0.0a8, 1.0.0a9, 1.0.0rc0, 1.0.0rc1, 1.0.1, 1.0.10, 1.0.2, 1.0.3, 1.0.4, 1.0.5, 1.0.6, 1.0.7, 1.0.9, 1.1.0, 1.1.0a0, 1.1.0a1, 1.1.0a2, 1.1.0rc0, 1.1.1, 1.1.2, 1.1.3, 1.1.4, 1.1.5, 1.2.0, 1.2.0a0, 1.2.0a1, 1.2.0a2, 1.2.0a3, 1.2.0rc0, 1.2.1, 1.2.10, 1.2.11, 1.2.12, 1.2.13, 1.2.14, 1.2.15, 1.2.16, 1.2.17, 1.2.18, 1.2.19, 1.2.2, 1.2.20, 1.2.21, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.2.7, 1.2.8, 1.2.9, 2.0.0, 2.0.0a0, 2.0.0a1, 2.0.0a3, 2.0.0a4, 2.0.0b1, 2.0.0b2, 2.0.0b3, 2.0.0rc0, 2.0.0rc1, 2.0.0rc2, 2.0.1, 2.0.1rc0, 2.0.2, 2.1.0, 2.1.0a0, 2.1.0b0, 2.1.0rc0, 2.1.1, 2.1.2, 2.1.3, 2.1.4, 2.1.5, 2.2.0, 2.2.0a0, 2.2.0a1, 2.2.0rc1, 2.2.1, 2.2.10, 2.2.2, 2.2.4, 2.2.5, 2.2.6, 2.2.7, 2.2.8, 2.2.9, 2.3.0, 2.3.0a0, 2.3.0a1, 2.3.0a2, 2.3.0rc0, 2.3.1, 2.3.2, 3.0.0, 3.0.0a0, 3.0.0a10, 3.0.0a11, 3.0.0a12, 3.0.0a13, 3.0.0a14, 3.0.0a3, 3.0.0a4, 3.0.0a5, 3.0.0a6, 3.0.0a7, 3.0.0a8, 3.0.0a9, 3.0.0b1, 3.0.0b2, 3.0.0b3, 3.0.0b4, 3.0.0b6, 3.0.0b7, 3.0.0b8, 3.0.0rc0, 3.0.0rc1, 3.0.0rc10, 3.0.0rc11, 3.0.0rc12, 3.0.0rc13, 3.0.0rc14, 3.0.0rc15, 3.0.0rc2, 3.0.0rc3, 3.0.0rc4, 3.0.0rc5, 3.0.0rc6, 3.0.0rc7, 3.0.0rc8, 3.0.0rc9, 3.0.1, 3.0.10, 3.0.11, 3.0.12, 3.0.13, 3.0.14, 3.0.15, 3.0.16, 3.0.17, 3.0.18, 3.0.2, 3.0.3, 3.0.4, 3.0.5, 3.0.6, 3.0.7, 3.0.8, 3.0.9, 3.1.0, 3.1.0a0, 3.1.0a1, 3.1.0a10, 3.1.0a11, 3.1.0a12, 3.1.0a13, 3.1.0a2, 3.1.0a3, 3.1.0a4, 3.1.0a5, 3.1.0a6, 3.1.0a7, 3.1.0a8, 3.1.0a9, 3.1.0b0, 3.1.0b1, 3.1.0rc1, 3.1.0rc2, 3.1.1, 3.1.10, 3.1.11, 3.1.12, 3.1.13, 3.1.14, 3.1.16, 3.1.17, 3.1.18, 3.1.19, 3.1.2, 3.1.4, 3.1.6, 3.1.7, 3.1.8, 3.1.9, 3.2.0, 3.2.0a0, 3.2.0a1, 3.2.0b0, 3.2.0rc0, 3.2.1, 3.2.2, 3.2.3, 3.2.4, 3.2.5, 3.2.6, 3.2.7, 3.2.8, 3.2.9, 3.3.0, 3.3.0a1, 3.3.0a2, 3.3.0a3, 3.3.0b0, 3.3.0rc0, 3.3.1, 3.3.2, 3.3.3, 3.3.4, 3.4.0, 3.4.0a0, 3.4.0b0, 3.4.0rc0, 3.4.1, 3.4.2, 3.4.3, 3.4.4, 3.4.5, 3.4.6, 3.4.7, 3.4.8, 3.5.0, 3.5.0a0, 3.5.0b0, 3.5.0rc0, 3.5.1, 3.5.2, 3.5.3, 3.6.0, 3.6.0a0, 3.6.0a1, 3.6.0a2, 3.6.0a3, 3.6.0a4, 3.6.0a5, 3.6.0b0, 3.6.0rc0, 3.6.0rc1, 3.6.1, 3.6.2, 3.6.3, 3.6.4, 3.6.5, 3.6.6, 3.6.7&lt;br&gt;具体受影响版本: 4.0.0, 4.0.1, 4.0.10, 4.0.11, 4.0.12, 4.0.13, 4.0.2, 4.0.3, 4.0.4, 4.0.5, 4.0.6, 4.0.7, 4.0.8, 4.0.9, 4.1.0, 4.1.0a1, 4.1.0a2, 4.1.0a3, 4.1.0a4, 4.1.0b0, 4.1.0b1, 4.1.0b2, 4.1.0rc0, 4.1.0rc1, 4.1.1, 4.1.2, 4.1.3, 4.1.4, 4.1.5, 4.1.6, 4.1.7, 4.1.8, 4.2.0, 4.2.0a0, 4.2.0a1, 4.2.0a2, 4.2.0b0, 4.2.0b1, 4.2.0b2, 4.2.0b3, 4.2.0rc0, 4.2.1, 4.2.2, 4.2.3, 4.2.4</td>
+                            <td>HTML injection in Jupyter Notebook and JupyterLab leading to DOM Clobbering&lt;br&gt;&lt;br&gt;### Impact
+
+The vulnerability depends on user interaction by opening a malicious notebook with Markdown cells, or Markdown file using JupyterLab preview feature.
+
+A malicious user can access any data that the attacked user has access to as well as perform arbitrary requests acting as the attacked user.
+
+### Patches
+
+JupyterLab v3.6.8, v4.2.5 and Jupyter Notebook v7.2.2 were patched.
+
+### Workarounds
+
+There is no workaround for the underlying DOM Clobbering susceptibility. However, select plugins can be disabled on deployments which cannot update in a timely fashion to minimise the risk. These are:
+- `@jupyterlab/mathjax-extension:plugin` - users will loose ability to preview mathematical equations 
+- `@jupyterlab/markdownviewer-extension:plugin` - users will loose ability to open Markdown previews
+- `@jupyterlab/mathjax2-extension:plugin` (if installed with optional `jupyterlab-mathjax2` package) - an older version of the mathjax plugin for JupyterLab 4.x
+
+To disable these extensions run:
+
+```bash
+jupyter labextension disable @jupyterlab/markdownviewer-extension:plugin
+jupyter labextension disable @jupyterlab/mathjax-extension:plugin
+jupyter labextension disable @jupyterlab/mathjax2-extension:plugin
+```
+
+To confirm that the plugins were disabled run:
+
+```bash
+jupyter labextension list
+```
+
+### References
+
+None
+
+### Notes
+
+This change has a potential to break rendering of some markdown. There is a setting in Sanitizer which allows to revert to the previous sanitizer settings (`allowNamedProperties`).<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-9q39-rmj3-p4r2' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-9q39-rmj3-p4r2</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-43805' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-43805</a><br><a href='https://github.com/jupyterlab/jupyterlab/commit/06ad9de836f155add7d3d651ef936cc4c5ea8093' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/06ad9de836f155add7d3d651ef936cc4c5ea8093</a><br><a href='https://github.com/jupyterlab/jupyterlab/commit/88e24baac551196f9cb3de16bd060a7ab1597674' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/88e24baac551196f9cb3de16bd060a7ab1597674</a><br><a href='https://github.com/jupyterlab/jupyterlab' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab</a></div></td>
+                            <td>2024-08-29</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>jupyterlab</td>
+                            <td class="vuln-unknown">PYSEC-2021-130<br>关联CVE: CVE-2021-32797</td>
+                            <td>具体受影响版本: 0.0.1, 0.0.10, 0.0.13, 0.0.2, 0.0.3, 0.0.4, 0.0.5, 0.0.6, 0.0.7, 0.0.8, 0.0.9, 0.1.1, 0.1.2, 0.10.0, 0.11.0, 0.11.1, 0.11.2, 0.11.3, 0.12.0, 0.12.1, 0.13.0, 0.13.1, 0.13.2, 0.14.0, 0.15.0, 0.15.1, 0.16.0, 0.16.2, 0.17.0, 0.17.1, 0.17.2, 0.17.4, 0.17.5, 0.18.0, 0.18.0.dev1, 0.18.1, 0.19.0, 0.2.0, 0.20.0, 0.20.0rc1, 0.20.1, 0.20.2, 0.20.3, 0.20.4, 0.21.0, 0.21.0rc1, 0.21.0rc2, 0.21.0rc3, 0.21.0rc4, 0.21.0rc5, 0.22.0, 0.22.0rc0, 0.22.1, 0.23.0, 0.23.0rc0, 0.23.0rc1, 0.23.1, 0.23.2, 0.24.0, 0.24.0rc0, 0.24.0rc1, 0.24.0rc2, 0.24.1, 0.25.0, 0.25.0rc0, 0.25.0rc1, 0.25.1, 0.25.2, 0.25.2rc0, 0.26.0, 0.26.0rc0, 0.26.0rc1, 0.26.1, 0.26.2, 0.26.3, 0.26.4, 0.26.5, 0.27.0, 0.27.0rc0, 0.27.0rc1, 0.27.0rc2, 0.27.0rc3, 0.27.0rc4, 0.27.0rc5, 0.27.1, 0.27.2, 0.28.0, 0.28.0rc0, 0.28.0rc1, 0.28.0rc2, 0.28.0rc3, 0.28.1, 0.28.10, 0.28.11, 0.28.12, 0.28.13, 0.28.14, 0.28.15, 0.28.2, 0.28.3, 0.28.4, 0.28.5, 0.28.6, 0.28.7, 0.28.8, 0.29.0, 0.29.0rc0, 0.29.1, 0.29.2, 0.3.0, 0.30.0, 0.30.0rc0, 0.30.0rc1, 0.30.1, 0.30.2, 0.30.3, 0.30.4, 0.30.5, 0.30.6, 0.31.0, 0.31.0rc0, 0.31.0rc1, 0.31.0rc2, 0.31.1, 0.31.10, 0.31.11, 0.31.12, 0.31.2, 0.31.3, 0.31.4, 0.31.5, 0.31.6, 0.31.7, 0.31.8, 0.31.9, 0.32.0, 0.32.0rc0, 0.32.0rc1, 0.32.1, 0.33.0, 0.33.0rc0, 0.33.0rc1, 0.33.1, 0.33.10, 0.33.11, 0.33.12, 0.33.2, 0.33.3, 0.33.4, 0.33.5, 0.33.6, 0.33.7, 0.33.8, 0.33.9, 0.34.0, 0.34.0rc0, 0.34.0rc1, 0.34.0rc2, 0.34.1, 0.34.10, 0.34.11, 0.34.12, 0.34.2, 0.34.3, 0.34.4, 0.34.5, 0.34.6, 0.34.7, 0.34.8, 0.34.9, 0.35.0, 0.35.0rc0, 0.35.0rc1, 0.35.0rc2, 0.35.1, 0.35.2, 0.35.3, 0.35.4, 0.35.5, 0.35.6, 0.4.0, 0.4.1, 0.5.0, 0.6.0, 0.7.0, 0.8.0, 0.9.0, 0.9.1, 1.0.0, 1.0.0a0, 1.0.0a1, 1.0.0a10, 1.0.0a2, 1.0.0a3, 1.0.0a4, 1.0.0a5, 1.0.0a6, 1.0.0a7, 1.0.0a8, 1.0.0a9, 1.0.0rc0, 1.0.0rc1, 1.0.1, 1.0.10, 1.0.2, 1.0.3, 1.0.4, 1.0.5, 1.0.6, 1.0.7, 1.0.9, 1.1.0, 1.1.0a0, 1.1.0a1, 1.1.0a2, 1.1.0rc0, 1.1.1, 1.1.2, 1.1.3, 1.1.4, 1.1.5, 1.2.0, 1.2.0a0, 1.2.0a1, 1.2.0a2, 1.2.0a3, 1.2.0rc0, 1.2.1, 1.2.10, 1.2.11, 1.2.12, 1.2.13, 1.2.14, 1.2.15, 1.2.16, 1.2.17, 1.2.18, 1.2.19, 1.2.2, 1.2.20, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.2.7, 1.2.8, 1.2.9, 2.0.0, 2.0.1, 2.0.1rc0, 2.0.2, 2.1.0, 2.1.0a0, 2.1.0b0, 2.1.0rc0, 2.1.1, 2.1.2, 2.1.3, 2.1.4, 2.1.5, 2.2.0, 2.2.0a0, 2.2.0a1, 2.2.0rc1, 2.2.1, 2.2.2, 2.2.4, 2.2.5, 2.2.6, 2.2.7, 2.2.8, 2.2.9, 2.3.0, 2.3.1, 3.0.0, 3.0.1, 3.0.10, 3.0.11, 3.0.12, 3.0.13, 3.0.14, 3.0.15, 3.0.16, 3.0.2, 3.0.3, 3.0.4, 3.0.5, 3.0.6, 3.0.7, 3.0.8, 3.0.9, 3.1.0, 3.1.1, 3.1.2</td>
+                            <td>&lt;br&gt;&lt;br&gt;JupyterLab is a user interface for Project Jupyter which will eventually replace the classic Jupyter Notebook. In affected versions untrusted notebook can execute code on load. In particular JupyterLab doesn’t sanitize the action attribute of html `&lt;form&gt;`. Using this it is possible to trigger the form validation outside of the form itself. This is a remote code execution, but requires user action to open a notebook.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/commit/504825938c0abfa2fb8ff8d529308830a5ae42ed</a><br><a href='https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx' target='_blank' class='vuln-link'>https://github.com/jupyterlab/jupyterlab/security/advisories/GHSA-4952-p58q-6crx</a></div></td>
+                            <td>2021-08-09</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>377</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>169</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>208</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>0</td>
+                </tr>
+            </table>
+            
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (208)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共208个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>tests\test_ipython_magic.py</td></tr><tr><td>tests\module\mobject\graphing\test_number_line.py</td></tr><tr><td>tests\test_scene_rendering\opengl\test_caching_related_opengl.py</td></tr><tr><td>tests\helpers\video_utils.py</td></tr><tr><td>crowdin.yml</td></tr><tr><td>.github\manimdependency.json</td></tr><tr><td>tests\opengl\test_coordinate_system_opengl.py</td></tr><tr><td>tests\test_graphical_units\test_utils.py</td></tr><tr><td>tests\test_plugins\__init__.py</td></tr><tr><td>tests\test_graphical_units\test_speed.py</td></tr><tr><td>tests\control_data\videos_data\SceneWithMultiplePlayCallsWithNFlag.json</td></tr><tr><td>tests\test_scene_rendering\opengl\test_play_logic_opengl.py</td></tr><tr><td>tests\test_graphical_units\test_transform.py</td></tr><tr><td>tests\module\mobject\svg\test_svg_mobject.py</td></tr><tr><td>tests\test_graphical_units\test_boolops.py</td></tr><tr><td>tests\opengl\test_animate_opengl.py</td></tr><tr><td>docs\source\conduct.md</td></tr><tr><td>docs\source\installation\uv.md</td></tr><tr><td>tests\test_graphical_units\test_opengl.py</td></tr><tr><td>tests\opengl\test_ipython_magic_opengl.py</td></tr><tr><td>tests\module\mobject\test_graph.py</td></tr><tr><td>tests\opengl\test_family_opengl.py</td></tr><tr><td>tests\test_graphical_units\conftest.py</td></tr><tr><td>scripts\dev_changelog.py</td></tr><tr><td>tests\__init__.py</td></tr><tr><td>tests\test_graphical_units\test_probability.py</td></tr><tr><td>.github\workflows\ci.yml</td></tr><tr><td>tests\test_logging\basic_scenes_error.py</td></tr><tr><td>tests\opengl\test_scene_opengl.py</td></tr><tr><td>tests\test_graphical_units\test_geometry.py</td></tr><tr><td>tests\helpers\graphical_units.py</td></tr><tr><td>tests\opengl\test_number_line_opengl.py</td></tr><tr><td>tests\module\mobject\mobject\test_opengl_metaclass.py</td></tr><tr><td>tests\control_data\videos_data\SceneWithMultipleCallsWithNFlag.json</td></tr><tr><td>tests\module\scene\test_scene.py</td></tr><tr><td>tests\module\mobject\test_value_tracker.py</td></tr><tr><td>tests\module\utils\test_file_ops.py</td></tr><tr><td>tests\control_data\logs_data\bad_tex_scene_BadTex.txt</td></tr><tr><td>tests\opengl\test_opengl_surface.py</td></tr><tr><td>tests\module\utils\test_hashing.py</td></tr><tr><td>example_scenes\basic.py</td></tr><tr><td>docs\source\conf.py</td></tr><tr><td>tests\interface\test_commands.py</td></tr><tr><td>example_scenes\advanced_tex_fonts.py</td></tr><tr><td>tests\utils\video_tester.py</td></tr><tr><td>tests\test_graphical_units\test_threed.py</td></tr><tr><td>tests\module\scene\test_auto_zoom.py</td></tr><tr><td>.github\PULL_REQUEST_TEMPLATE.md</td></tr><tr><td>.readthedocs.yml</td></tr><tr><td>example_scenes\customtex.py</td></tr><tr><td>tests\helpers\path_utils.py</td></tr><tr><td>tests\test_scene_rendering\test_play_logic.py</td></tr><tr><td>tests\utils\logging_tester.py</td></tr><tr><td>tests\opengl\test_markup_opengl.py</td></tr><tr><td>tests\module\animation\test_creation.py</td></tr><tr><td>tests\test_graphical_units\__init__.py</td></tr><tr><td>tests\opengl\test_texmobject_opengl.py</td></tr><tr><td>docs\source\robots.txt</td></tr><tr><td>.github\dependabot.yml</td></tr><tr><td>tests\module\mobject\mobject\test_get_set.py</td></tr><tr><td>tests\test_graphical_units\test_specialized.py</td></tr><tr><td>tests\module\animation\test_animation.py</td></tr><tr><td>.github\workflows\codeql.yml</td></tr><tr><td>tests\control_data\videos_data\SceneWithMultipleWaitCallsWithNFlag.json</td></tr><tr><td>tests\test_scene_rendering\opengl\test_opengl_renderer.py</td></tr><tr><td>tests\module\mobject\graphing\test_coordinate_system.py</td></tr><tr><td>tests\module\mobject\text\test_markup.py</td></tr><tr><td>tests\test_camera.py</td></tr><tr><td>tests\test_graphical_units\test_coordinate_systems.py</td></tr><tr><td>tests\utils\__init__.py</td></tr><tr><td>tests\test_logging\__init__.py</td></tr><tr><td>tests\module\animation\test_composition.py</td></tr><tr><td>tests\test_graphical_units\test_polyhedra.py</td></tr><tr><td>tests\test_graphical_units\test_mobjects.py</td></tr><tr><td>tests\opengl\test_text_mobject_opengl.py</td></tr><tr><td>tests\test_logging\basic_scenes_square_to_circle.py</td></tr><tr><td>tests\test_graphical_units\test_creation.py</td></tr><tr><td>tests\test_graphical_units\test_brace.py</td></tr><tr><td>.github\PULL_REQUEST_TEMPLATE\bugfix.md</td></tr><tr><td>tests\test_scene_rendering\test_cli_flags.py</td></tr><tr><td>example_scenes\opengl.py</td></tr><tr><td>tests\test_scene_rendering\simple_scenes.py</td></tr><tr><td>tests\control_data\videos_data\InputFileViaCfg.json</td></tr><tr><td>tests\test_graphical_units\test_tables.py</td></tr><tr><td>tests\opengl\__init__.py</td></tr><tr><td>tests\opengl\test_override_animation_opengl.py</td></tr><tr><td>tests\control_data\videos_data\SquareToCircleWithlFlag.json</td></tr><tr><td>docker\texlive-profile.txt</td></tr><tr><td>tests\opengl\test_opengl_vectorized_mobject.py</td></tr><tr><td>tests\module\utils\test_manim_color.py</td></tr><tr><td>tests\test_graphical_units\test_img_and_svg.py</td></tr><tr><td>tests\test_graphical_units\test_functions.py</td></tr><tr><td>tests\module\mobject\types\vectorized_mobject\test_vectorized_mobject.py</td></tr><tr><td>tests\module\scene\test_threed_scene.py</td></tr><tr><td>docs\i18n\stripUntranslatable.sh</td></tr><tr><td>tests\module\mobject\geometry\test_unit_geometry.py</td></tr><tr><td>tests\test_graphical_units\test_updaters.py</td></tr><tr><td>.github\PULL_REQUEST_TEMPLATE\hackathon.md</td></tr><tr><td>tests\module\mobject\types\vectorized_mobject\test_stroke.py</td></tr><tr><td>tests\test_graphical_units\test_axes.py</td></tr>
+                    </table>
+                </div>
+                
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

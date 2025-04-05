@@ -1,0 +1,489 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:03:34</p>
+                <p>SBOM A: sample_data\GafferHQ_gaffer_f34cd4f.json</p>
+                <p>SBOM B: sample_data\GafferHQ_gaffer.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.3/10 (93.2%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.3/10.0 (93.2%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 整体安全实践不足。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (100.0%)</td>
+                    <td><ul class='details-list'><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.6/1.3 (48.0%)</td>
+                    <td><ul class='details-list'><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions, Security-Policy</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>3008</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>3118</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>111</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>196</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (111)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共111个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>src\IECoreRenderMan\Attributes.h</td></tr><tr><td>python\GafferRenderManUITest\RenderManShaderUITest.py</td></tr><tr><td>python\GafferRenderMan\ArgsFileAlgo.py</td></tr><tr><td>include\IECoreRenderMan\ShaderNetworkAlgo.h</td></tr><tr><td>src\IECoreRenderManModule\IECoreRenderManModule.cpp</td></tr><tr><td>src\GafferRenderMan\RenderManSampleFilter.cpp</td></tr><tr><td>python\GafferRenderManTest\__init__.py</td></tr><tr><td>src\IECoreRenderMan\ParamListAlgo.cpp</td></tr><tr><td>src\IECoreRenderMan\MaterialCache.cpp</td></tr><tr><td>include\GafferRenderMan\RenderManSampleFilter.h</td></tr><tr><td>src\GafferRenderMan\RenderManLight.cpp</td></tr><tr><td>python\GafferSceneTest\ShuffleRenderPassesTest.py</td></tr><tr><td>startup\GafferScene\renderManOptions.py</td></tr><tr><td>src\IECoreRenderMan\Light.h</td></tr><tr><td>python\GafferRenderManUI\RenderManShaderUI.py</td></tr><tr><td>src\IECoreRenderMan\Renderer.cpp</td></tr><tr><td>python\IECoreRenderManTest\RendererTest.py</td></tr><tr><td>python\GafferRenderManTest\RenderManIntegratorTest.py</td></tr><tr><td>startup\GafferUSD\cyclesLights.py</td></tr><tr><td>python\GafferRenderManTest\RenderManMeshLightTest.py</td></tr><tr><td>python\GafferRenderManTest\RenderManAttributesTest.py</td></tr><tr><td>startup\GafferScene\renderManAttributes.py</td></tr><tr><td>python\GafferRenderManUI\RenderManDisplayFilterUI.py</td></tr><tr><td>src\IECoreRenderMan\GeometryPrototypeCache.cpp</td></tr><tr><td>src\IECoreRenderMan\Light.cpp</td></tr><tr><td>python\GafferRenderManTest\RenderManRenderTest.py</td></tr><tr><td>include\GafferRenderMan\TypeIds.h</td></tr><tr><td>src\GafferRenderManModule\GafferRenderManModule.cpp</td></tr><tr><td>python\GafferRenderManTest\RenderManOptionsTest.py</td></tr><tr><td>include\GafferRenderMan\RenderManMeshLight.h</td></tr><tr><td>include\GafferRenderMan\RenderManOptions.h</td></tr><tr><td>include\GafferRenderMan\Export.h</td></tr><tr><td>python\GafferImageUI\ShuffleImageMetadataUI.py</td></tr><tr><td>bin\_gaffer.py</td></tr><tr><td>include\GafferRenderMan\RenderManIntegrator.h</td></tr><tr><td>include\GafferImage\ShuffleImageMetadata.h</td></tr><tr><td>src\IECoreRenderMan\Transform.h</td></tr><tr><td>python\GafferRenderManUI\RenderManMeshLightUI.py</td></tr><tr><td>include\GafferRenderMan\RenderManOutputFilter.h</td></tr><tr><td>python\GafferRenderManTest\InteractiveRenderManRenderTest.py</td></tr><tr><td>include\GafferRenderMan\BXDFPlug.h</td></tr><tr><td>startup\GafferScene\usdPointInstancerAdaptor.py</td></tr><tr><td>src\IECoreRenderMan\Object.cpp</td></tr><tr><td>python\GafferRenderManTest\RenderManLightTest.py</td></tr><tr><td>python\GafferRenderManUI\RenderManAttributesUI.py</td></tr><tr><td>python\GafferUSD\_PointInstancerAdaptor.py</td></tr><tr><td>src\IECoreRenderManDisplay\Display.cpp</td></tr><tr><td>python\GafferRenderManUI\RenderManOutputFilterUI.py</td></tr><tr><td>src\IECoreRenderMan\Camera.h</td></tr><tr><td>src\GafferRenderMan\RenderManMeshLight.cpp</td></tr><tr><td>src\IECoreRenderMan\Object.h</td></tr><tr><td>src\IECoreRenderMan\MaterialCache.h</td></tr><tr><td>startup\GafferSceneUI\usdPointInstancerAdaptor.py</td></tr><tr><td>src\IECoreRenderMan\RefCountedId.h</td></tr><tr><td>python\GafferRenderManTest\RenderManShaderTest.py</td></tr><tr><td>include\GafferScene\ShuffleRenderPasses.h</td></tr><tr><td>src\IECoreRenderMan\Globals.h</td></tr><tr><td>python\GafferImageTest\ShuffleImageMetadataTest.py</td></tr><tr><td>python\GafferUSDUI\_PointInstancerAdaptorUI.py</td></tr><tr><td>src\IECoreRenderMan\VolumeAlgo.cpp</td></tr><tr><td>src\IECoreRenderMan\Session.h</td></tr><tr><td>python\GafferRenderMan\_InteractiveDenoiserAdaptor.py</td></tr><tr><td>src\IECoreRenderMan\PointsAlgo.cpp</td></tr><tr><td>python\GafferRenderManTest\RenderPassAdaptorTest.py</td></tr><tr><td>python\GafferRenderManUITest\DocumentationTest.py</td></tr><tr><td>include\GafferRenderMan\RenderManAttributes.h</td></tr><tr><td>src\GafferRenderMan\RenderManShader.cpp</td></tr><tr><td>python\GafferRenderManTest\RenderManDisplayFilterTest.py</td></tr><tr><td>src\IECoreRenderMan\GeometryAlgo.h</td></tr><tr><td>src\GafferScene\ShuffleRenderPasses.cpp</td></tr><tr><td>src\IECoreRenderMan\Attributes.cpp</td></tr><tr><td>python\GafferRenderManUI\__init__.py</td></tr><tr><td>python\IECoreRenderMan\__init__.py</td></tr><tr><td>python\GafferUSDTest\PromotePointInstancesTest.py</td></tr><tr><td>python\GafferRenderManUI\RenderManSampleFilterUI.py</td></tr><tr><td>python\GafferRenderManUITest\__init__.py</td></tr><tr><td>python\IECoreRenderManTest\RileyCapture.py</td></tr><tr><td>src\IECoreRenderMan\GeometryPrototypeCache.h</td></tr><tr><td>include\IECoreRenderMan\Export.h</td></tr><tr><td>startup\GafferRenderManUI\shaderMetadata.py</td></tr><tr><td>src\GafferRenderMan\BXDFPlug.cpp</td></tr><tr><td>src\IECoreRenderMan\ShaderNetworkAlgo.cpp</td></tr><tr><td>python\GafferRenderManTest\ModuleTest.py</td></tr><tr><td>python\GafferUSDTest\_PointInstancerAdaptorTest.py</td></tr><tr><td>src\GafferRenderMan\RenderManOptions.cpp</td></tr><tr><td>startup\GafferScene\renderManLights.py</td></tr><tr><td>src\GafferRenderMan\RenderManOutputFilter.cpp</td></tr><tr><td>src\IECoreRenderMan\Globals.cpp</td></tr><tr><td>src\IECoreRenderMan\SphereAlgo.cpp</td></tr><tr><td>src\IECoreRenderMan\CurvesAlgo.cpp</td></tr><tr><td>python\IECoreRenderManTest\__init__.py</td></tr><tr><td>src\GafferRenderMan\RenderManDisplayFilter.cpp</td></tr><tr><td>python\IECoreRenderManTest\ShaderNetworkAlgoTest.py</td></tr><tr><td>python\GafferRenderManUI\RenderManOptionsUI.py</td></tr><tr><td>include\GafferRenderMan\RenderManDisplayFilter.h</td></tr><tr><td>src\IECoreRenderMan\MeshAlgo.cpp</td></tr><tr><td>src\GafferImage\ShuffleImageMetadata.cpp</td></tr><tr><td>src\IECoreRenderMan\Camera.cpp</td></tr><tr><td>src\GafferRenderMan\RenderManIntegrator.cpp</td></tr><tr><td>python\GafferSceneUI\ShuffleRenderPassesUI.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (1)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>python\GafferArnoldUI\GPUCache.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (196)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>python\GafferUI\AnnotationsUI.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUITest\AttributeInspectorTest.py</td><td>内容变更</td></tr><tr><td>include\GafferScene\Instancer.h</td><td>内容变更</td></tr><tr><td>python\IECoreArnoldTest\RendererTest.py</td><td>内容变更</td></tr><tr><td>include\IECoreArnold\ShaderNetworkAlgo.h</td><td>内容变更</td></tr><tr><td>src\GafferSceneModule\SceneAlgoBinding.cpp</td><td>内容变更</td></tr><tr><td>python\IECoreArnoldTest\UniverseBlockTest.py</td><td>内容变更</td></tr><tr><td>include\GafferScene\PrimitiveVariableTweaks.h</td><td>内容变更</td></tr><tr><td>src\Gaffer\TweakPlug.cpp</td><td>内容变更</td></tr><tr><td>include\GafferSceneUI\Private\OptionInspector.h</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\IECoreScenePreviewTest\PrimitiveAlgoTest.py</td><td>内容变更</td></tr><tr><td>src\GafferUIModule\PathColumnBinding.cpp</td><td>内容变更</td></tr><tr><td>config\validateRelease.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\CryptomatteTest.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\Attributes.cpp</td><td>内容变更</td></tr><tr><td>python\GafferUI\NameSwitchUI.py</td><td>内容变更</td></tr><tr><td>startup\gui\performanceMonitor.py</td><td>内容变更</td></tr><tr><td>include\GafferSceneUI\Private\VisualiserTool.h</td><td>内容变更</td></tr><tr><td>python\GafferArnoldTest\ArnoldColorManagerTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUITest\TestCase.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\OptionsUI.py</td><td>内容变更</td></tr><tr><td>python\IECoreDelightTest\RendererTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUI\MessageWidget.py</td><td>内容变更</td></tr><tr><td>include\GafferScene\DeleteAttributes.h</td><td>内容变更</td></tr><tr><td>src\GafferCycles\CyclesAttributes.cpp</td><td>内容变更</td></tr><tr><td>python\GafferOSLUI\OSLShaderUI.py</td><td>内容变更</td></tr><tr><td>startup\gui\lightEditor.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\InteractiveRender.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\EditScopeAlgoTest.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\RenderPassEditor.py</td><td>内容变更</td></tr><tr><td>startup\GafferScene\renderers.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\InteractiveRenderTest.py</td><td>内容变更</td></tr><tr><td>src\IECoreArnold\MeshAlgo.cpp</td><td>内容变更</td></tr><tr><td>python\GafferUSD\__init__.py</td><td>内容变更</td></tr><tr><td>src\Gaffer\NameSwitch.cpp</td><td>内容变更</td></tr><tr><td>src\GafferScene\Unencapsulate.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\VisualiserToolUI.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\ParentTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUI\VectorDataPlugValueWidget.py</td><td>内容变更</td></tr><tr><td>python\GafferArnoldUI\ShaderMenu.py</td><td>内容变更</td></tr><tr><td>python\GafferArnold\ArnoldTextureBake.py</td><td>内容变更</td></tr><tr><td>python\GafferImageTest\ContactSheetCoreTest.py</td><td>内容变更</td></tr><tr><td>python\GafferDelightTest\InteractiveDelightRenderTest.py</td><td>内容变更</td></tr><tr><td>include\GafferSceneUI\Private\Inspector.h</td><td>内容变更</td></tr><tr><td>.github\workflows\whitespaceCheck.yml</td><td>内容变更</td></tr><tr><td>src\GafferScene\MergeScenes.cpp</td><td>内容变更</td></tr><tr><td>include\GafferScene\BranchCreator.h</td><td>内容变更</td></tr><tr><td>src\GafferCycles\IECoreCyclesPreview\PointsAlgo.cpp</td><td>内容变更</td></tr><tr><td>include\GafferScene\Options.h</td><td>内容变更</td></tr><tr><td>python\GafferImageTest\__init__.py</td><td>内容变更</td></tr><tr><td>src\GafferArnold\ParameterHandler.cpp</td><td>内容变更</td></tr><tr><td>src\IECoreArnold\ShaderNetworkAlgo.cpp</td><td>内容变更</td></tr><tr><td>python\GafferArnoldTest\InteractiveArnoldRenderTest.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\_InspectorColumn.py</td><td>内容变更</td></tr><tr><td>.github\workflows\main.yml</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\InstancerUI.py</td><td>内容变更</td></tr><tr><td>include\GafferCycles\IECoreCyclesPreview\GeometryAlgo.h</td><td>内容变更</td></tr><tr><td>src\GafferScene\Instancer.cpp</td><td>内容变更</td></tr><tr><td>src\GafferScene\Render.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUITest\ParameterInspectorTest.py</td><td>内容变更</td></tr><tr><td>include\GafferUI\StandardNodule.h</td><td>内容变更</td></tr><tr><td>src\GafferScene\RendererAlgo.cpp</td><td>内容变更</td></tr><tr><td>include\GafferImage\TypeIds.h</td><td>内容变更</td></tr><tr><td>startup\GafferScene\matteAdaptor.py</td><td>内容变更</td></tr><tr><td>src\IECoreArnold\Renderer.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\ParameterInspector.cpp</td><td>内容变更</td></tr><tr><td>src\GafferScene\EditScopeAlgo.cpp</td><td>内容变更</td></tr><tr><td>python\GafferArnoldTest\ArnoldVDBTest.py</td><td>内容变更</td></tr><tr><td>python\GafferTest\ModuleTest.py</td><td>内容变更</td></tr><tr><td>python\GafferArnoldUI\ArnoldShaderUI.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\RenderTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUI\ColorSwatchPlugValueWidget.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\ShaderUI.py</td><td>内容变更</td></tr><tr><td>src\GafferArnold\ArnoldOptions.cpp</td><td>内容变更</td></tr><tr><td>python\GafferTest\AboutTest.py</td><td>内容变更</td></tr><tr><td>include\Gaffer\NameSwitch.h</td><td>内容变更</td></tr><tr><td>startup\gui\viewer.py</td><td>内容变更</td></tr><tr><td>src\IECoreDelight\Renderer.cpp</td><td>内容变更</td></tr><tr><td>startup\gui\shaderPresets.py</td><td>内容变更</td></tr><tr><td>src\GafferSceneUIModule\InspectorBinding.cpp</td><td>内容变更</td></tr><tr><td>startup\GafferScene\renderPassTypes.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\SceneViewUI.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\PrimitiveVariableTweaksUI.py</td><td>内容变更</td></tr><tr><td>python\GafferDispatchUI\DispatchDialogue.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\SceneAlgo.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\PrimitiveVariableTweaksTest.py</td><td>内容变更</td></tr><tr><td>startup\gui\menus.py</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\Inspector.cpp</td><td>内容变更</td></tr><tr><td>include\GafferScene\TypeIds.h</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\SceneWriterTest.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\__init__.py</td><td>内容变更</td></tr><tr><td>doc\source\Interface\ControlsAndShortcuts\index.md</td><td>内容变更</td></tr><tr><td>python\GafferUI\GraphEditor.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\Options.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\DeleteRenderPassesUI.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\AttributesUI.py</td><td>内容变更</td></tr><tr><td>startup\GafferScene\cameraVisibilityAdaptor.py</td><td>内容变更</td></tr><tr><td>src\GafferImageModule\MetadataBinding.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\SceneAlgoTest.py</td><td>内容变更</td></tr><tr><td>src\GafferUI\StandardNodule.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneModule\RenderBinding.cpp</td><td>内容变更</td></tr><tr><td>include\GafferScene\EditScopeAlgo.h</td><td>内容变更</td></tr><tr><td>Changes.md</td><td>内容变更</td></tr><tr><td>src\GafferSceneModule\GlobalsBinding.cpp</td><td>内容变更</td></tr><tr><td>python\GafferImageUI\__init__.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\RenderPassAdaptorTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUI\VectorDataWidget.py</td><td>内容变更</td></tr><tr><td>src\GafferArnoldPlugin\OutputDriver.cpp</td><td>内容变更</td></tr><tr><td>src\IECoreArnold\PointsAlgo.cpp</td><td>内容变更</td></tr><tr><td>src\GafferOSL\OSLShader.cpp</td><td>内容变更</td></tr><tr><td>python\GafferUSDTest\__init__.py</td><td>内容变更</td></tr><tr><td>python\GafferUI\PathListingWidget.py</td><td>内容变更</td></tr><tr><td>src\Gaffer\MetadataAlgo.cpp</td><td>内容变更</td></tr><tr><td>src\GafferScene\Cryptomatte.cpp</td><td>内容变更</td></tr><tr><td>src\GafferScene\SceneWriter.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\InstancerTest.py</td><td>内容变更</td></tr><tr><td>src\GafferCycles\IECoreCyclesPreview\GeometryAlgo.cpp</td><td>内容变更</td></tr><tr><td>src\GafferUI\GraphGadget.cpp</td><td>内容变更</td></tr><tr><td>python\GafferCyclesUI\CyclesAttributesUI.py</td><td>内容变更</td></tr><tr><td>src\GafferUIModule\GraphGadgetBinding.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\VisualiserTool.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\StandardLightVisualiser.cpp</td><td>内容变更</td></tr><tr><td>python\GafferArnoldUITest\ArnoldShaderUITest.py</td><td>内容变更</td></tr><tr><td>startup\gui\renderPassEditor.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\DeleteAttributes.cpp</td><td>内容变更</td></tr><tr><td>include\IECoreArnold\ShapeAlgo.h</td><td>内容变更</td></tr><tr><td>include\GafferScene\SceneAlgo.h</td><td>内容变更</td></tr><tr><td>include\GafferSceneUI\Private\AttributeInspector.h</td><td>内容变更</td></tr><tr><td>.github\workflows\main\installDependencies.py</td><td>内容变更</td></tr><tr><td>resources\graphics.py</td><td>内容变更</td></tr><tr><td>python\GafferImageTest\CatalogueTest.py</td><td>内容变更</td></tr><tr><td>python\GafferTest\NameSwitchTest.py</td><td>内容变更</td></tr><tr><td>python\GafferArnoldUI\ArnoldOptionsUI.py</td><td>内容变更</td></tr><tr><td>include\GafferUI\AnnotationsGadget.h</td><td>内容变更</td></tr><tr><td>src\IECoreArnold\CurvesAlgo.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneModule\EditScopeAlgoBinding.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneUIModule\ToolBinding.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUI\BranchCreatorUI.py</td><td>内容变更</td></tr><tr><td>include\GafferUI\GraphGadget.h</td><td>内容变更</td></tr><tr><td>include\GafferScene\Private\RendererAlgo.h</td><td>内容变更</td></tr><tr><td>python\IECoreArnoldTest\OutputDriverTest.py</td><td>内容变更</td></tr><tr><td>src\GafferUI\PathColumn.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUITest\SceneGadgetTest.py</td><td>内容变更</td></tr><tr><td>src\GafferArnold\ArnoldShader.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\__init__.py</td><td>内容变更</td></tr><tr><td>.github\workflows\main\installDelight.py</td><td>内容变更</td></tr><tr><td>include\GafferUI\PathColumn.h</td><td>内容变更</td></tr><tr><td>python\GafferTest\TestCase.py</td><td>内容变更</td></tr><tr><td>src\GafferUSD\USDLayerWriter.cpp</td><td>内容变更</td></tr><tr><td>src\GafferScene\BranchCreator.cpp</td><td>内容变更</td></tr><tr><td>python\GafferUSDTest\USDLayerWriterTest.py</td><td>内容变更</td></tr><tr><td>python\IECoreArnoldTest\ShaderNetworkAlgoTest.py</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\AttributeInspector.cpp</td><td>内容变更</td></tr><tr><td>.github\workflows\versionCheck.yml</td><td>内容变更</td></tr><tr><td>bin\__gaffer.py</td><td>内容变更</td></tr><tr><td>python\GafferCyclesTest\RenderPassAdaptorTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUI\ColorPlugValueWidget.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\RenderController.cpp</td><td>内容变更</td></tr><tr><td>include\GafferScene\Attributes.h</td><td>内容变更</td></tr><tr><td>python\GafferUITest\ExamplesTest.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\PrimitiveVariableTweaks.cpp</td><td>内容变更</td></tr><tr><td>python\Gaffer\__init__.py</td><td>内容变更</td></tr><tr><td>include\GafferUI\TypeIds.h</td><td>内容变更</td></tr><tr><td>include\GafferSceneUI\Private\ParameterInspector.h</td><td>内容变更</td></tr><tr><td>python\GafferArnoldUI\__init__.py</td><td>内容变更</td></tr><tr><td>src\GafferUI\AnnotationsGadget.cpp</td><td>内容变更</td></tr><tr><td>include\GafferScene\Render.h</td><td>内容变更</td></tr><tr><td>startup\gui\usd.py</td><td>内容变更</td></tr><tr><td>startup\gui\outputs.py</td><td>内容变更</td></tr><tr><td>src\GafferCycles\IECoreCyclesPreview\Renderer.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUITest\OptionInspectorTest.py</td><td>内容变更</td></tr><tr><td>python\GafferCyclesTest\IECoreCyclesPreviewTest\RendererTest.py</td><td>内容变更</td></tr><tr><td>src\GafferUI\StandardNodeGadget.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\DeleteAttributesTest.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\Shader.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\SceneReaderTest.py</td><td>内容变更</td></tr><tr><td>src\GafferCycles\IECoreCyclesPreview\VDBAlgo.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\OptionInspector.cpp</td><td>内容变更</td></tr><tr><td>python\GafferArnoldTest\ArnoldRenderTest.py</td><td>内容变更</td></tr><tr><td>python\GafferUSDUI\__init__.py</td><td>内容变更</td></tr><tr><td>python\GafferTest\TweakPlugTest.py</td><td>内容变更</td></tr><tr><td>include\Gaffer\MetadataAlgo.h</td><td>内容变更</td></tr><tr><td>src\GafferCycles\IECoreCyclesPreview\ShaderNetworkAlgo.cpp</td><td>内容变更</td></tr><tr><td>python\GafferUITest\AnnotationsGadgetTest.py</td><td>内容变更</td></tr><tr><td>include\GafferSceneUI\Private\SetMembershipInspector.h</td><td>内容变更</td></tr><tr><td>src\IECoreArnold\ShapeAlgo.cpp</td><td>内容变更</td></tr><tr><td>python\GafferTest\MetadataAlgoTest.py</td><td>内容变更</td></tr><tr><td>python\GafferSceneTest\RenderAdaptorTest.py</td><td>内容变更</td></tr><tr><td>src\GafferSceneModule\IECoreScenePreviewBinding.cpp</td><td>内容变更</td></tr><tr><td>src\GafferModule\MetadataAlgoBinding.cpp</td><td>内容变更</td></tr><tr><td>src\GafferSceneUI\SetMembershipInspector.cpp</td><td>内容变更</td></tr><tr><td>src\GafferImageUI\ImageGadget.cpp</td><td>内容变更</td></tr><tr><td>python\GafferSceneUITest\SetMembershipInspectorTest.py</td><td>内容变更</td></tr><tr><td>src\GafferImage\ContactSheetCore.cpp</td><td>内容变更</td></tr><tr><td>startup\gui\attributeEditor.py</td><td>内容变更</td></tr><tr><td>src\GafferScene\MeshSplit.cpp</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

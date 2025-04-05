@@ -1,0 +1,599 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 22:08:36</p>
+                <p>SBOM A: sample_data\derailed_k9s_9aff93e.json</p>
+                <p>SBOM B: sample_data\derailed_k9s.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>28</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>89</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.1/10 (80.9%) [A-]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.1/10.0 (80.9%)，安全等级: A-。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量新增依赖, 主版本变更, 大量次版本变更, 依赖扩张, 重大版本变更。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.6/1.7 (95.1%)</td>
+                    <td><ul class='details-list'><li>大量新增包(28个)可能增加攻击面</li><li>移除了5个包</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">2.9/3.5 (81.7%)</td>
+                    <td><ul class='details-list'><li>2个包发生主版本变更，可能存在API不兼容</li><li>43个包发生次版本变更</li><li>37个包发生补丁版本变更</li><li>7个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.2/2.6 (84.0%)</td>
+                    <td><ul class='details-list'><li>存在2个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 依赖扩张, 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.5/1.3 (41.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2022-0635 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0635</li><li>- Warn: Project is vulnerable to: GO-2022-0646 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0646</li><li>- Warn: Project is vulnerable to: GO-2025-3488 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3488</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (3)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GO-2022-0635</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2022-0635<br><br><div class="cve-header">来自 CVE-2020-8912 的附加信息:</div><br><div class="section-header">描述: A vulnerability in the in-band key negotiation exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. An attacker with write access to the targeted bucket can change the encryption algorithm of an object in the bucket, which can then allow them to change AES-GCM to AES-CTR. Using this in combination with a decryption oracle can reveal the authentication key used by AES-GCM as decrypting the GMAC tag leaves the authentication key recoverable as an algebraic equation. It is recommended to update your SDK to V2 or later, and re-encrypt your files.</div><br><div class="section-header">发布日期: 2020-08-11</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-8912, GHSA-7f33-f4f5-xwgw</div><br><br><div class="section-header">发布日期: 2024-12-12</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869801</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/aws/aws-sdk-go (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2022-0646</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2022-0646<br><br><div class="cve-header">来自 CVE-2020-8911 的附加信息:</div><br><div class="section-header">描述: A padding oracle vulnerability exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. The SDK allows users to encrypt files with AES-CBC without computing a Message Authentication Code (MAC), which then allows an attacker who has write access to the target's S3 bucket and can observe whether or not an endpoint with access to the key can decrypt a file, they can reconstruct the plaintext with (on average) 128*length (plaintext) queries to the endpoint, by exploiting CBC's ability to manipulate the bytes of the next block and PKCS5 padding errors. It is recommended to update your SDK to V2 or later, and re-encrypt your files.</div><br><div class="section-header">发布日期: 2020-08-11</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><br><div class="section-header">相关漏洞ID: CVE-2020-8911, GHSA-f5pg-7wfw-84q9</div><br><br><div class="section-header">发布日期: 2022-02-11</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869800</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围:</div><br>包名: github.com/aws/aws-sdk-go (Go)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GO-2025-3488</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GO-2025-3488<br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div><br><div class="section-header">描述: An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.</div><br><div class="section-header">发布日期: 2025-02-26</div><br><div class="section-header">最后更新: 2025-02-26</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><span class="vuln-link">https://pkg.go.dev/vuln/GO-2025-3488</span><br><br><div class="section-header">相关漏洞ID: CVE-2025-22868</div><br><br><div class="section-header">发布日期: 2025-02-26</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围:</div><br>包名: golang.org/x/oauth2 (Go)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (28)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/bitnami/go-version</td><td>v0.0.0-20250131085805-b1f57a8634ef</td><td>Apache-2.0</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric</td><td>v0.48.1</td><td>Apache-2.0</td></tr><tr><td>golang.org/x/tools</td><td>v0.29.0</td><td>Apache-2.0</td></tr><tr><td>github.com/lmittmann/tint</td><td>v1.0.7</td><td>Apache-2.0</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.33.0</td><td>Apache-2.0</td></tr><tr><td>github.com/agext/levenshtein</td><td>v1.2.1</td><td>Apache-2.0</td></tr><tr><td>cloud.google.com/go/monitoring</td><td>v1.21.2</td><td>Apache-2.0</td></tr><tr><td>github.com/charmbracelet/x/cellbuf</td><td>v0.0.13-0.20250311204145-2c3ea96c31dd</td><td>Apache-2.0</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp</td><td>v1.25.0</td><td>Apache-2.0</td></tr><tr><td>github.com/rust-secure-code/go-rustaudit</td><td>v0.0.0-20250226111315-e20ec32e963c</td><td>Apache-2.0</td></tr><tr><td>github.com/araddon/dateparse</td><td>v0.0.0-20210429162001-6b43995a97de</td><td>Apache-2.0</td></tr><tr><td>github.com/envoyproxy/protoc-gen-validate</td><td>v1.1.0</td><td>Apache-2.0</td></tr><tr><td>github.com/planetscale/vtprotobuf</td><td>v0.6.1-0.20240319094008-0393e58bdf10</td><td>Apache-2.0</td></tr><tr><td>github.com/cncf/xds/go</td><td>v0.0.0-20240905190251-b4127c9b8d78</td><td>Apache-2.0</td></tr><tr><td>github.com/charmbracelet/x/term</td><td>v0.2.1</td><td>Apache-2.0</td></tr><tr><td>github.com/charmbracelet/colorprofile</td><td>v0.2.3-0.20250311203215-f60798e515dc</td><td>Apache-2.0</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>v0.2.6</td><td>Apache-2.0</td></tr><tr><td>github.com/envoyproxy/go-control-plane</td><td>v0.13.1</td><td>Apache-2.0</td></tr><tr><td>github.com/hashicorp/hcl/v2</td><td>v2.23.0</td><td>Apache-2.0</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>Apache-2.0</td></tr><tr><td>go.opentelemetry.io/contrib/detectors/gcp</td><td>v1.29.0</td><td>Apache-2.0</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping</td><td>v0.48.1</td><td>Apache-2.0</td></tr><tr><td>go.opentelemetry.io/otel/sdk/metric</td><td>v1.29.0</td><td>Apache-2.0</td></tr><tr><td>github.com/anchore/archiver/v3</td><td>v3.5.3-0.20241210171143-5b1d8d1c7c51</td><td>Apache-2.0</td></tr><tr><td>github.com/spdx/gordf</td><td>v0.0.0-20201111095634-7098f93598fb</td><td>Apache-2.0</td></tr><tr><td>github.com/census-instrumentation/opencensus-proto</td><td>v0.4.1</td><td>Apache-2.0</td></tr><tr><td>cel.dev/expr</td><td>v0.18.0</td><td>Apache-2.0</td></tr><tr><td>cloud.google.com/go/auth</td><td>v0.13.0</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (5)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/rs/zerolog</td><td>v1.33.0</td><td>Apache-2.0</td></tr><tr><td>github.com/microsoft/go-rustaudit</td><td>v0.0.0-20220730194248-4b17361d90a5</td><td>Apache-2.0</td></tr><tr><td>github.com/derailed/popeye</td><td>v0.11.3</td><td>Apache-2.0</td></tr><tr><td>gopkg.in/yaml.v2</td><td>v2.4.0</td><td>Apache-2.0</td></tr><tr><td>github.com/mholt/archiver/v3</td><td>v3.5.1</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (89)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/anchore/packageurl-go</td><td>v0.1.1-0.20241018175412-5c22e6360c4f</td><td>v0.1.1-0.20250220190351-d62adb6e1115</td><td>一般变更</td></tr><tr><td>helm.sh/helm/v3</td><td>v3.17.0</td><td>v3.17.2</td><td>补丁版本</td></tr><tr><td>github.com/skeema/knownhosts</td><td>v1.3.0</td><td>v1.3.1</td><td>补丁版本</td></tr><tr><td>golang.org/x/text</td><td>v0.21.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.17.8</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>v0.53.0</td><td>v0.54.0</td><td>次版本</td></tr><tr><td>github.com/spf13/cobra</td><td>v1.8.1</td><td>v1.9.1</td><td>次版本</td></tr><tr><td>github.com/sylabs/squashfs</td><td>v1.0.0</td><td>v1.0.5</td><td>补丁版本</td></tr><tr><td>github.com/vbatts/tar-split</td><td>v0.11.3</td><td>v0.11.6</td><td>补丁版本</td></tr><tr><td>modernc.org/memory</td><td>v1.8.0</td><td>v1.8.2</td><td>补丁版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.29.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/googleapis/enterprise-certificate-proxy</td><td>v0.3.2</td><td>v0.3.4</td><td>补丁版本</td></tr><tr><td>k8s.io/apiextensions-apiserver</td><td>v0.32.0</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/containerd/containerd</td><td>v1.7.24</td><td>v1.7.27</td><td>补丁版本</td></tr><tr><td>github.com/go-git/go-git/v5</td><td>v5.13.0</td><td>v5.14.0</td><td>次版本</td></tr><tr><td>modernc.org/libc</td><td>v1.55.3</td><td>v1.61.13</td><td>次版本</td></tr><tr><td>k8s.io/api</td><td>v0.32.1</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/opencontainers/image-spec</td><td>v1.1.0</td><td>v1.1.1</td><td>补丁版本</td></tr><tr><td>github.com/hashicorp/go-getter</td><td>v1.7.6</td><td>v1.7.8</td><td>补丁版本</td></tr><tr><td>k8s.io/kubectl</td><td>v0.32.0</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/muesli/termenv</td><td>v0.15.2</td><td>v0.16.0</td><td>次版本</td></tr><tr><td>github.com/anchore/syft</td><td>v1.17.0</td><td>v1.21.0</td><td>次版本</td></tr><tr><td>github.com/go-git/go-billy/v5</td><td>v5.6.0</td><td>v5.6.2</td><td>补丁版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.35.1</td><td>v1.36.3</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.28.0</td><td>v1.33.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go</td><td>v0.112.1</td><td>v0.116.0</td><td>次版本</td></tr><tr><td>github.com/andybalholm/brotli</td><td>v1.0.4</td><td>v1.1.1</td><td>次版本</td></tr><tr><td>k8s.io/apimachinery</td><td>v0.32.1</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/spf13/pflag</td><td>v1.0.5</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>k8s.io/component-base</td><td>v0.32.0</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.3.0</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/pierrec/lz4/v4</td><td>v4.1.19</td><td>v4.1.22</td><td>补丁版本</td></tr><tr><td>github.com/docker/docker-credential-helpers</td><td>v0.7.0</td><td>v0.8.2</td><td>次版本</td></tr><tr><td>github.com/klauspost/pgzip</td><td>v1.2.5</td><td>v1.2.6</td><td>补丁版本</td></tr><tr><td>github.com/docker/cli</td><td>v27.3.1+incompatible</td><td>v28.0.1+incompatible</td><td>主版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.7</td><td>v0.1.8</td><td>补丁版本</td></tr><tr><td>golang.org/x/term</td><td>v0.27.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>google.golang.org/grpc</td><td>v1.65.0</td><td>v1.67.3</td><td>次版本</td></tr><tr><td>k8s.io/metrics</td><td>v0.32.0</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/containerd/ttrpc</td><td>v1.2.5</td><td>v1.2.7</td><td>补丁版本</td></tr><tr><td>github.com/magiconair/properties</td><td>v1.8.7</td><td>v1.8.9</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/storage</td><td>v1.38.0</td><td>v1.49.0</td><td>次版本</td></tr><tr><td>github.com/google/go-containerregistry</td><td>v0.20.2</td><td>v0.20.3</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.53.0</td><td>v0.58.0</td><td>次版本</td></tr><tr><td>k8s.io/client-go</td><td>v0.32.1</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/docker/docker</td><td>v27.3.1+incompatible</td><td>v28.0.1+incompatible</td><td>主版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.12.3</td><td>v2.14.1</td><td>次版本</td></tr><tr><td>github.com/aquasecurity/go-pep440-version</td><td>v0.0.0-20210121094942-22b2f8951d46</td><td>v0.0.1</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.28.0</td><td>v1.33.0</td><td>次版本</td></tr><tr><td>github.com/containerd/stargz-snapshotter/estargz</td><td>v0.14.3</td><td>v0.16.3</td><td>次版本</td></tr><tr><td>github.com/saferwall/pe</td><td>v1.5.5</td><td>v1.5.6</td><td>补丁版本</td></tr><tr><td>github.com/pjbgf/sha1cd</td><td>v0.3.0</td><td>v0.3.2</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20240826202546-f6391c0de4c7</td><td>v0.0.0-20241223144023-3abc09e42ca8</td><td>一般变更</td></tr><tr><td>github.com/aquasecurity/go-version</td><td>v0.0.0-20210121072130-637058cfe492</td><td>v0.0.1</td><td>补丁版本</td></tr><tr><td>github.com/cloudflare/circl</td><td>v1.3.8</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.31.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>modernc.org/sqlite</td><td>v1.34.1</td><td>v1.36.1</td><td>次版本</td></tr><tr><td>k8s.io/apiserver</td><td>v0.32.0</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>(</td><td>cloud.google.com/go</td><td>cel.dev/expr</td><td>一般变更</td></tr><tr><td>k8s.io/cli-runtime</td><td>v0.32.1</td><td>v0.32.3</td><td>补丁版本</td></tr><tr><td>github.com/anchore/stereoscope</td><td>v0.0.9</td><td>v0.1.0</td><td>次版本</td></tr><tr><td>github.com/cyphar/filepath-securejoin</td><td>v0.3.6</td><td>v0.4.1</td><td>次版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.10.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/charmbracelet/x/ansi</td><td>v0.4.5</td><td>v0.8.0</td><td>次版本</td></tr><tr><td>github.com/containerd/continuity</td><td>v0.4.2</td><td>v0.4.4</td><td>补丁版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.23.0</td><td>v0.25.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.33.0</td><td>v0.37.0</td><td>次版本</td></tr><tr><td>github.com/golang/groupcache</td><td>v0.0.0-20210331224755-41bb18bfe9da</td><td>v0.0.0-20241129210726-2c02b8208cf8</td><td>一般变更</td></tr><tr><td>github.com/gabriel-vasile/mimetype</td><td>v1.4.7</td><td>v1.4.8</td><td>补丁版本</td></tr><tr><td>github.com/containerd/containerd/api</td><td>v1.7.19</td><td>v1.8.0</td><td>次版本</td></tr><tr><td>github.com/spf13/afero</td><td>v1.11.0</td><td>v1.14.0</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20240826202546-f6391c0de4c7</td><td>v0.0.0-20241209162323-e6fa225c2576</td><td>一般变更</td></tr><tr><td>github.com/charmbracelet/lipgloss</td><td>v1.0.0</td><td>v1.1.0</td><td>次版本</td></tr><tr><td>github.com/felixge/fgprof</td><td>v0.9.3</td><td>v0.9.5</td><td>补丁版本</td></tr><tr><td>github.com/sylabs/sif/v2</td><td>v2.20.0</td><td>v2.20.2</td><td>补丁版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.22.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>modernc.org/mathutil</td><td>v1.6.0</td><td>v1.7.1</td><td>次版本</td></tr><tr><td>github.com/ProtonMail/go-crypto</td><td>v1.1.3</td><td>v1.1.5</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto</td><td>v0.0.0-20240213162025-012b6fc9bca9</td><td>v0.0.0-20241118233622-e639e219e697</td><td>一般变更</td></tr><tr><td>github.com/bmatcuk/doublestar/v4</td><td>v4.7.1</td><td>v4.8.1</td><td>次版本</td></tr><tr><td>google.golang.org/api</td><td>v0.171.0</td><td>v0.215.0</td><td>次版本</td></tr><tr><td>github.com/google/go-cmp</td><td>v0.6.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>github.com/CycloneDX/cyclonedx-go</td><td>v0.9.1</td><td>v0.9.2</td><td>补丁版本</td></tr><tr><td>github.com/derailed/tcell/v2</td><td>v2.3.1-rc.3</td><td>v2.3.1-rc.4</td><td>一般变更</td></tr><tr><td>cloud.google.com/go/iam</td><td>v1.1.6</td><td>v1.2.2</td><td>次版本</td></tr><tr><td>github.com/anchore/grype</td><td>v0.85.0</td><td>v0.87.0</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.7.0</td><td>v0.8.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.28.0</td><td>v1.33.0</td><td>次版本</td></tr><tr><td>github.com/nwaples/rardecode</td><td>v1.1.0</td><td>v1.1.3</td><td>补丁版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>golang.org/x/oauth2</td>
+                            <td class="vuln-unknown">GO-2025-3488<br>关联CVE: CVE-2025-22868</td>
+                            <td>所有版本 < 0.27.0</td>
+                            <td>Unexpected memory consumption during token parsing in golang.org/x/oauth2<br><br>An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/652155' target='_blank' class='vuln-link'>https://go.dev/cl/652155</a><br><a href='https://go.dev/issue/71490' target='_blank' class='vuln-link'>https://go.dev/issue/71490</a></div></td>
+                            <td>2025-02-26</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>911</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>942</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>42</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>284</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (42)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>change_logs\release_v0.40.10.md</td></tr><tr><td>internal\render\section.go</td></tr><tr><td>change_logs\release_v0.40.3.md</td></tr><tr><td>internal\render\table.go</td></tr><tr><td>internal\dao\dynamic.go</td></tr><tr><td>change_logs\release_v0.40.6.md</td></tr><tr><td>internal\config\testdata\plugins\plugins-toast.yaml</td></tr><tr><td>testdata\aliases\aliases.yaml</td></tr><tr><td>change_logs\release_v0.40.1.md</td></tr><tr><td>internal\dao\scalable.go</td></tr><tr><td>change_logs\release_v0.40.4.md</td></tr><tr><td>plugins\node-root-shell.yaml</td></tr><tr><td>change_logs\release_v0.40.9.md</td></tr><tr><td>skins\gruvbox-light-hard.yaml</td></tr><tr><td>change_logs\release_v0.40.2.md</td></tr><tr><td>internal\config\testdata\plugins\dir\snippet.1.yaml</td></tr><tr><td>plugins\external-secrets.yaml</td></tr><tr><td>internal\config\testdata\plugins\dir\snippet.multi.yaml</td></tr><tr><td>internal\render\table_test.go</td></tr><tr><td>internal\slogs\keys.go</td></tr><tr><td>internal\config\json\testdata\plugins\snippet.yaml</td></tr><tr><td>.github\workflows\stales.yml</td></tr><tr><td>internal\render\cust_cols.go</td></tr><tr><td>skins\gruvbox-dark-hard.yaml</td></tr><tr><td>internal\config\testdata\plugins\dir\snippet.2.yaml</td></tr><tr><td>plugins\log-bunyan.yaml</td></tr><tr><td>internal\render\cust_col_test.go</td></tr><tr><td>internal\config\json\testdata\plugins\snippets.yaml</td></tr><tr><td>internal\render\cust_cols_test.go</td></tr><tr><td>internal\config\testdata\plugins\plugins.yaml</td></tr><tr><td>internal\config\json\schemas\plugin.json</td></tr><tr><td>change_logs\release_v0.40.5.md</td></tr><tr><td>change_logs\release_v0.40.8.md</td></tr><tr><td>internal\config\views_int_test.go</td></tr><tr><td>internal\render\policy_int_test.go</td></tr><tr><td>internal\slogs\child.go</td></tr><tr><td>internal\render\cust_col.go</td></tr><tr><td>change_logs\release_v0.40.7.md</td></tr><tr><td>change_logs\release_v0.40.0.md</td></tr><tr><td>plugins\vector-dev-top.yaml</td></tr><tr><td>internal\config\json\schemas\plugin-multi.json</td></tr><tr><td>change_logs\release_v0.40.11.md</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (11)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>internal\render\popeye.go</td></tr><tr><td>internal\dao\ofaas.go</td></tr><tr><td>internal\render\generic_test.go</td></tr><tr><td>internal\config\testdata\plugins.yaml</td></tr><tr><td>internal\config\testdata\plugins\test1.yaml</td></tr><tr><td>internal\config\testdata\plugins\test2.yaml</td></tr><tr><td>internal\render\ev.go</td></tr><tr><td>internal\view\sanitizer.go</td></tr><tr><td>internal\dao\popeye.go</td></tr><tr><td>internal\config\helpers_test.go</td></tr><tr><td>internal\render\ev_test.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (284)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>internal\render\base.go</td><td>内容变更</td></tr><tr><td>internal\config\data\ns.go</td><td>内容变更</td></tr><tr><td>internal\ui\table.go</td><td>内容变更</td></tr><tr><td>internal\render\sts.go</td><td>内容变更</td></tr><tr><td>internal\render\subject.go</td><td>内容变更</td></tr><tr><td>internal\model1\types.go</td><td>内容变更</td></tr><tr><td>internal\config\alias.go</td><td>内容变更</td></tr><tr><td>internal\view\log_test.go</td><td>内容变更</td></tr><tr><td>internal\config\views_test.go</td><td>内容变更</td></tr><tr><td>cmd\root.go</td><td>内容变更</td></tr><tr><td>internal\render\alias_test.go</td><td>内容变更</td></tr><tr><td>internal\config\files_int_test.go</td><td>内容变更</td></tr><tr><td>internal\config\plugin.go</td><td>内容变更</td></tr><tr><td>internal\render\rbac.go</td><td>内容变更</td></tr><tr><td>internal\xray\sts.go</td><td>内容变更</td></tr><tr><td>internal\config\json\testdata\k9s\toast.yaml</td><td>内容变更</td></tr><tr><td>internal\model\yaml.go</td><td>内容变更</td></tr><tr><td>internal\dao\port_forward.go</td><td>内容变更</td></tr><tr><td>internal\render\pod_test.go</td><td>内容变更</td></tr><tr><td>internal\view\env.go</td><td>内容变更</td></tr><tr><td>internal\config\types.go</td><td>内容变更</td></tr><tr><td>internal\config\testdata\views\views.yaml</td><td>内容变更</td></tr><tr><td>internal\view\secret.go</td><td>内容变更</td></tr><tr><td>internal\render\generic.go</td><td>内容变更</td></tr><tr><td>internal\render\ep.go</td><td>内容变更</td></tr><tr><td>internal\render\hpa_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\alias.go</td><td>内容变更</td></tr><tr><td>internal\view\table_int_test.go</td><td>内容变更</td></tr><tr><td>internal\render\dp.go</td><td>内容变更</td></tr><tr><td>internal\client\client.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\configs\aws_ct.yaml</td><td>内容变更</td></tr><tr><td>internal\model\history_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\app.go</td><td>内容变更</td></tr><tr><td>internal\view\drain_dialog.go</td><td>内容变更</td></tr><tr><td>internal\dao\cluster.go</td><td>内容变更</td></tr><tr><td>internal\dao\cronjob.go</td><td>内容变更</td></tr><tr><td>internal\client\helpers.go</td><td>内容变更</td></tr><tr><td>internal\render\benchmark_int_test.go</td><td>内容变更</td></tr><tr><td>internal\xray\pod.go</td><td>内容变更</td></tr><tr><td>internal\config\helpers.go</td><td>内容变更</td></tr><tr><td>internal\model1\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\model1\header.go</td><td>内容变更</td></tr><tr><td>internal\model\stack.go</td><td>内容变更</td></tr><tr><td>internal\dao\port_forwarder.go</td><td>内容变更</td></tr><tr><td>internal\render\pv.go</td><td>内容变更</td></tr><tr><td>internal\render\node.go</td><td>内容变更</td></tr><tr><td>internal\view\cmd\types.go</td><td>内容变更</td></tr><tr><td>internal\config\json\validator_test.go</td><td>内容变更</td></tr><tr><td>internal\model\tree.go</td><td>内容变更</td></tr><tr><td>internal\view\ns.go</td><td>内容变更</td></tr><tr><td>internal\view\types.go</td><td>内容变更</td></tr><tr><td>internal\xray\ns.go</td><td>内容变更</td></tr><tr><td>.golangci.yml</td><td>内容变更</td></tr><tr><td>internal\render\helm\chart.go</td><td>内容变更</td></tr><tr><td>internal\render\pdb.go</td><td>内容变更</td></tr><tr><td>internal\config\json\schemas\context.json</td><td>内容变更</td></tr><tr><td>.github\workflows\lint.yml</td><td>内容变更</td></tr><tr><td>internal\config\testdata\configs\expected.yaml</td><td>内容变更</td></tr><tr><td>internal\model\flash.go</td><td>内容变更</td></tr><tr><td>internal\render\secret.go</td><td>内容变更</td></tr><tr><td>internal\view\details.go</td><td>内容变更</td></tr><tr><td>internal\dao\dp.go</td><td>内容变更</td></tr><tr><td>internal\render\container.go</td><td>内容变更</td></tr><tr><td>internal\render\rob.go</td><td>内容变更</td></tr><tr><td>internal\view\alias.go</td><td>内容变更</td></tr><tr><td>internal\dao\helm_chart.go</td><td>内容变更</td></tr><tr><td>internal\view\reference.go</td><td>内容变更</td></tr><tr><td>internal\view\actions.go</td><td>内容变更</td></tr><tr><td>internal\view\yaml.go</td><td>内容变更</td></tr><tr><td>internal\ui\prompt.go</td><td>内容变更</td></tr><tr><td>internal\render\np.go</td><td>内容变更</td></tr><tr><td>internal\view\cmd\interpreter_test.go</td><td>内容变更</td></tr><tr><td>internal\config\data\config.go</td><td>内容变更</td></tr><tr><td>internal\render\screen_dump.go</td><td>内容变更</td></tr><tr><td>internal\config\json\testdata\context\toast.yaml</td><td>内容变更</td></tr><tr><td>internal\ui\logo.go</td><td>内容变更</td></tr><tr><td>internal\render\crd.go</td><td>内容变更</td></tr><tr><td>internal\render\sa.go</td><td>内容变更</td></tr><tr><td>internal\client\config_test.go</td><td>内容变更</td></tr><tr><td>internal\config\testdata\configs\k9s.yaml</td><td>内容变更</td></tr><tr><td>internal\port\tunnel.go</td><td>内容变更</td></tr><tr><td>internal\dao\node.go</td><td>内容变更</td></tr><tr><td>internal\view\pod.go</td><td>内容变更</td></tr><tr><td>internal\view\actions_test.go</td><td>内容变更</td></tr><tr><td>internal\model1\table_data.go</td><td>内容变更</td></tr><tr><td>internal\render\pod.go</td><td>内容变更</td></tr><tr><td>internal\view\helpers.go</td><td>内容变更</td></tr><tr><td>internal\model1\header_test.go</td><td>内容变更</td></tr><tr><td>internal\view\owner_extender.go</td><td>内容变更</td></tr><tr><td>internal\render\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\client\config.go</td><td>内容变更</td></tr><tr><td>internal\view\workload.go</td><td>内容变更</td></tr><tr><td>internal\view\svc.go</td><td>内容变更</td></tr><tr><td>internal\dao\ns.go</td><td>内容变更</td></tr><tr><td>internal\view\log.go</td><td>内容变更</td></tr><tr><td>internal\dao\pod.go</td><td>内容变更</td></tr><tr><td>internal\render\job.go</td><td>内容变更</td></tr><tr><td>internal\view\cronjob.go</td><td>内容变更</td></tr><tr><td>internal\render\policy.go</td><td>内容变更</td></tr><tr><td>internal\render\sc.go</td><td>内容变更</td></tr><tr><td>internal\render\portforward.go</td><td>内容变更</td></tr><tr><td>internal\vul\scan.go</td><td>内容变更</td></tr><tr><td>internal\config\files_test.go</td><td>内容变更</td></tr><tr><td>internal\model1\table_data_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\rs.go</td><td>内容变更</td></tr><tr><td>internal\config\styles.go</td><td>内容变更</td></tr><tr><td>internal\render\hpa.go</td><td>内容变更</td></tr><tr><td>internal\view\scale_extender.go</td><td>内容变更</td></tr><tr><td>internal\model\history.go</td><td>内容变更</td></tr><tr><td>.github\workflows\test.yml</td><td>内容变更</td></tr><tr><td>internal\view\restart_extender.go</td><td>内容变更</td></tr><tr><td>internal\render\ro.go</td><td>内容变更</td></tr><tr><td>internal\config\data\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\configs\ct-1-1.yaml</td><td>内容变更</td></tr><tr><td>internal\ui\prompt_test.go</td><td>内容变更</td></tr><tr><td>internal\render\workload.go</td><td>内容变更</td></tr><tr><td>internal\ui\pages.go</td><td>内容变更</td></tr><tr><td>internal\config\testdata\configs\default.yaml</td><td>内容变更</td></tr><tr><td>internal\config\data\helpers.go</td><td>内容变更</td></tr><tr><td>internal\dao\job.go</td><td>内容变更</td></tr><tr><td>internal\view\app_test.go</td><td>内容变更</td></tr><tr><td>internal\config\testdata\configs\k9s_toast.yaml</td><td>内容变更</td></tr><tr><td>internal\dao\context.go</td><td>内容变更</td></tr><tr><td>internal\config\config.go</td><td>内容变更</td></tr><tr><td>internal\view\exec.go</td><td>内容变更</td></tr><tr><td>internal\config\json\schemas\k9s.json</td><td>内容变更</td></tr><tr><td>internal\dao\registry.go</td><td>内容变更</td></tr><tr><td>internal\dao\rbac_policy.go</td><td>内容变更</td></tr><tr><td>internal\view\crd.go</td><td>内容变更</td></tr><tr><td>internal\xray\dp.go</td><td>内容变更</td></tr><tr><td>internal\view\table.go</td><td>内容变更</td></tr><tr><td>internal\dao\pod_test.go</td><td>内容变更</td></tr><tr><td>internal\config\plugin_test.go</td><td>内容变更</td></tr><tr><td>internal\model1\helpers.go</td><td>内容变更</td></tr><tr><td>internal\render\helpers.go</td><td>内容变更</td></tr><tr><td>internal\xray\rs.go</td><td>内容变更</td></tr><tr><td>internal\view\user.go</td><td>内容变更</td></tr><tr><td>internal\config\mock\test_helpers.go</td><td>内容变更</td></tr><tr><td>internal\dao\helm_history.go</td><td>内容变更</td></tr><tr><td>internal\model\table_int_test.go</td><td>内容变更</td></tr><tr><td>internal\view\log_indicator.go</td><td>内容变更</td></tr><tr><td>internal\view\help.go</td><td>内容变更</td></tr><tr><td>internal\config\config_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\ds.go</td><td>内容变更</td></tr><tr><td>internal\model1\row_event.go</td><td>内容变更</td></tr><tr><td>internal\config\logger.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\data\k9s\cl-1\ct-1-1\config.yaml</td><td>内容变更</td></tr><tr><td>internal\render\context.go</td><td>内容变更</td></tr><tr><td>internal\view\app.go</td><td>内容变更</td></tr><tr><td>internal\ui\key.go</td><td>内容变更</td></tr><tr><td>internal\model1\delta.go</td><td>内容变更</td></tr><tr><td>internal\view\table_helper.go</td><td>内容变更</td></tr><tr><td>internal\config\files.go</td><td>内容变更</td></tr><tr><td>internal\dao\rbac.go</td><td>内容变更</td></tr><tr><td>skins\stock.yaml</td><td>内容变更</td></tr><tr><td>internal\view\pf_extender.go</td><td>内容变更</td></tr><tr><td>internal\render\crb.go</td><td>内容变更</td></tr><tr><td>internal\config\data\dir.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\configs\ct-1-2.yaml</td><td>内容变更</td></tr><tr><td>internal\render\ds.go</td><td>内容变更</td></tr><tr><td>cmd\version.go</td><td>内容变更</td></tr><tr><td>internal\view\cmd\interpreter.go</td><td>内容变更</td></tr><tr><td>internal\xray\container_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\non_resource.go</td><td>内容变更</td></tr><tr><td>internal\view\pf.go</td><td>内容变更</td></tr><tr><td>internal\view\alias_test.go</td><td>内容变更</td></tr><tr><td>internal\vul\scanner.go</td><td>内容变更</td></tr><tr><td>internal\ui\crumbs_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\secret.go</td><td>内容变更</td></tr><tr><td>internal\view\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\model\table.go</td><td>内容变更</td></tr><tr><td>internal\config\views.go</td><td>内容变更</td></tr><tr><td>internal\view\context.go</td><td>内容变更</td></tr><tr><td>internal\model\log.go</td><td>内容变更</td></tr><tr><td>internal\ui\types.go</td><td>内容变更</td></tr><tr><td>internal\xray\ds.go</td><td>内容变更</td></tr><tr><td>internal\view\dir.go</td><td>内容变更</td></tr><tr><td>internal\xray\container.go</td><td>内容变更</td></tr><tr><td>internal\view\xray.go</td><td>内容变更</td></tr><tr><td>internal\dao\log_items_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\action.go</td><td>内容变更</td></tr><tr><td>internal\render\benchmark.go</td><td>内容变更</td></tr><tr><td>internal\view\benchmark.go</td><td>内容变更</td></tr><tr><td>internal\model\pulse_health.go</td><td>内容变更</td></tr><tr><td>internal\config\json\testdata\context\cool.yaml</td><td>内容变更</td></tr><tr><td>internal\ui\config.go</td><td>内容变更</td></tr><tr><td>internal\render\rs.go</td><td>内容变更</td></tr><tr><td>internal\perf\benchmark.go</td><td>内容变更</td></tr><tr><td>plugins\argocd.yaml</td><td>内容变更</td></tr><tr><td>internal\config\k9s_int_test.go</td><td>内容变更</td></tr><tr><td>internal\model\text.go</td><td>内容变更</td></tr><tr><td>internal\view\live_view.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\configs\ct-2-1.yaml</td><td>内容变更</td></tr><tr><td>internal\dao\helpers.go</td><td>内容变更</td></tr><tr><td>internal\ui\menu.go</td><td>内容变更</td></tr><tr><td>internal\watch\forwarders_test.go</td><td>内容变更</td></tr><tr><td>internal\view\value_extender.go</td><td>内容变更</td></tr><tr><td>internal\xray\sa.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\data\k9s\cl-1\ct-1-2\config.yaml</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\configs\def_ct.yaml</td><td>内容变更</td></tr><tr><td>internal\render\alias.go</td><td>内容变更</td></tr><tr><td>internal\client\gvr_test.go</td><td>内容变更</td></tr><tr><td>internal\config\flags.go</td><td>内容变更</td></tr><tr><td>internal\dao\alias_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\sts.go</td><td>内容变更</td></tr><tr><td>internal\model\stack_test.go</td><td>内容变更</td></tr><tr><td>internal\client\metrics_test.go</td><td>内容变更</td></tr><tr><td>internal\config\data\testdata\data\k9s\cl-2\ct-2-1\config.yaml</td><td>内容变更</td></tr><tr><td>internal\view\browser.go</td><td>内容变更</td></tr><tr><td>internal\view\pf_dialog.go</td><td>内容变更</td></tr><tr><td>internal\dao\describe.go</td><td>内容变更</td></tr><tr><td>internal\render\cronjob.go</td><td>内容变更</td></tr><tr><td>internal\model\cluster_info_test.go</td><td>内容变更</td></tr><tr><td>internal\view\node.go</td><td>内容变更</td></tr><tr><td>internal\ui\config_int_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\crumbs.go</td><td>内容变更</td></tr><tr><td>cmd\info.go</td><td>内容变更</td></tr><tr><td>internal\model\rev_values.go</td><td>内容变更</td></tr><tr><td>internal\view\cmd\args.go</td><td>内容变更</td></tr><tr><td>internal\model\describe.go</td><td>内容变更</td></tr><tr><td>internal\view\page_stack.go</td><td>内容变更</td></tr><tr><td>internal\view\cluster_info.go</td><td>内容变更</td></tr><tr><td>internal\watch\forwarders.go</td><td>内容变更</td></tr><tr><td>internal\config\k9s.go</td><td>内容变更</td></tr><tr><td>internal\render\dir.go</td><td>内容变更</td></tr><tr><td>internal\model\types.go</td><td>内容变更</td></tr><tr><td>internal\ui\table_helper.go</td><td>内容变更</td></tr><tr><td>internal\model\log_test.go</td><td>内容变更</td></tr><tr><td>internal\config\json\schemas\plugins.json</td><td>内容变更</td></tr><tr><td>internal\view\registrar.go</td><td>内容变更</td></tr><tr><td>internal\view\cmd\args_test.go</td><td>内容变更</td></tr><tr><td>snap\snapcraft.yaml</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>internal\xray\tree_node.go</td><td>内容变更</td></tr><tr><td>internal\render\cr.go</td><td>内容变更</td></tr><tr><td>internal\ui\flash.go</td><td>内容变更</td></tr><tr><td>internal\vul\tally.go</td><td>内容变更</td></tr><tr><td>internal\model\registry.go</td><td>内容变更</td></tr><tr><td>internal\view\cmd\helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\config\json\validator.go</td><td>内容变更</td></tr><tr><td>internal\config\flags_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\table_test.go</td><td>内容变更</td></tr><tr><td>internal\config\data\context_test.go</td><td>内容变更</td></tr><tr><td>internal\xray\section.go</td><td>内容变更</td></tr><tr><td>internal\dao\types.go</td><td>内容变更</td></tr><tr><td>internal\config\data\dir_test.go</td><td>内容变更</td></tr><tr><td>internal\model\values.go</td><td>内容变更</td></tr><tr><td>internal\config\benchmark.go</td><td>内容变更</td></tr><tr><td>internal\render\pvc.go</td><td>内容变更</td></tr><tr><td>internal\model\cluster_info.go</td><td>内容变更</td></tr><tr><td>internal\model\helpers.go</td><td>内容变更</td></tr><tr><td>internal\render\svc.go</td><td>内容变更</td></tr><tr><td>internal\view\pf_extender_test.go</td><td>内容变更</td></tr><tr><td>internal\view\image_extender.go</td><td>内容变更</td></tr><tr><td>internal\dao\cm.go</td><td>内容变更</td></tr><tr><td>internal\ui\config_test.go</td><td>内容变更</td></tr><tr><td>internal\view\helm_history.go</td><td>内容变更</td></tr><tr><td>internal\watch\helper.go</td><td>内容变更</td></tr><tr><td>internal\ui\logo_test.go</td><td>内容变更</td></tr><tr><td>internal\config\data\context.go</td><td>内容变更</td></tr><tr><td>internal\view\container.go</td><td>内容变更</td></tr><tr><td>internal\dao\secret_test.go</td><td>内容变更</td></tr><tr><td>internal\render\img_scan.go</td><td>内容变更</td></tr><tr><td>internal\dao\img_scan.go</td><td>内容变更</td></tr><tr><td>internal\client\gvr.go</td><td>内容变更</td></tr><tr><td>internal\ui\splash.go</td><td>内容变更</td></tr><tr><td>internal\render\helm\history.go</td><td>内容变更</td></tr><tr><td>plugins\README.md</td><td>内容变更</td></tr><tr><td>internal\config\hotkey.go</td><td>内容变更</td></tr><tr><td>internal\watch\factory.go</td><td>内容变更</td></tr><tr><td>internal\view\yaml_test.go</td><td>内容变更</td></tr><tr><td>internal\config\json\testdata\k9s\cool.yaml</td><td>内容变更</td></tr><tr><td>internal\xray\svc.go</td><td>内容变更</td></tr><tr><td>internal\port\pf.go</td><td>内容变更</td></tr><tr><td>internal\render\np_test.go</td><td>内容变更</td></tr><tr><td>internal\dao\workload.go</td><td>内容变更</td></tr><tr><td>internal\view\screen_dump.go</td><td>内容变更</td></tr><tr><td>internal\render\ns.go</td><td>内容变更</td></tr><tr><td>internal\view\picker.go</td><td>内容变更</td></tr><tr><td>internal\render\cm.go</td><td>内容变更</td></tr><tr><td>internal\view\pulse.go</td><td>内容变更</td></tr><tr><td>internal\render\screen_dump_test.go</td><td>内容变更</td></tr><tr><td>internal\view\command.go</td><td>内容变更</td></tr><tr><td>internal\model\pulse.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

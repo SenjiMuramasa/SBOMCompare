@@ -1,0 +1,607 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:15:48</p>
+                <p>SBOM A: sample_data\grafana_k6_50afb99.json</p>
+                <p>SBOM B: sample_data\grafana_k6.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>34</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.7/10 (86.7%) [A]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.7/10.0 (86.7%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量次版本变更, CII-Best-Practices风险, Token-Permissions风险, 存在已知漏洞。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (98.0%)</td>
+                    <td><ul class='details-list'><li>新增了1个包</li><li>移除了4个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.6/3.5 (75.5%)</td>
+                    <td><ul class='details-list'><li>27个包发生次版本变更</li><li>3个包发生补丁版本变更</li><li>4个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.9/1.3 (66.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>以下项目风险较高: CII-Best-Practices, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</li><li>- Warn: Project is vulnerable to: GO-2025-3554 / GHSA-528q-4pgm-wvg2 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3554 / GHSA-528q-4pgm-wvg2</li><li>- Warn: Project is vulnerable to: GO-2025-3540 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3540</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (3)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</td>
+                            <td>Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &amp;quot;*.example.com&amp;quot;, a request to &amp;quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22870<br>GHSA-qxp5-gwg8-xv66<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.36.0 <br><br><br><div class="cve-header">来自 CVE-2025-22870 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3554 / GHSA-528q-4pgm-wvg2</td>
+                            <td>Reflected XSS in go-httpbin due to unrestricted client control over Content-Type in github.com/mccutchen/go-httpbin<br><br><div class="section-header">相关漏洞ID: </div><br>GHSA-528q-4pgm-wvg2<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/mccutchen/go-httpbin/security/advisories/GHSA-528q-4pgm-wvg2</span><br><span class="vuln-link">https://github.com/mccutchen/go-httpbin/commit/0decfd1a2e88d85ca6bfb8a92421653f647cbc04</span><br><span class="vuln-link">https://github.com/mccutchen/go-httpbin/releases/tag/v2.18.0</span><br><br><div class="section-header">影响范围: </div><br>github.com/mccutchen/go-httpbin: 所有版本 <br>github.com/mccutchen/go-httpbin/v2: 所有版本 &lt; 2.18.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3540</td>
+                            <td>Potential out of order responses when CLIENT SETINFO times out during connection establishment in github.com/redis/go-redis<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-29923<br>GHSA-92cp-5422-2mw7<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/redis/go-redis/security/advisories/GHSA-92cp-5422-2mw7</span><br><span class="vuln-link">https://github.com/redis/go-redis/commit/d236865b0cfa1b752ea4b7da666b1fdcd0acebb6</span><br><span class="vuln-link">https://github.com/redis/go-redis/pull/3295</span><br><br><div class="section-header">影响范围: </div><br>github.com/redis/go-redis: 所有版本 <br>github.com/redis/go-redis: 所有版本 <br>github.com/redis/go-redis: 所有版本 <br>github.com/redis/go-redis/v7: 所有版本 <br>github.com/redis/go-redis/v8: 所有版本 <br>github.com/redis/go-redis/v9: &gt;= 9.5.1 &lt; 9.5.5 <br>github.com/redis/go-redis/v9: 所有版本 &lt; 9.6.3 <br>github.com/redis/go-redis/v9: &gt;= 9.7.0-beta.1 &lt; 9.7.3 <br><br><br><div class="cve-header">来自 CVE-2025-29923 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (4)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/grafana/xk6-websockets</td><td>v0.7.2</td><td>NOASSERTION</td></tr><tr><td>github.com/grafana/xk6-output-opentelemetry</td><td>v0.3.0</td><td>NOASSERTION</td></tr><tr><td>github.com/grafana/xk6-webcrypto</td><td>v0.5.0</td><td>NOASSERTION</td></tr><tr><td>github.com/grafana/xk6-output-prometheus-remote</td><td>v0.5.0</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (34)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlptrace</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk/metric</td><td>v1.28.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto/x509roots/fallback</td><td>v0.0.0-20240806160748-b2d3a6a4b4d3</td><td>v0.0.0-20250210163342-e47973b1c108</td><td>一般变更</td></tr><tr><td>google.golang.org/grpc</td><td>v1.64.1</td><td>v1.67.1</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp</td><td>v1.28.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.34.2</td><td>v1.35.1</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/grafana/sobek</td><td>v0.0.0-20241024150027-d91f02b05e9b</td><td>v0.0.0-20250320150027-203dc85b6d98</td><td>一般变更</td></tr><tr><td>github.com/grpc-ecosystem/grpc-gateway/v2</td><td>v2.22.0</td><td>v2.26.1</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.8.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>github.com/stretchr/testify</td><td>v1.9.0</td><td>v1.10.0</td><td>次版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.10.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.16.0</td><td>v0.21.0</td><td>次版本</td></tr><tr><td>github.com/grafana/xk6-redis</td><td>v0.3.1</td><td>v0.3.3</td><td>补丁版本</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.17.11</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc</td><td>v1.28.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/proto/otlp</td><td>v1.3.1</td><td>v1.5.0</td><td>次版本</td></tr><tr><td>buf.build/gen/go/prometheus/prometheus/protocolbuffers/go</td><td>v1.31.0-20230627135113-9a12bc2590d2.1</td><td>v1.36.5-20240802094132-5b212ab78fb7.1</td><td>次版本</td></tr><tr><td>github.com/mstoykov/k6-taskqueue-lib</td><td>v0.1.2</td><td>v0.1.3</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20240515191416-fc5f0ca64291</td><td>v0.0.0-20240822170219-fc7c04adadcd</td><td>一般变更</td></tr><tr><td>golang.org/x/sys</td><td>v0.21.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>buf.build/gen/go/gogo/protobuf/protocolbuffers/go</td><td>v1.31.0-20210810001428-4df00b267f94.1</td><td>v1.36.5-20210810001428-4df00b267f94.1</td><td>次版本</td></tr><tr><td>github.com/evanw/esbuild</td><td>v0.21.2</td><td>v0.25.1</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.26.0</td><td>v0.33.0</td><td>次版本</td></tr><tr><td>github.com/mattn/go-colorable</td><td>v0.1.13</td><td>v0.1.14</td><td>补丁版本</td></tr><tr><td>golang.org/x/term</td><td>v0.27.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.31.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20240822170219-fc7c04adadcd</td><td>v0.0.0-20250218202821-56aae31c358a</td><td>一般变更</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/mailru/easyjson</td><td>v0.7.7</td><td>v0.9.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (2)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GHSA-qxp5-gwg8-xv66<br>关联CVE: CVE-2025-22870</td>
+                            <td>所有版本 &lt; 0.36.0</td>
+                            <td>HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net&lt;br&gt;&lt;br&gt;Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &quot;*.example.com&quot;, a request to &quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-22870' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-22870</a><br><a href='https://go-review.googlesource.com/q/project:net' target='_blank' class='vuln-link'>https://go-review.googlesource.com/q/project:net</a><br><a href='https://go.dev/cl/654697' target='_blank' class='vuln-link'>https://go.dev/cl/654697</a><br><a href='https://go.dev/issue/71984' target='_blank' class='vuln-link'>https://go.dev/issue/71984</a><br><a href='https://pkg.go.dev/vuln/GO-2025-3503' target='_blank' class='vuln-link'>https://pkg.go.dev/vuln/GO-2025-3503</a></div></td>
+                            <td>2025-03-12</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2025-3503<br>关联CVE: CVE-2025-22870</td>
+                            <td>所有版本 &lt; 0.36.0</td>
+                            <td>HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net&lt;br&gt;&lt;br&gt;Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &quot;*.example.com&quot;, a request to &quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/654697' target='_blank' class='vuln-link'>https://go.dev/cl/654697</a><br><a href='https://go.dev/issue/71984' target='_blank' class='vuln-link'>https://go.dev/issue/71984</a></div></td>
+                            <td>2025-03-12</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>3344</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>3484</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>687</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>547</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>437</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (687)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共687个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>vendor\google.golang.org\grpc\internal\transport\server_stream.go</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\bitmap.go</td></tr><tr><td>internal\js\modules\k6\crypto\x509\x509.go</td></tr><tr><td>internal\cmd\testdata\abort.js</td></tr><tr><td>internal\cmd\tests\tests.go</td></tr><tr><td>internal\cmd\testdata\abort_initerr.js</td></tr><tr><td>internal\output\influxdb\output.go</td></tr><tr><td>internal\cmd\options.go</td></tr><tr><td>examples\docker-compose\opentelemetry\script.js</td></tr><tr><td>internal\log\log.go</td></tr><tr><td>internal\js\init_and_modules_test.go</td></tr><tr><td>internal\js\modules\k6\browser\common\keyboard_test.go</td></tr><tr><td>internal\output\prometheusrw\remotewrite\prometheus.go</td></tr><tr><td>internal\js\modules\k6\experimental\websockets\blob_test.go</td></tr><tr><td>internal\js\modules\k6\browser\tests\static\iframe_test_nested2.html</td></tr><tr><td>internal\cmd\stdlog_integration_test.go</td></tr><tr><td>internal\output\cloud\output_test.go</td></tr><tr><td>internal\ui\doc.go</td></tr><tr><td>internal\js\modules\k6\browser\common\page_options.go</td></tr><tr><td>internal\execution\scheduler_ext_test.go</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\exemplar\doc.go</td></tr><tr><td>internal\js\modules\k6\experimental\fs\errors.go</td></tr><tr><td>internal\js\modules\k6\experimental\fs\module.go</td></tr><tr><td>internal\js\modules\k6\browser\browser\file_persister.go</td></tr><tr><td>internal\js\modules\k6\browser\common\frame_session.go</td></tr><tr><td>internal\js\modules\k6\crypto\crypto_test.go</td></tr><tr><td>vendor\go.opentelemetry.io\auto\sdk\tracer.go</td></tr><tr><td>internal\output\influxdb\output_test.go</td></tr><tr><td>internal\js\modules\k6\browser\browser\helpers.go</td></tr><tr><td>internal\js\modules\k6\experimental\streams\tests\checkout.sh</td></tr><tr><td>internal\ds\histogram\hdr.go</td></tr><tr><td>internal\js\modules\k6\browser\browser\js_handle_mapping.go</td></tr><tr><td>internal\js\modules\k6\browser\common\js_handle.go</td></tr><tr><td>internal\js\modules\k6\browser\common\network_manager.go</td></tr><tr><td>internal\js\modules\k6\browser\common\js\web_vital_init.js</td></tr><tr><td>internal\cloudapi\insights\proto\v1\common\common.pb.go</td></tr><tr><td>internal\output\opentelemetry\output.go</td></tr><tr><td>internal\execution\local\controller.go</td></tr><tr><td>internal\output\influxdb\config_test.go</td></tr><tr><td>internal\output\cloud\insights\enable.go</td></tr><tr><td>internal\cmd\testdata\abort_teardown.js</td></tr><tr><td>internal\cmd\ui_windows.go</td></tr><tr><td>internal\js\modules\k6\browser\common\keyboard.go</td></tr><tr><td>internal\secretsource\file\file_test.go</td></tr><tr><td>vendor\go.opentelemetry.io\auto\sdk\internal\telemetry\id.go</td></tr><tr><td>internal\js\modules\k6\browser\tests\static\iframe_home.html</td></tr><tr><td>internal\js\modules\k6\secrets\secrets_test.go</td></tr><tr><td>internal\js\modules\k6\browser\browser\worker_mapping.go</td></tr><tr><td>vendor\github.com\klauspost\compress\internal\le\unsafe_disabled.go</td></tr><tr><td>internal\output\summary\summary_test.go</td></tr><tr><td>internal\cmd\ui_test.go</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\bitmap_race.go</td></tr><tr><td>internal\cmd\testdata\thresholds\malformed_expression.js</td></tr><tr><td>internal\js\modules\k6\browser\tests\static\iframe_signin.html</td></tr><tr><td>internal\js\modules\k6\browser\common\locator.go</td></tr><tr><td>internal\js\modules\k6\browser\common\selectors.go</td></tr><tr><td>internal\js\modules\k6\webcrypto\crypto.go</td></tr><tr><td>examples\webcrypto\digest.js</td></tr><tr><td>internal\js\modules\k6\browser\k6ext\panic.go</td></tr><tr><td>internal\lib\testutils\minirunner\minirunner.go</td></tr><tr><td>internal\cmd\templates\protocol.js</td></tr><tr><td>internal\js\modules\k6\browser\tests\static\select_options.html</td></tr><tr><td>internal\ui\form.go</td></tr><tr><td>internal\js\modules\k6\browser\tests\static\iframe_test_nested1.html</td></tr><tr><td>internal\js\modules\k6\browser\common\kill_linux.go</td></tr><tr><td>vendor\buf.build\gen\go\gogo\protobuf\protocolbuffers\go\gogoproto\gogo_protoopaque.pb.go</td></tr><tr><td>internal\cmd\testdata\thresholds\name_contains_tokens.js</td></tr><tr><td>internal\js\modules\k6\browser\common\errors.go</td></tr><tr><td>examples\webcrypto\derive_bits\derive-bits-ecdh.js</td></tr><tr><td>internal\lib\netext\grpcext\conn.go</td></tr><tr><td>internal\js\modules\k6\experimental\csv\module.go</td></tr><tr><td>cmd\tests\global_state.go</td></tr><tr><td>examples\docker-compose\influxdb-v1\script.js</td></tr><tr><td>internal\ui\console\doc.go</td></tr><tr><td>internal\cmd\cloud_upload.go</td></tr><tr><td>internal\js\modules\k6\experimental\streams\underlying_source.go</td></tr><tr><td>internal\cmd\cloud.go</td></tr><tr><td>internal\cmd\builtin_output_gen.go</td></tr><tr><td>internal\js\modules\k6\browser\common\event_emitter_test.go</td></tr><tr><td>internal\js\modules\k6\experimental\csv\reader.go</td></tr><tr><td>examples\webcrypto\import_export\import-raw-base64-decrypt.js</td></tr><tr><td>internal\js\modules\k6\grpc\grpc.go</td></tr><tr><td>internal\js\modules\k6\browser\common\worker.go</td></tr><tr><td>examples\secrets\secrets.test.js</td></tr><tr><td>internal\js\modules\k6\browser\env\env.go</td></tr><tr><td>internal\lib\trace\otel.go</td></tr><tr><td>internal\cmd\version.go</td></tr><tr><td>internal\cmd\common.go</td></tr><tr><td>internal\js\modules\k6\webcrypto\subtle_crypto.go</td></tr><tr><td>internal\cmd\pause.go</td></tr><tr><td>internal\js\modules\k6\browser\common\connection_test.go</td></tr><tr><td>internal\lib\testutils\httpmultibin\grpc_testing\test_grpc.pb.go</td></tr><tr><td>vendor\google.golang.org\grpc\balancer\pickfirst\internal\internal.go</td></tr><tr><td>internal\cmd\testdata\invalidconfig\invalid_scenario.js</td></tr><tr><td>internal\js\modules\k6\grpc\client_test.go</td></tr><tr><td>internal\execution\controller.go</td></tr><tr><td>examples\webcrypto\import_export\import-export-aes-key.js</td></tr><tr><td>vendor\go.opentelemetry.io\auto\sdk\internal\telemetry\span.go</td></tr><tr><td>vendor\go.opentelemetry.io\auto\sdk\span.go</td></tr><tr><td>internal\secretsource\mock\mock.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (547)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共547个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>js\modules\k6\browser\storage\storage_test.go</td></tr><tr><td>js\modules\k6\browser\common\browser_context_test.go</td></tr><tr><td>ui\form_fields_test.go</td></tr><tr><td>cmd\cloud_login.go</td></tr><tr><td>cmd\tests\tests_test.go</td></tr><tr><td>js\modules\k6\browser\common\hooks.go</td></tr><tr><td>js\modules\k6\experimental\streams\module.go</td></tr><tr><td>js\modules\k6\experimental\fs\errors.go</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\codec_map_go111.go</td></tr><tr><td>cmd\testdata\abort_teardown.js</td></tr><tr><td>js\modules\k6\browser\browser\sync_request_mapping.go</td></tr><tr><td>js\bundle.go</td></tr><tr><td>vendor\golang.org\x\net\context\go17.go</td></tr><tr><td>js\modules\k6\browser\browser\module.go</td></tr><tr><td>js\modules\k6\browser\tests\lifecycle_wait_test.go</td></tr><tr><td>vendor\github.com\grafana\xk6-output-prometheus-remote\pkg\stale\stale.go</td></tr><tr><td>js\modules\k6\browser\tests\static\iframe_test_nested1.html</td></tr><tr><td>vendor\github.com\grafana\xk6-webcrypto\webcrypto\sobek.go</td></tr><tr><td>js\modules\k6\browser\common\connection.go</td></tr><tr><td>js\modules\k6\experimental\fs\file_test.go</td></tr><tr><td>output\influxdb\bench_test.go</td></tr><tr><td>js\console.go</td></tr><tr><td>js\modules\k6\browser\common\connection_test.go</td></tr><tr><td>cmd\runtime_options.go</td></tr><tr><td>log\file.go</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\errors\is_go113.go</td></tr><tr><td>js\modules\k6\browser\tests\tracing_test.go</td></tr><tr><td>js\modules\k6\browser\common\context_test.go</td></tr><tr><td>js\runner_test.go</td></tr><tr><td>lib\netext\grpcext\stream.go</td></tr><tr><td>js\modules\k6\browser\tests\static\lifecycle_no_ping_js.html</td></tr><tr><td>cmd\login.go</td></tr><tr><td>output\influxdb\util.go</td></tr><tr><td>js\modules\k6\browser\k6ext\doc.go</td></tr><tr><td>js\timeout_error.go</td></tr><tr><td>js\modules\k6\browser\common\device.go</td></tr><tr><td>js\modules\k6\browser\tests\element_handle_test.go</td></tr><tr><td>js\modules\k6\experimental\streams\goja.go</td></tr><tr><td>cmd\root.go</td></tr><tr><td>js\modules\k6\browser\tests\ws\server.go</td></tr><tr><td>js\modules_vu.go</td></tr><tr><td>cmd\builtin_output_gen.go</td></tr><tr><td>js\modules\k6\browser\browser\helpers_test.go</td></tr><tr><td>lib\netext\grpcext\conn_test.go</td></tr><tr><td>js\modules\k6\crypto\x509\x509.go</td></tr><tr><td>js\modules\k6\browser\common\browser_process_test.go</td></tr><tr><td>js\modules\k6\browser\tests\frame_manager_test.go</td></tr><tr><td>js\modules\k6\browser\tests\test_browser_proxy.go</td></tr><tr><td>js\modules\k6\browser\common\js\web_vital_init.js</td></tr><tr><td>js\modules\k6\experimental\streams\readable_stream_default_controller.go</td></tr><tr><td>js\modules\k6\browser\tests\static\embedded_iframe.html</td></tr><tr><td>vendor\github.com\grafana\xk6-output-prometheus-remote\pkg\remotewrite\remotewrite.go</td></tr><tr><td>js\modules\k6\browser\tests\test_browser_test.go</td></tr><tr><td>js\module_loading_test.go</td></tr><tr><td>vendor\github.com\grafana\xk6-webcrypto\webcrypto\key.go</td></tr><tr><td>js\summary.go</td></tr><tr><td>js\modules\k6\experimental\fs\module_test.go</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\strs\strings_unsafe_go120.go</td></tr><tr><td>output\cloud\expv2\integration\integration_test.go</td></tr><tr><td>execution\scheduler.go</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\codec_map_go112.go</td></tr><tr><td>js\modules\k6\browser\keyboardlayout\us.go</td></tr><tr><td>js\modules\k6\browser\k6error\internal.go</td></tr><tr><td>output\cloud\output.go</td></tr><tr><td>js\modules\k6\browser\tests\static\wait_until.html</td></tr><tr><td>lib\testutils\test_output.go</td></tr><tr><td>js\modules\k6\browser\tests\keyboard_test.go</td></tr><tr><td>cmd\options_test.go</td></tr><tr><td>cloudapi\insights\proto\gen.go</td></tr><tr><td>cloudapi\insights\client_test.go</td></tr><tr><td>vendor\github.com\grafana\xk6-output-prometheus-remote\pkg\remote\client.go</td></tr><tr><td>cmd\outputs_cloud.go</td></tr><tr><td>output\influxdb\output_test.go</td></tr><tr><td>js\modules\k6\browser\common\kill_linux.go</td></tr><tr><td>js\modules\k6\browser\k6ext\k6test\doc.go</td></tr><tr><td>js\modules\k6\browser\browser\mouse_mapping.go</td></tr><tr><td>js\modules\k6\crypto\crypto.go</td></tr><tr><td>js\modules\k6\experimental\csv\module_test.go</td></tr><tr><td>js\share_test.go</td></tr><tr><td>js\empty_iterations_bench_test.go</td></tr><tr><td>vendor\github.com\grafana\xk6-websockets\websockets\events\events.go</td></tr><tr><td>js\modules\k6\browser\common\js\embedded_scripts.go</td></tr><tr><td>js\summary_test.go</td></tr><tr><td>vendor\github.com\grafana\xk6-output-prometheus-remote\pkg\remotewrite\trend.go</td></tr><tr><td>js\modules\k6\encoding\encoding.go</td></tr><tr><td>loader\loader.go</td></tr><tr><td>js\modules\k6\html\gen\gen_elements.go</td></tr><tr><td>output\cloud\output_test.go</td></tr><tr><td>cmd\cloud.go</td></tr><tr><td>cmd\testdata\invalidconfig\invalid_scenario.js</td></tr><tr><td>js\modules\k6\browser\chromium\browser_type.go</td></tr><tr><td>js\modules\k6\browser\common\js\doc.go</td></tr><tr><td>js\modules\k6\grpc\grpc.go</td></tr><tr><td>lib\consts\consts.go</td></tr><tr><td>vendor\google.golang.org\grpc\internal\grpcsync\oncefunc.go</td></tr><tr><td>js\modules\k6\grpc\client_test.go</td></tr><tr><td>vendor\github.com\grafana\xk6-websockets\websockets\params.go</td></tr><tr><td>cmd\ui.go</td></tr><tr><td>js\modules\k6\browser\tests\static\page1.html</td></tr><tr><td>cmd\report.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (437)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>vendor\google.golang.org\protobuf\types\known\sourcecontextpb\source_context.pb.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\README.md</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_ast\js_ast_helpers.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\output.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\fieldmask.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\trace\doc.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\level3.go</td><td>内容变更</td></tr><tr><td>lib\executor\constant_vus.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protodesc\editions.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\server.go</td><td>内容变更</td></tr><tr><td>api\v1\metric_routes_test.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_ppc64.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_ppc64le.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\css_ast\css_ast.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\compat\js_table.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mailru\easyjson\helpers.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\aggregate\aggregate.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\css_parser\css_nesting.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mailru\easyjson\jlexer\bytestostr.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\emptypb\empty.pb.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\README.md</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\resource\auto.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\message_reflect_field.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\text\language\parse.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_arm.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\version.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsyscall_solaris_amd64.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\filedesc\editions.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\resolver_wrapper.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_mips.go</td><td>内容变更</td></tr><tr><td>.github\workflows\build.yml</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\encoding\tag\tag.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\codec.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\sink_test.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\balancer\gracefulswitch\config.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\doc.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_mips64le.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\bitreader.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\blockenc.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\x\x.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\evictedqueue.go</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\release.md</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\batch_span_processor.go</td><td>内容变更</td></tr><tr><td>lib\fsext\trimpathseparator_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mailru\easyjson\jwriter\writer.go</td><td>内容变更</td></tr><tr><td>lib\executors.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\experimental\stats\metrics.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\balancer_wrapper.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_mips64.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_sparc64.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_amd64.go</td><td>内容变更</td></tr><tr><td>js\modules\resolution.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protoreflect\source_gen.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\fast_encoder.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\pkg\api\api_impl.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\sourcemap\sourcemap.go</td><td>内容变更</td></tr><tr><td>lib\executor\shared_iterations.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\output_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\convert.go</td><td>内容变更</td></tr><tr><td>modtools_frozen.yml</td><td>内容变更</td></tr><tr><td>.github\actions\lint\action.yml</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\context\context.go</td><td>内容变更</td></tr><tr><td>.github\dependabot.yml</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\channelz\server.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\sampler_env.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\dialoptions.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\view.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\envconfig\xds.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\proto\size.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\css_printer\css_printer.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\http2\transport.go</td><td>内容变更</td></tr><tr><td>.github\workflows\tc39.yml</td><td>内容变更</td></tr><tr><td>output\csv\output_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\builtin_function.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\bundler\bundler.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\convert_map.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\aggregate\sum.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\provider.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\hdr.go</td><td>内容变更</td></tr><tr><td>js\modules\k6\marshalling_test.go</td><td>内容变更</td></tr><tr><td>cloudapi\logs_test.go</td><td>内容变更</td></tr><tr><td>vendor\modules.txt</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\aggregate\exponential_histogram.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\RELEASING.md</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\resolver\resolver.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\picker_wrapper.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\seqdec.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\s2\encode_better.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\metric\asyncint64.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\matchlen_generic.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\internal\tracetransform\span.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_mipsle.go</td><td>内容变更</td></tr><tr><td>vendor\buf.build\gen\go\prometheus\prometheus\protocolbuffers\go\remote.pb.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\transport\proxy.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\pipeline.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>js\modules\k6\http\response.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\channelz\subchannel.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\proto2_convert.go</td><td>内容变更</td></tr><tr><td>vendor\buf.build\gen\go\gogo\protobuf\protocolbuffers\go\gogoproto\gogo.pb.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\helpers\path.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\pkg\api\api.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_loong64.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\resolver\dns\dns_resolver.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\internal.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\binarylog\grpc_binarylog_v1\binarylog.pb.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\dynamicpb\types.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\instrumentation\scope.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\clientconn.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\s2\encode_go.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\internal\tracetransform\instrumentation.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\internal\transform\metricdata.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\checkinit.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\reader.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\VERSIONING.md</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\stats\metrics_recorder_list.go</td><td>内容变更</td></tr><tr><td>output\types.go</td><td>内容变更</td></tr><tr><td>ext\ext.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\crypto\x509roots\fallback\bundle.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_parser\js_parser_lower_class.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_parser\json_parser.go</td><td>内容变更</td></tr><tr><td>lib\executor\execution_test.go</td><td>内容变更</td></tr><tr><td>lib\test_state.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\linker\linker.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\validate.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\grpclog\internal\loggerv2.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\envconfig\envconfig.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protoreflect\value.go</td><td>内容变更</td></tr><tr><td>lib\executor\ramping_vus.go</td><td>内容变更</td></tr><tr><td>lib\netext\resolver_test.go</td><td>内容变更</td></tr><tr><td>metrics\builtin.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\resolver\package_json.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\version.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\stats\stats.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\pointer_unsafe.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\exporter.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\doc.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\resource\os_windows.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\s2\encode_all.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\internal\oconf\options.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\editionssupport\editions.go</td><td>内容变更</td></tr><tr><td>examples\http_get.js</td><td>内容变更</td></tr><tr><td>lib\runner.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protodesc\desc.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_sparc64.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\level6.go</td><td>内容变更</td></tr><tr><td>examples\browser\multiple-scenario.js</td><td>内容变更</td></tr><tr><td>.github\pull_request_template.md</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_ppc64le.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\codec_field.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\apipb\api.pb.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\structpb\struct.pb.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\http2\write.go</td><td>内容变更</td></tr><tr><td>.github\workflows\xk6.yml</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_ppc.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\proto\merge.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\mapping.go</td><td>内容变更</td></tr><tr><td>examples\browser\throttle.js</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\message_reflect.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\sampling.go</td><td>内容变更</td></tr><tr><td>js\modulestest\runtime.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\utilities\pattern.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\blockdec.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\encode.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\baggage\baggage.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\level4.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\otlptracegrpc\internal\otlpconfig\options.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\errors.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_mips64le.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\idle\idle.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\runtime\protoimpl\impl.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\fieldmaskpb\field_mask.pb.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_arm.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\compiler_expr.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\http2\server.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\config\config.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\genid\goname.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\proto\decode.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\service_config.go</td><td>内容变更</td></tr><tr><td>cloudapi\api_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\seqdec_generic.go</td><td>内容变更</td></tr><tr><td>.github\workflows\wpt.yml</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\version.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\file\file.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sync\errgroup\errgroup.go</td><td>内容变更</td></tr><tr><td>examples\http_2.js</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protodesc\desc_validate.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\meter.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\handler.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\genid\descriptor_gen.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\balancer\roundrobin\roundrobin.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\filedesc\desc.go</td><td>内容变更</td></tr><tr><td>output\csv\doc.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\instrument.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\css_parser\css_parser_selector.go</td><td>内容变更</td></tr><tr><td>lib\netext\httpext\transport.go</td><td>内容变更</td></tr><tr><td>lib\archive_test.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\resolver\resolver.go</td><td>内容变更</td></tr><tr><td>examples\experimental\ws.js</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\transport\flowcontrol.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\internal\oconf\tls.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\hdr_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\logger\msg_ids.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\decoder.go</td><td>内容变更</td></tr><tr><td>js\modules\require_impl.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\version.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\sink.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\CONTRIBUTING.md</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\s2\README.md</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_amd64.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\compiler_stmt.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\stream.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\genproto\googleapis\api\httpbody\httpbody.pb.go</td><td>内容变更</td></tr><tr><td>lib\executor\ramping_arrival_rate.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\backoff\backoff.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\huff0\bitreader.go</td><td>内容变更</td></tr><tr><td>lib\netext\dialer_test.go</td><td>内容变更</td></tr><tr><td>lib\executor\per_vu_iterations.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_ppc.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\resolver\tsconfig_json.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\http2\config.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\css_parser\css_parser.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_s390x.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\version.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\fs\fs_mock.go</td><td>内容变更</td></tr><tr><td>metrics\sink.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\seqenc.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\internal\envconfig\envconfig.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\anypb\any.pb.go</td><td>内容变更</td></tr><tr><td>lib\old_archive_test.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\resource\host_id_windows.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mailru\easyjson\README.md</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\resource\os_release_darwin.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protodesc\desc_init.go</td><td>内容变更</td></tr><tr><td>api\v1\status_routes_test.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\doc.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\proto\otlp\trace\v1\trace.pb.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\metric\asyncfloat64.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_arm64.go</td><td>内容变更</td></tr><tr><td>release notes\template.md</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_parser\js_parser.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_s390x.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\wrapperspb\wrappers.pb.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\message.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\gofeaturespb\go_features.pb.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\client.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\version.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\codec_map.go</td><td>内容变更</td></tr><tr><td>vendor\buf.build\gen\go\prometheus\prometheus\protocolbuffers\go\types.pb.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\config.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\marshaler_registry.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\ztypes_linux.go</td><td>内容变更</td></tr><tr><td>lib\consts\js.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\mem\buffers.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\codes\codes.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_mips.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\encoding\protojson\decode.go</td><td>内容变更</td></tr><tr><td>.github\workflows\issue-auto-assign.yml</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\internal\rawhelpers.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\grpcutil\method.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\exemplar.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\proto\otlp\metrics\v1\metrics.pb.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\resource\builtin.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\channelz\channel.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\parser\lexer.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\exporter.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\internal\attribute\attribute.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\aggregate\exemplar.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\metrics_client_test.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\encoding\prototext\decode.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\query.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\runtime\runtime.go</td><td>内容变更</td></tr><tr><td>lib\executor\executors_test.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\otlptracegrpc\client.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\level5.go</td><td>内容变更</td></tr><tr><td>lib\archive.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\CHANGELOG.md</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_arm64.go</td><td>内容变更</td></tr><tr><td>api\v1\setup_teardown_routes_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\snappy.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_ppc64.go</td><td>内容变更</td></tr><tr><td>metrics\tags.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\token\token_const.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\attribute\set.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\level2.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mattn\go-colorable\colorable_windows.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\manual_reader.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\resource\resource.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\metric\instrument.go</td><td>内容变更</td></tr><tr><td>lib\executor\constant_arrival_rate_test.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\reflection\grpc_reflection_v1\reflection.pb.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\flush.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\balancer\pickfirst\pickfirst.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\durationpb\duration.pb.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\codec_message.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\s2\decode_other.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\flush_test.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\periodic_reader.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\assert\assertion_compare.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_parser\js_parser_lower.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_mipsle.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\aggregate\lastvalue.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\legacy_message.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protodesc\desc_resolve.go</td><td>内容变更</td></tr><tr><td>output\cloud\expv2\metrics_client.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\rpc_util.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\compat\css_table.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\stateless.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\provider.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\assert\assertion_order.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\client.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_parser\global_name_parser.go</td><td>内容变更</td></tr><tr><td>.golangci.yml</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\experimental\stats\metricregistry.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\otlptracehttp\internal\otlpconfig\options.go</td><td>内容变更</td></tr><tr><td>lib\models.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\typepb\type.pb.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\vm.go</td><td>内容变更</td></tr><tr><td>api\v1\status_routes.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\fs\fs.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\genproto\googleapis\rpc\errdetails\error_details.pb.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\grpcsync\callback_serializer.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\transport\http2_client.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_386.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\runtime\protoiface\methods.go</td><td>内容变更</td></tr><tr><td>metrics\tags_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\fs\fs_zip.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\exporter.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\level1.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protoreflect\type.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\reflect\protodesc\proto.go</td><td>内容变更</td></tr><tr><td>lib\executor\helpers.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mailru\easyjson\raw.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\filetype\build.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\CONTRIBUTING.md</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\balancer\gracefulswitch\gracefulswitch.go</td><td>内容变更</td></tr><tr><td>js\modules\k6\http\request_test.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\reflection\grpc_reflection_v1alpha\reflection.pb.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\syscall_solaris.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\windows\dll_windows.go</td><td>内容变更</td></tr><tr><td>js\common\event.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\trace\noop.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\merge.go</td><td>内容变更</td></tr><tr><td>.github\workflows\test.yml</td><td>内容变更</td></tr><tr><td>lib\netext\httpext\error_codes_test.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\span.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\http2\config_go124.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_riscv64.go</td><td>内容变更</td></tr><tr><td>cloudapi\logs.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\balancer\base\balancer.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\internal\global\instruments.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\trace\context.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\otlptracehttp\client.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_printer\js_printer.go</td><td>内容变更</td></tr><tr><td>examples\experimental\redis.js</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\huffman_bit_writer.go</td><td>内容变更</td></tr><tr><td>.github\workflows\lint.yml</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\config.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mattn\go-colorable\colorable_others.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\assert\assertion_format.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\genid\go_features_gen.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\version\version.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_riscv64.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\trace\config.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\filedesc\desc_lazy.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\version.go</td><td>内容变更</td></tr><tr><td>lib\executor\common_test.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\transport\http2_server.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\syscall_dragonfly.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\impl\decode.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\balancer\balancer.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\README.md</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\internal\envconfig\envconfig.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\require\require_forward.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\mailru\easyjson\jlexer\lexer.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\internal\flags\flags.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\transport\handler_server.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\README.md</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zerrors_linux_386.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\known\timestamppb\timestamp.pb.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\zstd.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\health\grpc_health_v1\health.pb.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_parser\sourcemap_parser.go</td><td>内容变更</td></tr><tr><td>api\v1\group_routes_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\assert\assertion_forward.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\require\requirements.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\encoding\protojson\well_known_types.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlptrace\otlptracehttp\doc.go</td><td>内容变更</td></tr><tr><td>lib\vu_state.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_lexer\js_lexer.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\mux.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\preloader.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\assert\assertions.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\internal\transform\metricdata.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\internal\global\trace.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\mem\buffer_slice.go</td><td>内容变更</td></tr><tr><td>cmd\state\state.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\internal\global\meter.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\flate\matchlen_generic.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\trace\simple_span_processor.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\config\globals.go</td><td>内容变更</td></tr><tr><td>lib\executor\constant_arrival_rate.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\channelz\socket.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\klauspost\compress\zstd\enc_base.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\logger\logger.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\stretchr\testify\require\require.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\time\rate\rate.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\fs\fs_real.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_loong64.go</td><td>内容变更</td></tr><tr><td>lib\executor\externally_controlled.go</td><td>内容变更</td></tr><tr><td>lib\executor\vu_handle_test.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\runtime.go</td><td>内容变更</td></tr><tr><td>lib\runtime_options.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\x\README.md</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\channelz\trace.go</td><td>内容变更</td></tr><tr><td>Dependencies.md</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\credentials\tls.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\pluginpb\plugin.pb.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\net\http2\http2.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\types\descriptorpb\descriptor.pb.go</td><td>内容变更</td></tr><tr><td>api\v1\control_surface.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\runtime\marshaler.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\modules_sourcetext.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\protobuf\proto\encode.go</td><td>内容变更</td></tr><tr><td>lib\executor\base_executor.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetrichttp\internal\oconf\options.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\exporters\otlp\otlpmetric\otlpmetricgrpc\internal\oconf\tls.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\config.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\status\status.go</td><td>内容变更</td></tr><tr><td>vendor\google.golang.org\grpc\internal\transport\transport.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\pkg\api\serve_other.go</td><td>内容变更</td></tr><tr><td>vendor\golang.org\x\sys\unix\zsysnum_linux_mips64.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\evanw\esbuild\internal\js_ast\js_ast.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grafana\sobek\parser\expression.go</td><td>内容变更</td></tr><tr><td>vendor\github.com\grpc-ecosystem\grpc-gateway\v2\utilities\string_array_flag.go</td><td>内容变更</td></tr><tr><td>vendor\go.opentelemetry.io\otel\sdk\metric\internal\aggregate\histogram.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

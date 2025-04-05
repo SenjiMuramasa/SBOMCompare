@@ -1,0 +1,536 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 11:02:35</p>
+                <p>SBOM A: sample_data\KlyntarNetwork_KlyntarCore_8a69b8a.json</p>
+                <p>SBOM B: sample_data\KlyntarNetwork_KlyntarCore.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.3/10 (93.4%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.3/10.0 (93.4%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：缺少Scorecard评估。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.6/1.7 (94.1%)</td>
+                    <td><ul class='details-list'><li>新增了2个包</li><li>移除了6个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (99.0%)</td>
+                    <td><ul class='details-list'><li>1个包发生其他版本变更</li><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (60.0%)</td>
+                    <td><ul class='details-list'><li>无法获取Scorecard评分数据</li></ul><div class='impact-factors'><strong>影响因素:</strong> 缺少Scorecard评估</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>level_7</td><td>npm:level@^7.0.1</td><td>Apache-2.0</td></tr><tr><td>level_8</td><td>npm:level@^8.0.0</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (6)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>hex</td><td>0.4.3</td><td>NOASSERTION</td></tr><tr><td>pqcrypto-falcon</td><td>0.2.0</td><td>NOASSERTION</td></tr><tr><td>web1337</td><td>^4.3.0</td><td>Apache-2.0</td></tr><tr><td>level-8</td><td>npm:level@^8.0.0</td><td>Apache-2.0</td></tr><tr><td>pqcrypto-traits</td><td>0.3.4</td><td>NOASSERTION</td></tr><tr><td>js-sys</td><td>0.3.57</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>@klyntar/klyntarevmjsonrpc</td><td>^3.6.0</td><td>^4.0.3</td><td>一般变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>117</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>99</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>28</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>46</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (10)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>KLY_Workflows\dev_tachyon\pruning\LevelDB.js</td></tr><tr><td>KLY_Workflows\dev_tachyon\pruning\configs.json</td></tr><tr><td>KLY_Workflows\dev_tachyon\pruning\prune.js</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\leaders_monitoring.js</td></tr><tr><td>KLY_Workflows\dev_tachyon\pruning\package.json</td></tr><tr><td>klyntar_core.js</td></tr><tr><td>KLY_Workflows\dev_tachyon\recovery\default_node\configs.json</td></tr><tr><td>KLY_Workflows\dev_tachyon\recovery\master_node\configs.json</td></tr><tr><td>KLY_Workflows\dev_tachyon\recovery\master_node\master_node_recovery.js</td></tr><tr><td>KLY_Workflows\dev_tachyon\recovery\default_node\default_node_recovery.js</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (28)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>klyn74r.js</td></tr><tr><td>KLY_Utils\homomorphic\index.js</td></tr><tr><td>KLY_Addons\kyber.go</td></tr><tr><td>KLY_Tests\chance_to_be_choosen.js</td></tr><tr><td>KLY_Addons\zero_knowledge_proofs\bulletproofs\bulletproofs.go</td></tr><tr><td>KLY_Addons\sidh.go</td></tr><tr><td>KLY_Workflows\dev_tachyon\structures\transaction.js</td></tr><tr><td>images\version_update.txt</td></tr><tr><td>KLY_Addons\zero_knowledge_proofs\verified_encryption\elgamal.go</td></tr><tr><td>KLY_Addons\zero_knowledge_proofs\gnark_pair.go</td></tr><tr><td>KLY_Workflows\README.md</td></tr><tr><td>KLY_Utils\post_quantum\signatures\post_quantum.js</td></tr><tr><td>KLY_Addons\csidh.go</td></tr><tr><td>KLY_Addons\sike.go</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\shards_leaders_monitoring.js</td></tr><tr><td>KLY_Addons\homomorphic\pailer_all.go</td></tr><tr><td>KLY_Addons\falcon512\src\falcon.js</td></tr><tr><td>KLY_Addons\zero_knowledge_proofs\accumulators\acc_bls.go</td></tr><tr><td>KLY_Tests\network_safety_calculator.js</td></tr><tr><td>KLY_Addons\falcon512\src\lib.rs</td></tr><tr><td>KLY_Utils\post_quantum\pub_key_encryption\ntru.js</td></tr><tr><td>KLY_Workflows\dev_tachyon\useful_keypairs_for_test\ed25519_keys.json</td></tr><tr><td>KLY_Addons\kyber_pke.go</td></tr><tr><td>KLY_Addons\sha256.h</td></tr><tr><td>KLY_Addons\zero_knowledge_proofs\schnorr_zkp.go</td></tr><tr><td>KLY_Addons\fvss.go</td></tr><tr><td>KLY_Addons\zero_knowledge_proofs\verified_encryption\camenisch_shoup.go</td></tr><tr><td>images\events\services.txt</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (46)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>KLY_Workflows\dev_tachyon\common_functions\logging.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\api\misc.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\entrypoint.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\api\state_data.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\common_functions\work_with_proofs.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\contracts\rwx_contract.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\blockchain_preparation.js</td><td>内容变更</td></tr><tr><td>KLY_VirtualMachines\kly_evm\vm.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\verification_process\txs_verifiers.js</td><td>内容变更</td></tr><tr><td>package.json</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\structures\block.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\utils.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\new_epoch_proposer.js</td><td>内容变更</td></tr><tr><td>KLY_VirtualMachines\kly_wvm\rustBase.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\common_functions\quorum_related.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\verification_process\txs_filters.js</td><td>内容变更</td></tr><tr><td>KLY_Utils\signatures\threshold\tbls.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\internal_logic\signature_request.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\contracts\dao_voting.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\globals.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\internal_logic\websocket.js</td><td>内容变更</td></tr><tr><td>KLY_Utils\utils.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\internal_logic\temp_vt_builder.js</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\block_generation.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\contracts\cross_shards_messaging.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\kly_evm_json_rpc.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\internal_logic\epoch_changing.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\contracts\multistaking.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\templates\configs.json</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\verification_process\verification.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\contracts\abstractions.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\delayed_transactions\delayed_transactions.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\api\block_data.js</td><td>内容变更</td></tr><tr><td>KLY_Plugins\README.md</td><td>内容变更</td></tr><tr><td>KLY_VirtualMachines\README.md</td><td>内容变更</td></tr><tr><td>KLY_VirtualMachines\kly_wvm\vm.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\common_functions\state_interactions.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\find_new_epoch.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\share_block_and_grab_proofs.js</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\system_contracts\contracts\staking.js</td><td>内容变更</td></tr><tr><td>KLY_VirtualMachines\kly_wvm\package.json</td><td>内容变更</td></tr><tr><td>images\events\update.txt</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\life\temp_vt_sequence_builder.js</td><td>内容变更</td></tr><tr><td>pnpm-lock.yaml</td><td>内容变更</td></tr><tr><td>KLY_Workflows\dev_tachyon\routes\api\epoch_data.js</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

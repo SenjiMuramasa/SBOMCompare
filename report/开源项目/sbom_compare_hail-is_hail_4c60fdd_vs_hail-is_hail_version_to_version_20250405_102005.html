@@ -1,0 +1,816 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 10:22:03</p>
+                <p>SBOM A: sample_data\hail-is_hail_4c60fdd.json</p>
+                <p>SBOM B: sample_data\hail-is_hail.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>73</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.7/10 (86.6%) [A]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.7/10.0 (86.6%)，安全等级: A。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 大量次版本变更, 重大版本变更, CII-Best-Practices风险, Vulnerabilities风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.3%)</td>
+                    <td><ul class='details-list'><li>新增了3个包</li><li>移除了2个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">2.9/3.5 (84.3%)</td>
+                    <td><ul class='details-list'><li>9个包发生主版本变更，可能存在API不兼容</li><li>40个包发生次版本变更</li><li>22个包发生补丁版本变更</li><li>2个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.7/1.3 (56.0%)</td>
+                    <td><ul class='details-list'><li>Binary-Artifacts需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-27mf-ghqm-j3j8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-27mf-ghqm-j3j8</li><li>- Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr</li><li>- Warn: Project is vulnerable to: PYSEC-2020-73 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-73</li><li>- Warn: Project is vulnerable to: GHSA-79v4-65xg-pq4g (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-79v4-65xg-pq4g</li><li>- Warn: Project is vulnerable to: PYSEC-2018-80 / GHSA-fpwp-69xv-c67f (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2018-80 / GHSA-fpwp-69xv-c67f</li><li>- Warn: Project is vulnerable to: PYSEC-2018-35 / GHSA-mr4x-c4v9-x729 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2018-35 / GHSA-mr4x-c4v9-x729</li><li>- Warn: Project is vulnerable to: GHSA-v9hf-5j83-6xpp (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-v9hf-5j83-6xpp</li><li>- Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</li><li>- Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699</li><li>- Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h</li><li>- Warn: Project is vulnerable to: PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6</li><li>- Warn: Project is vulnerable to: GHSA-8w49-h785-mj3c (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-8w49-h785-mj3c</li><li>- Warn: Project is vulnerable to: GHSA-3f63-hfp8-52jq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3f63-hfp8-52jq</li><li>- Warn: Project is vulnerable to: GHSA-44wm-f244-xhp3 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-44wm-f244-xhp3</li><li>- Warn: Project is vulnerable to: PYSEC-2023-120 / GHSA-45c4-8wx5-qw6w (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-120 / GHSA-45c4-8wx5-qw6w</li><li>- Warn: Project is vulnerable to: GHSA-5m98-qgg9-wh84 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-5m98-qgg9-wh84</li><li>- Warn: Project is vulnerable to: GHSA-7gpw-8wmc-pm8g (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7gpw-8wmc-pm8g</li><li>- Warn: Project is vulnerable to: PYSEC-2024-26 / GHSA-8qpw-xqxj-h4r2 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2024-26 / GHSA-8qpw-xqxj-h4r2</li><li>- Warn: Project is vulnerable to: PYSEC-2023-246 / GHSA-gfw2-4jvh-wgfg (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-246 / GHSA-gfw2-4jvh-wgfg</li><li>- Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj</li><li>- Warn: Project is vulnerable to: GHSA-pjjw-qhg8-p2p9 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-pjjw-qhg8-p2p9</li><li>- Warn: Project is vulnerable to: PYSEC-2023-250 / GHSA-q3qx-c6g2-7pw2 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-250 / GHSA-q3qx-c6g2-7pw2</li><li>- Warn: Project is vulnerable to: PYSEC-2023-251 / GHSA-qvrw-v9rv-5rjx (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-251 / GHSA-qvrw-v9rv-5rjx</li><li>- Warn: Project is vulnerable to: PYSEC-2021-76 / GHSA-v6wp-4m6f-gcjg (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-76 / GHSA-v6wp-4m6f-gcjg</li><li>- Warn: Project is vulnerable to: PYSEC-2023-247 / GHSA-xx9p-xxvh-7g8j (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-247 / GHSA-xx9p-xxvh-7g8j</li><li>- Warn: Project is vulnerable to: GHSA-m5vv-6r4h-3vj9 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-m5vv-6r4h-3vj9</li><li>- Warn: Project is vulnerable to: GHSA-64x4-9hc6-r2h6 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-64x4-9hc6-r2h6</li><li>- Warn: Project is vulnerable to: PYSEC-2024-40 / GHSA-pwr2-4v36-6qpr (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2024-40 / GHSA-pwr2-4v36-6qpr</li><li>- Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4</li><li>- Warn: Project is vulnerable to: PYSEC-2018-49 / GHSA-rprw-h62v-c2w7 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2018-49 / GHSA-rprw-h62v-c2w7</li><li>- Warn: Project is vulnerable to: PYSEC-2023-188 / GHSA-rhrv-645h-fjfh (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-188 / GHSA-rhrv-645h-fjfh</li><li>- Warn: Project is vulnerable to: PYSEC-2023-44 / GHSA-329j-jfvr-rhr6 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-44 / GHSA-329j-jfvr-rhr6</li><li>- Warn: Project is vulnerable to: PYSEC-2022-42976 / GHSA-43xg-8wmj-cw8h (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-42976 / GHSA-43xg-8wmj-cw8h</li><li>- Warn: Project is vulnerable to: PYSEC-2022-236 / GHSA-4x9r-j582-cgr8 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-236 / GHSA-4x9r-j582-cgr8</li><li>- Warn: Project is vulnerable to: PYSEC-2018-25 / GHSA-6mqq-8r44-vmjc (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2018-25 / GHSA-6mqq-8r44-vmjc</li><li>- Warn: Project is vulnerable to: PYSEC-2017-147 / GHSA-8rhc-48pp-52gr (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2017-147 / GHSA-8rhc-48pp-52gr</li><li>- Warn: Project is vulnerable to: PYSEC-2022-186 / GHSA-9rr6-jpg7-9jg6 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-186 / GHSA-9rr6-jpg7-9jg6</li><li>- Warn: Project is vulnerable to: PYSEC-2019-114 / GHSA-fp5j-3fpf-mhj5 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2019-114 / GHSA-fp5j-3fpf-mhj5</li><li>- Warn: Project is vulnerable to: PYSEC-2020-95 / GHSA-wgx7-jwwm-cgjv (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-95 / GHSA-wgx7-jwwm-cgjv</li><li>- Warn: Project is vulnerable to: PYSEC-2023-72 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-72</li><li>- Warn: Project is vulnerable to: PYSEC-2014-14 / GHSA-652x-xj99-gmcc (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2014-14 / GHSA-652x-xj99-gmcc</li><li>- Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56</li><li>- Warn: Project is vulnerable to: PYSEC-2014-13 / GHSA-cfj3-7x9c-4p3h (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2014-13 / GHSA-cfj3-7x9c-4p3h</li><li>- Warn: Project is vulnerable to: PYSEC-2018-28 / GHSA-x84v-xcm2-53pg (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2018-28 / GHSA-x84v-xcm2-53pg</li><li>- Warn: Project is vulnerable to: PYSEC-2015-17 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2015-17</li><li>- Warn: Project is vulnerable to: PYSEC-2023-74 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-74</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (46)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-v9hf-5j83-6xpp</td>
+                            <td>PyMySQL through 1.1.0 allows SQL injection if used with untrusted JSON input because keys are not escaped by `escape_dict`.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-36039<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-36039</span><br><span class="vuln-link">https://github.com/PyMySQL/PyMySQL/commit/521e40050cb386a499f68f483fefd144c493053c</span><br><span class="vuln-link">https://github.com/PyMySQL/PyMySQL</span><br><span class="vuln-link">https://github.com/PyMySQL/PyMySQL/releases/tag/v1.1.1</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/05/msg00017.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/23VXBV34GFRICCVYZ6KFMSSWY5UEXCF5</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/35VOJS3SRJNLQIO7YTZFNM6RWHIHWTMK</span><br><br><div class="section-header">影响范围: </div><br>pymysql: 所有版本 &lt; 1.1.1 <br><br><br><div class="cve-header">来自 CVE-2024-36039 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3f63-hfp8-52jq</td>
+                            <td>Pillow through 10.1.0 allows PIL.ImageMath.eval Arbitrary Code Execution via the environment parameter, a different vulnerability than CVE-2022-22817 (which was about the expression parameter).<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2023-50447<br>CVE-2023-50447<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-50447</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/45c726fd4daa63236a8f3653530f297dc87b160a</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2023-50447</span><br><span class="vuln-link">https://duartecsantos.github.io/2023-01-02-CVE-2023-50447</span><br><span class="vuln-link">https://duartecsantos.github.io/2024-01-02-CVE-2023-50447</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/releases</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/01/msg00019.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/10.2.0.html#security</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2024/01/20/1</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 10.2.0 <br><br><br><div class="cve-header">来自 CVE-2023-50447 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-8w49-h785-mj3c</td>
+                            <td>The algorithm used for parsing HTTP cookies in Tornado versions prior to 6.4.2 sometimes has quadratic complexity, leading to excessive CPU consumption when parsing maliciously-crafted cookie headers. This parsing occurs in the event loop thread and may block the processing of other requests.<br><br>See also CVE-2024-7592 for a similar vulnerability in cpython.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-52804<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/tornadoweb/tornado/security/advisories/GHSA-8w49-h785-mj3c</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52804</span><br><span class="vuln-link">https://github.com/tornadoweb/tornado/commit/d5ba4a1695fbf7c6a3e54313262639b198291533</span><br><span class="vuln-link">https://github.com/tornadoweb/tornado</span><br><br><div class="section-header">影响范围: </div><br>tornado: 所有版本 &lt; 6.4.2 <br><br><br><div class="cve-header">来自 CVE-2024-52804 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-44wm-f244-xhp3</td>
+                            <td>In _imagingcms.c in Pillow before 10.3.0, a buffer overflow exists because strcpy is used instead of strncpy.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2024-28219<br>CVE-2024-28219<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-28219</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/2a93aba5cfcf6e241ab4f9392c13e3b74032c061</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/04/msg00008.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/4XLPUT3VK4GQ6EVY525TT2QNUIXNRU5M</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/10.3.0.html#security</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 10.3.0 <br><br><br><div class="cve-header">来自 CVE-2024-28219 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-5m98-qgg9-wh84</td>
+                            <td>### Summary<br>An attacker can send a specially crafted POST (multipart/form-data) request. When the aiohttp server processes it, the server will enter an infinite loop and be unable to process any further requests.<br><br>### Impact<br>An attacker can stop the application from serving requests after sending a single request.<br><br>-------<br><br>For anyone needing to patch older versions of aiohttp, the minimum diff needed to resolve the issue is (located in `_read_chunk_from_length()`):<br><br>```diff<br>diff --git a/aiohttp/multipart.py b/aiohttp/multipart.py<br>index 227be605c..71fc2654a 100644<br>--- a/aiohttp/multipart.py<br>+++ b/aiohttp/multipart.py<br>@@ -338,6 +338,8 @@ class BodyPartReader:<br>         assert self._length is not None, &amp;quot;Content-Length required for chunked read&amp;quot;<br>         chunk_size = min(size, self._length - self._read_bytes)<br>         chunk = await self._content.read(chunk_size)<br>+        if self._content.at_eof():<br>+            self._at_eof = True<br>         return chunk<br> <br>     async def _read_chunk_from_stream(self, size: int) -&amp;gt; bytes:<br>```<br><br>This does however introduce some very minor issues with handling form data. So, if possible, it would be recommended to also backport the changes in:<br>https://github.com/aio-libs/aiohttp/commit/cebe526b9c34dc3a3da9140409db63014bc4cf19<br>https://github.com/aio-libs/aiohttp/commit/7eecdff163ccf029fbb1ddc9de4169d4aaeb6597<br>https://github.com/aio-libs/aiohttp/commit/f21c6f2ca512a026ce7f0f6c6311f62d6a638866<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-30251<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-5m98-qgg9-wh84</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-30251</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/7eecdff163ccf029fbb1ddc9de4169d4aaeb6597</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/cebe526b9c34dc3a3da9140409db63014bc4cf19</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/f21c6f2ca512a026ce7f0f6c6311f62d6a638866</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2024/05/02/4</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 3.9.4 <br><br><br><div class="cve-header">来自 CVE-2024-30251 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-79v4-65xg-pq4g</td>
+                            <td>pyca/cryptography&amp;#39;s wheels include a statically linked copy of OpenSSL. The versions of OpenSSL included in cryptography 42.0.0-44.0.0 are vulnerable to a security issue. More details about the vulnerability itself can be found in https://openssl-library.org/news/secadv/20250211.txt.<br><br>If you are building cryptography source (&amp;quot;sdist&amp;quot;) then you are responsible for upgrading your copy of OpenSSL. Only users installing from wheels built by the cryptography project (i.e., those distributed on PyPI) need to update their cryptography versions.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-12797<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pyca/cryptography/security/advisories/GHSA-79v4-65xg-pq4g</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-12797</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/738d4f9fdeaad57660dcba50a619fafced3fd5e9</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/798779d43494549b611233f92652f0da5328fbe7</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/87ebd203feffcf92ad5889df92f90bb0ee10a699</span><br><span class="vuln-link">https://github.com/pyca/cryptography</span><br><span class="vuln-link">https://openssl-library.org/news/secadv/20250211.txt</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/02/11/3</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/02/11/4</span><br><br><div class="section-header">影响范围: </div><br>cryptography: &gt;= 42.0.0 &lt; 44.0.1 <br><br><br><div class="cve-header">来自 CVE-2024-12797 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-27mf-ghqm-j3j8</td>
+                            <td>### Summary<br><br>A memory leak can occur when a request produces a `MatchInfoError`. This was caused by adding an entry to a cache on each request, due to the building of each `MatchInfoError` producing a unique cache entry.<br><br>### Impact<br><br>If the user is making use of any middlewares with `aiohttp.web` then it is advisable to upgrade immediately.<br><br>An attacker may be able to exhaust the memory resources of a server by sending a substantial number (100,000s to millions) of such requests.<br><br>-----<br><br>Patch: https://github.com/aio-libs/aiohttp/commit/bc15db61615079d1b6327ba42c682f758fa96936<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-52303<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-27mf-ghqm-j3j8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52303</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/bc15db61615079d1b6327ba42c682f758fa96936</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: &gt;= 3.10.6 &lt; 3.10.11 <br><br><br><div class="cve-header">来自 CVE-2024-52303 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-8495-4g3g-x7pr</td>
+                            <td>### Summary<br>The Python parser parses newlines in chunk extensions incorrectly which can lead to request smuggling vulnerabilities under certain conditions.<br><br>### Impact<br>If a pure Python version of aiohttp is installed (i.e. without the usual C extensions) or `AIOHTTP_NO_EXTENSIONS` is enabled, then an attacker may be able to execute a request smuggling attack to bypass certain firewalls or proxy protections.<br><br>-----<br><br>Patch: https://github.com/aio-libs/aiohttp/commit/259edc369075de63e6f3a4eaade058c62af0df71<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-52304<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-8495-4g3g-x7pr</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52304</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/259edc369075de63e6f3a4eaade058c62af0df71</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 3.10.11 <br><br><br><div class="cve-header">来自 CVE-2024-52304 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-73</td>
+                            <td>** DISPUTED ** pandas through 1.0.3 can unserialize and execute commands from an untrusted file that is passed to the read_pickle() function, if __reduce__ makes an os.system call. NOTE: third parties dispute this issue because the read_pickle() function is documented as unsafe and it is the user&amp;#39;s responsibility to use the function in a secure manner.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-13091<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/0FuzzingQ/vuln/blob/master/pandas%20unserialize.md</span><br><span class="vuln-link">https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_pickle.html</span><br><br><div class="section-header">影响范围: </div><br>pandas: 所有版本 &lt; 1.0.4 <br><br><br><div class="cve-header">来自 CVE-2020-13091 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2018-80 / GHSA-fpwp-69xv-c67f</td>
+                            <td>aio-libs aiohttp-session contains a Session Fixation vulnerability in load_session function for RedisStorage (see: https://github.com/aio-libs/aiohttp-session/blob/master/aiohttp_session/redis_storage.py#L42) that can result in Session Hijacking. This attack appear to be exploitable via Any method that allows setting session cookies (?session=&amp;lt;&amp;gt;, or meta tags or script tags with Set-Cookie).<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2018-1000519<br>GHSA-fpwp-69xv-c67f<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp-session/issues/272</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp-session/blob/master/aiohttp_session/redis_storage.py#L60</span><br><span class="vuln-link">https://github.com/advisories/GHSA-fpwp-69xv-c67f</span><br><br><div class="section-header">影响范围: </div><br>aiohttp-session: 所有版本 &lt; 2.4.0 <br><br><br><div class="cve-header">来自 CVE-2018-1000519 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2018-35 / GHSA-mr4x-c4v9-x729</td>
+                            <td>aio-libs aiohttp-session version 2.6.0 and earlier contains a Other/Unknown vulnerability in EncryptedCookieStorage and NaClCookieStorage that can result in Non-expiring sessions / Infinite lifespan. This attack appear to be exploitable via Recreation of a cookie post-expiry with the same value.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2018-1000814<br>GHSA-mr4x-c4v9-x729<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp-session/pull/331</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp-session/issues/325</span><br><span class="vuln-link">https://github.com/advisories/GHSA-mr4x-c4v9-x729</span><br><br><div class="section-header">影响范围: </div><br>aiohttp-session: 所有版本 &lt; 2.7.0 <br><br><br><div class="cve-header">来自 CVE-2018-1000814 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</td>
+                            <td>An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to execute arbitrary Python code.<br><br>To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.<br><br>Jinja&amp;#39;s sandbox does catch calls to `str.format` and ensures they don&amp;#39;t escape the sandbox. However, it&amp;#39;s possible to use the `|attr` filter to get a reference to a string&amp;#39;s plain format method, bypassing the sandbox. After the fix, the `|attr` filter no longer bypasses the environment&amp;#39;s attribute lookup.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27516<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27516</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.6 <br><br><br><div class="cve-header">来自 CVE-2025-27516 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699</td>
+                            <td>A bug in the Jinja compiler allows an attacker that controls both the content and filename of a template to execute arbitrary Python code, regardless of if Jinja&amp;#39;s sandbox is used.<br><br>To exploit the vulnerability, an attacker needs to control both the filename and the contents of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates where the template author can also choose the template filename.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-56201<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56201</span><br><span class="vuln-link">https://github.com/pallets/jinja/issues/1792</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">影响范围: </div><br>jinja2: &gt;= 3.0.0 &lt; 3.1.5 <br><br><br><div class="cve-header">来自 CVE-2024-56201 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h</td>
+                            <td>An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execute arbitrary Python code.<br><br>To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.<br><br>Jinja&amp;#39;s sandbox does catch calls to `str.format` and ensures they don&amp;#39;t escape the sandbox. However, it&amp;#39;s possible to store a reference to a malicious string&amp;#39;s `format` method, then pass that to a filter that calls it. No such filters are built-in to Jinja, but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-56326<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56326</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.5 <br><br><br><div class="cve-header">来自 CVE-2024-56326 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6</td>
+                            <td>The py library through 1.11.0 for Python allows remote attackers to conduct a ReDoS (Regular expression Denial of Service) attack via a Subversion repository with crafted info data, because the InfoSvnCommand argument is mishandled.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2022-42969<br>GHSA-w596-4wvx-j9j6<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/advisories/GHSA-w596-4wvx-j9j6</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-42969</span><br><span class="vuln-link">https://github.com/pytest-dev/py/issues/287</span><br><span class="vuln-link">https://github.com/pytest-dev/py/issues/288</span><br><span class="vuln-link">https://github.com/pytest-dev/pytest/issues/10392</span><br><br><div class="section-header">影响范围: </div><br>py: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2022-42969 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-120 / GHSA-45c4-8wx5-qw6w</td>
+                            <td>### Impact<br><br>aiohttp v3.8.4 and earlier are [bundled with llhttp v6.0.6](https://github.com/aio-libs/aiohttp/blob/v3.8.4/.gitmodules) which is vulnerable to CVE-2023-30589. The vulnerable code is used by aiohttp for its HTTP request parser when available which is the default case when installing from a wheel.<br><br>This vulnerability only affects users of aiohttp as an HTTP server (ie `aiohttp.Application`), you are not affected by this vulnerability if you are using aiohttp as an HTTP client library (ie `aiohttp.ClientSession`).<br><br>### Reproducer<br><br>```python<br>from aiohttp import web<br><br>async def example(request: web.Request):<br>    headers = dict(request.headers)<br>    body = await request.content.read()<br>    return web.Response(text=f&amp;quot;headers: {headers} body: {body}&amp;quot;)<br><br>app = web.Application()<br>app.add_routes([web.post(&amp;#39;/&amp;#39;, example)])<br>web.run_app(app)<br>```<br><br>Sending a crafted HTTP request will cause the server to misinterpret one of the HTTP header values leading to HTTP request smuggling.<br><br>```console<br>$ printf &amp;quot;POST / HTTP/1.1\r\nHost: localhost:8080\r\nX-Abc: \rxTransfer-Encoding: chunked\r\n\r\n1\r\nA\r\n0\r\n\r\n&amp;quot; \<br>  | nc localhost 8080<br><br>Expected output:<br>  headers: {&amp;#39;Host&amp;#39;: &amp;#39;localhost:8080&amp;#39;, &amp;#39;X-Abc&amp;#39;: &amp;#39;\rxTransfer-Encoding: chunked&amp;#39;} body: b&amp;#39;&amp;#39;<br><br>Actual output (note that &amp;#39;Transfer-Encoding: chunked&amp;#39; is an HTTP header now and body is treated differently)<br>  headers: {&amp;#39;Host&amp;#39;: &amp;#39;localhost:8080&amp;#39;, &amp;#39;X-Abc&amp;#39;: &amp;#39;&amp;#39;, &amp;#39;Transfer-Encoding&amp;#39;: &amp;#39;chunked&amp;#39;} body: b&amp;#39;A&amp;#39;<br>```<br><br>### Patches<br><br>Upgrade to the latest version of aiohttp to resolve this vulnerability. It has been fixed in v3.8.5: [`pip install aiohttp &amp;gt;= 3.8.5`](https://pypi.org/project/aiohttp/3.8.5/)<br><br>### Workarounds<br><br>If you aren&amp;#39;t able to upgrade you can reinstall aiohttp using `AIOHTTP_NO_EXTENSIONS=1` as an environment variable to disable the llhttp HTTP request parser implementation. The pure Python implementation isn&amp;#39;t vulnerable to request smuggling:<br><br>```console<br>$ python -m pip uninstall --yes aiohttp<br>$ AIOHTTP_NO_EXTENSIONS=1 python -m pip install --no-binary=aiohttp --no-cache aiohttp<br>```<br><br>### References<br><br>* https://nvd.nist.gov/vuln/detail/CVE-2023-30589<br>* https://hackerone.com/reports/2001873<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-37276<br>GHSA-45c4-8wx5-qw6w<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-45c4-8wx5-qw6w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-37276</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><span class="vuln-link">https://hackerone.com/reports/2001873</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 3.8.5 <br><br><br><div class="cve-header">来自 CVE-2023-37276 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-7gpw-8wmc-pm8g</td>
+                            <td>### Summary<br><br>A XSS vulnerability exists on index pages for static file handling.<br><br>### Details<br><br>When using `web.static(..., show_index=True)`, the resulting index pages do not escape file names.<br><br>If users can upload files with arbitrary filenames to the static directory, the server is vulnerable to XSS attacks.<br><br>### Workaround<br><br>We have always recommended using a reverse proxy server (e.g. nginx) for serving static files. Users following the recommendation are unaffected.<br><br>Other users can disable `show_index` if unable to upgrade.<br><br>-----<br><br>Patch: https://github.com/aio-libs/aiohttp/pull/8319/files<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-27306<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-7gpw-8wmc-pm8g</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-27306</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8319</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8319/files</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/28335525d1eac015a7e7584137678cbb6ff19397</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/2EXRGTN2WG7VZLUZ7WOXU5GQJKCPPHKP</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/NWEI6NIHZ3G7DURDZVMRK7ZEFC2BTD3U</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZIVBMPEY7WWOFMC3CWXFBRQPFECV4SW3</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 3.9.4 <br><br><br><div class="cve-header">来自 CVE-2024-27306 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2024-26 / GHSA-8qpw-xqxj-h4r2</td>
+                            <td>aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Security-sensitive parts of the Python HTTP parser retained minor differences in allowable character sets, that must trigger error handling to robustly match frame boundaries of proxies in order to protect against injection of additional requests. Additionally, validation could trigger exceptions that were not handled consistently with processing of other malformed input.  Being more lenient than internet standards require could, depending on deployment environment, assist in request smuggling. The unhandled exception could cause excessive resource consumption on the application server and/or its logging facilities. This vulnerability exists due to an incomplete fix for CVE-2023-47627. Version 3.9.2 fixes this vulnerability.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-23829<br>GHSA-8qpw-xqxj-h4r2<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-8qpw-xqxj-h4r2</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8074</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/33ccdfb0a12690af5bb49bda2319ec0907fa7827</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/XXWVZIVAYWEBHNRIILZVB3R3SDQNNAA7/</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 33ccdfb0a12690af5bb49bda2319ec0907fa7827 <br>aiohttp: 所有版本 &lt; 3.9.2 <br><br><br><div class="cve-header">来自 CVE-2024-23829 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-246 / GHSA-gfw2-4jvh-wgfg</td>
+                            <td>aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. The HTTP parser in AIOHTTP has numerous problems with header parsing, which could lead to request smuggling. This parser is only used when AIOHTTP_NO_EXTENSIONS is enabled (or not using a prebuilt wheel). These bugs have been addressed in commit `d5c12ba89` which has been included in release version 3.8.6. Users are advised to upgrade. There are no known workarounds for these issues.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-47627<br>GHSA-gfw2-4jvh-wgfg<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-gfw2-4jvh-wgfg</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/d5c12ba890557a575c313bb3017910d7616fce3d</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; d5c12ba890557a575c313bb3017910d7616fce3d <br>aiohttp: 所有版本 &lt; 3.8.6 <br><br><br><div class="cve-header">来自 CVE-2023-47627 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-jwhx-xcg6-8xhj</td>
+                            <td>### Summary<br>Static routes which contain files with compressed variants (`.gz` or `.br` extension) were vulnerable to path traversal outside the root directory if those variants are symbolic links.<br><br>### Details<br>The server protects static routes from path traversal outside the root directory when `follow_symlinks=False` (default).  It does this by resolving the requested URL to an absolute path and then checking that path relative to the root.  However, these checks are not performed when looking for compressed variants in the `FileResponse` class, and symbolic links are then automatically followed when performing `Path.stat()` and `Path.open()` to send the file.<br><br>### Impact<br>Servers with static routes that contain compressed variants as symbolic links, pointing outside the root directory, or that permit users to upload or create such links, are impacted.<br><br>----<br><br>Patch: https://github.com/aio-libs/aiohttp/pull/8653/files<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-42367<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-jwhx-xcg6-8xhj</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-42367</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/8653</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/ce2e9758814527589b10759a20783fb03b98339f</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_fileresponse.py#L177</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/e0ff5246e1d29b7710ab1a2bbc972b48169f1c05/aiohttp/web_urldispatcher.py#L674</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 3.10.2 <br><br><br><div class="cve-header">来自 CVE-2024-42367 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-pjjw-qhg8-p2p9</td>
+                            <td>### Summary<br>llhttp 8.1.1 is vulnerable to two request smuggling vulnerabilities.<br>Details have not been disclosed yet, so refer to llhttp for future information.<br>The issue is resolved by using llhttp 9+ (which is included in aiohttp 3.8.6+).<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-pjjw-qhg8-p2p9</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/996de2629ef6b4c2934a7c04dfd49d0950d4c43b</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/bcc416e533796d04fb8124ef1e7686b1f338767a</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 3.8.6 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-250 / GHSA-q3qx-c6g2-7pw2</td>
+                            <td>aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Improper validation made it possible for an attacker to modify the HTTP request (e.g. to insert a new header) or create a new HTTP request if the attacker controls the HTTP version. The vulnerability only occurs if the attacker can control the HTTP version of the request. This issue has been patched in version 3.9.0.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-49081<br>GHSA-q3qx-c6g2-7pw2<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-q3qx-c6g2-7pw2</span><br><span class="vuln-link">https://gist.github.com/jnovikov/184afb593d9c2114d77f508e0ccd508e</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/7835/files</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/1e86b777e61cf4eefc7d92fa57fa19dcc676013b</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 1e86b777e61cf4eefc7d92fa57fa19dcc676013b <br>aiohttp: 所有版本 &lt; 3.9.0 <br><br><br><div class="cve-header">来自 CVE-2023-49081 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-251 / GHSA-qvrw-v9rv-5rjx</td>
+                            <td>aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Improper validation makes it possible for an attacker to modify the HTTP request (e.g. insert a new header) or even create a new HTTP request if the attacker controls the HTTP method. The vulnerability occurs only if the attacker can control the HTTP method (GET, POST etc.) of the request. If the attacker can control the HTTP version of the request it will be able to modify the request (request smuggling). This issue has been patched in version 3.9.0.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-49082<br>GHSA-qvrw-v9rv-5rjx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-qvrw-v9rv-5rjx</span><br><span class="vuln-link">https://gist.github.com/jnovikov/7f411ae9fe6a9a7804cf162a3bdbb44b</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/pull/7806/files</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/e4ae01c2077d2cfa116aa82e4ff6866857f7c466</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; e4ae01c2077d2cfa116aa82e4ff6866857f7c466 <br>aiohttp: 所有版本 &lt; 3.9.0 <br><br><br><div class="cve-header">来自 CVE-2023-49082 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-76 / GHSA-v6wp-4m6f-gcjg</td>
+                            <td>aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. In aiohttp before version 3.7.4 there is an open redirect vulnerability. A maliciously crafted link to an aiohttp-based web-server could redirect the browser to a different website. It is caused by a bug in the `aiohttp.web_middlewares.normalize_path_middleware` middleware. This security problem has been fixed in 3.7.4. Upgrade your dependency using pip as follows &amp;quot;pip install aiohttp &amp;gt;= 3.7.4&amp;quot;. If upgrading is not an option for you, a workaround can be to avoid using `aiohttp.web_middlewares.normalize_path_middleware` in your applications.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2021-21330<br>GHSA-v6wp-4m6f-gcjg<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/2545222a3853e31ace15d87ae0e2effb7da0c96b</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/blob/master/CHANGES.rst#374-2021-02-25</span><br><span class="vuln-link">https://pypi.org/project/aiohttp/</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-v6wp-4m6f-gcjg</span><br><span class="vuln-link">https://www.debian.org/security/2021/dsa-4864</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/JN3V7CZJRT4QFCVXB6LDPCJH7NAOFCA5/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/FU7ENI54JNEK3PHEFGCE46DGMFNTVU6L/</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; 2545222a3853e31ace15d87ae0e2effb7da0c96b <br>aiohttp: 所有版本 &lt; 3.7.4 <br><br><br><div class="cve-header">来自 CVE-2021-21330 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-247 / GHSA-xx9p-xxvh-7g8j</td>
+                            <td>aiohttp is an asynchronous HTTP client/server framework for asyncio and Python. Affected versions of aiohttp have a security vulnerability regarding the inconsistent interpretation of the http protocol. HTTP/1.1 is a persistent protocol, if both Content-Length(CL) and Transfer-Encoding(TE) header values are present it can lead to incorrect interpretation of two entities that parse the HTTP and we can poison other sockets with this incorrect interpretation. A possible Proof-of-Concept (POC) would be a configuration with a reverse proxy(frontend) that accepts both CL and TE headers and aiohttp as backend. As aiohttp parses anything with chunked, we can pass a chunked123 as TE, the frontend entity will ignore this header and will parse Content-Length. The impact of this vulnerability is that it is possible to bypass any proxy rule, poisoning sockets to other users like passing Authentication Headers, also if it is present an Open Redirect an attacker could combine it to redirect random users to another website and log the request. This vulnerability has been addressed in release 3.8.0 of aiohttp. Users are advised to upgrade. There are no known workarounds for this vulnerability.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-47641<br>GHSA-xx9p-xxvh-7g8j<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/security/advisories/GHSA-xx9p-xxvh-7g8j</span><br><span class="vuln-link">https://github.com/aio-libs/aiohttp/commit/f016f0680e4ace6742b03a70cb0382ce86abe371</span><br><br><div class="section-header">影响范围: </div><br>aiohttp: 所有版本 &lt; f016f0680e4ace6742b03a70cb0382ce86abe371 <br>aiohttp: 所有版本 &lt; 3.8.0 <br><br><br><div class="cve-header">来自 CVE-2023-47641 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-m5vv-6r4h-3vj9</td>
+                            <td>Azure Identity Libraries and Microsoft Authentication Library Elevation of Privilege Vulnerability.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-35255<br>GO-2024-2918<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-35255</span><br><span class="vuln-link">https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/issues/4806#issuecomment-2178960340</span><br><span class="vuln-link">https://github.com/Azure/azure-sdk-for-go/commit/50774cd9709905523136fb05e8c85a50e8984499</span><br><span class="vuln-link">https://github.com/Azure/azure-sdk-for-java/commit/5bf020d6ea056de40e2738e3647a4e06f902c18d</span><br><span class="vuln-link">https://github.com/Azure/azure-sdk-for-js/commit/c6aa75d312ae463e744163cedfd8fc480cc8d492</span><br><span class="vuln-link">https://github.com/Azure/azure-sdk-for-net/commit/9279a4f38bf69b457cfb9b354f210e0a540a5c53</span><br><span class="vuln-link">https://github.com/Azure/azure-sdk-for-python/commit/cb065acd7d0f957327dc4f02d1646d4e51a94178</span><br><span class="vuln-link">https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-35255</span><br><br><div class="section-header">影响范围: </div><br>azure-identity: 所有版本 &lt; 1.16.1 <br>@azure/identity: 所有版本 &lt; 4.2.1 <br>com.azure:azure-identity: 所有版本 &lt; 1.12.2 <br>@azure/msal-node: &gt;= 2.7.0 &lt; 2.9.2 <br>Microsoft.Identity.Client: &gt;= 4.49.1 &lt; 4.60.4 <br>github.com/Azure/azure-sdk-for-go/sdk/azidentity: 所有版本 &lt; 1.6.0 <br>com.microsoft.azure:msal4j: &gt;= 1.14.4-beta &lt; 1.15.1 <br>Azure.Identity: 所有版本 &lt; 1.11.4 <br>Microsoft.Identity.Client: &gt;= 4.61.0 &lt; 4.61.3 <br><br><br><div class="cve-header">来自 CVE-2024-35255 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-64x4-9hc6-r2h6</td>
+                            <td>### Summary<br><br>The Azure Storage Encryption library in Java and other languages is vulnerable to a CBC Padding Oracle attack, similar to CVE-2020-8911. The library is not vulnerable to the equivalent of CVE-2020-8912, but only because it currently only supports AES-CBC as encryption mode. <br><br>### Severity<br><br>Moderate - The vulnerability poses insider risks/privilege escalation risks, circumventing controls for stored data.<br><br>### Further Analysis<br>The Java Azure Blob Storage Encryption SDK is impacted by an issue that can result in loss of confidentiality and message forgery. The attack requires write access to the container in question, and that the attacker has access to an endpoint that reveals decryption failures (without revealing the plaintext) and that when encrypting the CBC option was chosen as content cipher.<br><br>This advisory describes the plaintext revealing vulnerabilities in the Java Azure Blob Storage Encryption SDK, with a similar issue in the other blob storage SDKs being present as well.<br><br>In the current version of the Azure Blob Storage crypto SDK, the only algorithm option that allows users to encrypt files is to AES-CBC, without computing a MAC on the data.<br><br>This exposes a padding oracle vulnerability: If the attacker has write access to the blob container bucket and can observe whether or not an endpoint with access to the key can decrypt a file (without observing the file contents that the endpoint learns in the process), they can reconstruct the plaintext with (on average) 128*length(plaintext) queries to the endpoint, by exploiting CBC&amp;#39;s ability to manipulate the bytes of the next block and PKCS5 padding errors.<br><br>### Timeline<br>**Date reported**: March 29 2022<br>**Date preview**: June 16 2022<br>**Date GA**: July 11 2022<br>**Date disclosed**: July 17 2022<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2022-30187<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-6m8q-r22q-vfxh</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-30187</span><br><span class="vuln-link">https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-30187</span><br><span class="vuln-link">https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2022-30187</span><br><br><div class="section-header">影响范围: </div><br>Azure.Storage.Queues: 所有版本 &lt; 12.11.0 <br>Azure.Storage.Blobs: 所有版本 &lt; 12.13.0 <br>com.azure:azure-storage-blob: 所有版本 &lt; 12.18.0 <br>azure-storage-queue: 所有版本 &lt; 12.4.0 <br>azure-storage-blob: 所有版本 &lt; 12.13.0 <br><br><br><div class="cve-header">来自 CVE-2022-30187 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2024-40 / GHSA-pwr2-4v36-6qpr</td>
+                            <td>orjson.loads in orjson before 3.9.15 does not limit recursion for deeply nested JSON documents.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-27454<br>GHSA-pwr2-4v36-6qpr<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/ijl/orjson/issues/458</span><br><span class="vuln-link">https://github.com/ijl/orjson/commit/b0e4d2c06ce06c6e63981bf0276e4b7c74e5845e</span><br><span class="vuln-link">https://github.com/ijl/orjson/blob/master/CHANGELOG.md#3915</span><br><span class="vuln-link">https://monicz.dev/CVE-2024-27454</span><br><br><div class="section-header">影响范围: </div><br>orjson: 所有版本 &lt; b0e4d2c06ce06c6e63981bf0276e4b7c74e5845e <br>orjson: 所有版本 &lt; 3.9.15 <br><br><br><div class="cve-header">来自 CVE-2024-27454 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-142 / GHSA-8q59-q68h-6hv4</td>
+                            <td>A vulnerability was discovered in the PyYAML library in versions before 5.4, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. Applications that use the library to process untrusted input may be vulnerable to this flaw. This flaw allows an attacker to execute arbitrary code on the system by abusing the python/object/new constructor. This flaw is due to an incomplete fix for CVE-2020-1747.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-14343<br>GHSA-8q59-q68h-6hv4<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1860466</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8q59-q68h-6hv4</span><br><br><div class="section-header">影响范围: </div><br>pyyaml: 所有版本 &lt; 5.4 <br><br><br><div class="cve-header">来自 CVE-2020-14343 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2018-49 / GHSA-rprw-h62v-c2w7</td>
+                            <td>In PyYAML before 5.1, the yaml.load() API could execute arbitrary code if used with untrusted data. The load() function has been deprecated in version 5.1 and the &amp;#39;UnsafeLoader&amp;#39; has been introduced for backward compatibility with the function.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2017-18342<br>GHSA-rprw-h62v-c2w7<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/yaml/pyyaml/pull/74</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/blob/master/CHANGES</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/M6JCFGEIEOFMWWIXGHSELMKQDD4CV2BA/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/KSQQMRUQSXBSUXLCRD3TSZYQ7SEZRKCE/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/JEX7IPV5P2QJITAMA5Z63GQCZA5I6NVZ/</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation</span><br><span class="vuln-link">https://github.com/marshmallow-code/apispec/issues/278</span><br><span class="vuln-link">https://github.com/yaml/pyyaml/issues/193</span><br><span class="vuln-link">https://security.gentoo.org/glsa/202003-45</span><br><span class="vuln-link">https://github.com/advisories/GHSA-rprw-h62v-c2w7</span><br><br><div class="section-header">影响范围: </div><br>pyyaml: 所有版本 &lt; 5.1 <br><br><br><div class="cve-header">来自 CVE-2017-18342 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-188 / GHSA-rhrv-645h-fjfh</td>
+                            <td>When deserializing untrusted or corrupted data, it is possible for a reader to consume memory beyond the allowed constraints and thus lead to out of memory on the system.<br><br>This issue affects Java applications using Apache Avro Java SDK up to and including 1.11.2.  Users should update to apache-avro version 1.11.3 which addresses this issue.<br><br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-39410<br>GHSA-rhrv-645h-fjfh<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://lists.apache.org/thread/q142wj99cwdd0jo5lvdoxzoymlqyjdds</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/29/6</span><br><br><div class="section-header">影响范围: </div><br>avro: 所有版本 &lt; 1.11.3 <br><br><br><div class="cve-header">来自 CVE-2023-39410 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-44 / GHSA-329j-jfvr-rhr6</td>
+                            <td>In Apache Spark versions prior to 3.4.0, applications using spark-submit can specify a &amp;#39;proxy-user&amp;#39; to run as, limiting privileges. The application can execute code with the privileges of the submitting user, however, by providing malicious configuration-related classes on the classpath. This affects architectures relying on proxy-user, for example those using Apache Livy to manage submitted applications.<br><br>Update to Apache Spark 3.4.0 or later, and ensure that <br>spark.submit.proxyUser.allowCustomClasspathInClusterMode is set to its <br>default of &amp;quot;false&amp;quot;, and is not overridden by submitted applications.<br><br><br><br><br><div class="section-header">相关漏洞ID: </div><br>BIT-spark-2023-22946<br>CVE-2023-22946<br>GHSA-329j-jfvr-rhr6<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://lists.apache.org/thread/yllfl25xh5tbotjmg93zrq4bzwhqc0gv</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 3.4.0 <br><br><br><div class="cve-header">来自 CVE-2023-22946 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-42976 / GHSA-43xg-8wmj-cw8h</td>
+                            <td>A stored cross-site scripting (XSS) vulnerability in Apache Spark 3.2.1 and earlier, and 3.3.0, allows remote attackers to execute arbitrary JavaScript in the web browser of a user, by including a malicious payload into the logs which would be returned in logs rendered in the UI.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-spark-2022-31777<br>CVE-2022-31777<br>GHSA-43xg-8wmj-cw8h<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://lists.apache.org/thread/60mgbswq2lsmrxykfxpqq13ztkm2ht6q</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 3.2.2 <br><br><br><div class="cve-header">来自 CVE-2022-31777 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-236 / GHSA-4x9r-j582-cgr8</td>
+                            <td>The Apache Spark UI offers the possibility to enable ACLs via the configuration option spark.acls.enable. With an authentication filter, this checks whether a user has access permissions to view or modify the application. If ACLs are enabled, a code path in HttpSecurityFilter can allow someone to perform impersonation by providing an arbitrary user name. A malicious user might then be able to reach a permission check function that will ultimately build a Unix shell command based on their input, and execute it. This will result in arbitrary shell command execution as the user Spark is currently running as. This affects Apache Spark versions 3.0.3 and earlier, versions 3.1.1 to 3.1.2, and versions 3.2.0 to 3.2.1.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-spark-2022-33891<br>CVE-2022-33891<br>GHSA-4x9r-j582-cgr8<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://lists.apache.org/thread/p847l3kopoo5bjtmxrcwk21xp6tjxqlc</span><br><span class="vuln-link">https://github.com/advisories/GHSA-4x9r-j582-cgr8</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 3.1.1 &gt;= 3.2.0 &lt; 3.2.2 &gt;= 3.1.1 &lt; 3.1.3 <br><br><br><div class="cve-header">来自 CVE-2022-33891 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2018-25 / GHSA-6mqq-8r44-vmjc</td>
+                            <td>In Apache Spark 1.0.0 to 2.1.2, 2.2.0 to 2.2.1, and 2.3.0, when using PySpark or SparkR, it&amp;#39;s possible for a different local user to connect to the Spark application and impersonate the user running the Spark application.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2018-1334<br>GHSA-6mqq-8r44-vmjc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://spark.apache.org/security.html#CVE-2018-1334</span><br><span class="vuln-link">https://lists.apache.org/thread.html/4d6d210e319a501b740293daaeeeadb51927111fb8261a3e4cd60060@%3Cdev.spark.apache.org%3E</span><br><br><div class="section-header">影响范围: </div><br>pyspark: &gt;= 2.2.0 &lt; 2.2.2 所有版本 &lt; 2.1.3 <br><br><br><div class="cve-header">来自 CVE-2018-1334 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2017-147 / GHSA-8rhc-48pp-52gr</td>
+                            <td>In Apache Spark 1.6.0 until 2.1.1, the launcher API performs unsafe deserialization of data received by its socket. This makes applications launched programmatically using the launcher API potentially vulnerable to arbitrary code execution by an attacker with access to any user account on the local machine. It does not affect apps run by spark-submit or spark-shell. The attacker would be able to execute code as the user that ran the Spark application. Users are encouraged to update to version 2.2.0 or later.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2017-12612<br>GHSA-8rhc-48pp-52gr<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://mail-archives.apache.org/mod_mbox/spark-dev/201709.mbox/%3CCAEccTyy-1yYuhdNgkBUg0sr9NeaZSrBKkBePdTNZbxXZNTAR-g%40mail.gmail.com%3E</span><br><span class="vuln-link">http://www.securityfocus.com/bid/100823</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 2.1.2 <br><br><br><div class="cve-header">来自 CVE-2017-12612 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-186 / GHSA-9rr6-jpg7-9jg6</td>
+                            <td>Apache Spark supports end-to-end encryption of RPC connections via &amp;quot;spark.authenticate&amp;quot; and &amp;quot;spark.network.crypto.enabled&amp;quot;. In versions 3.1.2 and earlier, it uses a bespoke mutual authentication protocol that allows for full encryption key recovery. After an initial interactive attack, this would allow someone to decrypt plaintext traffic offline. Note that this does not affect security mechanisms controlled by &amp;quot;spark.authenticate.enableSaslEncryption&amp;quot;, &amp;quot;spark.io.encryption.enabled&amp;quot;, &amp;quot;spark.ssl&amp;quot;, &amp;quot;spark.ui.strictTransportSecurity&amp;quot;. Update to Apache Spark 3.1.3 or later<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-spark-2021-38296<br>CVE-2021-38296<br>GHSA-9rr6-jpg7-9jg6<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://lists.apache.org/thread/70x8fw2gx3g9ty7yk0f2f1dlpqml2smd</span><br><span class="vuln-link">https://github.com/advisories/GHSA-9rr6-jpg7-9jg6</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 3.1.3 <br><br><br><div class="cve-header">来自 CVE-2021-38296 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2019-114 / GHSA-fp5j-3fpf-mhj5</td>
+                            <td>Prior to Spark 2.3.3, in certain situations Spark would write user data to local disk unencrypted, even if spark.io.encryption.enabled=true. This includes cached blocks that are fetched to disk (controlled by spark.maxRemoteBlockSizeFetchToMem); in SparkR, using parallelize; in Pyspark, using broadcast and parallelize; and use of python udfs.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2019-10099<br>GHSA-fp5j-3fpf-mhj5<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://lists.apache.org/thread.html/c2a39c207421797f82823a8aff488dcd332d9544038307bf69a2ba9e@%3Cuser.spark.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rabe1d47e2bf8b8f6d9f3068c8d2679731d57fa73b3a7ed1fa82406d2@%3Cissues.spark.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/ra216b7b0dd82a2c12c2df9d6095e689eb3f3d28164e6b6587da69fae@%3Ccommits.spark.apache.org%3E</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 2.3.3 <br><br><br><div class="cve-header">来自 CVE-2019-10099 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-95 / GHSA-wgx7-jwwm-cgjv</td>
+                            <td>In Apache Spark 2.4.5 and earlier, a standalone resource manager&amp;#39;s master may be configured to require authentication (spark.authenticate) via a shared secret. When enabled, however, a specially-crafted RPC to the master can succeed in starting an application&amp;#39;s resources on the Spark cluster, even without the shared key. This can be leveraged to execute shell commands on the host machine. This does not affect Spark clusters using other resource managers (YARN, Mesos, etc).<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-spark-2020-9480<br>CVE-2020-9480<br>GHSA-wgx7-jwwm-cgjv<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://spark.apache.org/security.html#CVE-2020-9480</span><br><span class="vuln-link">https://lists.apache.org/thread.html/ree9e87aae81852330290a478692e36ea6db47a52a694545c7d66e3e2@%3Cdev.spark.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r03ad9fe7c07d6039fba9f2152d345274473cb0af3d8a4794a6645f4b@%3Cuser.spark.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb3956440747e41940d552d377d50b144b60085e7ff727adb0e575d8d@%3Ccommits.submarine.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/ra0e62a18ad080c4ce6df5e0202a27eaada75222761efc3f7238b5a3b@%3Ccommits.doris.apache.org%3E</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 2.4.6 <br><br><br><div class="cve-header">来自 CVE-2020-9480 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-72</td>
+                            <td>** UNSUPPORTED WHEN ASSIGNED ** The Apache Spark UI offers the possibility to enable ACLs via the configuration option spark.acls.enable. With an authentication filter, this checks whether a user has access permissions to view or modify the application. If ACLs are enabled, a code path in HttpSecurityFilter can allow someone to perform impersonation by providing an arbitrary user name. A malicious user might then be able to reach a permission check function that will ultimately build a Unix shell command based on their input, and execute it. This will result in arbitrary shell command execution as the user Spark is currently running as. This issue was disclosed earlier as CVE-2022-33891, but incorrectly claimed version 3.1.3 (which has since gone EOL) would not be affected.<br><br>NOTE: This vulnerability only affects products that are no longer supported by the maintainer.<br><br>Users are recommended to upgrade to a supported version of Apache Spark, such as version 3.4.0.<br><br><br><br><br><div class="section-header">相关漏洞ID: </div><br>BIT-spark-2023-32007<br>CVE-2023-32007<br>GHSA-59hw-j9g6-mfg3<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://spark.apache.org/security.html</span><br><span class="vuln-link">https://lists.apache.org/thread/poxgnxhhnzz735kr1wos366l5vdbb0nv</span><br><span class="vuln-link">https://www.cve.org/CVERecord?id=CVE-2022-33891</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/05/02/1</span><br><br><div class="section-header">影响范围: </div><br>pyspark: 所有版本 &lt; 3.1.1 &gt;= 3.2.0 &lt; 3.2.2 &gt;= 3.1.1 &lt; 3.2.0 <br><br><br><div class="cve-header">来自 CVE-2023-32007 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2014-14 / GHSA-652x-xj99-gmcc</td>
+                            <td>Requests (aka python-requests) before 2.3.0 allows remote servers to obtain sensitive information by reading the Proxy-Authorization header in a redirected request.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-1830<br>GHSA-652x-xj99-gmcc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/kennethreitz/requests/issues/1885</span><br><span class="vuln-link">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733108</span><br><span class="vuln-link">http://www.debian.org/security/2015/dsa-3146</span><br><span class="vuln-link">http://www.mandriva.com/security/advisories?name=MDVSA-2015:133</span><br><span class="vuln-link">http://advisories.mageia.org/MGASA-2014-0409.html</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-updates/2016-01/msg00095.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-652x-xj99-gmcc</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 2.3.0 <br><br><br><div class="cve-header">来自 CVE-2014-1830 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56</td>
+                            <td>When making requests through a Requests `Session`, if the first request is made with `verify=False` to disable cert verification, all subsequent requests to the same origin will continue to ignore cert verification regardless of changes to the value of `verify`. This behavior will continue for the lifecycle of the connection in the connection pool.<br><br>### Remediation<br>Any of these options can be used to remediate the current issue, we highly recommend upgrading as the preferred mitigation.<br><br>* Upgrade to `requests&amp;gt;=2.32.0`.<br>* For `requests&amp;lt;2.32.0`, avoid setting `verify=False` for the first request to a host while using a Requests Session.<br>* For `requests&amp;lt;2.32.0`, call `close()` on `Session` objects to clear existing connections if `verify=False` is used.<br><br>### Related Links<br>* https://github.com/psf/requests/pull/6655<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-35195<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/psf/requests/security/advisories/GHSA-9wx4-h78v-vm56</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-35195</span><br><span class="vuln-link">https://github.com/psf/requests/pull/6655</span><br><span class="vuln-link">https://github.com/psf/requests/commit/a58d7f2ffb4d00b46dca2d70a3932a0b37e22fac</span><br><span class="vuln-link">https://github.com/psf/requests</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/IYLSNK5TL46Q6XPRVMHVWS63MVJQOK4Q</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/N7WP6EYDSUOCOJYHDK5NX43PYZ4SNHGZ</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 2.32.0 <br><br><br><div class="cve-header">来自 CVE-2024-35195 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2014-13 / GHSA-cfj3-7x9c-4p3h</td>
+                            <td>Requests (aka python-requests) before 2.3.0 allows remote servers to obtain a netrc password by reading the Authorization header in a redirected request.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-1829<br>GHSA-cfj3-7x9c-4p3h<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733108</span><br><span class="vuln-link">https://github.com/kennethreitz/requests/issues/1885</span><br><span class="vuln-link">http://www.ubuntu.com/usn/USN-2382-1</span><br><span class="vuln-link">http://www.debian.org/security/2015/dsa-3146</span><br><span class="vuln-link">http://www.mandriva.com/security/advisories?name=MDVSA-2015:133</span><br><span class="vuln-link">http://advisories.mageia.org/MGASA-2014-0409.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-cfj3-7x9c-4p3h</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 2.3.0 <br><br><br><div class="cve-header">来自 CVE-2014-1829 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2018-28 / GHSA-x84v-xcm2-53pg</td>
+                            <td>The Requests package before 2.20.0 for Python sends an HTTP Authorization header to an http URI upon receiving a same-hostname https-to-http redirect, which makes it easier for remote attackers to discover credentials by sniffing the network.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2018-18074<br>GHSA-x84v-xcm2-53pg<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/requests/requests/pull/4718</span><br><span class="vuln-link">https://github.com/requests/requests/issues/4716</span><br><span class="vuln-link">https://github.com/requests/requests/commit/c45d7c49ea75133e52ab22a8e9e13173938e36ff</span><br><span class="vuln-link">https://bugs.debian.org/910766</span><br><span class="vuln-link">https://usn.ubuntu.com/3790-1/</span><br><span class="vuln-link">http://docs.python-requests.org/en/master/community/updates/#release-and-version-history</span><br><span class="vuln-link">https://usn.ubuntu.com/3790-2/</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-07/msg00024.html</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2019:2035</span><br><span class="vuln-link">https://github.com/advisories/GHSA-x84v-xcm2-53pg</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; c45d7c49ea75133e52ab22a8e9e13173938e36ff <br>requests: 所有版本 &lt; 2.20.0 <br><br><br><div class="cve-header">来自 CVE-2018-18074 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2015-17</td>
+                            <td>The resolve_redirects function in sessions.py in requests 2.1.0 through 2.5.3 allows remote attackers to conduct session fixation attacks via a cookie without a host value in a redirect.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2015-2296<br>GHSA-pg2w-x9wp-vw92<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2015/03/15/1</span><br><span class="vuln-link">http://www.ubuntu.com/usn/USN-2531-1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2015/03/14/4</span><br><span class="vuln-link">https://github.com/kennethreitz/requests/commit/3bd8afbff29e50b38f889b2f688785a669b9aafc</span><br><span class="vuln-link">https://warehouse.python.org/project/requests/2.6.0/</span><br><span class="vuln-link">http://lists.fedoraproject.org/pipermail/package-announce/2015-March/153594.html</span><br><span class="vuln-link">http://advisories.mageia.org/MGASA-2015-0120.html</span><br><span class="vuln-link">http://www.mandriva.com/security/advisories?name=MDVSA-2015:133</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 3bd8afbff29e50b38f889b2f688785a669b9aafc <br>requests: &gt;= 2.1.0 &lt; 2.6.0 <br><br><br><div class="cve-header">来自 CVE-2015-2296 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-74</td>
+                            <td>Requests is a HTTP library. Since Requests 2.3.0, Requests has been leaking Proxy-Authorization headers to destination servers when redirected to an HTTPS endpoint. This is a product of how we use `rebuild_proxies` to reattach the `Proxy-Authorization` header to requests. For HTTP connections sent through the tunnel, the proxy will identify the header in the request itself and remove it prior to forwarding to the destination server. However when sent over HTTPS, the `Proxy-Authorization` header must be sent in the CONNECT request as the proxy has no visibility into the tunneled request. This results in Requests forwarding proxy credentials to the destination server unintentionally, allowing a malicious actor to potentially exfiltrate sensitive information. This issue has been patched in version 2.31.0.<br><br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-32681<br>GHSA-j8r2-6x86-q33q<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/psf/requests/security/advisories/GHSA-j8r2-6x86-q33q</span><br><span class="vuln-link">https://github.com/psf/requests/releases/tag/v2.31.0</span><br><span class="vuln-link">https://github.com/psf/requests/commit/74ea7cf7a6a27a4eeb2ae24e162bcc942a6706d5</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/AW7HNFGYP44RT3DUDQXG2QT3OEV2PJ7Y/</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 74ea7cf7a6a27a4eeb2ae24e162bcc942a6706d5 <br>requests: &gt;= 2.3.0 &lt; 2.31.0 <br><br><br><div class="cve-header">来自 CVE-2023-32681 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (3)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>aiohappyeyeballs</td><td>==2.4.3</td><td>Python Software Foundation License</td></tr><tr><td>propcache</td><td>==0.2.0</td><td>Apache Software License</td></tr><tr><td>nodejs-wheel-binaries</td><td>==20.18.0</td><td>MIT License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>qtconsole</td><td>==5.5.2</td><td>BSD License</td></tr><tr><td>qtpy</td><td>==2.4.1</td><td>MIT License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (73)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>types-pyyaml</td><td>==6.0.12.20240311</td><td>==6.0.12.20240917</td><td>一般变更</td></tr><tr><td>cffi</td><td>==1.16.0</td><td>==1.17.1</td><td>次版本</td></tr><tr><td>azure-core</td><td>==1.30.2</td><td>==1.31.0</td><td>次版本</td></tr><tr><td>cachetools</td><td>==5.4.0</td><td>==5.5.0</td><td>次版本</td></tr><tr><td>aiohttp-session</td><td>==2.12.0</td><td>==2.12.1</td><td>补丁版本</td></tr><tr><td>tinycss2</td><td>==1.3.0</td><td>==1.4.0</td><td>次版本</td></tr><tr><td>pyjwt</td><td>==2.8.0</td><td>==2.9.0</td><td>次版本</td></tr><tr><td>psutil</td><td>==6.0.0</td><td>==6.1.0</td><td>次版本</td></tr><tr><td>zipp</td><td>==3.19.2</td><td>==3.20.2</td><td>次版本</td></tr><tr><td>virtualenv</td><td>==20.26.3</td><td>==20.27.0</td><td>次版本</td></tr><tr><td>debugpy</td><td>==1.8.2</td><td>==1.8.7</td><td>补丁版本</td></tr><tr><td>jupyterlab</td><td>==4.2.4</td><td>==4.2.5</td><td>补丁版本</td></tr><tr><td>s3transfer</td><td>==0.10.2</td><td>==0.10.3</td><td>补丁版本</td></tr><tr><td>xyzservices</td><td>==2024.6.0</td><td>==2024.9.0</td><td>次版本</td></tr><tr><td>tzdata</td><td>==2024.1</td><td>==2024.2</td><td>次版本</td></tr><tr><td>importlib-metadata</td><td>==8.0.0</td><td>==8.5.0</td><td>次版本</td></tr><tr><td>sphinxcontrib-devhelp</td><td>==1.0.6</td><td>==2.0.0</td><td>主版本</td></tr><tr><td>proto-plus</td><td>==1.24.0</td><td>==1.25.0</td><td>次版本</td></tr><tr><td>httpcore</td><td>==1.0.5</td><td>==1.0.6</td><td>补丁版本</td></tr><tr><td>pyasn1</td><td>==0.6.0</td><td>==0.6.1</td><td>补丁版本</td></tr><tr><td>rpds-py</td><td>==0.19.0</td><td>==0.20.0</td><td>次版本</td></tr><tr><td>filelock</td><td>==3.15.4</td><td>==3.16.1</td><td>次版本</td></tr><tr><td>bokeh</td><td>>=3,<3.4</td><td>>=3,<3.5</td><td>一般变更</td></tr><tr><td>sphinxcontrib-qthelp</td><td>==1.0.8</td><td>==2.0.0</td><td>主版本</td></tr><tr><td>jupyter-client</td><td>==8.6.2</td><td>==8.6.3</td><td>补丁版本</td></tr><tr><td>pyparsing</td><td>==3.1.2</td><td>==3.2.0</td><td>次版本</td></tr><tr><td>kiwisolver</td><td>==1.4.5</td><td>==1.4.7</td><td>补丁版本</td></tr><tr><td>fonttools</td><td>==4.53.1</td><td>==4.54.1</td><td>次版本</td></tr><tr><td>charset-normalizer</td><td>==3.3.2</td><td>==3.4.0</td><td>次版本</td></tr><tr><td>sphinxcontrib-applehelp</td><td>==1.0.8</td><td>==2.0.0</td><td>主版本</td></tr><tr><td>pyproject-hooks</td><td>==1.1.0</td><td>==1.2.0</td><td>次版本</td></tr><tr><td>tomlkit</td><td>==0.13.0</td><td>==0.13.2</td><td>补丁版本</td></tr><tr><td>sphinxcontrib-htmlhelp</td><td>==2.0.6</td><td>==2.1.0</td><td>次版本</td></tr><tr><td>identify</td><td>==2.6.0</td><td>==2.6.1</td><td>补丁版本</td></tr><tr><td>attrs</td><td>==23.2.0</td><td>==24.2.0</td><td>主版本</td></tr><tr><td>msal</td><td>==1.30.0</td><td>==1.31.0</td><td>次版本</td></tr><tr><td>tomli</td><td>==2.0.1</td><td>==2.0.2</td><td>补丁版本</td></tr><tr><td>ipywidgets</td><td>==8.1.3</td><td>==8.1.5</td><td>补丁版本</td></tr><tr><td>contourpy</td><td>==1.2.1</td><td>==1.3.0</td><td>次版本</td></tr><tr><td>sphinxcontrib-serializinghtml</td><td>==1.1.10</td><td>==2.0.0</td><td>主版本</td></tr><tr><td>executing</td><td>==2.0.1</td><td>==2.1.0</td><td>次版本</td></tr><tr><td>googleapis-common-protos</td><td>==1.63.2</td><td>==1.65.0</td><td>次版本</td></tr><tr><td>google-api-python-client</td><td>==2.137.0</td><td>==2.149.0</td><td>次版本</td></tr><tr><td>jupyterlab-widgets</td><td>==3.0.11</td><td>==3.0.13</td><td>补丁版本</td></tr><tr><td>importlib-resources</td><td>==6.4.0</td><td>==6.4.5</td><td>补丁版本</td></tr><tr><td>jsonschema-specifications</td><td>==2023.12.1</td><td>==2024.10.1</td><td>主版本</td></tr><tr><td>multidict</td><td>==6.0.5</td><td>==6.1.0</td><td>次版本</td></tr><tr><td>widgetsnbextension</td><td>==4.0.11</td><td>==4.0.13</td><td>补丁版本</td></tr><tr><td>regex</td><td>==2024.5.15</td><td>==2024.9.11</td><td>次版本</td></tr><tr><td>markupsafe</td><td>==2.1.5</td><td>==3.0.2</td><td>主版本</td></tr><tr><td>pyasn1-modules</td><td>==0.4.0</td><td>==0.4.1</td><td>补丁版本</td></tr><tr><td>watchfiles</td><td>==0.22.0</td><td>==0.24.0</td><td>次版本</td></tr><tr><td>httpx</td><td>==0.27.0</td><td>==0.27.2</td><td>补丁版本</td></tr><tr><td>pytz</td><td>==2024.1</td><td>==2024.2</td><td>次版本</td></tr><tr><td>soupsieve</td><td>==2.5</td><td>==2.6</td><td>次版本</td></tr><tr><td>idna</td><td>==3.7</td><td>==3.10</td><td>次版本</td></tr><tr><td>google-api-core</td><td>==2.19.1</td><td>==2.21.0</td><td>次版本</td></tr><tr><td>isodate</td><td>==0.6.1</td><td>==0.7.2</td><td>次版本</td></tr><tr><td>yarl</td><td>==1.9.4</td><td>==1.16.0</td><td>次版本</td></tr><tr><td>notebook</td><td>==7.2.1</td><td>==7.2.2</td><td>补丁版本</td></tr><tr><td>setuptools</td><td>==71.1.0</td><td>==75.2.0</td><td>主版本</td></tr><tr><td>prometheus-client</td><td>==0.20.0</td><td>==0.21.0</td><td>次版本</td></tr><tr><td>certifi</td><td>==2024.7.4</td><td>==2024.8.30</td><td>次版本</td></tr><tr><td>tenacity</td><td>==8.5.0</td><td>==9.0.0</td><td>主版本</td></tr><tr><td>prompt-toolkit</td><td>==3.0.47</td><td>==3.0.48</td><td>补丁版本</td></tr><tr><td>platformdirs</td><td>==4.2.2</td><td>==4.3.6</td><td>次版本</td></tr><tr><td>pyzmq</td><td>==26.0.3</td><td>==26.2.0</td><td>次版本</td></tr><tr><td>babel</td><td>==2.15.0</td><td>==2.16.0</td><td>次版本</td></tr><tr><td>urllib3</td><td>==1.26.19</td><td>==1.26.20</td><td>补丁版本</td></tr><tr><td>anyio</td><td>==4.4.0</td><td>==4.6.2.post1</td><td>次版本</td></tr><tr><td>distlib</td><td>==0.3.8</td><td>==0.3.9</td><td>补丁版本</td></tr><tr><td>webcolors</td><td>==24.6.0</td><td>==24.8.0</td><td>次版本</td></tr><tr><td>cryptography</td><td>==43.0.0</td><td>==43.0.3</td><td>补丁版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>cryptography</td>
+                            <td class="vuln-low">GHSA-79v4-65xg-pq4g<br>关联CVE: CVE-2024-12797</td>
+                            <td>具体受影响版本: 42.0.0, 42.0.1, 42.0.2, 42.0.3, 42.0.4, 42.0.5, 42.0.6, 42.0.7, 42.0.8, 43.0.0, 43.0.1, 43.0.3, 44.0.0</td>
+                            <td>Vulnerable OpenSSL included in cryptography wheels&lt;br&gt;&lt;br&gt;pyca/cryptography&#39;s wheels include a statically linked copy of OpenSSL. The versions of OpenSSL included in cryptography 42.0.0-44.0.0 are vulnerable to a security issue. More details about the vulnerability itself can be found in https://openssl-library.org/news/secadv/20250211.txt.
+
+If you are building cryptography source (&quot;sdist&quot;) then you are responsible for upgrading your copy of OpenSSL. Only users installing from wheels built by the cryptography project (i.e., those distributed on PyPI) need to update their cryptography versions.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pyca/cryptography/security/advisories/GHSA-79v4-65xg-pq4g' target='_blank' class='vuln-link'>https://github.com/pyca/cryptography/security/advisories/GHSA-79v4-65xg-pq4g</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-12797' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-12797</a><br><a href='https://github.com/openssl/openssl/commit/738d4f9fdeaad57660dcba50a619fafced3fd5e9' target='_blank' class='vuln-link'>https://github.com/openssl/openssl/commit/738d4f9fdeaad57660dcba50a619fafced3fd5e9</a><br><a href='https://github.com/openssl/openssl/commit/798779d43494549b611233f92652f0da5328fbe7' target='_blank' class='vuln-link'>https://github.com/openssl/openssl/commit/798779d43494549b611233f92652f0da5328fbe7</a><br><a href='https://github.com/openssl/openssl/commit/87ebd203feffcf92ad5889df92f90bb0ee10a699' target='_blank' class='vuln-link'>https://github.com/openssl/openssl/commit/87ebd203feffcf92ad5889df92f90bb0ee10a699</a></div></td>
+                            <td>2025-02-11</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>2025</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>2044</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>1029</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>1010</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>118</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (1029)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共1029个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>hail\hail\src\is\hail\utils\NumericPair.scala</td></tr><tr><td>hail\hail\src\is\hail\io\HadoopFSDataBinaryReader.scala</td></tr><tr><td>hail\hail\src\is\hail\utils\FastSeq.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\Validate.scala</td></tr><tr><td>infra\gcp\hail-is\appsec\hailctl_client_secret.enc.json</td></tr><tr><td>hail\hail\test\src\is\hail\variant\ReferenceGenomeSuite.scala</td></tr><tr><td>hail\hail\test\resources\ex.vcf.mt\cols\README.txt</td></tr><tr><td>hail\hail\src\is\hail\io\vcf\ExportVCF.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\PruneDeadFields.scala</td></tr><tr><td>hail\hail\test\src\is\hail\utils\BinaryHeapSuite.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.6.0\matrix_table\0.hmt\globals\README.txt</td></tr><tr><td>hail\hail\src\is\hail\utils\HTTPClient.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\NatBase.scala</td></tr><tr><td>hail\hail\resources\reference\grcm38.json</td></tr><tr><td>hail\hail\src\is\hail\types\physical\stypes\concrete\SNDArraySlice.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\Compile.scala</td></tr><tr><td>hail\hail\src\is\hail\types\virtual\TCall.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\3.hmt\README.txt</td></tr><tr><td>hail\hail\test\src\is\hail\types\physical\PBinarySuite.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.6.0\matrix_table\1.hmt\README.txt</td></tr><tr><td>hail\hail\test\src\is\hail\stats\GeneralizedChiSquaredDistributionSuite.scala</td></tr><tr><td>hail\hail\test\resources\required_globals.mt\metadata.json</td></tr><tr><td>hail\hail\test\src\is\hail\utils\UtilsSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\analyses\ParentPointers.scala</td></tr><tr><td>hail\hail\src\java\is\hail\io\compress\BGzipOutputStream.java</td></tr><tr><td>hail\hail\test\src\is\hail\testUtils\Variant.scala</td></tr><tr><td>hail\hail\test\src\is\hail\expr\ir\RandomSuite.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.1.0\matrix_table\0.hmt\README.txt</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\9.hmt\README.txt</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\2.hmt\README.txt</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\DeprecatedIRBuilder.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\1.hmt\README.txt</td></tr><tr><td>hail\hail\test\resources\sampleheader2.txt</td></tr><tr><td>hail\hail\test\resources\sample.vcf-20-partitions-with-overlap.mt\README.txt</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.2.0\matrix_table\4.hmt\README.txt</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.6.0\matrix_table\4.hmt\README.txt</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\lowering\EvalRelationalLets.scala</td></tr><tr><td>hail\hail\src\is\hail\utils\ErrorHandling.scala</td></tr><tr><td>hail\hail\test\src\is\hail\expr\ir\DistinctlyKeyedSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\Interpretable.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\EmitClassBuilder.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\RefEquality.scala</td></tr><tr><td>hail\hail\src\is\hail\backend\HailStateManager.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\functions\DictFunctions.scala</td></tr><tr><td>hail\hail\src\is\hail\types\physical\stypes\primitives\SBoolean.scala</td></tr><tr><td>hail\hail\src\is\hail\utils\Py4jUtils.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\functions\MathFunctions.scala</td></tr><tr><td>hail\hail\test\src\is\hail\expr\ir\StagedMinHeapSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\AggOp.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.6.0\matrix_table\2.hmt\README.txt</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.4.0\matrix_table\6.hmt\README.txt</td></tr><tr><td>hail\hail\src\is\hail\utils\richUtils\RichPairRDD.scala</td></tr><tr><td>hail\hail\src\is\hail\experimental\ExperimentalFunctions.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\4.hmt\entries\README.txt</td></tr><tr><td>hail\hail\src\is\hail\utils\CompressionUtils.scala</td></tr><tr><td>hail\hail\resources\reference\grch37.json</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\functions\IntervalFunctions.scala</td></tr><tr><td>hail\hail\src\is\hail\types\virtual\TStream.scala</td></tr><tr><td>hail\hail\src\is\hail\lir\Emit.scala</td></tr><tr><td>hail\hail\src\is\hail\types\physical\PType.scala</td></tr><tr><td>hail\hail\src\is\hail\backend\service\Worker.scala</td></tr><tr><td>hail\hail\src\java\is\hail\io\compress\BGzipCodecGZ.java</td></tr><tr><td>hail\hail\src\is\hail\methods\PCRelate.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.2.0\table\2.ht\README.txt</td></tr><tr><td>hail\hail\test\resources\gvcfs\HG00096.g.vcf.gz.mt\globals\README.txt</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\BinaryOp.scala</td></tr><tr><td>hail\scripts\make-terra-prs.sh</td></tr><tr><td>hail\hail\src\is\hail\io\BufferSpecs.scala</td></tr><tr><td>hail\hail\test\src\is\hail\expr\ir\lowering\LowerDistributedSortSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\backend\ExecuteContext.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\streams\EmitStream.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\analyses\SemanticHash.scala</td></tr><tr><td>hail\hail\test\src\is\hail\HailContextSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\io\IndexBTree.scala</td></tr><tr><td>hail\hail\src\is\hail\types\virtual\TBoolean.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\5.hmt\cols\README.txt</td></tr><tr><td>hail\hail\src\is\hail\utils\OrderingView.scala</td></tr><tr><td>hail\hail\src\is\hail\variant\HardCallView.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\3.hmt\globals\README.txt</td></tr><tr><td>hail\hail\src\is\hail\utils\MemoryBufferWrapper.scala</td></tr><tr><td>hail\hail\src\is\hail\utils\richUtils\RichRow.scala</td></tr><tr><td>hail\hail\test\src\is\hail\io\TabixSuite.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.7.0\matrix_table\9.hmt\globals\README.txt</td></tr><tr><td>hail\hail\test\resources\samplesmissing.txt</td></tr><tr><td>hail\hail\test\src\is\hail\io\IndexSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\BlockMatrixWriter.scala</td></tr><tr><td>hail\hail\src\is\hail\types\physical\PDict.scala</td></tr><tr><td>hail\hail\src\is\hail\stats\LogisticRegressionModel.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\GenericLines.scala</td></tr><tr><td>hail\hail\src\is\hail\utils\PartitionCounts.scala</td></tr><tr><td>hail\hail\test\resources\backward_compatability\1.6.0\matrix_table\2.hmt\entries\README.txt</td></tr><tr><td>hail\hail\test\src\is\hail\types\physical\PNDArraySuite.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\lowering\LoweringPipeline.scala</td></tr><tr><td>hail\hail\test\src\is\hail\utils\GraphSuite.scala</td></tr><tr><td>hail\hail\src\is\hail\kryo\HailKryoRegistrator.scala</td></tr><tr><td>hail\hail\src\is\hail\utils\ImmutableMap.scala</td></tr><tr><td>hail\hail\src\is\hail\expr\ir\orderings\IntervalOrdering.scala</td></tr><tr><td>hail\hail\src\is\hail\rvd\PartitionBoundOrdering.scala</td></tr><tr><td>hail\hail\test\resources\vds\1kg_2samples_starts.vds\reference_data\cols\README.txt</td></tr><tr><td>hail\hail\src\is\hail\annotations\OrderedRVIterator.scala</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (1010)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共1010个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>hail\src\test\scala\is\hail\linalg\RowMatrixSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\concrete\SRNGState.scala</td></tr><tr><td>hail\src\test\scala\is\hail\expr\ir\OrderingSuite.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.3.0\table\0.ht\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\utils\EitherIsAMonad.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\lowering\LowerDistributedSort.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\concrete\SUnreachable.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\PArrayBackedContainer.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.6.0\matrix_table\3.hmt\rows\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\Simplify.scala</td></tr><tr><td>hail\src\main\scala\is\hail\io\bgen\LoadBgen.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\lowering\IRState.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\encoded\EBoolean.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\agg\PrevNonNullAggregator.scala</td></tr><tr><td>hail\src\test\resources\custom_references.t\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\types\encoded\EType.scala</td></tr><tr><td>hail\src\main\scala\is\hail\io\package.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.5.0\matrix_table\5.hmt\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.6.0\matrix_table\7.hmt\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.6.0\table\7.ht\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\services\JSONLogLayout.scala</td></tr><tr><td>hail\src\test\resources\sampleheaderdiffelem.txt</td></tr><tr><td>hail\src\main\resources\include\hail\ArraySorter.h</td></tr><tr><td>hail\src\test\scala\is\hail\stats\StatsSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\DateFormatUtils.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\AnnotationImpex.scala</td></tr><tr><td>hail\src\main\scala\is\hail\rvd\RVDContext.scala</td></tr><tr><td>hail\src\main\c\Decoder.cpp</td></tr><tr><td>hail\src\test\resources\three_key.ht\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.2.0\table\1.ht\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\types\encoded\EInt64.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\virtual\TBinary.scala</td></tr><tr><td>hail\src\test\scala\is\hail\expr\ir\TestUtils.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\InTailPosition.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\agg\CountAggregator.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\interfaces\SContainer.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\PCanonicalStruct.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\richUtils\RichSparkContext.scala</td></tr><tr><td>hail\src\main\scala\is\hail\io\fs\package.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\Py4jUtils.scala</td></tr><tr><td>hail\src\main\scala\is\hail\rvd\RVD.scala</td></tr><tr><td>hail\src\test\scala\is\hail\expr\ir\RandomSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\PBoolean.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\MapIR.scala</td></tr><tr><td>hail\src\test\scala\is\hail\annotations\AnnotationsSuite.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.7.0\matrix_table\2.hmt\entries\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.1.0\matrix_table\2.hmt\README.txt</td></tr><tr><td>hail\src\test\resources\vds\1kg_2samples_starts.vds\variant_data\cols\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.7.0\matrix_table\8.hmt\README.txt</td></tr><tr><td>hail\src\test\scala\is\hail\expr\ir\Aggregators2Suite.scala</td></tr><tr><td>hail\src\test\scala\is\hail\types\physical\stypes\concrete\SStructViewSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\concrete\SCanonicalLocusPointer.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\richUtils\RichIntPairTraversableOnce.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\agg\DownsampleAggregator.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.4.0\matrix_table\4.hmt\README.txt</td></tr><tr><td>hail\src\test\scala\is\hail\utils\PartitionCountsSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\SemanticVersion.scala</td></tr><tr><td>hail\src\main\scala\is\hail\stats\LogisticRegressionModel.scala</td></tr><tr><td>hail\src\main\resources\include\hail\ArrayBuilder.h</td></tr><tr><td>hail\src\main\resources\reference\grch38.json</td></tr><tr><td>hail\src\main\scala\is\hail\utils\CompressionUtils.scala</td></tr><tr><td>hail\src\test\scala\is\hail\utils\UnionFindSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\agg\DensifyAggregator.scala</td></tr><tr><td>hail\src\main\scala\is\hail\variant\RegionValueVariant.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\ndarrays\EmitNDArray.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\TruncatedArrayIndexedSeq.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\PartitionCounts.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.6.0\matrix_table\1.hmt\rows\README.txt</td></tr><tr><td>hail\src\test\scala\is\hail\annotations\UnsafeSuite.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.3.0\matrix_table\1.hmt\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.7.0\table\3.ht\README.txt</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.6.0\matrix_table\2.hmt\rows\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\primitives\SFloat64.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\concrete\SStringPointer.scala</td></tr><tr><td>hail\src\main\c\testutils\unit-tests.cpp</td></tr><tr><td>hail\src\main\scala\is\hail\annotations\ExtendedOrdering.scala</td></tr><tr><td>hail\src\main\scala\is\hail\annotations\UnsafeRow.scala</td></tr><tr><td>hail\src\main\scala\is\hail\io\gen\ExportGen.scala</td></tr><tr><td>hail\src\test\scala\is\hail\expr\ir\DictFunctionsSuite.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\orderings\LocusOrdering.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.5.0\matrix_table\3.hmt\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\services\Requester.scala</td></tr><tr><td>hail\src\main\scala\is\hail\methods\LogisticRegression.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\PUnrealizable.scala</td></tr><tr><td>hail\src\test\resources\ex.vcf.mt\README.txt</td></tr><tr><td>hail\src\test\scala\is\hail\types\encoded\ETypeSuite.scala</td></tr><tr><td>hail\src\main\resources\include\hail\Logging.h</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\streams\EmitStream.scala</td></tr><tr><td>hail\src\test\resources\backward_compatability\1.7.0\matrix_table\2.hmt\globals\README.txt</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\functions\MathFunctions.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\IRTraversal.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\virtual\Field.scala</td></tr><tr><td>hail\src\main\scala\is\hail\utils\richUtils\RichRDD.scala</td></tr><tr><td>hail\src\main\scala\is\hail\io\AbstractBinaryReader.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\streams\StagedMinHeap.scala</td></tr><tr><td>hail\src\main\scala\is\hail\annotations\RegionValueBuilder.scala</td></tr><tr><td>hail\src\main\scala\is\hail\types\physical\stypes\concrete\SJavaString.scala</td></tr><tr><td>hail\src\main\scala\is\hail\expr\ir\agg\NDArrayMultiplyAddAggregator.scala</td></tr><tr><td>hail\src\test\resources\sampleheader1.txt</td></tr><tr><td>hail\src\test\scala\is\hail\testUtils\Variant.scala</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (118)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>gateway\deployment.yaml</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\hailctl\__main__.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch\hail_genetics_images.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\hail_logging.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\hailctl\batch\submit.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\expr\expressions\expression_utils.py</td><td>内容变更</td></tr><tr><td>hail\generate_splits.py</td><td>内容变更</td></tr><tr><td>batch\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\hailctl\hdinsight\start.py</td><td>内容变更</td></tr><tr><td>hail\python\setup-hailtop.py</td><td>内容变更</td></tr><tr><td>web_common\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>dev-docs\development-process.md</td><td>内容变更</td></tr><tr><td>web_common\web_common\web_common.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch\backend.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\experimental\sparse_mt\sparse_split_multi.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\__init__.py</td><td>内容变更</td></tr><tr><td>.github\pull_request_template.md</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\config\user_config.py</td><td>内容变更</td></tr><tr><td>dev-docs\services\creating-a-developer-account.md</td><td>内容变更</td></tr><tr><td>ci\ci\ci.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\ir\table_ir.py</td><td>内容变更</td></tr><tr><td>infra\install_bootstrap_dependencies.sh</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch_client\types.py</td><td>内容变更</td></tr><tr><td>grafana\deployment.yaml</td><td>内容变更</td></tr><tr><td>gear\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\table\test_table.py</td><td>内容变更</td></tr><tr><td>ci\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>hail\python\hail\expr\__init__.py</td><td>内容变更</td></tr><tr><td>dev-docs\services\letsencrypt.md</td><td>内容变更</td></tr><tr><td>dev-docs\services\tls-cookbook.md</td><td>内容变更</td></tr><tr><td>batch\batch\front_end\templates\batch.html</td><td>内容变更</td></tr><tr><td>dev-docs\services\services-development-faq.md</td><td>内容变更</td></tr><tr><td>hail\python\hail\expr\functions.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\__init__.py</td><td>内容变更</td></tr><tr><td>batch\gcp-create-worker-image.sh</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\expr\test_expr.py</td><td>内容变更</td></tr><tr><td>batch\batch\cloud\terra\azure\driver\driver.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hailtop\batch\test_batch_local_backend.py</td><td>内容变更</td></tr><tr><td>auth\auth\exceptions.py</td><td>内容变更</td></tr><tr><td>web_common\web_common\templates\header.html</td><td>内容变更</td></tr><tr><td>batch\batch\driver\billing_manager.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\vds\functions.py</td><td>内容变更</td></tr><tr><td>gear\gear\auth.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\vds\combiner\variant_dataset_combiner.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch_client\aioclient.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch\batch.py</td><td>内容变更</td></tr><tr><td>dev-docs\releasing.md</td><td>内容变更</td></tr><tr><td>auth\auth\templates\users.html</td><td>内容变更</td></tr><tr><td>hail\python\requirements.txt</td><td>内容变更</td></tr><tr><td>infra\bootstrap_utils.sh</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\genetics\test_reference_genome.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\docs\conf.py</td><td>内容变更</td></tr><tr><td>batch\batch\front_end\front_end.py</td><td>内容变更</td></tr><tr><td>batch\deployment.yaml</td><td>内容变更</td></tr><tr><td>ci\bootstrap.py</td><td>内容变更</td></tr><tr><td>hail\python\setup.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\ir\ir.py</td><td>内容变更</td></tr><tr><td>prometheus\prometheus.yaml</td><td>内容变更</td></tr><tr><td>ukbb-rg\deployment.yaml</td><td>内容变更</td></tr><tr><td>hail\python\dev\requirements.txt</td><td>内容变更</td></tr><tr><td>hail\python\hail\backend\py4j_backend.py</td><td>内容变更</td></tr><tr><td>guide\deployment.yaml</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\vds\test_vds.py</td><td>内容变更</td></tr><tr><td>build.yaml</td><td>内容变更</td></tr><tr><td>batch\test\utils.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\vds\test_combiner.py</td><td>内容变更</td></tr><tr><td>batch\batch\worker\worker.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hailtop\test_aiogoogle.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\backend\service_backend.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\backend\backend.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\plot\plots.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\helpers.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\expr\expressions\typed_expressions.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\matrixtable\test_matrix_table.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\hailctl\auth\cli.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\vds\__init__.py</td><td>内容变更</td></tr><tr><td>devbin\rotate_keys.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\hailctl\hdinsight\cli.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>hail\python\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>batch\batch\worker\jvm_entryway_protocol.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\methods\impex.py</td><td>内容变更</td></tr><tr><td>batch\batch\cloud\gcp\driver\billing_manager.py</td><td>内容变更</td></tr><tr><td>batch\batch\driver\instance_collection\job_private.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch_client\client.py</td><td>内容变更</td></tr><tr><td>hail\scripts\release.sh</td><td>内容变更</td></tr><tr><td>internal-gateway\deployment.yaml</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\aiotools\fs\stream.py</td><td>内容变更</td></tr><tr><td>web_common\web_common\templates\new_header.html</td><td>内容变更</td></tr><tr><td>infra\gcp\README.md</td><td>内容变更</td></tr><tr><td>monitoring\monitoring\monitoring.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\vds\variant_dataset.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\utils\__init__.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\vds\methods.py</td><td>内容变更</td></tr><tr><td>web_common\web_common\__init__.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\aiocloud\aioazure\fs.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\vds\combiner\combine.py</td><td>内容变更</td></tr><tr><td>batch\batch\cloud\gcp\driver\driver.py</td><td>内容变更</td></tr><tr><td>batch\batch\cloud\gcp\driver\pricing.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\test_ir.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\context.py</td><td>内容变更</td></tr><tr><td>hail\python\dev\pinned-requirements.txt</td><td>内容变更</td></tr><tr><td>ci\test\resources\build.yaml</td><td>内容变更</td></tr><tr><td>hail\python\hail\docs\change_log.md</td><td>内容变更</td></tr><tr><td>batch\batch\cloud\gcp\resource_utils.py</td><td>内容变更</td></tr><tr><td>batch\batch\front_end\validate.py</td><td>内容变更</td></tr><tr><td>auth\auth\auth.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hailtop\batch\utils.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\ir\__init__.py</td><td>内容变更</td></tr><tr><td>batch\batch\cloud\azure\driver\driver.py</td><td>内容变更</td></tr><tr><td>ci\ci\constants.py</td><td>内容变更</td></tr><tr><td>hail\python\hail\methods\qc.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\batch\job.py</td><td>内容变更</td></tr><tr><td>docker\third-party\images.txt</td><td>内容变更</td></tr><tr><td>auth\auth\templates\user.html</td><td>内容变更</td></tr><tr><td>batch\batch\driver\instance_collection\pool.py</td><td>内容变更</td></tr><tr><td>hail\python\hailtop\utils\utils.py</td><td>内容变更</td></tr><tr><td>hail\python\test\hail\experimental\test_experimental.py</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

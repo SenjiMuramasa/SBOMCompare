@@ -319,12 +319,36 @@ class SecurityScoreCalculator:
         if version.startswith('v'):
             version = version[1:]
         
-        # 移除版本范围符号
-        version = re.sub(r'[<>=~^]', '', version)
+        # 移除版本范围符号前缀（如 "==1.8.0" -> "1.8.0"）
+        for op in [">=", "<=", ">", "<", "==", "~=", "!=", "^"]:
+            if version.startswith(op):
+                version = version[len(op):]
+                break
+                
+        # 处理条件版本号，去掉条件部分（如 "2.6.0 ; sys_platform != 'darwin'" -> "2.6.0"）
+        if ";" in version:
+            version = version.split(";")[0].strip()
         
-        # 移除注释部分
+        # 移除注释部分和额外空格
         if ' ' in version:
             version = version.split(' ')[0]
+
+        # 处理范围版本号，如 ">=2.2.0,<3.0" -> "2.2.0"
+        if "," in version:
+            version = version.split(",")[0].strip()
+        
+        if ".post" in version:
+            version = version.split(".post")[0]
+
+        if ".v" in version:
+            version = version.split(".v")[0]
+
+        if "+" in version:
+            version = version.split("+")[0]
+
+        # 处理NOASSERTION
+        if version == "NOASSERTION":
+            return ""
             
         return version.strip()
 
@@ -349,6 +373,10 @@ class SecurityScoreCalculator:
                     # 使用标准化方法处理版本号
                     normalized_old = self._normalize_version(change.old_version)
                     normalized_new = self._normalize_version(change.new_version)
+                    
+                    # 跳过未声明版本或无法比较的情况
+                    if not normalized_old or not normalized_new:
+                        continue
                     
                     # 当规范化后的版本相同时不判断为降级
                     if normalized_old == normalized_new:

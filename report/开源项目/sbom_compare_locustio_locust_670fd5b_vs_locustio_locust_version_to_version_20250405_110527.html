@@ -1,0 +1,589 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 11:05:35</p>
+                <p>SBOM A: sample_data\locustio_locust_670fd5b.json</p>
+                <p>SBOM B: sample_data\locustio_locust.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.3/10 (93.3%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.3/10.0 (93.3%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Branch-Protection风险, Code-Review风险, Dangerous-Workflow风险, Security-Policy风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (99.9%)</td>
+                    <td><ul class='details-list'><li>1个包发生补丁版本变更</li><li>1个包发生其他版本变更</li><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.6/1.3 (49.0%)</td>
+                    <td><ul class='details-list'><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Code-Review, Dangerous-Workflow, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Code-Review风险, Dangerous-Workflow风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (2)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</td>
+                            <td>Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21538<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围: </div><br>cross-spawn: &gt;= 7.0.0 &lt; 7.0.5 <br>cross-spawn: 所有版本 &lt; 6.0.6 <br><br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</td>
+                            <td>The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn&amp;#39;t find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won&amp;#39;t start backtracking the regular expression due to greedy matching.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4067<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围: </div><br>micromatch: 所有版本 &lt; 4.0.8 <br><br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>, vite</td><td>6.2.1</td><td>6.2.4</td><td>补丁版本</td></tr><tr><td>vite</td><td>^6.2.1</td><td>^6.2.4</td><td>一般变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>vite</td>
+                            <td class="vuln-unknown">GHSA-xcj6-pq6g-qj4x<br>关联CVE: CVE-2025-31486</td>
+                            <td>&gt;= 6.2.0 &lt; 6.2.5&lt;br&gt;&gt;= 6.1.0 &lt; 6.1.4&lt;br&gt;&gt;= 6.0.0 &lt; 6.0.14&lt;br&gt;&gt;= 5.0.0 &lt; 5.4.17&lt;br&gt;所有版本 &lt; 4.5.12</td>
+                            <td>Vite allows server.fs.deny to be bypassed with .svg or relative paths&lt;br&gt;&lt;br&gt;### Summary
+
+The contents of arbitrary files can be returned to the browser.
+
+### Impact
+
+Only apps explicitly exposing the Vite dev server to the network (using --host or [server.host config option](https://vitejs.dev/config/server-options.html#server-host)) are affected..
+
+### Details
+
+#### `.svg`
+
+Requests ending with `.svg` are loaded at this line.
+https://github.com/vitejs/vite/blob/037f801075ec35bb6e52145d659f71a23813c48f/packages/vite/src/node/plugins/asset.ts#L285-L290
+By adding `?.svg` with `?.wasm?init` or with `sec-fetch-dest: script` header, the restriction was able to bypass.
+
+This bypass is only possible if the file is smaller than [`build.assetsInlineLimit`](https://vite.dev/config/build-options.html#build-assetsinlinelimit) (default: 4kB) and when using Vite 6.0+.
+
+#### relative paths
+
+The check was applied before the id normalization. This allowed requests to bypass with relative paths (e.g. `../../`).
+
+### PoC
+
+```bash
+npm create vite@latest
+cd vite-project/
+npm install
+npm run dev
+```
+
+send request to read `etc/passwd`
+
+```bash
+curl &#39;http://127.0.0.1:5173/etc/passwd?.svg?.wasm?init&#39;
+```
+
+```bash
+curl &#39;http://127.0.0.1:5173/@fs/x/x/x/vite-project/?/../../../../../etc/passwd?import&amp;?raw&#39;
+```<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/vitejs/vite/security/advisories/GHSA-xcj6-pq6g-qj4x' target='_blank' class='vuln-link'>https://github.com/vitejs/vite/security/advisories/GHSA-xcj6-pq6g-qj4x</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-31486' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-31486</a><br><a href='https://github.com/vitejs/vite/commit/62d7e81ee189d65899bb65f3263ddbd85247b647' target='_blank' class='vuln-link'>https://github.com/vitejs/vite/commit/62d7e81ee189d65899bb65f3263ddbd85247b647</a><br><a href='https://github.com/vitejs/vite' target='_blank' class='vuln-link'>https://github.com/vitejs/vite</a><br><a href='https://github.com/vitejs/vite/blob/037f801075ec35bb6e52145d659f71a23813c48f/packages/vite/src/node/plugins/asset.ts#L285-L290' target='_blank' class='vuln-link'>https://github.com/vitejs/vite/blob/037f801075ec35bb6e52145d659f71a23813c48f/packages/vite/src/node/plugins/asset.ts#L285-L290</a></div></td>
+                            <td>2025-04-04</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>209</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>211</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>5</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (2)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>locust\contrib\oai.py</td></tr><tr><td>examples\openai_ex.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (5)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>locust\webui\package.json</td><td>内容变更</td></tr><tr><td>locust\contrib\fasthttp.py</td><td>内容变更</td></tr><tr><td>locust\webui\src\components\LineChart\LineChart.utils.ts</td><td>内容变更</td></tr><tr><td>locust\web.py</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

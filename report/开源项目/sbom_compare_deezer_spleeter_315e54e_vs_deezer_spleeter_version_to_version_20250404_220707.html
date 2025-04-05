@@ -1,0 +1,591 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-04 22:07:18</p>
+                <p>SBOM A: sample_data\deezer_spleeter_315e54e.json</p>
+                <p>SBOM B: sample_data\deezer_spleeter.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">7.6/10 (75.9%) [B+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 7.6/10.0 (75.9%)，安全等级: B+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：主版本变更, 重大版本变更, CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.4/1.7 (84.2%)</td>
+                    <td><ul class='details-list'><li>新增了2个包</li><li>移除了5个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.4/3.5 (67.4%)</td>
+                    <td><ul class='details-list'><li>1个包发生主版本变更，可能存在API不兼容</li><li>1个包发生次版本变更</li><li>7个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.5/1.3 (39.0%)</td>
+                    <td><ul class='details-list'><li>Vulnerabilities需要改进</li><li>Code-Review需要改进</li><li>Maintained需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: PYSEC-2024-48 / GHSA-fj7x-q9j7-g6q6 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2024-48 / GHSA-fj7x-q9j7-g6q6</li><li>- Warn: Project is vulnerable to: PYSEC-2022-183 / GHSA-h8pj-cxx2-jfg2 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-183 / GHSA-h8pj-cxx2-jfg2</li><li>- Warn: Project is vulnerable to: GHSA-cjgq-5qmw-rcj6 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cjgq-5qmw-rcj6</li><li>- Warn: Project is vulnerable to: GHSA-x4wf-678h-2pmq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-x4wf-678h-2pmq</li><li>- Warn: Project is vulnerable to: PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (5)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>GHSA-cjgq-5qmw-rcj6</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-cjgq-5qmw-rcj6<br><br><div class="cve-header">来自 CVE-2024-55459 的附加信息:</div><br><div class="section-header">描述: An issue in keras 3.7.0 allows attackers to write arbitrary files to the user's machine via downloading a crafted tar file through the get_file function.</div><br><div class="section-header">发布日期: 2025-01-08</div><br><div class="section-header">最后更新: 2025-01-09</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://github.com/keras-team/keras</span><br><span class="vuln-link">https://keras.io</span><br><span class="vuln-link">https://river-bicycle-f1e.notion.site/Arbitrary-File-Write-Vulnerability-in-get_file-function-11888e31952580179224e50892976d32</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-55459</div><br><br><div class="section-header">发布日期: 2025-01-08</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-55459</span><br><span class="vuln-link">https://github.com/keras-team/keras</span><br><span class="vuln-link">https://github.com/keras-team/keras/blob/8f5592bcb61ff48c96560c8923e482db1076b54a/keras/src/utils/file_utils.py#L115</span><br><span class="vuln-link">https://keras.io</span><br><span class="vuln-link">https://river-bicycle-f1e.notion.site/Arbitrary-File-Write-Vulnerability-in-get_file-function-11888e31952580179224e50892976d32</span><br><br><div class="section-header">影响范围:</div><br>包名: keras (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GHSA-x4wf-678h-2pmq</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: GHSA-x4wf-678h-2pmq<br><br><div class="cve-header">来自 CVE-2024-3660 的附加信息:</div><br><div class="section-header">描述: A arbitrary code injection vulnerability in TensorFlow's Keras framework (<2.13) allows attackers to execute arbitrary code with the same permissions as the application using a model that allow arbitrary code irrespective of the application.</div><br><div class="section-header">发布日期: 2024-04-16</div><br><div class="section-header">最后更新: 2025-02-13</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://kb.cert.org/vuls/id/253266</span><br><span class="vuln-link">https://www.kb.cert.org/vuls/id/253266</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-3660</div><br><br><div class="section-header">发布日期: 2024-04-16</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-3660</span><br><span class="vuln-link">https://github.com/keras-team/keras</span><br><span class="vuln-link">https://github.com/keras-team/keras/compare/r2.12...r2.13</span><br><span class="vuln-link">https://kb.cert.org/vuls/id/253266</span><br><span class="vuln-link">https://www.kb.cert.org/vuls/id/253266</span><br><br><div class="section-header">影响范围:</div><br>包名: keras (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2022-183 / GHSA-h8pj-cxx2-jfg2</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-183 / GHSA-h8pj-cxx2-jfg2<br><br><div class="cve-header">来自 CVE-2021-41945 的附加信息:</div><br><div class="section-header">描述: Encode OSS httpx < 0.23.0 is affected by improper input validation in `httpx.URL`, `httpx.Client` and some functions using `httpx.URL.copy_with`.</div><br><div class="section-header">发布日期: 2022-04-28</div><br><div class="section-header">最后更新: 2024-08-04</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">http://encode.com</span><br><span class="vuln-link">https://gist.github.com/lebr0nli/4edb76bbd3b5ff993cf44f2fbce5e571</span><br><span class="vuln-link">https://github.com/encode/httpx</span><br><span class="vuln-link">https://github.com/encode/httpx/discussions/1831</span><br><span class="vuln-link">https://github.com/encode/httpx/issues/2184</span><br><br><div class="section-header">相关漏洞ID: CVE-2021-41945, GHSA-h8pj-cxx2-jfg2</div><br><br><div class="section-header">发布日期: 2022-04-28</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/encode/httpx</span><br><span class="vuln-link">https://github.com/encode/httpx/discussions/1831</span><br><span class="vuln-link">https://gist.github.com/lebr0nli/4edb76bbd3b5ff993cf44f2fbce5e571</span><br><span class="vuln-link">http://encode.com</span><br><span class="vuln-link">https://github.com/encode/httpx/issues/2184</span><br><span class="vuln-link">https://github.com/advisories/GHSA-h8pj-cxx2-jfg2</span><br><br><div class="section-header">影响范围:</div><br>包名: httpx (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-42969 / GHSA-w596-4wvx-j9j6<br><br><div class="cve-header">来自 CVE-2022-42969 的附加信息:</div><br><div class="section-header">描述: The py library through 1.11.0 for Python allows remote attackers to conduct a ReDoS (Regular expression Denial of Service) attack via a Subversion repository with crafted info data, because the InfoSvnCommand argument is mishandled. Note: This has been disputed by multiple third parties as not being reproduceable and they argue this is not a valid vulnerability.</div><br><div class="section-header">发布日期: 2022-10-16</div><br><div class="section-header">最后更新: 2024-08-03</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://pypi.org/project/py</span><br><span class="vuln-link">https://github.com/pytest-dev/py/issues/287</span><br><span class="vuln-link">https://github.com/pytest-dev/py/blob/cb87a83960523a2367d0f19226a73aed4ce4291d/py/_path/svnurl.py#L316</span><br><span class="vuln-link">https://news.ycombinator.com/item?id=34163710</span><br><br><div class="section-header">相关漏洞ID: CVE-2022-42969, GHSA-w596-4wvx-j9j6</div><br><br><div class="section-header">发布日期: 2022-11-04</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://github.com/advisories/GHSA-w596-4wvx-j9j6</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-42969</span><br><span class="vuln-link">https://github.com/pytest-dev/py/issues/287</span><br><span class="vuln-link">https://github.com/pytest-dev/py/issues/288</span><br><span class="vuln-link">https://github.com/pytest-dev/pytest/issues/10392</span><br><br><div class="section-header">影响范围:</div><br>包名: py (PyPI)</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>PYSEC-2024-48 / GHSA-fj7x-q9j7-g6q6</td>
+                            <td>发现漏洞 Warn: Project is vulnerable to: PYSEC-2024-48 / GHSA-fj7x-q9j7-g6q6<br><br><div class="cve-header">来自 CVE-2024-21503 的附加信息:</div><br><div class="section-header">描述: Versions of the package black before 24.3.0 are vulnerable to Regular Expression Denial of Service (ReDoS) via the lines_with_leading_tabs_expanded function in the strings.py file. An attacker could exploit this vulnerability by crafting a malicious input that causes a denial of service.Exploiting this vulnerability is possible when running Black on untrusted input, or if you habitually put thousands of leading tab characters in your docstrings.</div><br><div class="section-header">发布日期: 2024-03-19</div><br><div class="section-header">最后更新: 2024-08-01</div><br><div class="section-header">CVE参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-PYTHON-BLACK-6256273</span><br><span class="vuln-link">https://github.com/psf/black/releases/tag/24.3.0</span><br><span class="vuln-link">https://github.com/psf/black/commit/f00093672628d212b8965a8993cee8bedf5fe9b8</span><br><br><div class="section-header">相关漏洞ID: CVE-2024-21503, GHSA-fj7x-q9j7-g6q6</div><br><br><div class="section-header">发布日期: 2024-03-19</div><br><br><div class="section-header">参考链接:</div><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-PYTHON-BLACK-6256273</span><br><span class="vuln-link">https://github.com/psf/black/releases/tag/24.3.0</span><br><span class="vuln-link">https://github.com/psf/black/commit/f00093672628d212b8965a8993cee8bedf5fe9b8</span><br><br><div class="section-header">影响范围:</div><br>包名: black (PyPI)</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>tensorflow-io-gcs-filesystem</td><td>0.32.0</td><td>Apache Software License</td></tr><tr><td>flake8</td><td>^5.0.0</td><td>MIT License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (5)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>importlib-metadata</td><td>^3.0.0</td><td>Apache Software License</td></tr><tr><td>librosa</td><td>0.8.0</td><td>ISC License (ISCL)</td></tr><tr><td>protobuf</td><td><=3.19.4</td><td>3-Clause BSD License</td></tr><tr><td>llvmlite</td><td>^0.36.0</td><td>BSD</td></tr><tr><td>importlib-resources</td><td>^4.1.1</td><td>Apache Software License</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (9)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>numpy</td><td><1.20.0,>=1.16.0</td><td><2.0.0</td><td>主版本</td></tr><tr><td>musdb</td><td>0.3.1</td><td>^0.4.0</td><td>一般变更</td></tr><tr><td>norbert</td><td>0.2.1</td><td>^0.2.1</td><td>无变更</td></tr><tr><td>museval</td><td>0.3.0</td><td>^0.4.0</td><td>一般变更</td></tr><tr><td>ffmpeg-python</td><td>0.2.0</td><td>^0.2.0</td><td>无变更</td></tr><tr><td>black</td><td>^21.7b</td><td>^21.7b0</td><td>一般变更</td></tr><tr><td>tensorflow</td><td>2.5.0</td><td>2.12.1</td><td>次版本</td></tr><tr><td>mypy</td><td>^0.790</td><td>>0.790,<1.0</td><td>一般变更</td></tr><tr><td>pandas</td><td>^1.1.2</td><td>^1.3.0</td><td>一般变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (2)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>black</td>
+                            <td class="vuln-unknown">GHSA-fj7x-q9j7-g6q6<br>关联CVE: CVE-2024-21503</td>
+                            <td>具体受影响版本: 18.3a0, 18.3a1, 18.3a2, 18.3a3, 18.3a4, 18.4a0, 18.4a1, 18.4a2, 18.4a3, 18.4a4, 18.5b0, 18.5b1, 18.6b0, 18.6b1, 18.6b2, 18.6b3, 18.6b4, 18.9b0, 19.10b0, 19.3b0, 20.8b0, 20.8b1, 21.10b0, 21.11b0, 21.11b1, 21.12b0, 21.4b0, 21.4b1, 21.4b2, 21.5b0, 21.5b1, 21.5b2, 21.6b0, 21.7b0, 21.8b0, 21.9b0, 22.1.0, 22.10.0, 22.12.0, 22.3.0, 22.6.0, 22.8.0, 23.1.0, 23.10.0, 23.10.1, 23.11.0, 23.12.0, 23.12.1, 23.1a1, 23.3.0, 23.7.0, 23.9.0, 23.9.1, 24.1.0, 24.1.1, 24.1a1, 24.2.0</td>
+                            <td>Black vulnerable to Regular Expression Denial of Service (ReDoS)<br><br>Versions of the package black before 24.3.0 are vulnerable to Regular Expression Denial of Service (ReDoS) via the lines_with_leading_tabs_expanded function in the strings.py file. An attacker could exploit this vulnerability by crafting a malicious input that causes a denial of service.
+
+Exploiting this vulnerability is possible when running Black on untrusted input, or if you habitually put thousands of leading tab characters in your docstrings.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-21503' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-21503</a><br><a href='https://github.com/psf/black/commit/f00093672628d212b8965a8993cee8bedf5fe9b8' target='_blank' class='vuln-link'>https://github.com/psf/black/commit/f00093672628d212b8965a8993cee8bedf5fe9b8</a><br><a href='https://github.com/psf/black' target='_blank' class='vuln-link'>https://github.com/psf/black</a><br><a href='https://github.com/psf/black/releases/tag/24.3.0' target='_blank' class='vuln-link'>https://github.com/psf/black/releases/tag/24.3.0</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/black/PYSEC-2024-48.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/black/PYSEC-2024-48.yaml</a></div></td>
+                            <td>2024-03-19</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>black</td>
+                            <td class="vuln-unknown">PYSEC-2024-48<br>关联CVE: CVE-2024-21503</td>
+                            <td>具体受影响版本: 18.3a0, 18.3a1, 18.3a2, 18.3a3, 18.3a4, 18.4a0, 18.4a1, 18.4a2, 18.4a3, 18.4a4, 18.5b0, 18.5b1, 18.6b0, 18.6b1, 18.6b2, 18.6b3, 18.6b4, 18.9b0, 19.10b0, 19.3b0, 20.8b0, 20.8b1, 21.10b0, 21.11b0, 21.11b1, 21.12b0, 21.4b0, 21.4b1, 21.4b2, 21.5b0, 21.5b1, 21.5b2, 21.6b0, 21.7b0, 21.8b0, 21.9b0, 22.1.0, 22.10.0, 22.12.0, 22.3.0, 22.6.0, 22.8.0, 23.1.0, 23.10.0, 23.10.1, 23.11.0, 23.12.0, 23.12.1, 23.1a1, 23.3.0, 23.7.0, 23.9.0, 23.9.1, 24.1.0, 24.1.1, 24.1a1, 24.2.0</td>
+                            <td><br><br>Versions of the package black before 24.3.0 are vulnerable to Regular Expression Denial of Service (ReDoS) via the lines_with_leading_tabs_expanded function in the strings.py file. An attacker could exploit this vulnerability by crafting a malicious input that causes a denial of service.Exploiting this vulnerability is possible when running Black on untrusted input, or if you habitually put thousands of leading tab characters in your docstrings.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://security.snyk.io/vuln/SNYK-PYTHON-BLACK-6256273' target='_blank' class='vuln-link'>https://security.snyk.io/vuln/SNYK-PYTHON-BLACK-6256273</a><br><a href='https://github.com/psf/black/releases/tag/24.3.0' target='_blank' class='vuln-link'>https://github.com/psf/black/releases/tag/24.3.0</a><br><a href='https://github.com/psf/black/commit/f00093672628d212b8965a8993cee8bedf5fe9b8' target='_blank' class='vuln-link'>https://github.com/psf/black/commit/f00093672628d212b8965a8993cee8bedf5fe9b8</a></div></td>
+                            <td>2024-03-19</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>55</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>55</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>32</td>
+                </tr>
+            </table>
+            
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (32)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>spleeter\__main__.py</td><td>内容变更</td></tr><tr><td>spleeter\model\functions\__init__.py</td><td>内容变更</td></tr><tr><td>.github\workflows\test.yml</td><td>内容变更</td></tr><tr><td>spleeter\dataset.py</td><td>内容变更</td></tr><tr><td>spleeter\audio\__init__.py</td><td>内容变更</td></tr><tr><td>spleeter\model\provider\github.py</td><td>内容变更</td></tr><tr><td>tests\test_ffmpeg_adapter.py</td><td>内容变更</td></tr><tr><td>tests\test_train.py</td><td>内容变更</td></tr><tr><td>spleeter\audio\adapter.py</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr><tr><td>spleeter\audio\ffmpeg.py</td><td>内容变更</td></tr><tr><td>spleeter\options.py</td><td>内容变更</td></tr><tr><td>spleeter\types.py</td><td>内容变更</td></tr><tr><td>spleeter\model\provider\__init__.py</td><td>内容变更</td></tr><tr><td>tests\test_separator.py</td><td>内容变更</td></tr><tr><td>spleeter\audio\spectrogram.py</td><td>内容变更</td></tr><tr><td>tests\__init__.py</td><td>内容变更</td></tr><tr><td>conda\spleeter\meta.yaml</td><td>内容变更</td></tr><tr><td>spleeter\model\functions\unet.py</td><td>内容变更</td></tr><tr><td>spleeter\__init__.py</td><td>内容变更</td></tr><tr><td>tests\test_eval.py</td><td>内容变更</td></tr><tr><td>spleeter\utils\tensor.py</td><td>内容变更</td></tr><tr><td>spleeter\audio\convertor.py</td><td>内容变更</td></tr><tr><td>spleeter\model\__init__.py</td><td>内容变更</td></tr><tr><td>spleeter\utils\logging.py</td><td>内容变更</td></tr><tr><td>spleeter\separator.py</td><td>内容变更</td></tr><tr><td>tests\test_github_model_provider.py</td><td>内容变更</td></tr><tr><td>spleeter\utils\configuration.py</td><td>内容变更</td></tr><tr><td>.github\workflows\pypi.yml</td><td>内容变更</td></tr><tr><td>spleeter\model\functions\blstm.py</td><td>内容变更</td></tr><tr><td>tests\test_command.py</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        
