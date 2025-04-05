@@ -1,0 +1,538 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:15:25</p>
+                <p>SBOM A: sample_data\plantuml_plantuml_251eaaf.json</p>
+                <p>SBOM B: sample_data\plantuml_plantuml.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.3/10 (93.2%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.3/10.0 (93.2%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Code-Review风险, Token-Permissions风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (100.0%)</td>
+                    <td><ul class='details-list'><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.6/1.3 (48.0%)</td>
+                    <td><ul class='details-list'><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Code-Review, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</li><li>- Warn: Project is vulnerable to: GHSA-gxpj-cx7g-858c (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gxpj-cx7g-858c</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>- Warn: Project is vulnerable to: GHSA-c2qf-rxjj-qqgw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-c2qf-rxjj-qqgw</li><li>- Warn: Project is vulnerable to: GHSA-j8xg-fqg3-53r7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-j8xg-fqg3-53r7</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Code-Review风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (6)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</td>
+                            <td>Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21538<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围: </div><br>cross-spawn: &gt;= 7.0.0 &lt; 7.0.5 <br>cross-spawn: 所有版本 &lt; 6.0.6 <br><br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-c2qf-rxjj-qqgw</td>
+                            <td>Versions of the package semver before 7.5.2 on the 7.x branch, before 6.3.1 on the 6.x branch, and all other versions before 5.7.2 are vulnerable to Regular Expression Denial of Service (ReDoS) via the function new Range, when untrusted user data is provided as a range.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2022-25883<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-25883</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/564</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/585</span><br><span class="vuln-link">https://github.com/npm/node-semver/pull/593</span><br><span class="vuln-link">https://github.com/npm/node-semver/commit/2f8fd41487acf380194579ecb6f8b1bbfe116be0</span><br><span class="vuln-link">https://github.com/npm/node-semver/commit/717534ee353682f3bcf33e60a8af4292626d4441</span><br><span class="vuln-link">https://github.com/npm/node-semver/commit/928e56d21150da0413a3333a3148b20e741a920c</span><br><span class="vuln-link">https://github.com/npm/node-semver</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/classes/range.js#L97-L104</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/classes/range.js%23L97-L104</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js#L138</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js#L160</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js%23L138</span><br><span class="vuln-link">https://github.com/npm/node-semver/blob/main/internal/re.js%23L160</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20241025-0004</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795</span><br><br><div class="section-header">影响范围: </div><br>semver: &gt;= 7.0.0 &lt; 7.5.2 <br>semver: &gt;= 6.0.0 &lt; 6.3.1 <br>semver: 所有版本 &lt; 5.7.2 <br><br><br><div class="cve-header">来自 CVE-2022-25883 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-gxpj-cx7g-858c</td>
+                            <td>Affected versions of `debug` are vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. <br><br>As it takes 50,000 characters to block the event loop for 2 seconds, this issue is a low severity issue.<br><br>This was later re-introduced in version v3.2.0, and then repatched in versions 3.2.7 and 4.3.1.<br><br>## Recommendation<br><br>Version 2.x.x: Update to version 2.6.9 or later.<br>Version 3.1.x: Update to version 3.1.0 or later.<br>Version 3.2.x: Update to version 3.2.7 or later.<br>Version 4.x.x: Update to version 4.3.1 or later.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2017-16137<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2017-16137</span><br><span class="vuln-link">https://github.com/debug-js/debug/issues/797</span><br><span class="vuln-link">https://github.com/visionmedia/debug/issues/501</span><br><span class="vuln-link">https://github.com/visionmedia/debug/pull/504</span><br><span class="vuln-link">https://github.com/debug-js/debug/commit/4e2150207c568adb9ead8f4c4528016081c88020</span><br><span class="vuln-link">https://github.com/debug-js/debug/commit/71169065b5262f9858ac78cc0b688c84a438f290</span><br><span class="vuln-link">https://github.com/debug-js/debug/commit/b6d12fdbc63b483e5c969da33ea6adc09946b5ac</span><br><span class="vuln-link">https://github.com/debug-js/debug/commit/f53962e944a87e6ca9bb622a2a12dffc22a9bb5a</span><br><span class="vuln-link">https://github.com/visionmedia/debug</span><br><span class="vuln-link">https://lists.apache.org/thread.html/r8ba4c628fba7181af58817d452119481adce4ba92e889c643e4c7dd3@%3Ccommits.netbeans.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/rb5ac16fad337d1f3bb7079549f97d8166d0ef3082629417c39f12d63@%3Cnotifications.netbeans.apache.org%3E</span><br><br><div class="section-header">影响范围: </div><br>debug: 所有版本 &lt; 2.6.9 <br>debug: &gt;= 3.0.0 &lt; 3.1.0 <br>debug: &gt;= 3.2.0 &lt; 3.2.7 <br>debug: &gt;= 4.0.0 &lt; 4.3.1 <br><br><br><div class="cve-header">来自 CVE-2017-16137 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</td>
+                            <td>The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn&amp;#39;t find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won&amp;#39;t start backtracking the regular expression due to greedy matching.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4067<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围: </div><br>micromatch: 所有版本 &lt; 4.0.8 <br><br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-j8xg-fqg3-53r7</td>
+                            <td>All versions of the package word-wrap are vulnerable to Regular Expression Denial of Service (ReDoS) due to the usage of an insecure regular expression within the result variable.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-26115<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-26115</span><br><span class="vuln-link">https://github.com/jonschlinkert/word-wrap/commit/420dce9a2412b21881202b73a3c34f0edc53cb2e</span><br><span class="vuln-link">https://github.com/jonschlinkert/word-wrap</span><br><span class="vuln-link">https://github.com/jonschlinkert/word-wrap/blob/master/index.js#L39</span><br><span class="vuln-link">https://github.com/jonschlinkert/word-wrap/blob/master/index.js%23L39</span><br><span class="vuln-link">https://github.com/jonschlinkert/word-wrap/releases/tag/1.2.4</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20240621-0006</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-4058657</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-WORDWRAP-3149973</span><br><br><div class="section-header">影响范围: </div><br>word-wrap: 所有版本 &lt; 1.2.4 <br><br><br><div class="cve-header">来自 CVE-2023-26115 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>3430</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>3569</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>3520</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>3381</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>6</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (3520)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共3520个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>src\main\java\net\sourceforge\plantuml\sequencediagram\Grouping.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\svg\SvgOption.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\FtileGeometry.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\geom\CoordinateChange.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\tim\ExecutionContextForeach.java</td></tr><tr><td>src\main\java\smetana\core\CFunction.java</td></tr><tr><td>src\main\java\h\ST_point.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\command\CommandMultilinesLegend.java</td></tr><tr><td>src\main\java\smetana\core\package-info.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\salt\factory\ElementFactoryText.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\gtile\GAbstractConnection.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\eps\DriverPolygonEps.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\Pipe.java</td></tr><tr><td>src\main\java\zext\plantuml\com\google\zxing\datamatrix\decoder\Version.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\timingdiagram\PlayerClock.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\svek\extremity\ExtremityFactoryArrow.java</td></tr><tr><td>src\main\java\gen\lib\dotgen\acyclic__c.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\core\Moment.java</td></tr><tr><td>src\test\java\nonreg\simple\TeozAltElseParallel_0004_TestResult.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\creole\atom\AtomImgSvg.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\security\authentication\SecurityAuthorizeManager.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\command\note\CommandFactoryTipOnEntity.java</td></tr><tr><td>src\test\java\nonreg\simple\SequenceLayout_0005_Test.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\sequencediagram\Notes.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\xml\package-info.java</td></tr><tr><td>src\test\java\nonreg\simple\HideShow001_Test.java</td></tr><tr><td>src\test\java\net\sourceforge\plantuml\tim\builtin\JsonKeyExistsTest.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\dedication\TinyHashableString.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\regex\RegexConcat.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\chronology\ComplementHour.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\vcompact\cond\FtileIfWithDiamonds.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\UGraphicNull.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\InstructionGoto.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\version\Version.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram\command\UBrexCommandPartition.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\svek\GroupMakerState.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\crash\CrashReportHandler.java</td></tr><tr><td>src\main\java\jcckit\graphic\BasicGraphicalElement.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\font\Roboto.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\preproc\ReadLineWithYamlHeader.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\skin\Pragma.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\vcompact\ParallelBuilderSplit.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\tikz\DriverTextTikz.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\command\CommandHideResourceName.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\core\InstallationRequirement.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\skin\ArrowDressing.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\svek\IEntityImage.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\CenteredText.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\draw\RectangleTask.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\jsondiagram\readme.md</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\version\License.java</td></tr><tr><td>src\main\java\zext\plantuml\com\google\zxing\qrcode\encoder\ByteMatrix.java</td></tr><tr><td>src\main\java\gen\lib\cgraph\attr__c.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\sprite\ListSpriteDiagramFactory.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\descdiagram\command\CommandArchimateMultilines.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\vertical\FtileCircleStart.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\FtileHeightFixedMarged.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\svg\SvgGraphics.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\style\ValueColor.java</td></tr><tr><td>src\test\java\net\sourceforge\plantuml\json\JsonObjectTest.java</td></tr><tr><td>src\main\java\smetana\core\JUtils.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\tim\builtin\GetAllStdlib.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\draw\WeeklyHeaderStrategy.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\eps\EpsGraphicsMacro.java</td></tr><tr><td>src\test\java\nonreg\simple\SequenceLayout_0002_Test.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\timingdiagram\Clocks.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\sudoku\DLXEngine.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\stats\api\StatsLine.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\api\MyRunnable.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\LimitFinder.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\draw\TimeHeaderWeekly.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\nwdiag\next\NwArray.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\svek\Boundary.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\sudoku\PSystemSudoku.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\command\CommandActivity3.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\g2d\ExtendedPathIterator.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\visio\DriverPathVdx.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\sdot\package-info.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\vcompact\FtileFactoryDelegatorAssembly.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\lang\SentenceIsColoredForCompletion.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\text\FoxSignature.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\sprite\Sprite.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\jcckit\readme.md</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\hcl\SymbolType.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\timingdiagram\TimingStyle.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\stereo\StereotypeDecoration.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\theme\readme.md</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\project\lang\ComplementTask.java</td></tr><tr><td>src\test\java\dev\jaws\jaws4.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\gtile\GtileWithOutgoingArrow.java</td></tr><tr><td>src\main\java\gen\lib\common\htmltable__c.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\InstructionCollection.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\CollisionDetector.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\vcompact\FtileIfLongHorizontal.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\help\CommandHelpTheme.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\vcompact\FtileRepeat.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\svek\extremity\ExtremityParenthesis.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\classdiagram\command\UBrexCommandHideShow2.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\activitydiagram3\ftile\Swimlanes.java</td></tr><tr><td>src\main\java\net\sourceforge\plantuml\klimt\drawing\visio\VisioText.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (3381)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共3381个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>src\net\sourceforge\plantuml\mindmap\Stripe.java</td></tr><tr><td>src\net\sourceforge\plantuml\svek\ArithmeticStrategySum.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\drawing\g2d\DriverLineG2d.java</td></tr><tr><td>src\jcckit\graphic\GraphicalComposite.java</td></tr><tr><td>src\net\sourceforge\plantuml\activitydiagram3\Branch.java</td></tr><tr><td>src\net\sourceforge\plantuml\activitydiagram3\ftile\vertical\FtileDiamondInside2.java</td></tr><tr><td>src\net\sourceforge\plantuml\decoration\HtmlColorAndStyle.java</td></tr><tr><td>src\net\sourceforge\plantuml\project\GanttDiagram.java</td></tr><tr><td>src\net\sourceforge\plantuml\tim\builtin\Str2Json.java</td></tr><tr><td>src\jcckit\util\TicLabelFormat.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\drawing\eps\EpsStrategy.java</td></tr><tr><td>src\net\sourceforge\plantuml\stereo\readme.md</td></tr><tr><td>src\net\sourceforge\plantuml\tim\EaterAssert.java</td></tr><tr><td>src\gen\lib\cdt\dtopen__c.java</td></tr><tr><td>src\gen\lib\cdt\dtview__c.java</td></tr><tr><td>src\net\sourceforge\plantuml\syntax\readme.md</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\geom\EnsureVisible.java</td></tr><tr><td>test\test\test\ApiV2CsvTest.java</td></tr><tr><td>src\gen\annotation\Untraced.java</td></tr><tr><td>src\net\sourceforge\plantuml\style\AutomaticCounter.java</td></tr><tr><td>src\net\sourceforge\plantuml\sequencediagram\graphic\FreeYStrategy.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\drawing\tikz\DriverCenteredCharacterTikz2.java</td></tr><tr><td>src\net\sourceforge\plantuml\html\readme.md</td></tr><tr><td>src\net\sourceforge\plantuml\tim\TimLoader.java</td></tr><tr><td>src\gen\lib\cgraph\refstr__c.java</td></tr><tr><td>src\net\sourceforge\plantuml\ebnf\TextBlockable.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\drawing\g2d\DriverImageG2d.java</td></tr><tr><td>src\net\sourceforge\plantuml\filesdiagram\package-info.java</td></tr><tr><td>src\net\sourceforge\plantuml\text\readme.md</td></tr><tr><td>src\net\sourceforge\plantuml\fun\IconLoader.java</td></tr><tr><td>src\net\sourceforge\plantuml\api\ImageDataSimple.java</td></tr><tr><td>src\net\sourceforge\plantuml\mindmap\CommandMindMapOrgmode.java</td></tr><tr><td>src\net\sourceforge\plantuml\code\deflate\ByteHistory.java</td></tr><tr><td>src\net\sourceforge\plantuml\real\Real.java</td></tr><tr><td>src\net\sourceforge\plantuml\cheneer\readme.md</td></tr><tr><td>src\net\sourceforge\plantuml\tim\EaterIfdef.java</td></tr><tr><td>src\net\sourceforge\plantuml\wbs\WElement.java</td></tr><tr><td>src\net\sourceforge\plantuml\mda\MDADiagramImpl.java</td></tr><tr><td>src\net\sourceforge\plantuml\timingdiagram\TimeTick.java</td></tr><tr><td>src\net\sourceforge\plantuml\fun\readme.md</td></tr><tr><td>test\dev\jaws\jaws3.java</td></tr><tr><td>src\net\sourceforge\plantuml\command\SkinLoader.java</td></tr><tr><td>src\net\sourceforge\plantuml\command\CommandNope.java</td></tr><tr><td>src\net\sourceforge\plantuml\decoration\symbol\USymbolSimpleAbstract.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\creole\command\AddStyle.java</td></tr><tr><td>src\smetana\core\package-info.java</td></tr><tr><td>src\net\sourceforge\plantuml\sequencediagram\command\CommandIgnoreNewpage.java</td></tr><tr><td>src\net\sourceforge\plantuml\sdot\CucaDiagramFileMakerSmetana.java</td></tr><tr><td>src\net\sourceforge\plantuml\activitydiagram3\command\CommandWhileEnd3.java</td></tr><tr><td>src\net\sourceforge\plantuml\svek\GuideLine.java</td></tr><tr><td>src\net\sourceforge\plantuml\skin\rose\ComponentRoseEnglober.java</td></tr><tr><td>src\net\sourceforge\plantuml\salt\element\WrappedElement.java</td></tr><tr><td>src\net\sourceforge\plantuml\sequencediagram\graphic\GraphicalDelayText.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\creole\atom\AtomEmoji.java</td></tr><tr><td>src\net\sourceforge\plantuml\timingdiagram\graphic\TimeArrow.java</td></tr><tr><td>src\net\sourceforge\plantuml\style\Styleable.java</td></tr><tr><td>src\net\sourceforge\plantuml\command\note\CommandFactoryTipOnEntity.java</td></tr><tr><td>src\org\stathissideris\ascii2image\graphics\DiagramShape.java</td></tr><tr><td>src\net\sourceforge\plantuml\classdiagram\command\CommandCreateClass.java</td></tr><tr><td>test\nonreg\scxml\SCXML0001_Test.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\geom\Side.java</td></tr><tr><td>src\net\sourceforge\plantuml\url\UrlMode.java</td></tr><tr><td>src\net\sourceforge\plantuml\xmi\UMLAggregationKind.java</td></tr><tr><td>src\net\sourceforge\plantuml\tim\EaterDumpMemory.java</td></tr><tr><td>src\net\sourceforge\plantuml\activitydiagram3\gtile\GtileBox.java</td></tr><tr><td>src\net\sourceforge\plantuml\file\AParentFolder.java</td></tr><tr><td>src\net\sourceforge\plantuml\flowdiagram\readme.md</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\geom\PlacementStrategyY1Y2Right.java</td></tr><tr><td>src\net\sourceforge\plantuml\salt\element\ElementButton.java</td></tr><tr><td>src\gen\lib\pathplan\util__c.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\sprite\SpriteUtils.java</td></tr><tr><td>src\jcckit\graphic\Text.java</td></tr><tr><td>src\net\sourceforge\plantuml\tim\builtin\RightAlign.java</td></tr><tr><td>src\net\sourceforge\plantuml\real\RealDelta.java</td></tr><tr><td>src\net\sourceforge\plantuml\svek\ConcurrentStates.java</td></tr><tr><td>src\net\sourceforge\plantuml\zopfli\LongestMatchCache.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\font\UnusedSpace.java</td></tr><tr><td>src\net\sourceforge\plantuml\sequencediagram\command\CommandLinkAnchor.java</td></tr><tr><td>src\net\sourceforge\plantuml\api\INumberAnalyzed.java</td></tr><tr><td>src\net\sourceforge\plantuml\klimt\creole\UCreole.java</td></tr><tr><td>src\net\sourceforge\plantuml\salt\Positionner2.java</td></tr><tr><td>test\nonreg\simple\TimingMessageArrowFont_0002_Test.java</td></tr><tr><td>src\net\sourceforge\plantuml\command\SingleLineCommand2.java</td></tr><tr><td>src\net\sourceforge\plantuml\file\FileGroup.java</td></tr><tr><td>src\org\stathissideris\ascii2image\text\CellSet.java</td></tr><tr><td>src\net\sourceforge\plantuml\dedication\Dedications.java</td></tr><tr><td>src\net\sourceforge\plantuml\xmi\XmiClassDiagramStar.java</td></tr><tr><td>src\net\sourceforge\plantuml\stats\StatsLineImpl.java</td></tr><tr><td>src\net\sourceforge\plantuml\activitydiagram3\ftile\vcompact\FtileGroup.java</td></tr><tr><td>src\net\sourceforge\plantuml\activitydiagram3\gtile\GtileSplit.java</td></tr><tr><td>src\net\sourceforge\plantuml\compositediagram\command\CommandEndPackageBlock.java</td></tr><tr><td>src\net\sourceforge\plantuml\classdiagram\command\CommandLinkLollipop.java</td></tr><tr><td>src\zext\plantuml\com\google\zxing\common\DetectorResult.java</td></tr><tr><td>src\net\sourceforge\plantuml\statediagram\command\CommandCreateState.java</td></tr><tr><td>src\net\sourceforge\plantuml\zopfli\package-info.java</td></tr><tr><td>src\net\sourceforge\plantuml\hcl\package-info.java</td></tr><tr><td>src\net\sourceforge\plantuml\sudoku\PSystemSudoku.java</td></tr><tr><td>src\net\sourceforge\plantuml\tim\builtin\LogicalNor.java</td></tr><tr><td>src\net\sourceforge\plantuml\command\CommandCaption.java</td></tr><tr><td>src\net\sourceforge\plantuml\wbs\CommandWBSItemMultiline.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (6)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>.github\actions\configure-workflow\package-lock.json</td><td>内容变更</td></tr><tr><td>CHANGES.md</td><td>内容变更</td></tr><tr><td>.github\actions\configure-workflow\package.json</td><td>内容变更</td></tr><tr><td>build.xml</td><td>内容变更</td></tr><tr><td>.github\workflows\native-image-snapshot.yml</td><td>内容变更</td></tr><tr><td>CONVENTIONAL_COMMIT.md</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

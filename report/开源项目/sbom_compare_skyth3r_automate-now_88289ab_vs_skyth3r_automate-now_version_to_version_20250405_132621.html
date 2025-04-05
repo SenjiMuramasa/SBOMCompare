@@ -1,0 +1,679 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:26:26</p>
+                <p>SBOM A: sample_data\skyth3r_automate-now_88289ab.json</p>
+                <p>SBOM B: sample_data\skyth3r_automate-now.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>19</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">8.3/10 (82.9%) [A-]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 8.3/10.0 (82.9%)，安全等级: A-。 软件供应链保持了较高的完整性和一致性。 主要影响因素：大量新增依赖, 依赖扩张, 缺少Scorecard评估。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-medium">1.3/1.7 (75.0%)</td>
+                    <td><ul class='details-list'><li>大量新增包(19个)可能增加攻击面</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">2.9/3.5 (84.0%)</td>
+                    <td><ul class='details-list'><li>2个包发生次版本变更</li><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 依赖扩张</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (60.0%)</td>
+                    <td><ul class='details-list'><li>无法获取Scorecard评分数据</li></ul><div class='impact-factors'><strong>影响因素:</strong> 缺少Scorecard评估</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (19)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/antchfx/htmlquery</td><td>v1.3.0</td><td>MIT</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.26.0</td><td>MIT</td></tr><tr><td>github.com/gocolly/colly</td><td>v1.2.0</td><td>MIT</td></tr><tr><td>google.golang.org/appengine</td><td>v1.6.8</td><td>MIT</td></tr><tr><td>github.com/stretchr/objx</td><td>v0.5.0</td><td>MIT</td></tr><tr><td>github.com/antchfx/xpath</td><td>v1.2.4</td><td>MIT</td></tr><tr><td>github.com/antchfx/xmlquery</td><td>v1.3.18</td><td>MIT</td></tr><tr><td>github.com/golang/protobuf</td><td>v1.5.2</td><td>MIT</td></tr><tr><td>github.com/saintfish/chardet</td><td>v0.0.0-20230101081208-5e3ef4b5456d</td><td>MIT</td></tr><tr><td>github.com/davecgh/go-spew</td><td>v1.1.1</td><td>MIT</td></tr><tr><td>github.com/golang/groupcache</td><td>v0.0.0-20210331224755-41bb18bfe9da</td><td>MIT</td></tr><tr><td>github.com/joho/godotenv</td><td>v1.5.1</td><td>MIT</td></tr><tr><td>github.com/pmezard/go-difflib</td><td>v1.0.0</td><td>MIT</td></tr><tr><td>github.com/temoto/robotstxt</td><td>v1.1.2</td><td>MIT</td></tr><tr><td>gopkg.in/yaml.v3</td><td>v3.0.1</td><td>MIT</td></tr><tr><td>github.com/kennygrant/sanitize</td><td>v1.2.4</td><td>MIT</td></tr><tr><td>github.com/stretchr/testify</td><td>v1.8.4</td><td>MIT</td></tr><tr><td>github.com/jayco/go-emoji-flag</td><td>v0.0.0-20190810054606-01604da018da</td><td>MIT</td></tr><tr><td>github.com/gobwas/glob</td><td>v0.2.3</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>golang.org/x/text</td><td>v0.5.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.4.0</td><td>v0.7.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">新增包漏洞信息 (2)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>google.golang.org/protobuf</td>
+                            <td class="vuln-unknown">GHSA-8r3f-844c-mc37<br>关联CVE: CVE-2024-24786</td>
+                            <td>所有版本 &lt; 1.33.0</td>
+                            <td>Golang protojson.Unmarshal function infinite loop when unmarshaling certain forms of invalid JSON&lt;br&gt;&lt;br&gt;The protojson.Unmarshal function can enter an infinite loop when unmarshaling certain forms of invalid JSON. This condition can occur when unmarshaling into a message which contains a google.protobuf.Any value, or when the UnmarshalOptions.DiscardUnknown option is set.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-24786' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-24786</a><br><a href='https://github.com/protocolbuffers/protobuf-go/commit/f01a588e5810b90996452eec4a28f22a0afae023' target='_blank' class='vuln-link'>https://github.com/protocolbuffers/protobuf-go/commit/f01a588e5810b90996452eec4a28f22a0afae023</a><br><a href='https://github.com/protocolbuffers/protobuf-go' target='_blank' class='vuln-link'>https://github.com/protocolbuffers/protobuf-go</a><br><a href='https://github.com/protocolbuffers/protobuf-go/releases/tag/v1.33.0' target='_blank' class='vuln-link'>https://github.com/protocolbuffers/protobuf-go/releases/tag/v1.33.0</a><br><a href='https://go.dev/cl/569356' target='_blank' class='vuln-link'>https://go.dev/cl/569356</a></div></td>
+                            <td>2024-03-06</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>google.golang.org/protobuf</td>
+                            <td class="vuln-unknown">GO-2024-2611<br>关联CVE: CVE-2024-24786</td>
+                            <td>所有版本 &lt; 1.33.0</td>
+                            <td>Infinite loop in JSON unmarshaling in google.golang.org/protobuf&lt;br&gt;&lt;br&gt;The protojson.Unmarshal function can enter an infinite loop when unmarshaling certain forms of invalid JSON. This condition can occur when unmarshaling into a message which contains a google.protobuf.Any value, or when the UnmarshalOptions.DiscardUnknown option is set.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/569356' target='_blank' class='vuln-link'>https://go.dev/cl/569356</a></div></td>
+                            <td>2024-03-05</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (10)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GHSA-2wrh-6pvc-2jm9<br>关联CVE: CVE-2023-3978</td>
+                            <td>所有版本 &lt; 0.13.0</td>
+                            <td>Improper rendering of text nodes in golang.org/x/net/html&lt;br&gt;&lt;br&gt;Text nodes not in the HTML namespace are incorrectly literally rendered, causing text which should be escaped to not be. This could lead to an XSS attack. <div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-3978' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-3978</a><br><a href='https://go.dev/cl/514896' target='_blank' class='vuln-link'>https://go.dev/cl/514896</a><br><a href='https://go.dev/issue/61615' target='_blank' class='vuln-link'>https://go.dev/issue/61615</a><br><a href='https://pkg.go.dev/vuln/GO-2023-1988' target='_blank' class='vuln-link'>https://pkg.go.dev/vuln/GO-2023-1988</a></div></td>
+                            <td>2023-08-02</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2023-1988<br>关联CVE: CVE-2023-3978</td>
+                            <td>所有版本 &lt; 0.13.0</td>
+                            <td>Improper rendering of text nodes in golang.org/x/net/html&lt;br&gt;&lt;br&gt;Text nodes not in the HTML namespace are incorrectly literally rendered, causing text which should be escaped to not be. This could lead to an XSS attack.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/issue/61615' target='_blank' class='vuln-link'>https://go.dev/issue/61615</a><br><a href='https://go.dev/cl/514896' target='_blank' class='vuln-link'>https://go.dev/cl/514896</a></div></td>
+                            <td>2023-08-02</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-high">GHSA-4374-p667-p6c8<br>关联CVE: CVE-2023-39325</td>
+                            <td>所有版本 &lt; 0.17.0</td>
+                            <td>HTTP/2 rapid reset can cause excessive work in net/http&lt;br&gt;&lt;br&gt;A malicious HTTP/2 client which rapidly creates requests and immediately resets them can cause excessive server resource consumption. While the total number of requests is bounded by the http2.Server.MaxConcurrentStreams setting, resetting an in-progress request allows the attacker to create a new request while the existing one is still executing. 
+
+With the fix applied, HTTP/2 servers now bound the number of simultaneously executing handler goroutines to the stream concurrency limit (MaxConcurrentStreams). New requests arriving when at the limit (which can only happen after the client has reset an existing, in-flight request) will be queued until a handler exits. If the request queue grows too large, the server will terminate the connection. 
+
+This issue is also fixed in golang.org/x/net/http2 for users manually configuring HTTP/2.
+
+The default stream concurrency limit is 250 streams (requests) per HTTP/2 connection. This value may be adjusted using the golang.org/x/net/http2 package; see the Server.MaxConcurrentStreams setting and the ConfigureServer function.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-39325' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-39325</a><br><a href='https://github.com/golang/go/issues/63417' target='_blank' class='vuln-link'>https://github.com/golang/go/issues/63417</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/NG7IMPL55MVWU3LCI4JQJT3K2U5CHDV7' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/NG7IMPL55MVWU3LCI4JQJT3K2U5CHDV7</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ODBY7RVMGZCBSTWF2OZGIZS57FNFUL67' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ODBY7RVMGZCBSTWF2OZGIZS57FNFUL67</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OXGWPQOJ3JNDW2XIYKIVJ7N7QUIFNM2Q' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OXGWPQOJ3JNDW2XIYKIVJ7N7QUIFNM2Q</a></div></td>
+                            <td>2023-10-11</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GHSA-qppj-fm5r-hxr3<br>关联CVE: CVE-2023-44487</td>
+                            <td>所有版本 &lt; 0.17.0</td>
+                            <td>HTTP/2 Stream Cancellation Attack&lt;br&gt;&lt;br&gt;## HTTP/2 Rapid reset attack
+The HTTP/2 protocol allows clients to indicate to the server that a previous stream should be canceled by sending a RST_STREAM frame. The protocol does not require the client and server to coordinate the cancellation in any way, the client may do it unilaterally. The client may also assume that the cancellation will take effect immediately when the server receives the RST_STREAM frame, before any other data from that TCP connection is processed.
+
+Abuse of this feature is called a Rapid Reset attack because it relies on the ability for an endpoint to send a RST_STREAM frame immediately after sending a request frame, which makes the other endpoint start working and then rapidly resets the request. The request is canceled, but leaves the HTTP/2 connection open. 
+
+The HTTP/2 Rapid Reset attack built on this capability is simple: The client opens a large number of streams at once as in the standard HTTP/2 attack, but rather than waiting for a response to each request stream from the server or proxy, the client cancels each request immediately.
+
+The ability to reset streams immediately allows each connection to have an indefinite number of requests in flight. By explicitly canceling the requests, the attacker never exceeds the limit on the number of concurrent open streams. The number of in-flight requests is no longer dependent on the round-trip time (RTT), but only on the available network bandwidth.
+
+In a typical HTTP/2 server implementation, the server will still have to do significant amounts of work for canceled requests, such as allocating new stream data structures, parsing the query and doing header decompression, and mapping the URL to a resource. For reverse proxy implementations, the request may be proxied to the backend server before the RST_STREAM frame is processed. The client on the other hand paid almost no costs for sending the requests. This creates an exploitable cost asymmetry between the server and the client.
+
+Multiple software artifacts implementing HTTP/2 are affected. This advisory was originally ingested from the `swift-nio-http2` repo advisory and their original conent follows.
+
+## swift-nio-http2 specific advisory
+swift-nio-http2 is vulnerable to a denial-of-service vulnerability in which a malicious client can create and then reset a large number of HTTP/2 streams in a short period of time. This causes swift-nio-http2 to commit to a large amount of expensive work which it then throws away, including creating entirely new `Channel`s to serve the traffic. This can easily overwhelm an `EventLoop` and prevent it from making forward progress.
+
+swift-nio-http2 1.28 contains a remediation for this issue that applies reset counter using a sliding window. This constrains the number of stream resets that may occur in a given window of time. Clients violating this limit will have their connections torn down. This allows clients to continue to cancel streams for legitimate reasons, while constraining malicious actors.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/apple/swift-nio-http2/security/advisories/GHSA-qppj-fm5r-hxr3' target='_blank' class='vuln-link'>https://github.com/apple/swift-nio-http2/security/advisories/GHSA-qppj-fm5r-hxr3</a><br><a href='https://github.com/h2o/h2o/security/advisories/GHSA-2m7v-gc89-fjqf' target='_blank' class='vuln-link'>https://github.com/h2o/h2o/security/advisories/GHSA-2m7v-gc89-fjqf</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-44487' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-44487</a><br><a href='https://github.com/apache/apisix/issues/10320' target='_blank' class='vuln-link'>https://github.com/apache/apisix/issues/10320</a><br><a href='https://github.com/alibaba/tengine/issues/1872' target='_blank' class='vuln-link'>https://github.com/alibaba/tengine/issues/1872</a></div></td>
+                            <td>2023-10-10</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2023-2102<br>关联CVE: CVE-2023-39325</td>
+                            <td>所有版本 &lt; 0.17.0</td>
+                            <td>HTTP/2 rapid reset can cause excessive work in net/http&lt;br&gt;&lt;br&gt;A malicious HTTP/2 client which rapidly creates requests and immediately resets them can cause excessive server resource consumption. While the total number of requests is bounded by the http2.Server.MaxConcurrentStreams setting, resetting an in-progress request allows the attacker to create a new request while the existing one is still executing.
+
+With the fix applied, HTTP/2 servers now bound the number of simultaneously executing handler goroutines to the stream concurrency limit (MaxConcurrentStreams). New requests arriving when at the limit (which can only happen after the client has reset an existing, in-flight request) will be queued until a handler exits. If the request queue grows too large, the server will terminate the connection.
+
+This issue is also fixed in golang.org/x/net/http2 for users manually configuring HTTP/2.
+
+The default stream concurrency limit is 250 streams (requests) per HTTP/2 connection. This value may be adjusted using the golang.org/x/net/http2 package; see the Server.MaxConcurrentStreams setting and the ConfigureServer function.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/issue/63417' target='_blank' class='vuln-link'>https://go.dev/issue/63417</a><br><a href='https://go.dev/cl/534215' target='_blank' class='vuln-link'>https://go.dev/cl/534215</a><br><a href='https://go.dev/cl/534235' target='_blank' class='vuln-link'>https://go.dev/cl/534235</a><br><a href='https://groups.google.com/g/golang-announce/c/iNNxDTCjZvo/m/UDd7VKQuAAAJ' target='_blank' class='vuln-link'>https://groups.google.com/g/golang-announce/c/iNNxDTCjZvo/m/UDd7VKQuAAAJ</a></div></td>
+                            <td>2023-10-11</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GHSA-4v7x-pqxf-cx7m<br>关联CVE: CVE-2023-45288</td>
+                            <td>所有版本 &lt; 0.23.0</td>
+                            <td>net/http, x/net/http2: close connections when receiving too many headers&lt;br&gt;&lt;br&gt;An attacker may cause an HTTP/2 endpoint to read arbitrary amounts of header data by sending an excessive number of CONTINUATION frames. Maintaining HPACK state requires parsing and processing all HEADERS and CONTINUATION frames on a connection. When a request&#39;s headers exceed MaxHeaderBytes, no memory is allocated to store the excess headers, but they are still parsed. This permits an attacker to cause an HTTP/2 endpoint to read arbitrary amounts of header data, all associated with a request which is going to be rejected. These headers can include Huffman-encoded data which is significantly more expensive for the receiver to decode than for an attacker to send. The fix sets a limit on the amount of excess header frames we will process before closing a connection.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2023-45288' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2023-45288</a><br><a href='https://go.dev/cl/576155' target='_blank' class='vuln-link'>https://go.dev/cl/576155</a><br><a href='https://go.dev/issue/65051' target='_blank' class='vuln-link'>https://go.dev/issue/65051</a><br><a href='https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M' target='_blank' class='vuln-link'>https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M</a><br><a href='https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QRYFHIQ6XRKRYBI2F5UESH67BJBQXUPT' target='_blank' class='vuln-link'>https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QRYFHIQ6XRKRYBI2F5UESH67BJBQXUPT</a></div></td>
+                            <td>2024-04-04</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2024-2687<br>关联CVE: CVE-2023-45288</td>
+                            <td>所有版本 &lt; 0.23.0</td>
+                            <td>HTTP/2 CONTINUATION flood in net/http&lt;br&gt;&lt;br&gt;An attacker may cause an HTTP/2 endpoint to read arbitrary amounts of header data by sending an excessive number of CONTINUATION frames.
+
+Maintaining HPACK state requires parsing and processing all HEADERS and CONTINUATION frames on a connection. When a request&#39;s headers exceed MaxHeaderBytes, no memory is allocated to store the excess headers, but they are still parsed.
+
+This permits an attacker to cause an HTTP/2 endpoint to read arbitrary amounts of header data, all associated with a request which is going to be rejected. These headers can include Huffman-encoded data which is significantly more expensive for the receiver to decode than for an attacker to send.
+
+The fix sets a limit on the amount of excess header frames we will process before closing a connection.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/issue/65051' target='_blank' class='vuln-link'>https://go.dev/issue/65051</a><br><a href='https://go.dev/cl/576155' target='_blank' class='vuln-link'>https://go.dev/cl/576155</a><br><a href='https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M' target='_blank' class='vuln-link'>https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M</a></div></td>
+                            <td>2024-04-03</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2024-3333<br>关联CVE: CVE-2024-45338</td>
+                            <td>所有版本 &lt; 0.33.0</td>
+                            <td>Non-linear parsing of case-insensitive content in golang.org/x/net/html&lt;br&gt;&lt;br&gt;An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/637536' target='_blank' class='vuln-link'>https://go.dev/cl/637536</a><br><a href='https://go.dev/issue/70906' target='_blank' class='vuln-link'>https://go.dev/issue/70906</a><br><a href='https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ' target='_blank' class='vuln-link'>https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</a></div></td>
+                            <td>2024-12-18</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GHSA-qxp5-gwg8-xv66<br>关联CVE: CVE-2025-22870</td>
+                            <td>所有版本 &lt; 0.36.0</td>
+                            <td>HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net&lt;br&gt;&lt;br&gt;Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &quot;*.example.com&quot;, a request to &quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-22870' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-22870</a><br><a href='https://go-review.googlesource.com/q/project:net' target='_blank' class='vuln-link'>https://go-review.googlesource.com/q/project:net</a><br><a href='https://go.dev/cl/654697' target='_blank' class='vuln-link'>https://go.dev/cl/654697</a><br><a href='https://go.dev/issue/71984' target='_blank' class='vuln-link'>https://go.dev/issue/71984</a><br><a href='https://pkg.go.dev/vuln/GO-2025-3503' target='_blank' class='vuln-link'>https://pkg.go.dev/vuln/GO-2025-3503</a></div></td>
+                            <td>2025-03-12</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/net</td>
+                            <td class="vuln-unknown">GO-2025-3503<br>关联CVE: CVE-2025-22870</td>
+                            <td>所有版本 &lt; 0.36.0</td>
+                            <td>HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net&lt;br&gt;&lt;br&gt;Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &quot;*.example.com&quot;, a request to &quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/654697' target='_blank' class='vuln-link'>https://go.dev/cl/654697</a><br><a href='https://go.dev/issue/71984' target='_blank' class='vuln-link'>https://go.dev/issue/71984</a></div></td>
+                            <td>2025-03-12</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>14</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>3</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (11)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>custom.go</td></tr><tr><td>nomadlist\structs.go</td></tr><tr><td>serializd\shows.go</td></tr><tr><td>letterboxd\movies.go</td></tr><tr><td>letterboxd\movies_test.go</td></tr><tr><td>constants.go</td></tr><tr><td>backloggd\games.go</td></tr><tr><td>serializd\structs.go</td></tr><tr><td>custom_test.go</td></tr><tr><td>static_example.md</td></tr><tr><td>nomadlist\travel.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (3)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>main_test.go</td><td>内容变更</td></tr><tr><td>main.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,855 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:22:38</p>
+                <p>SBOM A: sample_data\rancher_rancher_de251d8.json</p>
+                <p>SBOM B: sample_data\rancher_rancher.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>101</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>10</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">6.2/10 (62.1%) [C+]</span>
+            </button>
+            <div class="content">
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ 版本降级警告</div>
+                    <div class="warning-content">
+                        <ul>
+                            <li>2个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li>降级的包: golang.org/x/sys, golang.org/x/text</li>
+                        </ul>
+                        <p class="warning-note">版本降级可能导致安全修复丢失，增加安全风险！</p>
+                    </div>
+                </div>
+                
+                <p class="score-summary">软件供应链安全评分为 6.2/10.0 (62.1%)，安全等级: C+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：版本降级, CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.0%)</td>
+                    <td><ul class='details-list'><li>新增了4个包</li><li>移除了7个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-low">0.3/3.5 (10.0%)</td>
+                    <td><ul class='details-list'><li class='critical-detail'>2个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li class='critical-detail'>降级的包: golang.org/x/sys, golang.org/x/text</li></ul><div class='impact-factors'><strong>影响因素:</strong> 版本降级</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (98.4%)</td>
+                    <td><ul class='details-list'><li>10个包发生许可证变更</li><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.7/1.3 (53.0%)</td>
+                    <td><ul class='details-list'><li>Branch-Protection需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2022-0635 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0635</li><li>- Warn: Project is vulnerable to: GO-2022-0646 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2022-0646</li><li>- Warn: Project is vulnerable to: GO-2025-3528 / GHSA-265r-hfxg-fhmg (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3528 / GHSA-265r-hfxg-fhmg</li><li>- Warn: Project is vulnerable to: GHSA-mq39-4gv4-mvpx (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-mq39-4gv4-mvpx</li><li>- Warn: Project is vulnerable to: GO-2024-3005 / GHSA-v23v-6jw2-98fq (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3005 / GHSA-v23v-6jw2-98fq</li><li>- Warn: Project is vulnerable to: GO-2024-2512 / GHSA-xw73-rw38-6vjc (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2512 / GHSA-xw73-rw38-6vjc</li><li>- Warn: Project is vulnerable to: GO-2025-3367 / GHSA-r9px-m959-cxf4 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3367 / GHSA-r9px-m959-cxf4</li><li>- Warn: Project is vulnerable to: GO-2025-3368 / GHSA-v725-9546-7q7m (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3368 / GHSA-v725-9546-7q7m</li><li>- Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</li><li>- Warn: Project is vulnerable to: GO-2025-3485 / GHSA-c6gw-w398-hv78 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3485 / GHSA-c6gw-w398-hv78</li><li>- Warn: Project is vulnerable to: GO-2025-3553 / GHSA-mh63-6h87-95cp (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3553 / GHSA-mh63-6h87-95cp</li><li>- Warn: Project is vulnerable to: GO-2025-3488 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3488</li><li>- Warn: Project is vulnerable to: GO-2025-3522 / GHSA-vv39-3w5q-974q (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3522 / GHSA-vv39-3w5q-974q</li><li>- Warn: Project is vulnerable to: GO-2025-3465 / GHSA-jgfp-53c3-624w (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3465 / GHSA-jgfp-53c3-624w</li><li>- Warn: Project is vulnerable to: GO-2025-3521 / GHSA-3wgm-2gw2-vh5m (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3521 / GHSA-3wgm-2gw2-vh5m</li><li>- Warn: Project is vulnerable to: GO-2025-3547 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3547</li><li>- Warn: Project is vulnerable to: GO-2024-3171 / GHSA-mc76-5925-c5p6 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3171 / GHSA-mc76-5925-c5p6</li><li>- Warn: Project is vulnerable to: GO-2024-3110 / GHSA-jfvp-7x6p-h2pv (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3110 / GHSA-jfvp-7x6p-h2pv</li><li>- Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc</li><li>- Warn: Project is vulnerable to: GO-2025-3487 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3487</li><li>- Warn: Project is vulnerable to: GO-2024-3333 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3333</li><li>- Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</li><li>- Warn: Project is vulnerable to: GHSA-79v4-65xg-pq4g (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-79v4-65xg-pq4g</li><li>- Warn: Project is vulnerable to: GHSA-h4gh-qq45-vh27 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-h4gh-qq45-vh27</li><li>- Warn: Project is vulnerable to: PYSEC-2019-217 / GHSA-462w-v97r-4m45 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2019-217 / GHSA-462w-v97r-4m45</li><li>- Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</li><li>- Warn: Project is vulnerable to: PYSEC-2021-66 / GHSA-g3rq-g295-4j3m (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-66 / GHSA-g3rq-g295-4j3m</li><li>- Warn: Project is vulnerable to: GHSA-h5c8-rqwp-cp95 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-h5c8-rqwp-cp95</li><li>- Warn: Project is vulnerable to: GHSA-h75v-3vvj-5mfj (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-h75v-3vvj-5mfj</li><li>- Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h</li><li>- Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56</li><li>- Warn: Project is vulnerable to: GHSA-f9vj-2wh5-fj8j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-f9vj-2wh5-fj8j</li><li>- Warn: Project is vulnerable to: GHSA-q34m-jh98-gwm2 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-q34m-jh98-gwm2</li><li>- Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (34)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-79v4-65xg-pq4g</td>
+                            <td>pyca/cryptography&amp;#39;s wheels include a statically linked copy of OpenSSL. The versions of OpenSSL included in cryptography 42.0.0-44.0.0 are vulnerable to a security issue. More details about the vulnerability itself can be found in https://openssl-library.org/news/secadv/20250211.txt.<br><br>If you are building cryptography source (&amp;quot;sdist&amp;quot;) then you are responsible for upgrading your copy of OpenSSL. Only users installing from wheels built by the cryptography project (i.e., those distributed on PyPI) need to update their cryptography versions.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-12797<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pyca/cryptography/security/advisories/GHSA-79v4-65xg-pq4g</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-12797</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/738d4f9fdeaad57660dcba50a619fafced3fd5e9</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/798779d43494549b611233f92652f0da5328fbe7</span><br><span class="vuln-link">https://github.com/openssl/openssl/commit/87ebd203feffcf92ad5889df92f90bb0ee10a699</span><br><span class="vuln-link">https://github.com/pyca/cryptography</span><br><span class="vuln-link">https://openssl-library.org/news/secadv/20250211.txt</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/02/11/3</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/02/11/4</span><br><br><div class="section-header">影响范围: </div><br>cryptography: &gt;= 42.0.0 &lt; 44.0.1 <br><br><br><div class="cve-header">来自 CVE-2024-12797 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2022-0635</td>
+                            <td>A vulnerability in the in-band key negotiation exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. An attacker with write access to the targeted bucket can change the encryption algorithm of an object in the bucket, which can then allow them to change AES-GCM to AES-CTR. Using this in combination with a decryption oracle can reveal the authentication key used by AES-GCM as decrypting the GMAC tag leaves the authentication key recoverable as an algebraic equation. It is recommended to update your SDK to V2 or later, and re-encrypt your files.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-8912<br>GHSA-7f33-f4f5-xwgw<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-7f33-f4f5-xwgw</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869801</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围: </div><br>github.com/aws/aws-sdk-go: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-8912 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2022-0646</td>
+                            <td>A padding oracle vulnerability exists in the AWS S3 Crypto SDK for GoLang versions prior to V2. The SDK allows users to encrypt files with AES-CBC without computing a Message Authentication Code (MAC), which then allows an attacker who has write access to the target&amp;#39;s S3 bucket and can observe whether or not an endpoint with access to the key can decrypt a file, they can reconstruct the plaintext with (on average) 128*length (plaintext) queries to the endpoint, by exploiting CBC&amp;#39;s ability to manipulate the bytes of the next block and PKCS5 padding errors. It is recommended to update your SDK to V2 or later, and re-encrypt your files.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-8911<br>GHSA-f5pg-7wfw-84q9<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/google/security-research/security/advisories/GHSA-f5pg-7wfw-84q9</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/1e84382fa1c0086362b5a4b68e068d4f8518d40e</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/commit/ae9b9fd92af132cfd8d879809d8611825ba135f4</span><br><span class="vuln-link">https://github.com/aws/aws-sdk-go/pull/3403</span><br><span class="vuln-link">https://aws.amazon.com/blogs/developer/updates-to-the-amazon-s3-encryption-client/?s=09</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=1869800</span><br><span class="vuln-link">https://github.com/sophieschmieg/exploits/tree/master/aws_s3_crypto_poc</span><br><br><div class="section-header">影响范围: </div><br>github.com/aws/aws-sdk-go: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2020-8911 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3528 / GHSA-265r-hfxg-fhmg</td>
+                            <td>containerd has an integer overflow in User ID handling in github.com/containerd/containerd<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-40635<br>GHSA-265r-hfxg-fhmg<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/containerd/containerd/security/advisories/GHSA-265r-hfxg-fhmg</span><br><span class="vuln-link">https://github.com/containerd/containerd/commit/05044ec0a9a75232cad458027ca83437aae3f4da</span><br><span class="vuln-link">https://github.com/containerd/containerd/commit/1a43cb6a1035441f9aca8f5666a9b3ef9e70ab20</span><br><span class="vuln-link">https://github.com/containerd/containerd/commit/cf158e884cfe4812a6c371b59e4ea9bc4c46e51a</span><br><br><div class="section-header">影响范围: </div><br>github.com/containerd/containerd: 所有版本 &lt; 1.6.38 &gt;= 1.7.0-beta.0 &lt; 1.7.27 <br>github.com/containerd/containerd/v2: 所有版本 &lt; 2.0.4 <br><br><br><div class="cve-header">来自 CVE-2024-40635 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-mq39-4gv4-mvpx</td>
+                            <td>Moby is an open source container framework originally developed by Docker Inc. as Docker. It is a key component of Docker Engine, Docker Desktop, and other distributions of container tooling or runtimes. As a batteries-included container runtime, Moby comes with a built-in networking implementation that enables communication between containers, and between containers and external resources.<br><br>Moby&amp;#39;s networking implementation allows for creating and using many networks, each with their own subnet and gateway. This feature is frequently referred to as custom networks, as each network can have a different driver, set of parameters, and thus behaviors. When creating a network, the `--internal` flag is used to designate a network as _internal_. The `internal` attribute in a docker-compose.yml file may also be used to mark a network _internal_, and other API clients may specify the `internal` parameter as well.<br><br>When containers with networking are created, they are assigned unique network interfaces and IP addresses (typically from a non-routable [RFC 1918](https://datatracker.ietf.org/doc/html/rfc1918) subnet). The root network namespace (hereafter referred to as the &amp;#39;host&amp;#39;) serves as a router for non-internal networks, with a gateway IP that provides SNAT/DNAT to/from container IPs.<br><br>Containers on an _internal_ network may communicate between each other, but are precluded from communicating with any networks the host has access to (LAN or WAN) as no default route is configured, and firewall rules are set up to drop all outgoing traffic. Communication with the gateway IP address (and thus appropriately configured host services) is possible, and the host may communicate with any container IP directly.<br><br>In addition to configuring the Linux kernel&amp;#39;s various networking features to enable container networking, `dockerd` directly provides some services to container networks. Principal among these is serving as a resolver, enabling service discovery (looking up other containers on the network by name), and resolution of names from an upstream resolver.<br><br>When a DNS request for a name that does not correspond to a container is received, the request is forwarded to the configured upstream resolver (by default, the host&amp;#39;s configured resolver). This request is made from the container network namespace: the level of access and routing of traffic is the same as if the request was made by the container itself.<br><br>As a consequence of this design, containers solely attached to _internal_ network(s) will be unable to resolve names using the upstream resolver, as the container itself is unable to communicate with that nameserver. Only the names of containers also attached to the internal network are able to be resolved.<br><br>Many systems will run a local forwarding DNS resolver, typically present on a loopback address (`127.0.0.0/8`), such as systemd-resolved or dnsmasq. Common loopback address examples include `127.0.0.1` or `127.0.0.53`. As the host and any containers have separate loopback devices, a consequence of the design described above is that containers are unable to resolve names from the host&amp;#39;s configured resolver, as they cannot reach these addresses on the host loopback device.<br><br>To bridge this gap, and to allow containers to properly resolve names even when a local forwarding resolver is used on a loopback address, `dockerd` will detect this scenario and instead forward DNS requests from the host/root network namespace. The loopback resolver will then forward the requests to its configured upstream resolvers, as expected.<br><br>## Impact<br><br>Because `dockerd` will forward DNS requests to the host loopback device, bypassing the container network namespace&amp;#39;s normal routing semantics entirely, _internal_ networks can unexpectedly forward DNS requests to an external nameserver.<br><br>By registering a domain for which they control the authoritative nameservers, an attacker could arrange for a compromised container to exfiltrate data by encoding it in DNS queries that will eventually be answered by their nameservers. For example, if the domain `evil.example` was registered, the authoritative nameserver(s) for that domain could (eventually and indirectly) receive a request for `this-is-a-secret.evil.example`.<br><br>Docker Desktop is not affected, as Docker Desktop always runs an internal resolver on a RFC 1918 address.<br><br>## Patches<br><br>Moby releases 26.0.0-rc3, 25.0.5 (released) and 23.0.11 (to be released) are patched to prevent forwarding DNS requests from internal networks.<br><br>## Workarounds<br><br>  Run containers intended to be solely attached to _internal_ networks with a custom upstream address (`--dns` argument to `docker run`, or API equivalent), which will force all upstream DNS queries to be resolved from the container network namespace.<br><br>## Background<br><br>yair zak originally reported this issue to the Docker security team.<br><span class="vuln-link"> PR &amp;amp;lt;https://github.com/moby/moby/pull/46609&amp;amp;gt; was opened in public to fix this issue, as it was not originally considered to have a security implication.</span><br><span class="vuln-link">[The official documentation](https://docs.docker.com/network/drivers/ipvlan/#:~:text=If%20the%20parent,the%20network%20completely) claims that &amp;amp;quot;the `--internal` flag that will completely isolate containers on a network from any communications external to that network,&amp;amp;quot; which necessitated this advisory and CVE.</span><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-29018<br>GO-2024-2659<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/moby/moby/security/advisories/GHSA-mq39-4gv4-mvpx</span><br><span class="vuln-link">https://github.com/moby/moby/pull/46609</span><br><span class="vuln-link">https://github.com/moby/moby</span><br><br><div class="section-header">影响范围: </div><br>github.com/docker/docker: &gt;= 26.0.0-rc1 &lt; 26.0.0-rc3 <br>github.com/docker/docker: &gt;= 25.0.0 &lt; 25.0.5 <br>github.com/docker/docker: 所有版本 &lt; 23.0.11 <br><br><br><div class="cve-header">来自 CVE-2024-29018 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3005 / GHSA-v23v-6jw2-98fq</td>
+                            <td>Moby authz zero length regression in github.com/moby/moby<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-41110<br>GHSA-v23v-6jw2-98fq<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-41110</span><br><span class="vuln-link">https://github.com/moby/moby/commit/411e817ddf710ff8e08fa193da80cb78af708191</span><br><span class="vuln-link">https://github.com/moby/moby/commit/42f40b1d6dd7562342f832b9cd2adf9e668eeb76</span><br><span class="vuln-link">https://github.com/moby/moby/commit/65cc597cea28cdc25bea3b8a86384b4251872919</span><br><span class="vuln-link">https://github.com/moby/moby/commit/852759a7df454cbf88db4e954c919becd48faa9b</span><br><span class="vuln-link">https://github.com/moby/moby/commit/a31260625655cff9ae226b51757915e275e304b0</span><br><span class="vuln-link">https://github.com/moby/moby/commit/a79fabbfe84117696a19671f4aa88b82d0f64fc1</span><br><span class="vuln-link">https://github.com/moby/moby/commit/ae160b4edddb72ef4bd71f66b975a1a1cc434f00</span><br><span class="vuln-link">https://github.com/moby/moby/commit/ae2b3666c517c96cbc2adf1af5591a6b00d4ec0f</span><br><span class="vuln-link">https://github.com/moby/moby/commit/cc13f952511154a2866bddbb7dddebfe9e83b801</span><br><span class="vuln-link">https://github.com/moby/moby/commit/fc274cd2ff4cf3b48c91697fb327dd1fb95588fb</span><br><span class="vuln-link">https://github.com/moby/moby/security/advisories/GHSA-v23v-6jw2-98fq</span><br><span class="vuln-link">https://www.docker.com/blog/docker-security-advisory-docker-engine-authz-plugin</span><br><br><div class="section-header">影响范围: </div><br>github.com/moby/moby: &gt;= 20.10.0+incompatible &lt; 25.0.6+incompatible &gt;= 26.0.0+incompatible &lt; 26.1.5+incompatible &gt;= 27.0.0+incompatible &lt; 27.1.1+incompatible <br>github.com/docker/docker: &gt;= 20.10.0+incompatible &lt; 25.0.6+incompatible &gt;= 26.0.0+incompatible &lt; 26.1.5+incompatible &gt;= 27.0.0+incompatible &lt; 27.1.1+incompatible <br><br><br><div class="cve-header">来自 CVE-2024-41110 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2512 / GHSA-xw73-rw38-6vjc</td>
+                            <td>Classic builder cache poisoning in github.com/docker/docker<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-24557<br>GHSA-xw73-rw38-6vjc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/moby/moby/security/advisories/GHSA-xw73-rw38-6vjc</span><br><span class="vuln-link">https://github.com/moby/moby/commit/3e230cfdcc989dc524882f6579f9e0dac77400ae</span><br><span class="vuln-link">https://github.com/moby/moby/commit/fca702de7f71362c8d103073c7e4a1d0a467fadd</span><br><span class="vuln-link">https://github.com/moby/moby/commit/fce6e0ca9bc000888de3daa157af14fa41fcd0ff</span><br><br><div class="section-header">影响范围: </div><br>github.com/docker/docker: 所有版本 &lt; 24.0.9+incompatible &gt;= 25.0.0+incompatible &lt; 25.0.2+incompatible <br>github.com/moby/moby: 所有版本 &lt; 24.0.9+incompatible &gt;= 25.0.0+incompatible &lt; 25.0.2+incompatible <br><br><br><div class="cve-header">来自 CVE-2024-24557 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3367 / GHSA-r9px-m959-cxf4</td>
+                            <td>Clients vulnerable to DoS via maliciously crafted Git server replies in github.com/go-git/go-git<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-21614<br>GHSA-r9px-m959-cxf4<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/go-git/go-git/security/advisories/GHSA-r9px-m959-cxf4</span><br><br><div class="section-header">影响范围: </div><br>github.com/go-git/go-git/v4: &gt;= 4.0.0 <br>github.com/go-git/go-git/v5: 所有版本 &lt; 5.13.0 <br>gopkg.in/src-d/go-git.v4: &gt;= 4.0.0 <br><br><br><div class="cve-header">来自 CVE-2025-21614 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3368 / GHSA-v725-9546-7q7m</td>
+                            <td>Argument Injection via the URL field in github.com/go-git/go-git<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-21613<br>GHSA-v725-9546-7q7m<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/go-git/go-git/security/advisories/GHSA-v725-9546-7q7m</span><br><br><div class="section-header">影响范围: </div><br>github.com/go-git/go-git/v5: 所有版本 &lt; 5.13.0 <br>github.com/go-git/go-git/v4: &gt;= 4.0.0 <br>gopkg.in/src-d/go-git.v4: &gt;= 4.0.0 <br><br><br><div class="cve-header">来自 CVE-2025-21613 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</td>
+                            <td>An attacker could send a JWE containing compressed data that used large amounts of memory and CPU when decompressed by Decrypt or DecryptMulti.<br><br><div class="section-header">相关漏洞ID: </div><br>CGA-9vf9-m4f8-6392<br>CGA-9vg5-h493-cxr7<br>CGA-chh8-vhg4-2qj7<br>CGA-g5hx-8r47-pf39<br>CGA-hmfp-f3v3-528v<br>CGA-hrqx-74pg-5m88<br>CGA-m474-c57g-8945<br>CGA-r356-23m2-5p37<br>CGA-v3wf-pwmr-vcw5<br>CGA-w52c-j6q8-cf23<br>CGA-w7jq-8v28-882j<br>CVE-2024-28180<br>GHSA-c5q2-7r4c-mv6g<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/go-jose/go-jose/security/advisories/GHSA-c5q2-7r4c-mv6g</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/0dd4dd541c665fb292d664f77604ba694726f298</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/add6a284ea0f844fd6628cba637be5451fe4b28a</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/f4c051a0653d78199a053892f7619ebf96339502</span><br><br><div class="section-header">影响范围: </div><br>github.com/go-jose/go-jose/v4: 所有版本 &lt; 4.0.1 <br>github.com/go-jose/go-jose/v3: 所有版本 &lt; 3.0.3 <br>gopkg.in/go-jose/go-jose.v2: 所有版本 &lt; 2.6.3 <br>gopkg.in/square/go-jose.v2: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2024-28180 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3485 / GHSA-c6gw-w398-hv78</td>
+                            <td>DoS in go-jose Parsing in github.com/go-jose/go-jose<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27144<br>GHSA-c6gw-w398-hv78<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/go-jose/go-jose/security/advisories/GHSA-c6gw-w398-hv78</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/99b346cec4e86d102284642c5dcbe9bb0cacfc22</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/releases/tag/v4.0.5</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围: </div><br>github.com/go-jose/go-jose: 所有版本 <br>github.com/go-jose/go-jose/v3: 所有版本 &lt; 3.0.4 <br>github.com/go-jose/go-jose/v4: 所有版本 &lt; 4.0.5 <br>github.com/square/go-jose: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2025-27144 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3553 / GHSA-mh63-6h87-95cp</td>
+                            <td>Excessive memory allocation during header parsing in github.com/golang-jwt/jwt<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-30204<br>GHSA-mh63-6h87-95cp<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/golang-jwt/jwt/security/advisories/GHSA-mh63-6h87-95cp</span><br><span class="vuln-link">https://github.com/golang-jwt/jwt/commit/0951d184286dece21f73c85673fd308786ffe9c3</span><br><br><div class="section-header">影响范围: </div><br>github.com/golang-jwt/jwt: 所有版本 <br>github.com/golang-jwt/jwt/v4: 所有版本 &lt; 4.5.2 <br>github.com/golang-jwt/jwt/v5: &gt;= 5.0.0-rc.1 &lt; 5.2.2 <br><br><br><div class="cve-header">来自 CVE-2025-30204 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3488</td>
+                            <td>An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22868<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/oauth2: 所有版本 &lt; 0.27.0 <br><br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3522 / GHSA-vv39-3w5q-974q</td>
+                            <td>Kubernetes allows Command Injection affecting Windows nodes via nodes/*/logs/query API in k8s.io/kubernetes<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-9042<br>GHSA-vv39-3w5q-974q<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/advisories/GHSA-vv39-3w5q-974q</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-9042</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/01/16/1</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/commit/45f4ccc2153bbb782253704cbe24c05e22b5d60c</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/commit/5fe148234f8ab1184f26069c4f7bef6c37efe347</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/commit/75c83a6871dc030675288c6d63c275a43c2f0d55</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/commit/fb0187c2bf7061258bb89891edb1237261eb7abc</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/issues/129654</span><br><span class="vuln-link">https://groups.google.com/g/kubernetes-security-announce/c/9C3vn6aCSVg</span><br><br><div class="section-header">影响范围: </div><br>k8s.io/kubernetes: 所有版本 &lt; 1.29.13 &gt;= 1.30.0-alpha.0 &lt; 1.30.9 &gt;= 1.31.0-alpha.0 &lt; 1.31.5 &gt;= 1.32.0-alpha.0 &lt; 1.32.1 <br><br><br><div class="cve-header">来自 CVE-2024-9042 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3465 / GHSA-jgfp-53c3-624w</td>
+                            <td>Node Denial of Service via kubelet Checkpoint API in k8s.io/kubernetes<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-0426<br>GHSA-jgfp-53c3-624w<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/advisories/GHSA-jgfp-53c3-624w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-0426</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/02/13/1</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/issues/130016</span><br><span class="vuln-link">https://groups.google.com/g/kubernetes-security-announce/c/KiODfu8i6w8</span><br><br><div class="section-header">影响范围: </div><br>k8s.io/kubernetes: 所有版本 &lt; 1.29.14 &gt;= 1.30.0 &lt; 1.30.10 &gt;= 1.31.0 &lt; 1.31.6 &gt;= 1.32.0 &lt; 1.32.2 <br><br><br><div class="cve-header">来自 CVE-2025-0426 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3521 / GHSA-3wgm-2gw2-vh5m</td>
+                            <td>Kubernetes GitRepo Volume Inadvertent Local Repository Access in k8s.io/kubernetes<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-1767<br>GHSA-3wgm-2gw2-vh5m<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/advisories/GHSA-3wgm-2gw2-vh5m</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-1767</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/13/9</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/pull/130786</span><br><span class="vuln-link">https://groups.google.com/g/kubernetes-security-announce/c/19irihsKg7s</span><br><br><div class="section-header">影响范围: </div><br>k8s.io/kubernetes: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2025-1767 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3547</td>
+                            <td>Kubernetes kube-apiserver Vulnerable to Race Condition in k8s.io/kubernetes<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-7598<br>GHSA-r56h-j38w-hrqq<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/advisories/GHSA-r56h-j38w-hrqq</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-7598</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/20/2</span><br><span class="vuln-link">https://github.com/kubernetes/kubernetes/issues/126587</span><br><span class="vuln-link">https://groups.google.com/g/kubernetes-security-announce/c/67D7UFqiPRc</span><br><br><div class="section-header">影响范围: </div><br>k8s.io/kubernetes: &gt;= 1.3.0 <br><br><br><div class="cve-header">来自 CVE-2024-7598 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3171 / GHSA-mc76-5925-c5p6</td>
+                            <td>Link Following in github.com/containers/common<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-9341<br>GHSA-mc76-5925-c5p6<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/advisories/GHSA-mc76-5925-c5p6</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-9341</span><br><span class="vuln-link">https://github.com/containers/common/commit/e7db06585c32e1a782c1d9aa3b71ccd708f5e23f</span><br><span class="vuln-link">https://access.redhat.com/security/cve/CVE-2024-9341</span><br><span class="vuln-link">https://bugzilla.redhat.com/show_bug.cgi?id=2315691</span><br><span class="vuln-link">https://github.com/containers/common/blob/384f77532f67afc8a73d8e0c4adb0d195df57714/pkg/subscriptions/subscriptions.go#L169</span><br><span class="vuln-link">https://github.com/containers/common/blob/384f77532f67afc8a73d8e0c4adb0d195df57714/pkg/subscriptions/subscriptions.go#L349</span><br><br><div class="section-header">影响范围: </div><br>github.com/containers/common: 所有版本 &lt; 0.60.4 <br><br><br><div class="cve-header">来自 CVE-2024-9341 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3110 / GHSA-jfvp-7x6p-h2pv</td>
+                            <td>runc can be confused to create empty files/directories on the host in github.com/opencontainers/runc<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45310<br>GHSA-jfvp-7x6p-h2pv<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/opencontainers/runc/security/advisories/GHSA-jfvp-7x6p-h2pv</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45310</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/63c2908164f3a1daea455bf5bcd8d363d70328c7</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/8781993968fd964ac723ff5f360b6f259e809a3e</span><br><span class="vuln-link">https://github.com/opencontainers/runc/commit/f0b652ea61ff6750a8fcc69865d45a7abf37accf</span><br><span class="vuln-link">https://github.com/opencontainers/runc/pull/4359</span><br><br><div class="section-header">影响范围: </div><br>github.com/opencontainers/runc: 所有版本 &lt; 1.1.14 &gt;= 1.2.0-rc.1 &lt; 1.2.0-rc.3 <br><br><br><div class="cve-header">来自 CVE-2024-45310 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc</td>
+                            <td>Applications and libraries which misuse connection.serverAuthenticate (via callback field ServerConfig.PublicKeyCallback) may be susceptible to an authorization bypass.<br><br>The documentation for ServerConfig.PublicKeyCallback says that &amp;quot;A call to this function does not guarantee that the key offered is in fact used to authenticate.&amp;quot; Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallback may be called with multiple keys, and the order in which the keys were provided cannot be used to infer which key the client successfully authenticated with, if any. Some applications, which store the key(s) passed to PublicKeyCallback (or derived information) and make security relevant determinations based on it once the connection is established, may make incorrect assumptions.<br><br>For example, an attacker may send public keys A and B, and then authenticate with A. PublicKeyCallback would be called only twice, first with A and then with B. A vulnerable application may then make authorization decisions based on key B for which the attacker does not actually control the private key.<br><br>Since this API is widely misused, as a partial mitigation golang.org/x/cry...@v0.31.0 enforces the property that, when successfully authenticating via public key, the last key passed to ServerConfig.PublicKeyCallback will be the key used to authenticate the connection. PublicKeyCallback will now be called multiple times with the same key, if necessary. Note that the client may still not control the last key passed to PublicKeyCallback if the connection is then authenticated with a different method, such as PasswordCallback, KeyboardInteractiveCallback, or NoClientAuth.<br><br>Users should be using the Extensions field of the Permissions return value from the various authentication callbacks to record data associated with the authentication attempt instead of referencing external state. Once the connection is established the state corresponding to the successful authentication attempt can be retrieved via the ServerConn.Permissions field. Note that some third-party libraries misuse the Permissions type by sharing it across authentication attempts; users of third-party libraries should refer to the relevant projects for guidance.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45337<br>GHSA-v778-237x-gjrc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</span><br><span class="vuln-link">https://go.dev/cl/635315</span><br><span class="vuln-link">https://go.dev/issue/70779</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/crypto: 所有版本 &lt; 0.31.0 <br><br><br><div class="cve-header">来自 CVE-2024-45337 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3487</td>
+                            <td>SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22869<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/crypto: 所有版本 &lt; 0.35.0 <br><br><br><div class="cve-header">来自 CVE-2025-22869 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3333</td>
+                            <td>An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45338<br>GHSA-w32m-9786-jp63<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/637536</span><br><span class="vuln-link">https://go.dev/issue/70906</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.33.0 <br><br><br><div class="cve-header">来自 CVE-2024-45338 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</td>
+                            <td>Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &amp;quot;*.example.com&amp;quot;, a request to &amp;quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22870<br>GHSA-qxp5-gwg8-xv66<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.36.0 <br><br><br><div class="cve-header">来自 CVE-2025-22870 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-h4gh-qq45-vh27</td>
+                            <td>pyca/cryptography&amp;#39;s wheels include a statically linked copy of OpenSSL. The versions of OpenSSL included in cryptography 37.0.0-43.0.0 are vulnerable to a security issue. More details about the vulnerability itself can be found in https://openssl-library.org/news/secadv/20240903.txt.<br><br>If you are building cryptography source (&amp;quot;sdist&amp;quot;) then you are responsible for upgrading your copy of OpenSSL. Only users installing from wheels built by the cryptography project (i.e., those distributed on PyPI) need to update their cryptography versions.<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pyca/cryptography/security/advisories/GHSA-h4gh-qq45-vh27</span><br><span class="vuln-link">https://github.com/pyca/cryptography</span><br><span class="vuln-link">https://openssl-library.org/news/secadv/20240903.txt</span><br><br><div class="section-header">影响范围: </div><br>cryptography: &gt;= 37.0.0 &lt; 43.0.1 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2019-217 / GHSA-462w-v97r-4m45</td>
+                            <td>In Pallets Jinja before 2.10.1, str.format_map allows a sandbox escape.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2019-10906<br>GHSA-462w-v97r-4m45<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://palletsprojects.com/blog/jinja-2-10-1-released</span><br><span class="vuln-link">https://lists.apache.org/thread.html/b2380d147b508bbcb90d2cad443c159e63e12555966ab4f320ee22da@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/46c055e173b52d599c648a98199972dbd6a89d2b4c4647b0500f2284@%3Cdevnull.infra.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/f0c4a03418bcfe70c539c5dbaf99c04c98da13bfa1d3266f08564316@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/7f39f01392d320dfb48e4901db68daeece62fd60ef20955966739993@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/57673a78c4d5c870d3f21465c7e2946b9f8285c7c57e54c2ae552f02@%3Ccommits.airflow.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/320441dccbd9a545320f5f07306d711d4bbd31ba43dc9eebcfc602df@%3Cdevnull.infra.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/2b52b9c8b9d6366a4f1b407a8bde6af28d9fc73fdb3b37695fd0d9ac@%3Cdevnull.infra.apache.org%3E</span><br><span class="vuln-link">https://lists.apache.org/thread.html/09fc842ff444cd43d9d4c510756fec625ef8eb1175f14fd21de2605f@%3Cdevnull.infra.apache.org%3E</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QCDYIS254EJMBNWOG4S5QY6AOTOR4TZU/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/DSW3QZMFVVR7YE3UT4YRQA272TYAL5AF/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TS7IVZAJBWOHNRDMFJDIZVFCMRP6YIUQ/</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2019:1152</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-05/msg00030.html</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2019:1237</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2019:1329</span><br><span class="vuln-link">https://usn.ubuntu.com/4011-1/</span><br><span class="vuln-link">https://usn.ubuntu.com/4011-2/</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-security-announce/2019-06/msg00064.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-462w-v97r-4m45</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 2.10.1 <br><br><br><div class="cve-header">来自 CVE-2019-10906 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-cpwx-vrp4-4pq7</td>
+                            <td>An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to execute arbitrary Python code.<br><br>To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.<br><br>Jinja&amp;#39;s sandbox does catch calls to `str.format` and ensures they don&amp;#39;t escape the sandbox. However, it&amp;#39;s possible to use the `|attr` filter to get a reference to a string&amp;#39;s plain format method, bypassing the sandbox. After the fix, the `|attr` filter no longer bypasses the environment&amp;#39;s attribute lookup.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27516<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27516</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.6 <br><br><br><div class="cve-header">来自 CVE-2025-27516 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-66 / GHSA-g3rq-g295-4j3m</td>
+                            <td>This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDoS vulnerability is mainly due to the `_punctuation_re regex` operator and its use of multiple wildcards. The last wildcard is the most exploitable as it searches for trailing punctuation. This issue can be mitigated by Markdown to format user content instead of the urlize filter, or by implementing request timeouts and limiting process memory.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2020-28493<br>GHSA-g3rq-g295-4j3m<br>SNYK-PYTHON-JINJA2-1012994<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/blob/ab81fd9c277900c85da0c322a2ff9d68a235b2e6/src/jinja2/utils.py%23L20</span><br><span class="vuln-link">https://github.com/pallets/jinja/pull/1343</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-PYTHON-JINJA2-1012994</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PVAKCOO7VBVUBM3Q6CBBTPBFNP5NDXF4/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-g3rq-g295-4j3m</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 2.11.3 <br><br><br><div class="cve-header">来自 CVE-2020-28493 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-h5c8-rqwp-cp95</td>
+                            <td>The `xmlattr` filter in affected versions of Jinja accepts keys containing spaces. XML/HTML attributes cannot contain spaces, as each would then be interpreted as a separate attribute. If an application accepts keys (as opposed to only values) as user input, and renders these in pages that other users see as well, an attacker could use this to inject other attributes and perform XSS. Note that accepting keys as user input is not common or a particularly intended use case of the `xmlattr` filter, and an application doing so should already be verifying what keys are provided regardless of this fix.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-22195<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-h5c8-rqwp-cp95</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-22195</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/716795349a41d4983a9a4771f7d883c96ea17be7</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.3</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/01/msg00010.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/5XCWZD464AJJJUBOO7CMPXQ4ROBC6JX2</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/DELCVUUYX75I5K4Q5WMJG4MUZJA6VAIP</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/O7YWRBX6JQCWC2XXCTZ55C7DPMGICCN3</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.3 <br><br><br><div class="cve-header">来自 CVE-2024-22195 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-h75v-3vvj-5mfj</td>
+                            <td>The `xmlattr` filter in affected versions of Jinja accepts keys containing non-attribute characters. XML/HTML attributes cannot contain spaces, `/`, `&amp;gt;`, or `=`, as each would then be interpreted as starting a separate attribute. If an application accepts keys (as opposed to only values) as user input, and renders these in pages that other users see as well, an attacker could use this to inject other attributes and perform XSS. The fix for the previous GHSA-h5c8-rqwp-cp95 CVE-2024-22195 only addressed spaces but not other characters.<br><br>Accepting keys as user input is now explicitly considered an unintended use case of the `xmlattr` filter, and code that does so without otherwise validating the input should be flagged as insecure, regardless of Jinja version. Accepting _values_ as user input continues to be safe.<br><br><div class="section-header">相关漏洞ID: </div><br>CGA-g5xx-83xq-8g5j<br>CVE-2024-34064<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-h75v-3vvj-5mfj</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-34064</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/0668239dc6b44ef38e7a6c9f91f312fd4ca581cb</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/567XIGSZMABG6TSMYWD7MIYNJSUQQRUC</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/GCLF44KY43BSVMTE6S53B4V5WP3FRRSE</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/SSCBHIL6BYKR5NRCBXP4XMP2CEEKGFVS</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZALNWE3TXPPHVPSI3AZ5CTMSTAVN5UMS</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.4 <br><br><br><div class="cve-header">来自 CVE-2024-34064 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-q2x7-8rv6-6q7h</td>
+                            <td>An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execute arbitrary Python code.<br><br>To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.<br><br>Jinja&amp;#39;s sandbox does catch calls to `str.format` and ensures they don&amp;#39;t escape the sandbox. However, it&amp;#39;s possible to store a reference to a malicious string&amp;#39;s `format` method, then pass that to a filter that calls it. No such filters are built-in to Jinja, but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-56326<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56326</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">影响范围: </div><br>jinja2: 所有版本 &lt; 3.1.5 <br><br><br><div class="cve-header">来自 CVE-2024-56326 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56</td>
+                            <td>When making requests through a Requests `Session`, if the first request is made with `verify=False` to disable cert verification, all subsequent requests to the same origin will continue to ignore cert verification regardless of changes to the value of `verify`. This behavior will continue for the lifecycle of the connection in the connection pool.<br><br>### Remediation<br>Any of these options can be used to remediate the current issue, we highly recommend upgrading as the preferred mitigation.<br><br>* Upgrade to `requests&amp;gt;=2.32.0`.<br>* For `requests&amp;lt;2.32.0`, avoid setting `verify=False` for the first request to a host while using a Requests Session.<br>* For `requests&amp;lt;2.32.0`, call `close()` on `Session` objects to clear existing connections if `verify=False` is used.<br><br>### Related Links<br>* https://github.com/psf/requests/pull/6655<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-35195<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/psf/requests/security/advisories/GHSA-9wx4-h78v-vm56</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-35195</span><br><span class="vuln-link">https://github.com/psf/requests/pull/6655</span><br><span class="vuln-link">https://github.com/psf/requests/commit/a58d7f2ffb4d00b46dca2d70a3932a0b37e22fac</span><br><span class="vuln-link">https://github.com/psf/requests</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/IYLSNK5TL46Q6XPRVMHVWS63MVJQOK4Q</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/N7WP6EYDSUOCOJYHDK5NX43PYZ4SNHGZ</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 2.32.0 <br><br><br><div class="cve-header">来自 CVE-2024-35195 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-f9vj-2wh5-fj8j</td>
+                            <td>On Python &amp;lt; 3.11 on Windows, `os.path.isabs()` does not catch UNC paths like `//server/share`. Werkzeug&amp;#39;s `safe_join()` relies on this check, and so can produce a path that is not safe, potentially allowing unintended access to data. Applications using Python &amp;gt;= 3.11, or not using Windows, are not vulnerable.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-49766<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-f9vj-2wh5-fj8j</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-49766</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/2767bcb10a7dd1c297d812cc5e6d11a474c1f092</span><br><span class="vuln-link">https://github.com/pallets/werkzeug</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/releases/tag/3.0.6</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250131-0005</span><br><br><div class="section-header">影响范围: </div><br>werkzeug: 所有版本 &lt; 3.0.6 <br><br><br><div class="cve-header">来自 CVE-2024-49766 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-q34m-jh98-gwm2</td>
+                            <td>Applications using Werkzeug to parse `multipart/form-data` requests are vulnerable to resource exhaustion. A specially crafted form body can bypass the `Request.max_form_memory_size` setting.<br><br><br>The `Request.max_content_length` setting, as well as resource limits provided by deployment software and platforms, are also available to limit the resources used during a request. This vulnerability does not affect those settings. All three types of limits should be considered and set appropriately when deploying an application.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-49767<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/werkzeug/security/advisories/GHSA-q34m-jh98-gwm2</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-49767</span><br><span class="vuln-link">https://github.com/pallets/quart/commit/5e78c4169b8eb66b91ead3e62d44721b9e1644ee</span><br><span class="vuln-link">https://github.com/pallets/quart/commit/abb04a512496206de279225340ed022852fbf51f</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/commit/50cfeebcb0727e18cc52ffbeb125f4a66551179b</span><br><span class="vuln-link">https://github.com/pallets/werkzeug</span><br><span class="vuln-link">https://github.com/pallets/werkzeug/releases/tag/3.0.6</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250103-0007</span><br><br><div class="section-header">影响范围: </div><br>werkzeug: 所有版本 &lt; 3.0.6 <br>quart: 所有版本 &lt; 0.20.0 <br><br><br><div class="cve-header">来自 CVE-2024-49767 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-gmj6-6f8f-6699</td>
+                            <td>A bug in the Jinja compiler allows an attacker that controls both the content and filename of a template to execute arbitrary Python code, regardless of if Jinja&amp;#39;s sandbox is used.<br><br>To exploit the vulnerability, an attacker needs to control both the filename and the contents of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates where the template author can also choose the template filename.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-56201<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-56201</span><br><span class="vuln-link">https://github.com/pallets/jinja/issues/1792</span><br><span class="vuln-link">https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f</span><br><span class="vuln-link">https://github.com/pallets/jinja</span><br><span class="vuln-link">https://github.com/pallets/jinja/releases/tag/3.1.5</span><br><br><div class="section-header">影响范围: </div><br>jinja2: &gt;= 3.0.0 &lt; 3.1.5 <br><br><br><div class="cve-header">来自 CVE-2024-56201 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (4)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/k3s-io/api</td><td>v0.1.0</td><td>Apache-2.0</td></tr><tr><td>k8s.io/controller-manager</td><td>v0.0.0</td><td>Apache-2.0</td></tr><tr><td>github.com/kubereboot/kured</td><td>v1.13.1</td><td>Apache-2.0</td></tr><tr><td>cel.dev/expr</td><td>v0.19.0</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (7)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>modernc.org/token</td><td>v1.1.0</td><td>Apache-2.0</td></tr><tr><td>modernc.org/gc/v3</td><td>v3.0.0-20240107210532-573471604cb6</td><td>Apache-2.0</td></tr><tr><td>github.com/hashicorp/golang-lru/v2</td><td>v2.0.7</td><td>Apache-2.0</td></tr><tr><td>go.starlark.net</td><td>v0.0.0-20230525235612-a134d8f9ddca</td><td>Apache-2.0</td></tr><tr><td>k8s.io/klog</td><td>v1.0.0</td><td>Apache-2.0</td></tr><tr><td>modernc.org/strutil</td><td>v1.2.0</td><td>Apache-2.0</td></tr><tr><td>github.com/imdario/mergo</td><td>v0.3.16</td><td>Apache-2.0</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (101)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>k8s.io/kubectl</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>k8s.io/gengo/v2</td><td>v2.0.0-20240228010128-51d4e06bde70</td><td>v2.0.0-20240911193312-2b36238f13e9</td><td>一般变更</td></tr><tr><td>github.com/moby/spdystream</td><td>v0.4.0</td><td>v0.5.0</td><td>次版本</td></tr><tr><td>go.etcd.io/etcd/client/v3</td><td>v3.5.15</td><td>v3.5.17</td><td>补丁版本</td></tr><tr><td>k8s.io/cli-runtime</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/google/gnostic-models</td><td>v0.6.8</td><td>v0.6.9</td><td>补丁版本</td></tr><tr><td>github.com/golang-jwt/jwt/v4</td><td>v4.5.0</td><td>v4.5.1</td><td>补丁版本</td></tr><tr><td>github.com/rancher/apiserver</td><td>v0.0.0-20241009200134-5a4ecca7b988</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>k8s.io/component-base</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.13.0</td><td>v2.14.1</td><td>次版本</td></tr><tr><td>sigs.k8s.io/controller-runtime</td><td>v0.19.4</td><td>v0.19.6</td><td>补丁版本</td></tr><tr><td>k8s.io/kubernetes</td><td>v1.31.1</td><td>v1.32.1</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/credentials</td><td>v1.17.51</td><td>v1.17.61</td><td>补丁版本</td></tr><tr><td>k8s.io/code-generator</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/presigned-url</td><td>v1.12.8</td><td>v1.12.15</td><td>补丁版本</td></tr><tr><td>k8s.io/pod-security-admission</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.8</td><td>v0.1.9</td><td>补丁版本</td></tr><tr><td>github.com/cpuguy83/go-md2man/v2</td><td>v2.0.4</td><td>v2.0.5</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.29.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>sigs.k8s.io/kustomize/kyaml</td><td>v0.17.1</td><td>v0.18.1</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20240930140551-af27646dc61f</td><td>v0.0.0-20241209162323-e6fa225c2576</td><td>一般变更</td></tr><tr><td>github.com/prometheus/client_golang</td><td>v1.19.1</td><td>v1.20.5</td><td>次版本</td></tr><tr><td>github.com/evanphx/json-patch</td><td>v5.9.0+incompatible</td><td>v5.9.11+incompatible</td><td>一般变更</td></tr><tr><td>modernc.org/memory</td><td>v1.8.0</td><td>v1.8.2</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/configsources</td><td>v1.3.28</td><td>v1.3.34</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>v0.2.4</td><td>v0.2.7</td><td>补丁版本</td></tr><tr><td>github.com/rancher/norman</td><td>v0.0.0-20241001183610-78a520c160ab</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/rancher/rke</td><td>v1.7.0-rc.5</td><td>v1.8.0-rc.4</td><td>次版本</td></tr><tr><td>github.com/jonboulle/clockwork</td><td>v0.3.0</td><td>v0.4.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/auth</td><td>v0.9.8</td><td>v0.14.1</td><td>次版本</td></tr><tr><td>go.etcd.io/etcd/api/v3</td><td>v3.5.15</td><td>v3.5.17</td><td>补丁版本</td></tr><tr><td>github.com/rogpeppe/go-internal</td><td>v1.12.0</td><td>v1.13.1</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>v0.54.0</td><td>v0.58.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/endpoints/v2</td><td>v2.6.28</td><td>v2.6.34</td><td>补丁版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.23.0</td><td>v0.26.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/internal/ini</td><td>v1.8.1</td><td>v1.8.3</td><td>补丁版本</td></tr><tr><td>k8s.io/cluster-bootstrap</td><td>v0.30.3</td><td>v0.31.3</td><td>次版本</td></tr><tr><td>k8s.io/apiserver</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/gofrs/flock</td><td>v0.8.1</td><td>v0.12.1</td><td>次版本</td></tr><tr><td>github.com/gobuffalo/flect</td><td>v1.0.2</td><td>v1.0.3</td><td>补丁版本</td></tr><tr><td>sigs.k8s.io/cluster-api</td><td>v1.8.3</td><td>v1.9.5</td><td>次版本</td></tr><tr><td>sigs.k8s.io/apiserver-network-proxy/konnectivity-client</td><td>v0.30.3</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/eks</td><td>v1.56.5</td><td>v1.60.1</td><td>次版本</td></tr><tr><td>github.com/rancher/lasso</td><td>v0.0.0-20240924233157-8f384efc8813</td><td>v0.2.1</td><td>次版本</td></tr><tr><td>github.com/aws/smithy-go</td><td>v1.22.1</td><td>v1.22.2</td><td>补丁版本</td></tr><tr><td>k8s.io/api</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azcore</td><td>v1.16.0</td><td>v1.17.0</td><td>次版本</td></tr><tr class='risk-high'><td>golang.org/x/sys</td><td>v0.24.0</td><td>v0.22.0</td><td>⚠️ 版本降级</td></tr><tr><td>modernc.org/libc</td><td>v1.49.3</td><td>v1.61.13</td><td>次版本</td></tr><tr><td>k8s.io/kube-openapi</td><td>v0.0.0-20240228011516-70dd3763d340</td><td>v0.0.0-20241105132330-32ad38e42d3f</td><td>一般变更</td></tr><tr><td>k8s.io/kms</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/ssooidc</td><td>v1.28.8</td><td>v1.29.0</td><td>次版本</td></tr><tr><td>modernc.org/sqlite</td><td>v1.29.10</td><td>v1.36.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sts</td><td>v1.33.6</td><td>v1.33.16</td><td>补丁版本</td></tr><tr><td>github.com/rancher/machine</td><td>v0.15.0-rancher125</td><td>v0.15.0-rancher126</td><td>一般变更</td></tr><tr><td>sigs.k8s.io/structured-merge-diff/v4</td><td>v4.4.1</td><td>v4.4.3</td><td>补丁版本</td></tr><tr><td>k8s.io/utils</td><td>v0.0.0-20240711033017-18e509b52bc8</td><td>v0.0.0-20241104100929-3ea5e8cea738</td><td>一般变更</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding</td><td>v1.12.1</td><td>v1.12.3</td><td>补丁版本</td></tr><tr><td>github.com/adrg/xdg</td><td>v0.5.0</td><td>v0.5.3</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/sso</td><td>v1.24.9</td><td>v1.25.0</td><td>次版本</td></tr><tr><td>github.com/vishvananda/netlink</td><td>v1.2.1-beta.2</td><td>v1.3.1-0.20240905180732-b1ce50cfa9be</td><td>次版本</td></tr><tr><td>github.com/rancher/wrangler/v3</td><td>v3.0.1-rc.2</td><td>v3.2.0-rc.3</td><td>次版本</td></tr><tr><td>sigs.k8s.io/json</td><td>v0.0.0-20221116044647-bc3834ca7abd</td><td>v0.0.0-20241010143419-9aa6b5e7a4b3</td><td>一般变更</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.5.2</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/AzureAD/microsoft-authentication-library-for-go</td><td>v1.2.2</td><td>v1.3.3</td><td>次版本</td></tr><tr><td>google.golang.org/api</td><td>v0.201.0</td><td>v0.221.0</td><td>次版本</td></tr><tr><td>k8s.io/kube-aggregator</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>golang.org/x/mod</td><td>v0.22.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>modernc.org/mathutil</td><td>v1.6.0</td><td>v1.7.1</td><td>次版本</td></tr><tr><td>k8s.io/component-helpers</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/fatih/color</td><td>v1.17.0</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>k8s.io/gengo</td><td>v0.0.0-20240826214909-a7b603a56eb7</td><td>v0.0.0-20250130153323-76c5745d3511</td><td>一般变更</td></tr><tr><td>github.com/rancher/dynamiclistener</td><td>v0.6.1-rc.2</td><td>v0.6.2-rc.3</td><td>补丁版本</td></tr><tr><td>github.com/matryer/moq</td><td>v0.3.4</td><td>v0.5.2</td><td>次版本</td></tr><tr><td>github.com/urfave/cli</td><td>v1.22.15</td><td>v1.22.16</td><td>补丁版本</td></tr><tr><td>github.com/rancher/eks-operator</td><td>v1.11.0-rc.2</td><td>v1.11.0</td><td>一般变更</td></tr><tr><td>go.etcd.io/etcd/client/v2</td><td>v2.305.13</td><td>v2.305.16</td><td>补丁版本</td></tr><tr><td>helm.sh/helm/v3</td><td>v3.16.2</td><td>v3.17.0</td><td>次版本</td></tr><tr><td>github.com/rubenv/sql-migrate</td><td>v1.7.0</td><td>v1.7.1</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2</td><td>v1.33.0</td><td>v1.36.3</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/cloudformation</td><td>v1.56.4</td><td>v1.58.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/ec2</td><td>v1.198.1</td><td>v1.206.0</td><td>次版本</td></tr><tr><td>github.com/rancher/fleet/pkg/apis</td><td>v0.12.0-alpha.2</td><td>v0.12.0</td><td>一般变更</td></tr><tr><td>github.com/rancher/steve</td><td>v0.5.5</td><td>v0.6.1</td><td>次版本</td></tr><tr><td>github.com/Azure/go-autorest/autorest</td><td>v0.11.29</td><td>v0.11.30</td><td>补丁版本</td></tr><tr><td>golang.org/x/time</td><td>v0.7.0</td><td>v0.10.0</td><td>次版本</td></tr><tr><td>golang.org/x/tools</td><td>v0.28.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>sigs.k8s.io/kustomize/api</td><td>v0.17.2</td><td>v0.18.0</td><td>次版本</td></tr><tr><td>github.com/rancher/gke-operator</td><td>v1.10.0</td><td>v1.11.0</td><td>次版本</td></tr><tr><td>k8s.io/apiextensions-apiserver</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/config</td><td>v1.28.10</td><td>v1.29.8</td><td>次版本</td></tr><tr class='risk-high'><td>golang.org/x/text</td><td>v0.17.0</td><td>v0.16.0</td><td>⚠️ 版本降级</td></tr><tr><td>github.com/google/cel-go</td><td>v0.20.1</td><td>v0.22.0</td><td>次版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/service/iam</td><td>v1.38.7</td><td>v1.40.0</td><td>次版本</td></tr><tr><td>github.com/rancher/system-upgrade-controller/pkg/apis</td><td>v0.0.0-20240301001845-4eacc2dabbde</td><td>v0.0.0-20250306000150-b1a9781accab</td><td>一般变更</td></tr><tr><td>go.etcd.io/etcd/client/pkg/v3</td><td>v3.5.15</td><td>v3.5.17</td><td>补丁版本</td></tr><tr><td>github.com/rancher/aks-operator</td><td>v1.10.0</td><td>v1.11.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azidentity</td><td>v1.8.0</td><td>v1.8.2</td><td>补丁版本</td></tr><tr><td>github.com/aws/aws-sdk-go-v2/feature/ec2/imds</td><td>v1.16.23</td><td>v1.16.30</td><td>补丁版本</td></tr><tr><td>github.com/rancher/remotedialer</td><td>v0.4.0</td><td>v0.4.4</td><td>补丁版本</td></tr><tr><td>k8s.io/apimachinery</td><td>v0.31.1</td><td>v0.32.2</td><td>次版本</td></tr>
+                </table>
+                
+                <div class="downgrade-warning">
+                    <p>⚠️ <strong>警告</strong>: 检测到2个包发生版本降级，可能丢失安全修复或引入兼容性问题:</p>
+                    <ul>
+                        <li>golang.org/x/sys</li><li>golang.org/x/text</li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (10)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>k8s.io/kubernetes</td><td>Apache-2.0</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/rancher/norman</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr><tr><td>github.com/rancher/lasso</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr><tr><td>github.com/klauspost/compress</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr><tr><td>k8s.io/kube-openapi</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr><tr><td>github.com/go-openapi/jsonreference</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr><tr><td>github.com/BurntSushi/toml</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr><tr><td>github.com/cyphar/filepath-securejoin</td><td>Apache-2.0</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/containerd/errdefs</td><td>Apache-2.0</td><td>NOASSERTION</td><td>否</td></tr><tr><td>github.com/moby/sys/mountinfo</td><td>NOASSERTION</td><td>Apache-2.0</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (8)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>github.com/golang-jwt/jwt/v4</td>
+                            <td class="vuln-high">GHSA-mh63-6h87-95cp<br>关联CVE: CVE-2025-30204</td>
+                            <td>所有版本 &lt; 4.5.2</td>
+                            <td>jwt-go allows excessive memory allocation during header parsing&lt;br&gt;&lt;br&gt;### Summary
+
+Function [`parse.ParseUnverified`](https://github.com/golang-jwt/jwt/blob/c035977d9e11c351f4c05dfeae193923cbab49ee/parser.go#L138-L139) currently splits (via a call to [strings.Split](https://pkg.go.dev/strings#Split)) its argument (which is untrusted data) on periods.
+
+As a result, in the face of a malicious request whose _Authorization_ header consists of `Bearer ` followed by many period characters, a call to that function incurs allocations to the tune of O(n) bytes (where n stands for the length of the function&#39;s argument), with a constant factor of about 16. Relevant weakness: [CWE-405: Asymmetric Resource Consumption (Amplification)](https://cwe.mitre.org/data/definitions/405.html)
+
+### Details
+
+See [`parse.ParseUnverified`](https://github.com/golang-jwt/jwt/blob/c035977d9e11c351f4c05dfeae193923cbab49ee/parser.go#L138-L139) 
+
+### Impact
+
+Excessive memory allocation<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/golang-jwt/jwt/security/advisories/GHSA-mh63-6h87-95cp' target='_blank' class='vuln-link'>https://github.com/golang-jwt/jwt/security/advisories/GHSA-mh63-6h87-95cp</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-30204' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-30204</a><br><a href='https://github.com/golang-jwt/jwt/commit/0951d184286dece21f73c85673fd308786ffe9c3' target='_blank' class='vuln-link'>https://github.com/golang-jwt/jwt/commit/0951d184286dece21f73c85673fd308786ffe9c3</a><br><a href='https://github.com/golang-jwt/jwt' target='_blank' class='vuln-link'>https://github.com/golang-jwt/jwt</a></div></td>
+                            <td>2025-03-21</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>github.com/golang-jwt/jwt/v4</td>
+                            <td class="vuln-unknown">GO-2025-3553<br>关联CVE: CVE-2025-30204</td>
+                            <td>所有版本 &lt; 4.5.2</td>
+                            <td>Excessive memory allocation during header parsing in github.com/golang-jwt/jwt&lt;br&gt;&lt;br&gt;Excessive memory allocation during header parsing in github.com/golang-jwt/jwt<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/golang-jwt/jwt/security/advisories/GHSA-mh63-6h87-95cp' target='_blank' class='vuln-link'>https://github.com/golang-jwt/jwt/security/advisories/GHSA-mh63-6h87-95cp</a><br><a href='https://github.com/golang-jwt/jwt/commit/0951d184286dece21f73c85673fd308786ffe9c3' target='_blank' class='vuln-link'>https://github.com/golang-jwt/jwt/commit/0951d184286dece21f73c85673fd308786ffe9c3</a></div></td>
+                            <td>2025-03-26</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>k8s.io/kubernetes</td>
+                            <td class="vuln-unknown">GHSA-jgfp-53c3-624w<br>关联CVE: CVE-2025-0426</td>
+                            <td>&gt;= 1.32.0 &lt; 1.32.2&lt;br&gt;&gt;= 1.31.0 &lt; 1.31.6&lt;br&gt;&gt;= 1.30.0 &lt; 1.30.10&lt;br&gt;所有版本 &lt; 1.29.14</td>
+                            <td>Node Denial of Service via kubelet Checkpoint API&lt;br&gt;&lt;br&gt;A security issue was discovered in Kubernetes where a large number of container checkpoint requests made to the unauthenticated kubelet read-only HTTP endpoint may cause a Node Denial of Service by filling the Node&#39;s disk.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-0426' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-0426</a><br><a href='https://github.com/kubernetes/kubernetes/issues/130016' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes/issues/130016</a><br><a href='https://github.com/kubernetes/kubernetes' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes</a><br><a href='https://groups.google.com/g/kubernetes-security-announce/c/KiODfu8i6w8' target='_blank' class='vuln-link'>https://groups.google.com/g/kubernetes-security-announce/c/KiODfu8i6w8</a><br><a href='http://www.openwall.com/lists/oss-security/2025/02/13/1' target='_blank' class='vuln-link'>http://www.openwall.com/lists/oss-security/2025/02/13/1</a></div></td>
+                            <td>2025-02-13</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>k8s.io/kubernetes</td>
+                            <td class="vuln-unknown">GO-2025-3465<br>关联CVE: CVE-2025-0426</td>
+                            <td>所有版本 &lt; 1.29.14 &gt;= 1.30.0 &lt; 1.30.10 &gt;= 1.31.0 &lt; 1.31.6 &gt;= 1.32.0 &lt; 1.32.2</td>
+                            <td>Node Denial of Service via kubelet Checkpoint API in k8s.io/kubernetes&lt;br&gt;&lt;br&gt;Node Denial of Service via kubelet Checkpoint API in k8s.io/kubernetes<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/advisories/GHSA-jgfp-53c3-624w' target='_blank' class='vuln-link'>https://github.com/advisories/GHSA-jgfp-53c3-624w</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-0426' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-0426</a><br><a href='http://www.openwall.com/lists/oss-security/2025/02/13/1' target='_blank' class='vuln-link'>http://www.openwall.com/lists/oss-security/2025/02/13/1</a><br><a href='https://github.com/kubernetes/kubernetes/issues/130016' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes/issues/130016</a><br><a href='https://groups.google.com/g/kubernetes-security-announce/c/KiODfu8i6w8' target='_blank' class='vuln-link'>https://groups.google.com/g/kubernetes-security-announce/c/KiODfu8i6w8</a></div></td>
+                            <td>2025-03-03</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>k8s.io/kubernetes</td>
+                            <td class="vuln-unknown">GHSA-3wgm-2gw2-vh5m<br>关联CVE: CVE-2025-1767</td>
+                            <td>所有版本</td>
+                            <td>Kubernetes GitRepo Volume Inadvertent Local Repository Access&lt;br&gt;&lt;br&gt;A security vulnerability was discovered in Kubernetes that could allow a user with create pod permission to exploit gitRepo volumes to access local git repositories belonging to other pods on the same node. This CVE only affects Kubernetes clusters that utilize the in-tree gitRepo volume to clone git repositories from other pods within the same node. Since the in-tree gitRepo volume feature has been deprecated and will not receive security updates upstream, any cluster still using this feature remains vulnerable.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-1767' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-1767</a><br><a href='https://github.com/kubernetes/kubernetes/pull/130786' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes/pull/130786</a><br><a href='https://github.com/kubernetes/kubernetes' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes</a><br><a href='https://groups.google.com/g/kubernetes-security-announce/c/19irihsKg7s' target='_blank' class='vuln-link'>https://groups.google.com/g/kubernetes-security-announce/c/19irihsKg7s</a><br><a href='http://www.openwall.com/lists/oss-security/2025/03/13/9' target='_blank' class='vuln-link'>http://www.openwall.com/lists/oss-security/2025/03/13/9</a></div></td>
+                            <td>2025-03-13</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>k8s.io/kubernetes</td>
+                            <td class="vuln-unknown">GO-2025-3521<br>关联CVE: CVE-2025-1767</td>
+                            <td>所有版本</td>
+                            <td>Kubernetes GitRepo Volume Inadvertent Local Repository Access in k8s.io/kubernetes&lt;br&gt;&lt;br&gt;Kubernetes GitRepo Volume Inadvertent Local Repository Access in k8s.io/kubernetes<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/advisories/GHSA-3wgm-2gw2-vh5m' target='_blank' class='vuln-link'>https://github.com/advisories/GHSA-3wgm-2gw2-vh5m</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-1767' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-1767</a><br><a href='http://www.openwall.com/lists/oss-security/2025/03/13/9' target='_blank' class='vuln-link'>http://www.openwall.com/lists/oss-security/2025/03/13/9</a><br><a href='https://github.com/kubernetes/kubernetes/pull/130786' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes/pull/130786</a><br><a href='https://groups.google.com/g/kubernetes-security-announce/c/19irihsKg7s' target='_blank' class='vuln-link'>https://groups.google.com/g/kubernetes-security-announce/c/19irihsKg7s</a></div></td>
+                            <td>2025-03-25</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>k8s.io/kubernetes</td>
+                            <td class="vuln-unknown">GO-2025-3547<br>关联CVE: CVE-2024-7598</td>
+                            <td>&gt;= 1.3.0</td>
+                            <td>Kubernetes kube-apiserver Vulnerable to Race Condition in k8s.io/kubernetes&lt;br&gt;&lt;br&gt;Kubernetes kube-apiserver Vulnerable to Race Condition in k8s.io/kubernetes<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/advisories/GHSA-r56h-j38w-hrqq' target='_blank' class='vuln-link'>https://github.com/advisories/GHSA-r56h-j38w-hrqq</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-7598' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-7598</a><br><a href='http://www.openwall.com/lists/oss-security/2025/03/20/2' target='_blank' class='vuln-link'>http://www.openwall.com/lists/oss-security/2025/03/20/2</a><br><a href='https://github.com/kubernetes/kubernetes/issues/126587' target='_blank' class='vuln-link'>https://github.com/kubernetes/kubernetes/issues/126587</a><br><a href='https://groups.google.com/g/kubernetes-security-announce/c/67D7UFqiPRc' target='_blank' class='vuln-link'>https://groups.google.com/g/kubernetes-security-announce/c/67D7UFqiPRc</a></div></td>
+                            <td>2025-03-25</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>golang.org/x/oauth2</td>
+                            <td class="vuln-unknown">GO-2025-3488<br>关联CVE: CVE-2025-22868</td>
+                            <td>所有版本 &lt; 0.27.0</td>
+                            <td>Unexpected memory consumption during token parsing in golang.org/x/oauth2&lt;br&gt;&lt;br&gt;An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://go.dev/cl/652155' target='_blank' class='vuln-link'>https://go.dev/cl/652155</a><br><a href='https://go.dev/issue/71490' target='_blank' class='vuln-link'>https://go.dev/issue/71490</a></div></td>
+                            <td>2025-02-26</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>3219</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>3332</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>115</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>302</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (115)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共115个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>.github\workflows\merge-agent-manifest.yml</td></tr><tr><td>pkg\generated\norman\management.cattle.io\v3\zz_generated_oidc_client_lifecycle_adapter.go</td></tr><tr><td>pkg\controllers\management\oidcprovider\controller_test.go</td></tr><tr><td>pkg\oidc\provider\authorize_test.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\prtb_handler_test.go</td></tr><tr><td>pkg\apis\ext.cattle.io\zz_generated_register.go</td></tr><tr><td>pkg\ext\rdp.go</td></tr><tr><td>pkg\ext\stores\useractivity\store_test.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\common.go</td></tr><tr><td>.github\workflows\build-agent.yml</td></tr><tr><td>pkg\auth\accessor\accessor.go</td></tr><tr><td>pkg\oidc\mocks\generate.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\common_test.go</td></tr><tr><td>pkg\oidc\provider\error\error_test.go</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_pod_disruption_budget_spec.go</td></tr><tr><td>pkg\generated\controllers\ext.cattle.io\v1\token.go</td></tr><tr><td>pkg\user\zz_manager_fake.go</td></tr><tr><td>pkg\client\generated\cluster\v1beta1\zz_generated_machine_deletion_status.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\register_test.go</td></tr><tr><td>pkg\controllers\management\auth\project_cluster\common_test.go</td></tr><tr><td>pkg\controllers\management\importedclusterversionmanagement\imported_cluster_version_management_test.go</td></tr><tr><td>pkg\ext\generated\openapi\useractivity\generated.openapi.go</td></tr><tr><td>tests\v2\validation\rbac\globalroles\rbac_global_roles_test.go</td></tr><tr><td>pkg\auth\providers\common\ldap\fakes.go</td></tr><tr><td>pkg\apis\management.cattle.io\v3\oidc_provider_types.go</td></tr><tr><td>pkg\oidc\provider\token.go</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\prtb_handler.go</td></tr><tr><td>pkg\oidc\provider\authorize.go</td></tr><tr><td>pkg\agent\clean\credentials.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\register.go</td></tr><tr><td>.github\ISSUE_TEMPLATE\epic.md</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\crtb_handler_test.go</td></tr><tr><td>pkg\ext\stores\useractivity\store.go</td></tr><tr><td>pkg\oidc\provider\userinfo_test.go</td></tr><tr><td>pkg\apis\ext.cattle.io\v1\zz_generated_list_types.go</td></tr><tr><td>pkg\controllers\management\oidcprovider\controller.go</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_oidc_client.go</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\roletemplate_handler_test.go</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\common_test.go</td></tr><tr><td>.github\workflows\push-images.yml</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\common.go</td></tr><tr><td>pkg\apis\ext.cattle.io\v1\zz_generated_deepcopy.go</td></tr><tr><td>pkg\ext\listener_test.go</td></tr><tr><td>pkg\oidc\provider\provider.go</td></tr><tr><td>pkg\generated\controllers\ext.cattle.io\factory.go</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\crtb_handler.go</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\register.go</td></tr><tr><td>pkg\ext\stores\tokens\zz_token_fakes.go</td></tr><tr><td>pkg\ext\stores\tokens\tokens.go</td></tr><tr><td>pkg\generated\controllers\ext.cattle.io\v1\interface.go</td></tr><tr><td>pkg\oidc\provider\error\error.go</td></tr><tr><td>pkg\client\generated\cluster\v1beta1\zz_generated_machine_v1beta2status.go</td></tr><tr><td>pkg\oidc\randomstring\generator_test.go</td></tr><tr><td>pkg\oidc\provider\userinfo.go</td></tr><tr><td>pkg\oidc\mocks\strgenerator.go</td></tr><tr><td>.github\workflows\create-images-files.yml</td></tr><tr><td>pkg\auth\providers\activedirectory\activedirectory_client_test.go</td></tr><tr><td>pkg\oidc\provider\session\session.go</td></tr><tr><td>pkg\controllers\capr\plansecret\plansecret_test.go</td></tr><tr><td>pkg\generated\controllers\management.cattle.io\v3\oidcclient.go</td></tr><tr><td>pkg\oidc\randomstring\generator.go</td></tr><tr><td>.github\actions\build-artifacts-index\action.yml</td></tr><tr><td>pkg\ext\stores\useractivity\zz_useractivity_fakes.go</td></tr><tr><td>pkg\controllers\dashboard\plugin\controller_test.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\roletemplate_handler.go</td></tr><tr><td>pkg\settings\agent_customization.go</td></tr><tr><td>pkg\oidc\mocks\authorize.go</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_oidc_client_spec.go</td></tr><tr><td>pkg\ext\certs_test.go</td></tr><tr><td>pkg\controllers\managementuser\snapshotbackpopulate\snapshotbackpopulate_test.go</td></tr><tr><td>.github\workflows\build-server.yml</td></tr><tr><td>pkg\auth\providers\mocks\provider.go</td></tr><tr><td>pkg\auth\providers\common\fakes.go</td></tr><tr><td>pkg\ext\stores\tokens\tokens_test.go</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\prtb_handler.go</td></tr><tr><td>pkg\oidc\provider\token_test.go</td></tr><tr><td>.github\workflows\build-installer.yml</td></tr><tr><td>pkg\oidc\provider\configuration.go</td></tr><tr><td>pkg\controllers\provisioningv2\harvestercleanup\controller.go</td></tr><tr><td>pkg\oidc\provider\session\session_test.go</td></tr><tr><td>tests\v2\validation\rbac\globalroles\global_roles_test.go</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_oidcclients.yaml</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_priority_class_spec.go</td></tr><tr><td>pkg\apis\ext.cattle.io\v1\zz_generated_register.go</td></tr><tr><td>pkg\oidc\provider\configuration_test.go</td></tr><tr><td>pkg\controllers\provisioningv2\cluster\scheduling_customization.go</td></tr><tr><td>pkg\controllers\management\importedclusterversionmanagement\imported_cluster_version_management.go</td></tr><tr><td>.github\workflows\merge-server-manifest.yml</td></tr><tr><td>pkg\controllers\management\auth\roletemplates\prtb_handler_test.go</td></tr><tr><td>pkg\oidc\provider\jwks_test.go</td></tr><tr><td>.github\workflows\renovate-vault.yml</td></tr><tr><td>tests\v2\validation\rbac\globalroles\globalroles.go</td></tr><tr><td>chart\templates\extra-manifests.yaml</td></tr><tr><td>pkg\client\generated\cluster\v1beta1\zz_generated_machine_readiness_gate.go</td></tr><tr><td>pkg\oidc\mocks\token.go</td></tr><tr><td>pkg\generated\controllers\ext.cattle.io\v1\useractivity.go</td></tr><tr><td>tests\v2\validation\rbac\globalroles\README.md</td></tr><tr><td>pkg\controllers\managementuser\rbac\roletemplates\roletemplate_handler_test.go</td></tr><tr><td>.github\workflows\hotfix-release.yml</td></tr><tr><td>pkg\apis\ext.cattle.io\v1\doc.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (2)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>pkg\settings\affinity.go</td></tr><tr><td>.github\workflows\renovate.yml</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (302)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\operation.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\fleet\provisioning\networkisolation.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\authn\rtb_store.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3public\zz_generated_token.go</td><td>内容变更</td></tr><tr><td>pkg\apis\ext.cattle.io\v1\types.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\local\local_auth_provider.go</td><td>内容变更</td></tr><tr><td>tests\scripts\custodian\aws.yaml</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\chart\chart.go</td><td>内容变更</td></tr><tr><td>.github\workflows\push-release.yml</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\azure\azure_provider.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\upgrade.cattle.io\v1\plan.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\catalog.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\cluster\v1beta1\zz_generated_cluster.x-k8s.io.machine.go</td><td>内容变更</td></tr><tr><td>chart\values.schema.json</td><td>内容变更</td></tr><tr><td>pkg\catalogv2\git\download.go</td><td>内容变更</td></tr><tr><td>pkg\catalogv2\system\system_test.go</td><td>内容变更</td></tr><tr><td>.github\workflows\pull-request.yml</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\activedirectory\activedirectory_client.go</td><td>内容变更</td></tr><tr><td>pkg\schemas\management.cattle.io\v3\schema.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\catalog.cattle.io_uiplugins.yaml</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_globalrolebindings.yaml</td><td>内容变更</td></tr><tr><td>tests\v2\integration\catalogv2\ui_plugin_test.go</td><td>内容变更</td></tr><tr><td>pkg\generated\compose\zz_generated_compose.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\upgrade.cattle.io\v1\fake\fake_upgrade.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>pkg\rkecerts\certs.go</td><td>内容变更</td></tr><tr><td>pkg\kontainer-engine\service\service_test.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\ldap\ldap_provider.go</td><td>内容变更</td></tr><tr><td>pkg\rancher\rancher.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_replica_set.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\provisioningv2\cluster\controller_test.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\kdm\kdm_test.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\oci\handler.go</td><td>内容变更</td></tr><tr><td>pkg\crds\dashboard\crds.go</td><td>内容变更</td></tr><tr><td>chart\values.yaml</td><td>内容变更</td></tr><tr><td>pkg\ext\stores\install.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\helm\repo_oci.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\k3sbasedupgrade\template.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\github\github_provider_test.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\fake\fake_operation.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\rkecluster.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_etcdsnapshot.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providerrefresh\refresher.go</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\global_types.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providerrefresh\daemon.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\authprovisioningv2\prtb.go</td><td>内容变更</td></tr><tr><td>pkg\apis\provisioning.cattle.io\v1\zz_generated_deepcopy.go</td><td>内容变更</td></tr><tr><td>pkg\auth\api\setup.go</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\authz_types.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\fleetcharts\controller.go</td><td>内容变更</td></tr><tr><td>tests\v2\actions\rke1\componentchecks\etcdversion.go</td><td>内容变更</td></tr><tr><td>pkg\catalogv2\git\git.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\manager.go</td><td>内容变更</td></tr><tr><td>.github\workflows\integration-tests.yml</td><td>内容变更</td></tr><tr><td>pkg\crds\provisioningv2\capi-crds.yaml</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\provisioning.cattle.io\v1\fake\fake_cluster.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\saml\saml_provider_test.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\oidc\oidc_actions.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\rkebootstraptemplate.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\capr\plansecret\plansecret.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_imported_config.go</td><td>内容变更</td></tr><tr><td>pkg\catalogv2\git\download_test.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_stateful_set.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\oidc\oidc_provider.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\provisioningv2\controllers.go</td><td>内容变更</td></tr><tr><td>pkg\crds\crds_test.go</td><td>内容变更</td></tr><tr><td>tests\v2\integration\catalogv2\rancher_managed_charts_test.go</td><td>内容变更</td></tr><tr><td>pkg\ext\extension_apiserver.go</td><td>内容变更</td></tr><tr><td>tests\v2\codecoverage\scripts\build_docker_images.sh</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\uiplugin.go</td><td>内容变更</td></tr><tr><td>tests\v2\codecoverage\scripts\build-rancher.sh</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\mocks\tokenmanager.go</td><td>内容变更</td></tr><tr><td>tests\scripts\custodian\gcp.yaml</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\systemcharts\controller.go</td><td>内容变更</td></tr><tr><td>pkg\cluster\agent_customization_test.go</td><td>内容变更</td></tr><tr><td>pkg\auth\tokens\token_util_test.go</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\zz_generated_deepcopy.go</td><td>内容变更</td></tr><tr><td>chart\templates\service.yaml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_job_template_spec.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\cluster\validator.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\helm\repo_oci_test.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_free_ipa_config.go</td><td>内容变更</td></tr><tr><td>chart\tests\service_test.yaml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_client.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\authprovisioningv2\cluster_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\globalroles\globalrolebinding_handler_test.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_projects.yaml</td><td>内容变更</td></tr><tr><td>chart\templates\deployment.yaml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_token.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\cluster\v1beta1\zz_generated_machine_status.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\ldap\ldap_client.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\cluster\v1beta1\zz_generated_machine_spec.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\clusterdeploy\clusterdeploy.go</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\cluster_types.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\app.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\project_cluster\project_handler.go</td><td>内容变更</td></tr><tr><td>package\entrypoint.sh</td><td>内容变更</td></tr><tr><td>tests\integration\README.md</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\eks\eks_cluster_handler.go</td><td>内容变更</td></tr><tr><td>pkg\systemtemplate\import.go</td><td>内容变更</td></tr><tr><td>pkg\api\steve\additionalapi.go</td><td>内容变更</td></tr><tr><td>pkg\rkecerts\certs_test.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\clustertemplates\provisioning\clustertemplate_export_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\capr\machineprovision\args.go</td><td>内容变更</td></tr><tr><td>pkg\ext\certs.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\rkecontrolplane.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\project_cluster\common.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\drivers\base_driver.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\cluster\actions_kubeconfig_test.go</td><td>内容变更</td></tr><tr><td>chart\tests\ingress_test.yaml</td><td>内容变更</td></tr><tr><td>pkg\data\management\kontainerdriver_data.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\custommachine.go</td><td>内容变更</td></tr><tr><td>pkg\capr\planner\planner.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\saml\saml_provider.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\managementuser\rbac\handler_base.go</td><td>内容变更</td></tr><tr><td>pkg\api\steve\proxy\proxy.go</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\zz_generated_list_types.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_global_role_binding.go</td><td>内容变更</td></tr><tr><td>tests\validation\tests\v3_api\test_node_template.py</td><td>内容变更</td></tr><tr><td>pkg\apis\catalog.cattle.io\v1\plugin.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\user.go</td><td>内容变更</td></tr><tr><td>scripts\artifacts-hashes.sh</td><td>内容变更</td></tr><tr><td>pkg\controllers\managementuser\snapshotbackpopulate\snapshotbackpopulate.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\provisioningv2\cluster\controller.go</td><td>内容变更</td></tr><tr><td>pkg\kubectl\kubectl.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providerrefresh\refresher_test.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_replication_controller_spec.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\k3sbasedupgrade\register.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\cluster\actionhandler.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\local\local_auth_provider_test.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_workload.go</td><td>内容变更</td></tr><tr><td>pkg\auth\requests\impersonate_test.go</td><td>内容变更</td></tr><tr><td>tests\v2\actions\fleet\fleet.go</td><td>内容变更</td></tr><tr><td>tests\validation\tests\v3_api\test_rke_cluster_provisioning.py</td><td>内容变更</td></tr><tr><td>pkg\generated\norman\management.cattle.io\v3\zz_generated_k8s_client.go</td><td>内容变更</td></tr><tr><td>pkg\rancher\migrations.go</td><td>内容变更</td></tr><tr><td>tests\validation\tests\v3_api\test_certificate.py</td><td>内容变更</td></tr><tr><td>pkg\generated\openapi\zz_generated_openapi.go</td><td>内容变更</td></tr><tr><td>pkg\rbac\common.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_clusterproxyconfigs.yaml</td><td>内容变更</td></tr><tr><td>tests\v2\validation\steve\vai\vai_test.go</td><td>内容变更</td></tr><tr><td>pkg\capr\planner\instructions.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\ldap\ldap_client_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\managementapi\controllers.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_pod.go</td><td>内容变更</td></tr><tr><td>tests\scripts\custodian\azure.yaml</td><td>内容变更</td></tr><tr><td>pkg\auth\requests\authenticate_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\plugin\controller.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\genericoidc\genericoidc_provider_test.go</td><td>内容变更</td></tr><tr><td>pkg\generated\controllers\management.cattle.io\v3\interface.go</td><td>内容变更</td></tr><tr><td>chart\tests\deployment_test.yaml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_cron_job_spec.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\authprovisioningv2\cluster.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_rkebootstrap.go</td><td>内容变更</td></tr><tr><td>pkg\version\version.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_projectroletemplatebindings.yaml</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\feature\feature_handler.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_rkecluster.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_deployment.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_agent_deployment_customization.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\project_cluster\cluster_handler.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_rkecontrolplane.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_ldap_fields.go</td><td>内容变更</td></tr><tr><td>pkg\features\feature.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\ldap\ldap_actions.go</td><td>内容变更</td></tr><tr><td>tests\validation\tests\v3_api\test_node_label.py</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\rke.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>tests\v2\actions\scalinginput\replace.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\server\managementstored\setup.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\genericoidc\genericoidc_provider.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\managementuser\networkpolicy\netpol.go</td><td>内容变更</td></tr><tr><td>pkg\auth\tokens\manager.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\providers_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\managementuser\nodesyncer\cordonfieldssyncer.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_roletemplates.yaml</td><td>内容变更</td></tr><tr><td>pkg\capr\planner\windows.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\wrangler.go</td><td>内容变更</td></tr><tr><td>pkg\api\steve\catalog\plugin.go</td><td>内容变更</td></tr><tr><td>pkg\buildconfig\constants.go</td><td>内容变更</td></tr><tr><td>pkg\capr\common.go</td><td>内容变更</td></tr><tr><td>pkg\data\management\machinedriver_data.go</td><td>内容变更</td></tr><tr><td>pkg\auth\requests\authenticate.go</td><td>内容变更</td></tr><tr><td>pkg\rkeworker\docker.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\rkebootstrap.go</td><td>内容变更</td></tr><tr><td>pkg\apis\provisioning.cattle.io\v1\cluster.go</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\tools_system_images.go</td><td>内容变更</td></tr><tr><td>pkg\capr\planner\certificaterotation_test.go</td><td>内容变更</td></tr><tr><td>tests\v2\actions\machinepools\harvester_machine_config.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\activedirectory\activedirectory_provider.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\common\usermanager.go</td><td>内容变更</td></tr><tr><td>docs\development.md</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_network_config.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\globalroles\globalrolebinding_handler.go</td><td>内容变更</td></tr><tr><td>pkg\capr\planner\etcdrestore.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\github\github_provider.go</td><td>内容变更</td></tr><tr><td>pkg\data\management\role_data.go</td><td>内容变更</td></tr><tr><td>pkg\settings\setting.go</td><td>内容变更</td></tr><tr><td>build.yaml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_replication_controller.go</td><td>内容变更</td></tr><tr><td>pkg\api\steve\clusters\kubeconfig.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_pod_spec.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_job_spec.go</td><td>内容变更</td></tr><tr><td>chart\Chart.yaml</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\authprovisioningv2\crtb.go</td><td>内容变更</td></tr><tr><td>pkg\crds\provisioningv2\crds.go</td><td>内容变更</td></tr><tr><td>pkg\image\resolve.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_custommachine.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_job.go</td><td>内容变更</td></tr><tr><td>tests\v2\codecoverage\scripts\run_provisioning_integration_tests.sh</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\zz_generated_register.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\plugin\fscache.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_aci_network_provider.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml_test\yaml\capi\capi-crds.yaml</td><td>内容变更</td></tr><tr><td>pkg\auth\principals\handler.go</td><td>内容变更</td></tr><tr><td>pkg\wrangler\context.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_clusterroletemplatebindings.yaml</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\k3sbasedupgrade\k3sbased_upgrade_handler.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\register.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_cron_job.go</td><td>内容变更</td></tr><tr><td>pkg\cluster\agent_customization.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\steve\vai\scripts\script.sh</td><td>内容变更</td></tr><tr><td>pkg\auth\requests\chained.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\activedirectory\activedirectory_actions.go</td><td>内容变更</td></tr><tr><td>pkg\image\origins.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\upgrade.cattle.io\v1\upgrade.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\common\provider.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\googleoauth\goauth_provider.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\fleetcharts\controller_test.go</td><td>内容变更</td></tr><tr><td>pkg\auth\requests\impersonate.go</td><td>内容变更</td></tr><tr><td>tests\v2\actions\provisioning\creates.go</td><td>内容变更</td></tr><tr><td>tests\v2\integration\steveapi\steve_api_test.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\fake\fake_clusterrepo.go</td><td>内容变更</td></tr><tr><td>pkg\crds\provisioningv2\capi-webhooks.yaml</td><td>内容变更</td></tr><tr><td>tests\v2\integration\catalogv2\charts_test.go</td><td>内容变更</td></tr><tr><td>tests\validation\lib\cloud_provider.py</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\ldap\ldap_provider_test.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_open_ldap_config.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\k3sbasedupgrade\deployPlans.go</td><td>内容变更</td></tr><tr><td>dev-scripts\helm-unittest.sh</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_rkebootstraptemplate.go</td><td>内容变更</td></tr><tr><td>pkg\systemtemplate\template.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\clusterregistrationtokens\import.go</td><td>内容变更</td></tr><tr><td>.github\actions\setup-build-env\action.yml</td><td>内容变更</td></tr><tr><td>pkg\kontainer-engine\service\service.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\upgrade.cattle.io\v1\fake\fake_plan.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\fake\fake_uiplugin.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\common\provider_util.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\capr\planner\controller.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\common\ldap\ldap_util.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\providers.go</td><td>内容变更</td></tr><tr><td>pkg\systemtemplate\import_test.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\clientset.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\fake\fake_app.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\provisioning.cattle.io\v1\fake\fake_provisioning.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>tests\v2\actions\rbac\rbac.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\upgrade\workload.go</td><td>内容变更</td></tr><tr><td>.github\workflows\verify-generated-code-changes.yml</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\fake\fake_rke.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_deployment_spec.go</td><td>内容变更</td></tr><tr><td>pkg\crds\names.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\catalog.cattle.io_clusterrepos.yaml</td><td>内容变更</td></tr><tr><td>pkg\apis\management.cattle.io\v3\authn_types.go</td><td>内容变更</td></tr><tr><td>pkg\cluster\private_registry.go</td><td>内容变更</td></tr><tr><td>pkg\auth\settings\settings.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\provisioning.cattle.io\v1\cluster.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\clusterrepo.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_stateful_set_spec.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\store\cluster\cluster_store.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\globalroles\fleetworkspace_binding_handler_test.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\keycloakoidc\keycloak_provider.go</td><td>内容变更</td></tr><tr><td>pkg\rbac\common_test.go</td><td>内容变更</td></tr><tr><td>pkg\auth\providers\saml\saml_client.go</td><td>内容变更</td></tr><tr><td>pkg\crds\yaml\generated\management.cattle.io_globalroles.yaml</td><td>内容变更</td></tr><tr><td>tests\controllers\feature\feature_test.go</td><td>内容变更</td></tr><tr><td>.github\workflows\provisioning-tests.yml</td><td>内容变更</td></tr><tr><td>pkg\auth\api\user\user_actions.go</td><td>内容变更</td></tr><tr><td>chart\templates\ingress.yaml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_active_directory_config.go</td><td>内容变更</td></tr><tr><td>pkg\codegen\main.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\provisioning.cattle.io\v1\provisioning.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>pkg\types\config\context.go</td><td>内容变更</td></tr><tr><td>pkg\auth\tokens\token_util.go</td><td>内容变更</td></tr><tr><td>pkg\features\migrate.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\clustertemplates\provisioning\provisioning_clustertemplate_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\dashboard\systemcharts\controller_test.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\management\auth\user_test.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\catalog.cattle.io\v1\fake\fake_catalog.cattle.io_client.go</td><td>内容变更</td></tr><tr><td>pkg\controllers\managementuser\controllers.go</td><td>内容变更</td></tr><tr><td>pkg\api\norman\customization\yaml\link.go</td><td>内容变更</td></tr><tr><td>tests\v2prov\tests\fleet\fleetcluster_test.go</td><td>内容变更</td></tr><tr><td>.github\actions\setup-tag-env\action.yml</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_pod_security_context.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\management\v3\zz_generated_ldap_config.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_pod_template_spec.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_daemon_set_spec.go</td><td>内容变更</td></tr><tr><td>tests\v2prov\objectstore\objectstore.go</td><td>内容变更</td></tr><tr><td>pkg\catalogv2\system\system.go</td><td>内容变更</td></tr><tr><td>cmd\agent\main.go</td><td>内容变更</td></tr><tr><td>pkg\generated\clientset\versioned\typed\rke.cattle.io\v1\etcdsnapshot.go</td><td>内容变更</td></tr><tr><td>tests\v2\validation\clustertemplates\rbac\clustertemplate_test.go</td><td>内容变更</td></tr><tr><td>pkg\capr\planner\certificaterotation.go</td><td>内容变更</td></tr><tr><td>pkg\client\generated\project\v3\zz_generated_daemon_set.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,536 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:24:48</p>
+                <p>SBOM A: sample_data\restic_restic_bc64921.json</p>
+                <p>SBOM B: sample_data\restic_restic.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>17</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>48</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">7.7/10 (77.4%) [B+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 7.7/10.0 (77.4%)，安全等级: B+。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：大量新增依赖, 大量次版本变更, 依赖扩张, CII-Best-Practices风险, Branch-Protection风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.5/1.7 (85.6%)</td>
+                    <td><ul class='details-list'><li>大量新增包(17个)可能增加攻击面</li><li>移除了9个包</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-low">2.1/3.5 (59.2%)</td>
+                    <td><ul class='details-list'><li>33个包发生次版本变更</li><li>11个包发生补丁版本变更</li><li>4个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 依赖扩张</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.9/1.3 (71.0%)</td>
+                    <td><ul class='details-list'><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Code-Review, Security-Policy</li><li>项目安全实践有待改进</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Code-Review风险, Security-Policy风险</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (17)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>cloud.google.com/go/monitoring</td><td>v1.24.0</td><td>NOASSERTION</td></tr><tr><td>github.com/goccy/go-json</td><td>v0.10.5</td><td>NOASSERTION</td></tr><tr><td>github.com/envoyproxy/go-control-plane/envoy</td><td>v1.32.4</td><td>NOASSERTION</td></tr><tr><td>github.com/planetscale/vtprotobuf</td><td>v0.6.1-0.20240319094008-0393e58bdf10</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.34.0</td><td>NOASSERTION</td></tr><tr><td>cel.dev/expr</td><td>v0.19.2</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>NOASSERTION</td></tr><tr><td>github.com/envoyproxy/protoc-gen-validate</td><td>v1.2.1</td><td>NOASSERTION</td></tr><tr><td>github.com/go-ini/ini</td><td>v1.67.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/otel/sdk/metric</td><td>v1.34.0</td><td>NOASSERTION</td></tr><tr><td>github.com/cncf/xds/go</td><td>v0.0.0-20250121191232-2f005788dc42</td><td>NOASSERTION</td></tr><tr><td>github.com/minio/crc64nvme</td><td>v1.0.1</td><td>NOASSERTION</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping</td><td>v0.51.0</td><td>NOASSERTION</td></tr><tr><td>go.opentelemetry.io/contrib/detectors/gcp</td><td>v1.34.0</td><td>NOASSERTION</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp</td><td>v1.25.0</td><td>NOASSERTION</td></tr><tr><td>github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric</td><td>v0.51.0</td><td>NOASSERTION</td></tr><tr><td>github.com/Microsoft/go-winio</td><td>v0.6.2</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (9)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/modern-go/concurrent</td><td>v0.0.0-20180306012644-bacd9c7ef1dd</td><td>NOASSERTION</td></tr><tr><td>github.com/minio/sha256-simd</td><td>v1.0.1</td><td>NOASSERTION</td></tr><tr><td>github.com/golang/groupcache</td><td>v0.0.0-20210331224755-41bb18bfe9da</td><td>NOASSERTION</td></tr><tr><td>github.com/modern-go/reflect2</td><td>v1.0.2</td><td>NOASSERTION</td></tr><tr><td>github.com/golang/protobuf</td><td>v1.5.4</td><td>NOASSERTION</td></tr><tr><td>github.com/json-iterator/go</td><td>v1.1.12</td><td>NOASSERTION</td></tr><tr><td>gopkg.in/ini.v1</td><td>v1.67.0</td><td>NOASSERTION</td></tr><tr><td>go.opencensus.io</td><td>v0.24.0</td><td>NOASSERTION</td></tr><tr><td>github.com/sirupsen/logrus</td><td>v1.9.3</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (48)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/klauspost/compress</td><td>v1.17.9</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>golang.org/x/oauth2</td><td>v0.21.0</td><td>v0.28.0</td><td>次版本</td></tr><tr><td>google.golang.org/api</td><td>v0.187.0</td><td>v0.228.0</td><td>次版本</td></tr><tr><td>golang.org/x/text</td><td>v0.16.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>google.golang.org/protobuf</td><td>v1.34.2</td><td>v1.36.6</td><td>次版本</td></tr><tr><td>golang.org/x/time</td><td>v0.5.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>go.uber.org/automaxprocs</td><td>v1.5.3</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>github.com/klauspost/cpuid/v2</td><td>v2.2.6</td><td>v2.2.10</td><td>补丁版本</td></tr><tr><td>github.com/pkg/sftp</td><td>v1.13.6</td><td>v1.13.9</td><td>补丁版本</td></tr><tr><td>cloud.google.com/go/auth/oauth2adapt</td><td>v0.2.2</td><td>v0.2.8</td><td>补丁版本</td></tr><tr><td>github.com/rs/xid</td><td>v1.5.0</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.24.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/googleapis/gax-go/v2</td><td>v2.12.5</td><td>v2.14.1</td><td>次版本</td></tr><tr><td>cloud.google.com/go/storage</td><td>v1.43.0</td><td>v1.51.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/iam</td><td>v1.1.8</td><td>v1.4.1</td><td>次版本</td></tr><tr><td>github.com/google/go-cmp</td><td>v0.6.0</td><td>v0.7.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.26.0</td><td>v0.38.0</td><td>次版本</td></tr><tr><td>github.com/googleapis/enterprise-certificate-proxy</td><td>v0.3.2</td><td>v0.3.6</td><td>补丁版本</td></tr><tr><td>google.golang.org/grpc</td><td>v1.64.1</td><td>v1.71.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.24.0</td><td>v1.34.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/internal</td><td>v1.9.0</td><td>v1.10.0</td><td>次版本</td></tr><tr><td>github.com/AzureAD/microsoft-authentication-library-for-go</td><td>v1.2.2</td><td>v1.3.3</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azidentity</td><td>v1.7.0</td><td>v1.8.2</td><td>次版本</td></tr><tr><td>(</td><td>cloud.google.com/go</td><td>cel.dev/expr</td><td>一般变更</td></tr><tr><td>golang.org/x/sys</td><td>v0.22.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/spf13/pflag</td><td>v1.0.5</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>google.golang.org/genproto/googleapis/api</td><td>v0.0.0-20240617180043-68d350f18fd4</td><td>v0.0.0-20250303144028-a0af3efb3deb</td><td>一般变更</td></tr><tr><td>cloud.google.com/go/auth</td><td>v0.6.1</td><td>v0.15.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/storage/azblob</td><td>v1.3.2</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go/compute/metadata</td><td>v0.3.0</td><td>v0.6.0</td><td>次版本</td></tr><tr><td>github.com/spf13/cobra</td><td>v1.8.1</td><td>v1.9.1</td><td>次版本</td></tr><tr><td>github.com/minio/minio-go/v7</td><td>v7.0.66</td><td>v7.0.89</td><td>补丁版本</td></tr><tr><td>github.com/go-logr/logr</td><td>v1.4.1</td><td>v1.4.2</td><td>补丁版本</td></tr><tr><td>github.com/golang-jwt/jwt/v5</td><td>v5.2.1</td><td>v5.2.2</td><td>补丁版本</td></tr><tr><td>github.com/cpuguy83/go-md2man/v2</td><td>v2.0.4</td><td>v2.0.6</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc</td><td>v0.49.0</td><td>v0.59.0</td><td>次版本</td></tr><tr><td>cloud.google.com/go</td><td>v0.115.0</td><td>v0.118.3</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.22.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>github.com/google/s2a-go</td><td>v0.1.7</td><td>v0.1.9</td><td>补丁版本</td></tr><tr><td>github.com/Backblaze/blazer</td><td>v0.6.1</td><td>v0.7.2</td><td>次版本</td></tr><tr><td>google.golang.org/genproto/googleapis/rpc</td><td>v0.0.0-20240624140628-dc46fd24d27d</td><td>v0.0.0-20250313205543-e70fdf4c4cb4</td><td>一般变更</td></tr><tr><td>github.com/ncw/swift/v2</td><td>v2.0.2</td><td>v2.0.3</td><td>补丁版本</td></tr><tr><td>golang.org/x/sync</td><td>v0.7.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>github.com/Azure/azure-sdk-for-go/sdk/azcore</td><td>v1.12.0</td><td>v1.17.1</td><td>次版本</td></tr><tr><td>golang.org/x/crypto</td><td>v0.24.0</td><td>v0.36.0</td><td>次版本</td></tr><tr><td>google.golang.org/genproto</td><td>v0.0.0-20240624140628-dc46fd24d27d</td><td>v0.0.0-20250303144028-a0af3efb3deb</td><td>一般变更</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.49.0</td><td>v0.59.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.24.0</td><td>v1.34.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>534</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>543</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>35</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>26</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>259</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (35)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>cmd\restic\cmd_mount_disabled.go</td></tr><tr><td>cmd\restic\cmd_self_update_disabled.go</td></tr><tr><td>internal\fs\node.go</td></tr><tr><td>internal\archiver\exclude_test.go</td></tr><tr><td>internal\fs\node_xattr_test.go</td></tr><tr><td>internal\fs\mknod_unix.go</td></tr><tr><td>internal\fs\node_xattr_all_test.go</td></tr><tr><td>cmd\restic\cmd_generate_integration_test.go</td></tr><tr><td>internal\fs\node_unix_notlinux.go</td></tr><tr><td>cmd\restic\cmd_recover_integration_test.go</td></tr><tr><td>internal\fs\node_windows_test.go</td></tr><tr><td>internal\fs\node_unix.go</td></tr><tr><td>internal\fs\node_linux.go</td></tr><tr><td>internal\repository\index\index_internal_test.go</td></tr><tr><td>internal\repository\warmup_test.go</td></tr><tr><td>internal\restic\parallel_test.go</td></tr><tr><td>internal\fs\stat_windows_test.go</td></tr><tr><td>internal\filter\include_test.go</td></tr><tr><td>internal\fs\node_xattr.go</td></tr><tr><td>internal\filter\exclude.go</td></tr><tr><td>internal\fs\node_test.go</td></tr><tr><td>internal\archiver\exclude.go</td></tr><tr><td>cmd\restic\cmd_debug_disabled.go</td></tr><tr><td>internal\fs\node_freebsd.go</td></tr><tr><td>internal\fs\node_unix_test.go</td></tr><tr><td>internal\fs\node_noxattr.go</td></tr><tr><td>internal\fs\file_unix_test.go</td></tr><tr><td>internal\fs\node_linux_test.go</td></tr><tr><td>internal\filter\include.go</td></tr><tr><td>internal\repository\prune_internal_test.go</td></tr><tr><td>internal\fs\fs_local_test.go</td></tr><tr><td>internal\repository\warmup.go</td></tr><tr><td>internal\fs\fs_local_unix_test.go</td></tr><tr><td>internal\fs\node_windows.go</td></tr><tr><td>internal\filter\exclude_test.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (26)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>internal\restic\node_linux.go</td></tr><tr><td>internal\restic\node_windows_test.go</td></tr><tr><td>internal\migrations\s3_layout.go</td></tr><tr><td>cmd\restic\exclude_test.go</td></tr><tr><td>internal\restic\node_netbsd.go</td></tr><tr><td>internal\restic\node_aix.go</td></tr><tr><td>internal\fs\helpers.go</td></tr><tr><td>internal\backend\layout\layout_s3legacy.go</td></tr><tr><td>internal\restic\node_xattr.go</td></tr><tr><td>internal\restic\node_xattr_test.go</td></tr><tr><td>internal\restic\mknod_unix.go</td></tr><tr><td>internal\restic\node_freebsd.go</td></tr><tr><td>cmd\restic\include.go</td></tr><tr><td>internal\archiver\archiver_windows_test.go</td></tr><tr><td>internal\restic\node_openbsd.go</td></tr><tr><td>internal\restic\node_unix.go</td></tr><tr><td>cmd\restic\include_test.go</td></tr><tr><td>internal\restic\node_darwin.go</td></tr><tr><td>internal\fs\deviceid_unix.go</td></tr><tr><td>internal\backend\util\errdot_old.go</td></tr><tr><td>internal\backend\util\errdot_119.go</td></tr><tr><td>internal\restic\node_xattr_all_test.go</td></tr><tr><td>internal\restic\node_solaris.go</td></tr><tr><td>internal\repository\s3_backend.go</td></tr><tr><td>internal\fs\deviceid_windows.go</td></tr><tr><td>internal\restic\node_unix_test.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (259)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>internal\fs\stat_windows.go</td><td>内容变更</td></tr><tr><td>internal\fs\file_windows.go</td><td>内容变更</td></tr><tr><td>internal\backend\dryrun\dry_backend.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_repair_packs.go</td><td>内容变更</td></tr><tr><td>internal\backend\s3\config.go</td><td>内容变更</td></tr><tr><td>internal\archiver\scanner.go</td><td>内容变更</td></tr><tr><td>internal\fs\ea_windows_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\s3\config_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_debug.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\local_unix.go</td><td>内容变更</td></tr><tr><td>internal\repository\upgrade_repo.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\index.go</td><td>内容变更</td></tr><tr><td>internal\backend\s3\s3_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\vss_windows.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_tag_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\walker\rewriter_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\id.go</td><td>内容变更</td></tr><tr><td>internal\checker\checker_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\main.go</td><td>内容变更</td></tr><tr><td>internal\restic\blob_set_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\sd_windows_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\cache\cache.go</td><td>内容变更</td></tr><tr><td>.github\workflows\docker.yml</td><td>内容变更</td></tr><tr><td>internal\repository\repair_pack.go</td><td>内容变更</td></tr><tr><td>internal\checker\checker.go</td><td>内容变更</td></tr><tr><td>internal\repository\testing.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\config.go</td><td>内容变更</td></tr><tr><td>internal\archiver\archiver_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\progress.go</td><td>内容变更</td></tr><tr><td>internal\archiver\tree.go</td><td>内容变更</td></tr><tr><td>internal\debug\round_tripper.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\master_index.go</td><td>内容变更</td></tr><tr><td>internal\backend\azure\azure.go</td><td>内容变更</td></tr><tr><td>internal\repository\repair_pack_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\repair_index_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\gs\gs.go</td><td>内容变更</td></tr><tr><td>internal\fs\sd_windows_test_helpers.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_rewrite.go</td><td>内容变更</td></tr><tr><td>internal\archiver\file_saver.go</td><td>内容变更</td></tr><tr><td>helpers\build-release-binaries\main.go</td><td>内容变更</td></tr><tr><td>internal\backend\layout\layout_default.go</td><td>内容变更</td></tr><tr><td>cmd\restic\integration_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\sftp\sftp.go</td><td>内容变更</td></tr><tr><td>cmd\restic\flags_test.go</td><td>内容变更</td></tr><tr><td>.github\workflows\tests.yml</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_migrate.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_key_add.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_tag.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_dump.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_init.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\associated_data_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\termstatus\status_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_version.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_copy.go</td><td>内容变更</td></tr><tr><td>internal\restorer\fileswriter.go</td><td>内容变更</td></tr><tr><td>internal\restorer\restorer.go</td><td>内容变更</td></tr><tr><td>internal\errors\errors.go</td><td>内容变更</td></tr><tr><td>internal\restorer\restorer_test.go</td><td>内容变更</td></tr><tr><td>internal\archiver\file_saver_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\idset.go</td><td>内容变更</td></tr><tr><td>internal\ui\progress\counter.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_stats.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_ls_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\archiver\tree_saver_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_local_vss.go</td><td>内容变更</td></tr><tr><td>internal\backend\sema\backend_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\limiter\static_limiter_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\repository_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\restore\json_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\index_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_reader.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_key_list.go</td><td>内容变更</td></tr><tr><td>internal\archiver\testing.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_repair.go</td><td>内容变更</td></tr><tr><td>internal\restic\config.go</td><td>内容变更</td></tr><tr><td>internal\backend\b2\b2.go</td><td>内容变更</td></tr><tr><td>internal\repository\repository_internal_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\format.go</td><td>内容变更</td></tr><tr><td>internal\archiver\buffer.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_cache.go</td><td>内容变更</td></tr><tr><td>internal\ui\backup\progress.go</td><td>内容变更</td></tr><tr><td>cmd\restic\exclude.go</td><td>内容变更</td></tr><tr><td>internal\ui\termstatus\stdio_wrapper.go</td><td>内容变更</td></tr><tr><td>internal\archiver\doc.go</td><td>内容变更</td></tr><tr><td>internal\ui\restore\progress_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\sftp\config.go</td><td>内容变更</td></tr><tr><td>.golangci.yml</td><td>内容变更</td></tr><tr><td>internal\backend\rest\rest.go</td><td>内容变更</td></tr><tr><td>internal\backend\cache\file_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_mount.go</td><td>内容变更</td></tr><tr><td>internal\dump\zip_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_unlock.go</td><td>内容变更</td></tr><tr><td>internal\restic\lock.go</td><td>内容变更</td></tr><tr><td>internal\restic\tag_list_test.go</td><td>内容变更</td></tr><tr><td>.github\PULL_REQUEST_TEMPLATE.md</td><td>内容变更</td></tr><tr><td>internal\walker\rewriter.go</td><td>内容变更</td></tr><tr><td>cmd\restic\integration_filter_pattern_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_features.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\index_parallel_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\termstatus\stdio_wrapper_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\termstatus\status.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_ls_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\tree_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\json.go</td><td>内容变更</td></tr><tr><td>internal\ui\termstatus\background.go</td><td>内容变更</td></tr><tr><td>internal\backend\layout\layout_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_find_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\pack\pack_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_snapshots.go</td><td>内容变更</td></tr><tr><td>internal\fuse\dir.go</td><td>内容变更</td></tr><tr><td>internal\archiver\scanner_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\global_debug.go</td><td>内容变更</td></tr><tr><td>internal\restic\snapshot_policy.go</td><td>内容变更</td></tr><tr><td>internal\archiver\testing_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\node_windows.go</td><td>内容变更</td></tr><tr><td>internal\backend\sema\backend.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\master_index_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\table\table.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_check.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_key_passwd.go</td><td>内容变更</td></tr><tr><td>internal\ui\progress\counter_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_forget.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_key_remove.go</td><td>内容变更</td></tr><tr><td>internal\backend\mem\mem_backend.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_reader_command.go</td><td>内容变更</td></tr><tr><td>internal\backend\limiter\limiter.go</td><td>内容变更</td></tr><tr><td>internal\ui\backup\text.go</td><td>内容变更</td></tr><tr><td>internal\restic\snapshot_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\const_windows.go</td><td>内容变更</td></tr><tr><td>internal\repository\packer_manager_test.go</td><td>内容变更</td></tr><tr><td>build.go</td><td>内容变更</td></tr><tr><td>internal\backend\sftp\layout_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_restore.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_list.go</td><td>内容变更</td></tr><tr><td>internal\backend\cache\file.go</td><td>内容变更</td></tr><tr><td>internal\archiver\tree_saver.go</td><td>内容变更</td></tr><tr><td>internal\restic\lock_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\const_unix.go</td><td>内容变更</td></tr><tr><td>internal\restic\testing.go</td><td>内容变更</td></tr><tr><td>internal\fs\stat.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_forget_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_track.go</td><td>内容变更</td></tr><tr><td>internal\restic\node.go</td><td>内容变更</td></tr><tr><td>internal\repository\repair_index.go</td><td>内容变更</td></tr><tr><td>internal\fs\setflags_other.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_prune.go</td><td>内容变更</td></tr><tr><td>internal\dump\common.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\local.go</td><td>内容变更</td></tr><tr><td>internal\repository\prune_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\parallel.go</td><td>内容变更</td></tr><tr><td>cmd\restic\global_release.go</td><td>内容变更</td></tr><tr><td>internal\backend\layout\layout.go</td><td>内容变更</td></tr><tr><td>internal\backend\cache\backend.go</td><td>内容变更</td></tr><tr><td>internal\dump\tar.go</td><td>内容变更</td></tr><tr><td>internal\fs\interface.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_check_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\retry\backend_retry_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_prune_integration_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\format_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\integration_helpers_unix_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\test\tests.go</td><td>内容变更</td></tr><tr><td>internal\repository\repack.go</td><td>内容变更</td></tr><tr><td>internal\ui\restore\json.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_repair_snapshots.go</td><td>内容变更</td></tr><tr><td>internal\repository\fuzz_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\vss.go</td><td>内容变更</td></tr><tr><td>internal\dump\tar_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\secondary_repo.go</td><td>内容变更</td></tr><tr><td>internal\restorer\filerestorer.go</td><td>内容变更</td></tr><tr><td>internal\backend\swift\swift.go</td><td>内容变更</td></tr><tr><td>internal\backend\shell_split.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_repair_index_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\lock_test.go</td><td>内容变更</td></tr><tr><td>doc\conf.py</td><td>内容变更</td></tr><tr><td>internal\backend\mock\backend.go</td><td>内容变更</td></tr><tr><td>internal\restic\snapshot.go</td><td>内容变更</td></tr><tr><td>internal\restic\node_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\backup\json.go</td><td>内容变更</td></tr><tr><td>internal\restorer\filerestorer_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\backend.go</td><td>内容变更</td></tr><tr><td>internal\repository\repository.go</td><td>内容变更</td></tr><tr><td>internal\backend\azure\config.go</td><td>内容变更</td></tr><tr><td>internal\debug\debug.go</td><td>内容变更</td></tr><tr><td>internal\ui\restore\progress.go</td><td>内容变更</td></tr><tr><td>internal\migrations\upgrade_repo_v2_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\progress\printer.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\local_windows.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_backup.go</td><td>内容变更</td></tr><tr><td>internal\archiver\archiver.go</td><td>内容变更</td></tr><tr><td>internal\backend\layout\layout_rest.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_key.go</td><td>内容变更</td></tr><tr><td>internal\archiver\tree_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\index\index_parallel.go</td><td>内容变更</td></tr><tr><td>internal\backend\util\foreground.go</td><td>内容变更</td></tr><tr><td>internal\backend\http_transport.go</td><td>内容变更</td></tr><tr><td>internal\migrations\interface.go</td><td>内容变更</td></tr><tr><td>internal\repository\raw.go</td><td>内容变更</td></tr><tr><td>cmd\restic\format.go</td><td>内容变更</td></tr><tr><td>internal\repository\check.go</td><td>内容变更</td></tr><tr><td>internal\feature\registry.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_local.go</td><td>内容变更</td></tr><tr><td>internal\restic\find.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_options.go</td><td>内容变更</td></tr><tr><td>internal\restic\lock_windows.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_cat.go</td><td>内容变更</td></tr><tr><td>cmd\restic\global.go</td><td>内容变更</td></tr><tr><td>internal\walker\walker_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_generate.go</td><td>内容变更</td></tr><tr><td>internal\backend\retry\backend_retry.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_backup_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\message.go</td><td>内容变更</td></tr><tr><td>internal\dump\zip.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_find.go</td><td>内容变更</td></tr><tr><td>internal\repository\packer_manager.go</td><td>内容变更</td></tr><tr><td>internal\fs\file.go</td><td>内容变更</td></tr><tr><td>internal\backend\local\layout_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\rest\rest_unix_test.go</td><td>内容变更</td></tr><tr><td>internal\restic\repository.go</td><td>内容变更</td></tr><tr><td>internal\fs\setflags_linux_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_ls.go</td><td>内容变更</td></tr><tr><td>internal\repository\upgrade_repo_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_diff.go</td><td>内容变更</td></tr><tr><td>internal\restic\tree.go</td><td>内容变更</td></tr><tr><td>internal\walker\walker.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_recover.go</td><td>内容变更</td></tr><tr><td>cmd\restic\integration_helpers_windows_test.go</td><td>内容变更</td></tr><tr><td>internal\ui\restore\text.go</td><td>内容变更</td></tr><tr><td>internal\backend\rest\rest_test.go</td><td>内容变更</td></tr><tr><td>internal\backend\s3\s3.go</td><td>内容变更</td></tr><tr><td>internal\fuse\fuse_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_reader_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\prune.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_self_update.go</td><td>内容变更</td></tr><tr><td>internal\archiver\blob_saver.go</td><td>内容变更</td></tr><tr><td>internal\repository\lock.go</td><td>内容变更</td></tr><tr><td>internal\backend\rclone\backend.go</td><td>内容变更</td></tr><tr><td>internal\ui\restore\text_test.go</td><td>内容变更</td></tr><tr><td>internal\archiver\blob_saver_test.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_rewrite_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\file_unix.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_repair_index.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_restore_integration_test.go</td><td>内容变更</td></tr><tr><td>internal\fs\stat_bsd.go</td><td>内容变更</td></tr><tr><td>internal\backend\util\defaults_test.go</td><td>内容变更</td></tr><tr><td>internal\fuse\inode.go</td><td>内容变更</td></tr><tr><td>internal\repository\pack\pack.go</td><td>内容变更</td></tr><tr><td>internal\feature\testing.go</td><td>内容变更</td></tr><tr><td>internal\fs\sd_windows.go</td><td>内容变更</td></tr><tr><td>internal\fs\ea_windows.go</td><td>内容变更</td></tr><tr><td>internal\fs\fs_local_vss_test.go</td><td>内容变更</td></tr><tr><td>doc\bash-completion.sh</td><td>内容变更</td></tr><tr><td>internal\ui\backup\progress_test.go</td><td>内容变更</td></tr><tr><td>internal\fuse\snapshots_dirstruct.go</td><td>内容变更</td></tr><tr><td>cmd\restic\cmd_backup_test.go</td><td>内容变更</td></tr><tr><td>internal\archiver\archiver_unix_test.go</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr><tr><td>internal\fs\stat_unix.go</td><td>内容变更</td></tr><tr><td>cmd\restic\integration_helpers_test.go</td><td>内容变更</td></tr><tr><td>internal\repository\repack_test.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

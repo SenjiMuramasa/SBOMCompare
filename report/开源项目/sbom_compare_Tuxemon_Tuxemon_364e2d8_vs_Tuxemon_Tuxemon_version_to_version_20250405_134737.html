@@ -1,0 +1,798 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:49:40</p>
+                <p>SBOM A: sample_data\Tuxemon_Tuxemon_364e2d8.json</p>
+                <p>SBOM B: sample_data\Tuxemon_Tuxemon.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.3/10 (92.6%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.3/10.0 (92.6%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (100.0%)</td>
+                    <td><ul class='details-list'><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.6/1.3 (43.0%)</td>
+                    <td><ul class='details-list'><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Token-Permissions, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: PYSEC-2021-421 / GHSA-h4m5-qpfp-3mpv (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-421 / GHSA-h4m5-qpfp-3mpv</li><li>- Warn: Project is vulnerable to: GHSA-3c5c-7235-994j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3c5c-7235-994j</li><li>- Warn: Project is vulnerable to: GHSA-3f63-hfp8-52jq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3f63-hfp8-52jq</li><li>- Warn: Project is vulnerable to: PYSEC-2021-41 / GHSA-3wvg-mj6g-m9cv (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-41 / GHSA-3wvg-mj6g-m9cv</li><li>- Warn: Project is vulnerable to: GHSA-3xv8-3j54-hgrp (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xv8-3j54-hgrp</li><li>- Warn: Project is vulnerable to: PYSEC-2020-80 / GHSA-43fq-w8qq-v88h (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-80 / GHSA-43fq-w8qq-v88h</li><li>- Warn: Project is vulnerable to: GHSA-44wm-f244-xhp3 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-44wm-f244-xhp3</li><li>- Warn: Project is vulnerable to: GHSA-4fx9-vc88-q2xc (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-4fx9-vc88-q2xc</li><li>- Warn: Project is vulnerable to: GHSA-56pw-mpj4-fxww (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-56pw-mpj4-fxww</li><li>- Warn: Project is vulnerable to: PYSEC-2021-35 / GHSA-57h3-9rgr-c24m (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-35 / GHSA-57h3-9rgr-c24m</li><li>- Warn: Project is vulnerable to: PYSEC-2020-172 / GHSA-5gm3-px64-rw72 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-172 / GHSA-5gm3-px64-rw72</li><li>- Warn: Project is vulnerable to: PYSEC-2021-331 / GHSA-7534-mm45-c74v (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-331 / GHSA-7534-mm45-c74v</li><li>- Warn: Project is vulnerable to: PYSEC-2021-92 / GHSA-7r7m-5h27-29hp (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-92 / GHSA-7r7m-5h27-29hp</li><li>- Warn: Project is vulnerable to: GHSA-8843-m7mw-mxqm (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-8843-m7mw-mxqm</li><li>- Warn: Project is vulnerable to: PYSEC-2023-227 / GHSA-8ghj-p4vj-mr35 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-227 / GHSA-8ghj-p4vj-mr35</li><li>- Warn: Project is vulnerable to: PYSEC-2014-87 / GHSA-8m9x-pxwq-j236 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2014-87 / GHSA-8m9x-pxwq-j236</li><li>- Warn: Project is vulnerable to: PYSEC-2022-10 / GHSA-8vj2-vxx3-667w (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-10 / GHSA-8vj2-vxx3-667w</li><li>- Warn: Project is vulnerable to: PYSEC-2021-36 / GHSA-8xjq-8fcg-g5hw (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-36 / GHSA-8xjq-8fcg-g5hw</li><li>- Warn: Project is vulnerable to: PYSEC-2016-6 / GHSA-8xjv-v9xq-m5h9 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2016-6 / GHSA-8xjv-v9xq-m5h9</li><li>- Warn: Project is vulnerable to: PYSEC-2021-42 / GHSA-95q3-8gr9-gm8w (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-42 / GHSA-95q3-8gr9-gm8w</li><li>- Warn: Project is vulnerable to: PYSEC-2022-168 / GHSA-9j59-75qj-795w (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-168 / GHSA-9j59-75qj-795w</li><li>- Warn: Project is vulnerable to: PYSEC-2014-10 / GHSA-cfmr-38g9-f2h7 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2014-10 / GHSA-cfmr-38g9-f2h7</li><li>- Warn: Project is vulnerable to: PYSEC-2020-76 / GHSA-cqhg-xjhh-p8hf (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-76 / GHSA-cqhg-xjhh-p8hf</li><li>- Warn: Project is vulnerable to: PYSEC-2021-40 / GHSA-f4w8-cv6p-x6r5 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-40 / GHSA-f4w8-cv6p-x6r5</li><li>- Warn: Project is vulnerable to: PYSEC-2021-69 / GHSA-f5g8-5qq7-938w (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-69 / GHSA-f5g8-5qq7-938w</li><li>- Warn: Project is vulnerable to: PYSEC-2021-139 / GHSA-g6rj-rv7j-xwp4 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-139 / GHSA-g6rj-rv7j-xwp4</li><li>- Warn: Project is vulnerable to: PYSEC-2015-16 / GHSA-h5rf-vgqx-wjv2 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2015-16 / GHSA-h5rf-vgqx-wjv2</li><li>- Warn: Project is vulnerable to: PYSEC-2016-5 / GHSA-hggx-3h72-49ww (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2016-5 / GHSA-hggx-3h72-49ww</li><li>- Warn: Project is vulnerable to: PYSEC-2020-84 / GHSA-hj69-c76v-86wr (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-84 / GHSA-hj69-c76v-86wr</li><li>- Warn: Project is vulnerable to: PYSEC-2016-7 / GHSA-hvr8-466p-75rh (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2016-7 / GHSA-hvr8-466p-75rh</li><li>- Warn: Project is vulnerable to: PYSEC-2015-15 / GHSA-j6f7-g425-4gmx (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2015-15 / GHSA-j6f7-g425-4gmx</li><li>- Warn: Project is vulnerable to: GHSA-j7hp-h8jx-5ppr (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-j7hp-h8jx-5ppr</li><li>- Warn: Project is vulnerable to: PYSEC-2019-110 / GHSA-j7mj-748x-7p78 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2019-110 / GHSA-j7mj-748x-7p78</li><li>- Warn: Project is vulnerable to: GHSA-jgpv-4h4c-xhw3 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-jgpv-4h4c-xhw3</li><li>- Warn: Project is vulnerable to: PYSEC-2022-42979 / GHSA-m2vv-5vj5-2hm7 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-42979 / GHSA-m2vv-5vj5-2hm7</li><li>- Warn: Project is vulnerable to: PYSEC-2021-37 / GHSA-mvg9-xffr-p774 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-37 / GHSA-mvg9-xffr-p774</li><li>- Warn: Project is vulnerable to: PYSEC-2020-83 / GHSA-p49h-hjvm-jg3h (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-83 / GHSA-p49h-hjvm-jg3h</li><li>- Warn: Project is vulnerable to: PYSEC-2022-8 / GHSA-pw3c-h7wp-cvhx (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-8 / GHSA-pw3c-h7wp-cvhx</li><li>- Warn: Project is vulnerable to: PYSEC-2021-93 / GHSA-q5hq-fp76-qmrc (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-93 / GHSA-q5hq-fp76-qmrc</li><li>- Warn: Project is vulnerable to: PYSEC-2020-82 / GHSA-r7rm-8j6h-r933 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-82 / GHSA-r7rm-8j6h-r933</li><li>- Warn: Project is vulnerable to: PYSEC-2014-23 / GHSA-r854-96gq-rfg3 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2014-23 / GHSA-r854-96gq-rfg3</li><li>- Warn: Project is vulnerable to: PYSEC-2016-8 / GHSA-rwr3-c2q8-gm56 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2016-8 / GHSA-rwr3-c2q8-gm56</li><li>- Warn: Project is vulnerable to: PYSEC-2020-81 / GHSA-vcqg-3p29-xw73 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-81 / GHSA-vcqg-3p29-xw73</li><li>- Warn: Project is vulnerable to: PYSEC-2020-79 / GHSA-vj42-xq3r-hr3r (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-79 / GHSA-vj42-xq3r-hr3r</li><li>- Warn: Project is vulnerable to: PYSEC-2021-70 / GHSA-vqcj-wrf2-7v73 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-70 / GHSA-vqcj-wrf2-7v73</li><li>- Warn: Project is vulnerable to: PYSEC-2016-9 / GHSA-w4vg-rf63-f3j3 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2016-9 / GHSA-w4vg-rf63-f3j3</li><li>- Warn: Project is vulnerable to: PYSEC-2014-22 / GHSA-x895-2wrm-hvp7 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2014-22 / GHSA-x895-2wrm-hvp7</li><li>- Warn: Project is vulnerable to: PYSEC-2022-9 / GHSA-xrcv-f9gm-v42c (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2022-9 / GHSA-xrcv-f9gm-v42c</li><li>- Warn: Project is vulnerable to: PYSEC-2020-77 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-77</li><li>- Warn: Project is vulnerable to: PYSEC-2020-78 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2020-78</li><li>- Warn: Project is vulnerable to: PYSEC-2021-137 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-137</li><li>- Warn: Project is vulnerable to: PYSEC-2021-138 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-138</li><li>- Warn: Project is vulnerable to: PYSEC-2021-317 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-317</li><li>- Warn: Project is vulnerable to: PYSEC-2021-38 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-38</li><li>- Warn: Project is vulnerable to: PYSEC-2021-39 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-39</li><li>- Warn: Project is vulnerable to: PYSEC-2021-94 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2021-94</li><li>- Warn: Project is vulnerable to: PYSEC-2023-175 (未知): 发现漏洞 Warn: Project is vulnerable to: PYSEC-2023-175</li><li>- Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (58)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3f63-hfp8-52jq</td>
+                            <td>Pillow through 10.1.0 allows PIL.ImageMath.eval Arbitrary Code Execution via the environment parameter, a different vulnerability than CVE-2022-22817 (which was about the expression parameter).<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2023-50447<br>CVE-2023-50447<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-50447</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/45c726fd4daa63236a8f3653530f297dc87b160a</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2023-50447</span><br><span class="vuln-link">https://duartecsantos.github.io/2023-01-02-CVE-2023-50447</span><br><span class="vuln-link">https://duartecsantos.github.io/2024-01-02-CVE-2023-50447</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/releases</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/01/msg00019.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/10.2.0.html#security</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2024/01/20/1</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 10.2.0 <br><br><br><div class="cve-header">来自 CVE-2023-50447 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3c5c-7235-994j</td>
+                            <td>Buffer overflow in the `ImagingPcdDecode` function in `PcdDecode.c` in Pillow before 3.1.1 and Python Imaging Library (PIL) 1.1.7 and earlier allows remote attackers to cause a denial of service (crash) via a crafted PhotoCD file.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2016-2533<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2016-2533</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/1706</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/5bdf54b5a76b54fb00bd05f2d733e0a4173eefc9#diff-8ff6909c159597e22288ad818938fd6b</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/ae453aa18b66af54e7ff716f4ccb33adca60afd4#diff-8ff6909c159597e22288ad818938fd6b</span><br><span class="vuln-link">https://github.com/advisories/GHSA-3c5c-7235-994j</span><br><span class="vuln-link">https://github.com/pypa/advisory-database/tree/main/vulns/pillow/PYSEC-2016-19.yaml</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c3cb690fed5d4bf0c45576759de55d054916c165/CHANGES.rst</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c3cb690fed5d4bf0c45576759de55d054916c165/CHANGES.rst?plain=1#L53</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">http://www.debian.org/security/2016/dsa-3499</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2016/02/02/5</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2016/02/22/2</span><br><span class="vuln-link">http://www.oracle.com/technetwork/topics/security/bulletinjan2016-2867206.html</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 3.1.1 <br><br><br><div class="cve-header">来自 CVE-2016-2533 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3xv8-3j54-hgrp</td>
+                            <td>In `libImaging/PcxDecode.c` in Pillow before 7.1.0, an out-of-bounds read can occur when reading PCX files where `state-&amp;gt;shuffle` is instructed to read beyond `state-&amp;gt;buffer`.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-10378<br>CVE-2020-10378<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-10378</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/issues/4750</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/124f4bb591e16212605d0e41c413ed53e242cba2</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/6a83e4324738bb0452fbe8074a995b1c73f08de7#diff-9478f2787e3ae9668a15123b165c23ac</span><br><span class="vuln-link">https://github.com/advisories/GHSA-3xv8-3j54-hgrp</span><br><span class="vuln-link">https://github.com/pypa/advisory-database/tree/main/vulns/pillow/PYSEC-2020-77.yaml</span><br><span class="vuln-link">https://github.com/pypa/advisory-db/blob/7872b0a91b4d980f749e6d75a81f8cc1af32829f/vulns/pillow/PYSEC-2020-77.yaml</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commits/master/src/libImaging</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.3.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-1</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 7.1.0 <br><br><br><div class="cve-header">来自 CVE-2020-10378 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-44wm-f244-xhp3</td>
+                            <td>In _imagingcms.c in Pillow before 10.3.0, a buffer overflow exists because strcpy is used instead of strncpy.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2024-28219<br>CVE-2024-28219<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-28219</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/2a93aba5cfcf6e241ab4f9392c13e3b74032c061</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2024/04/msg00008.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/4XLPUT3VK4GQ6EVY525TT2QNUIXNRU5M</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/10.3.0.html#security</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 10.3.0 <br><br><br><div class="cve-header">来自 CVE-2024-28219 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-56pw-mpj4-fxww</td>
+                            <td>Pillow versions before v10.0.1 bundled libwebp binaries in wheels that are vulnerable to CVE-2023-5129 (previously CVE-2023-4863). Pillow v10.0.1 upgrades the bundled libwebp binary to v1.3.2.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-4863</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-5129</span><br><span class="vuln-link">https://github.com/pypa/advisory-database/tree/main/vulns/pillow/PYSEC-2023-175.yaml</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst#1001-2023-09-15</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 10.0.1 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-8843-m7mw-mxqm</td>
+                            <td>In Pillow before 7.1.0, there are two Buffer Overflows in `libImaging/TiffDecode.c`.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-10379<br>CVE-2020-10379<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2020-10379</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/issues/4750</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/46f4a349b88915787fea3fb91348bb1665831bbb#diff-9478f2787e3ae9668a15123b165c23ac</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8843-m7mw-mxqm</span><br><span class="vuln-link">https://github.com/pypa/advisory-database/tree/main/vulns/pillow/PYSEC-2020-78.yaml</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commits/master/src/libImaging</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.3.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-PYTHON-PILLOW-574577</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 7.1.0 <br><br><br><div class="cve-header">来自 CVE-2020-10379 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-j7hp-h8jx-5ppr</td>
+                            <td>Heap buffer overflow in libwebp allow a remote attacker to perform an out of bounds memory write via a crafted HTML page. <br><br><div class="section-header">相关漏洞ID: </div><br>A-299477569<br>ASB-A-299477569<br>CVE-2023-4863<br>CVE-2023-5129<br>RUSTSEC-2023-0060<br>RUSTSEC-2023-0061<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-4863</span><br><span class="vuln-link">https://github.com/qnighy/libwebp-sys2-rs/pull/21</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/7395</span><br><span class="vuln-link">https://github.com/jaredforth/webp/pull/30</span><br><span class="vuln-link">https://github.com/electron/electron/pull/39823</span><br><span class="vuln-link">https://github.com/electron/electron/pull/39825</span><br><span class="vuln-link">https://github.com/electron/electron/pull/39826</span><br><span class="vuln-link">https://github.com/electron/electron/pull/39827</span><br><span class="vuln-link">https://github.com/electron/electron/pull/39828</span><br><span class="vuln-link">https://github.com/webmproject/libwebp/commit/902bc9190331343b2017211debcec8d2ab87e17a</span><br><span class="vuln-link">https://github.com/qnighy/libwebp-sys2-rs/commit/4560c473a76ec8bd8c650f19ddf9d7a44f719f8b</span><br><span class="vuln-link">https://github.com/jaredforth/webp/commit/9d4c56e63abecc777df71c702503c3eaabd7dcbc</span><br><span class="vuln-link">https://security.gentoo.org/glsa/202401-10</span><br><span class="vuln-link">https://security.gentoo.org/glsa/202309-05</span><br><span class="vuln-link">https://security-tracker.debian.org/tracker/CVE-2023-4863</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2023-0061.html</span><br><span class="vuln-link">https://rustsec.org/advisories/RUSTSEC-2023-0060.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/10.0.1.html#security</span><br><span class="vuln-link">https://news.ycombinator.com/item?id=37478403</span><br><span class="vuln-link">https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-4863</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/WTRUIS3564P7ZLM2S2IH4Y4KZ327LI4I</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20230929-0011</span><br><span class="vuln-link">https://sethmlarson.dev/security-developer-in-residence-weekly-report-16</span><br><span class="vuln-link">https://stackdiary.com/critical-vulnerability-in-webp-codec-cve-2023-4863</span><br><span class="vuln-link">https://www.bentley.com/advisories/be-2023-0001</span><br><span class="vuln-link">https://www.bleepingcomputer.com/news/google/google-fixes-another-chrome-zero-day-bug-exploited-in-attacks</span><br><span class="vuln-link">https://www.debian.org/security/2023/dsa-5496</span><br><span class="vuln-link">https://www.debian.org/security/2023/dsa-5497</span><br><span class="vuln-link">https://www.debian.org/security/2023/dsa-5498</span><br><span class="vuln-link">https://www.mozilla.org/en-US/security/advisories/mfsa2023-40</span><br><span class="vuln-link">https://adamcaudill.com/2023/09/14/whose-cve-is-it-anyway</span><br><span class="vuln-link">https://blog.isosceles.com/the-webp-0day</span><br><span class="vuln-link">https://bugzilla.suse.com/show_bug.cgi?id=1215231</span><br><span class="vuln-link">https://chromereleases.googleblog.com/2023/09/stable-channel-update-for-desktop_11.html</span><br><span class="vuln-link">https://crbug.com/1479274</span><br><span class="vuln-link">https://en.bandisoft.com/honeyview/history</span><br><span class="vuln-link">https://github.com/ImageMagick/ImageMagick/discussions/6664</span><br><span class="vuln-link">https://github.com/dlemstra/Magick.NET/releases/tag/13.3.0</span><br><span class="vuln-link">https://github.com/webmproject/libwebp</span><br><span class="vuln-link">https://github.com/webmproject/libwebp/releases/tag/v1.3.2</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/09/msg00015.html</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/09/msg00016.html</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/09/msg00017.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/6T655QF7CQ3DYAMPFV7IECQYGDEUIVVT</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/FYYKLG6CRGEDTNRBSU26EEWAO6D6U645</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/KUQ7CTX3W372X3UY56VVNAHCH6H2F4X3</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OZDGWWMJREPAGKWCJKSCM4WYLANSKIFX</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PYZV7TMKF4QHZ54SFJX54BDN52VHGGCX</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/WHOLML7N2G5KCAZXFWC5IDFFHSQS5SDB</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/21/4</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/3</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/4</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/5</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/6</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/7</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/22/8</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/26/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/26/7</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/28/1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/28/2</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2023/09/28/4</span><br><br><div class="section-header">影响范围: </div><br>libwebp-sys2: 所有版本 &lt; 0.1.8 <br>libwebp-sys: 所有版本 &lt; 0.9.3 <br>electron: &gt;= 22.0.0 &lt; 22.3.24 <br>electron: &gt;= 24.0.0 &lt; 24.8.3 <br>electron: &gt;= 25.0.0 &lt; 25.8.1 <br>electron: &gt;= 26.0.0 &lt; 26.2.1 <br>electron: &gt;= 27.0.0-beta.1 &lt; 27.0.0-beta.2 <br>SkiaSharp: &gt;= 2.0.0 &lt; 2.88.6 <br>github.com/chai2010/webp: &gt;= 1.0.0 <br>pillow: 所有版本 &lt; 10.0.1 <br>webp: 所有版本 &lt; 0.2.6 <br>magick.net-q16-anycpu: 所有版本 &lt; 13.3.0 <br>magick.net-q16-hdri-anycpu: 所有版本 &lt; 13.3.0 <br>magick.net-q16-x64: 所有版本 &lt; 13.3.0 <br>magick.net-q8-anycpu: 所有版本 &lt; 13.3.0 <br>magick.net-q8-openmp-x64: 所有版本 &lt; 13.3.0 <br>magick.net-q8-x64: 所有版本 &lt; 13.3.0 <br><br><br><div class="cve-header">来自 CVE-2023-4863 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2023-5129 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2023-4863 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2023-5129 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-4fx9-vc88-q2xc</td>
+                            <td>JpegImagePlugin may append an EOF marker to the end of a truncated file, so that the last segment of the data will still be processed by the decoder.<br><br>If the EOF marker is not detected as such however, this could lead to an infinite loop where JpegImagePlugin keeps trying to end the file.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/baae9ec4b67c68e3adaf1208cf54e8de5e38a6fd</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#ensure-jpegimageplugin-stops-at-the-end-of-a-truncated-file</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 9.0.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-421 / GHSA-h4m5-qpfp-3mpv</td>
+                            <td>Babel.Locale in Babel before 2.9.1 allows attackers to load arbitrary locale .dat files (containing serialized Python objects) via directory traversal, leading to code execution.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2021-42771<br>GHSA-h4m5-qpfp-3mpv<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://www.tenable.com/security/research/tra-2021-14</span><br><span class="vuln-link">https://lists.debian.org/debian-lts/2021/10/msg00040.html</span><br><span class="vuln-link">https://github.com/python-babel/babel/pull/782</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2021/10/msg00018.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-h4m5-qpfp-3mpv</span><br><br><div class="section-header">影响范围: </div><br>babel: 所有版本 &lt; 2.9.1 <br><br><br><div class="cve-header">来自 CVE-2021-42771 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-41 / GHSA-3wvg-mj6g-m9cv</td>
+                            <td>Pillow before 8.1.1 allows attackers to cause a denial of service (memory consumption) because the reported size of a contained image is not properly checked for an ICNS container, and thus an attempted memory allocation can be very large.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-27922<br>CVE-2021-27922<br>GHSA-3wvg-mj6g-m9cv<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TQQY6472RX4J2SUJENWDZAWKTJJGP2ML/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZTSY25UJU7NJUFHH3HWT575LT4TDFWBZ/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S7G44Z33J4BNI2DPDROHWGVG2U7ZH5JU/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-3wvg-mj6g-m9cv</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-27922 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-80 / GHSA-43fq-w8qq-v88h</td>
+                            <td>In libImaging/SgiRleDecode.c in Pillow through 7.0.0, a number of out-of-bounds reads exist in the parsing of SGI image files, a different issue than CVE-2020-5311.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-11538<br>CVE-2020-11538<br>GHSA-43fq-w8qq-v88h<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/index.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4504</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-1/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-43fq-w8qq-v88h</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 7.1.0 <br><br><br><div class="cve-header">来自 CVE-2020-11538 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-35 / GHSA-57h3-9rgr-c24m</td>
+                            <td>An issue was discovered in Pillow before 8.1.1. TiffDecode has a heap-based buffer overflow when decoding crafted YCbCr files because of certain interpretation conflicts with LibTIFF in RGBA mode. NOTE: this issue exists because of an incomplete fix for CVE-2020-35654.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25289<br>CVE-2021-25289<br>GHSA-57h3-9rgr-c24m<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-57h3-9rgr-c24m</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-25289 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-172 / GHSA-5gm3-px64-rw72</td>
+                            <td>There is a DoS vulnerability in Pillow before 6.2.2 caused by FpxImagePlugin.py calling the range function on an unvalidated 32-bit integer if the number of bands is large. On Windows running 32-bit Python, this results in an OverflowError or MemoryError due to the 2 GB limit. However, on Linux running 64-bit Python this results in the process being terminated by the OOM killer.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2019-19911<br>GHSA-5gm3-px64-rw72<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.2.html</span><br><span class="vuln-link">https://usn.ubuntu.com/4272-1/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3DUMIBUYGJRAVJCTFUWBRLVQKOUTVX5P/</span><br><span class="vuln-link">https://www.debian.org/security/2020/dsa-4631</span><br><span class="vuln-link">https://github.com/advisories/GHSA-5gm3-px64-rw72</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 6.2.2 <br><br><br><div class="cve-header">来自 CVE-2019-19911 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-331 / GHSA-7534-mm45-c74v</td>
+                            <td>Pillow through 8.2.0 and PIL (aka Python Imaging Library) through 1.1.7 allow an attacker to pass controlled parameters directly into a convert function to trigger a buffer overflow in Convert.c.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-34552<br>CVE-2021-34552<br>GHSA-7534-mm45-c74v<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/index.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.3.0.html#buffer-overflow</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2021/07/msg00018.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/7V6LCG525ARIX6LX5QRYNAWVDD2MD2SV/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/VUGBBT63VL7G4JNOEIPDJIOC34ZFBKNJ/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-7534-mm45-c74v</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.3.0 <br><br><br><div class="cve-header">来自 CVE-2021-34552 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-92 / GHSA-7r7m-5h27-29hp</td>
+                            <td>An issue was discovered in Pillow before 8.2.0. For FLI data, FliDecode did not properly check that the block advance was non-zero, potentially leading to an infinite loop on load.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-28676<br>CVE-2021-28676<br>GHSA-7r7m-5h27-29hp<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.2.0.html#cve-2021-28676-fix-fli-dos</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/5377</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQHA5HAIBOYI3R6HDWCLAGFTIQP767FL/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-7r7m-5h27-29hp</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.2.0 <br><br><br><div class="cve-header">来自 CVE-2021-28676 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-227 / GHSA-8ghj-p4vj-mr35</td>
+                            <td>An issue was discovered in Pillow before 10.0.0. It is a Denial of Service that uncontrollably allocates memory to process a given task, potentially causing a service to crash by having it run out of memory. This occurs for truetype in ImageFont when textlength in an ImageDraw instance operates on a long text argument.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2023-44271<br>CVE-2023-44271<br>GHSA-8ghj-p4vj-mr35<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2023-44271/</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/7244</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/1fe1bb49c452b0318cad12ea9d97c3bef188e9a7</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 1fe1bb49c452b0318cad12ea9d97c3bef188e9a7 <br>pillow: 所有版本 &lt; 10.0.0 <br><br><br><div class="cve-header">来自 CVE-2023-44271 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2014-87 / GHSA-8m9x-pxwq-j236</td>
+                            <td>Python Image Library (PIL) 1.1.7 and earlier and Pillow 2.3 might allow remote attackers to execute arbitrary commands via shell metacharacters in unspecified vectors related to CVE-2014-1932, possibly JpegImagePlugin.py.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-3007<br>GHSA-8m9x-pxwq-j236<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://people.canonical.com/~ubuntu-security/cve/2014/CVE-2014-1932.html</span><br><span class="vuln-link">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=737059</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 2.5.0 <br><br><br><div class="cve-header">来自 CVE-2014-3007 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-10 / GHSA-8vj2-vxx3-667w</td>
+                            <td>PIL.ImageMath.eval in Pillow before 9.0.0 allows evaluation of arbitrary expressions, such as ones that use the Python exec method.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2022-22817<br>CVE-2022-22817<br>GHSA-8vj2-vxx3-667w<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#restrict-builtins-available-to-imagemath-eval</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8vj2-vxx3-667w</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 9.0.0 <br><br><br><div class="cve-header">来自 CVE-2022-22817 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-36 / GHSA-8xjq-8fcg-g5hw</td>
+                            <td>An issue was discovered in Pillow before 8.1.1. In TiffDecode.c, there is a negative-offset memcpy with an invalid size.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25290<br>CVE-2021-25290<br>GHSA-8xjq-8fcg-g5hw<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8xjq-8fcg-g5hw</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-25290 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2016-6 / GHSA-8xjv-v9xq-m5h9</td>
+                            <td>Buffer overflow in the ImagingFliDecode function in libImaging/FliDecode.c in Pillow before 3.1.1 allows remote attackers to cause a denial of service (crash) via a crafted FLI file.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2016-0775<br>GHSA-8xjv-v9xq-m5h9<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://www.debian.org/security/2016/dsa-3499</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/893a40850c2d5da41537958e40569c029a6e127b</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c3cb690fed5d4bf0c45576759de55d054916c165/CHANGES.rst</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">https://github.com/advisories/GHSA-8xjv-v9xq-m5h9</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 893a40850c2d5da41537958e40569c029a6e127b <br>pillow: 所有版本 &lt; 3.1.1 <br><br><br><div class="cve-header">来自 CVE-2016-0775 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-42 / GHSA-95q3-8gr9-gm8w</td>
+                            <td>Pillow before 8.1.1 allows attackers to cause a denial of service (memory consumption) because the reported size of a contained image is not properly checked for an ICO container, and thus an attempted memory allocation can be very large.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-27923<br>CVE-2021-27923<br>GHSA-95q3-8gr9-gm8w<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TQQY6472RX4J2SUJENWDZAWKTJJGP2ML/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZTSY25UJU7NJUFHH3HWT575LT4TDFWBZ/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S7G44Z33J4BNI2DPDROHWGVG2U7ZH5JU/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-95q3-8gr9-gm8w</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-27923 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-168 / GHSA-9j59-75qj-795w</td>
+                            <td>Pillow before 9.0.1 allows attackers to delete files because spaces in temporary pathnames are mishandled.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2022-24303<br>CVE-2022-24303<br>GHSA-9j59-75qj-795w<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/9.0.1.html#security</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/3450</span><br><span class="vuln-link">https://github.com/advisories/GHSA-9j59-75qj-795w</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 9.0.1 <br><br><br><div class="cve-header">来自 CVE-2022-24303 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2014-10 / GHSA-cfmr-38g9-f2h7</td>
+                            <td>PIL/IcnsImagePlugin.py in Python Imaging Library (PIL) and Pillow before 2.3.2 and 2.5.x before 2.5.2 allows remote attackers to cause a denial of service via a crafted block size.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-3589<br>GHSA-cfmr-38g9-f2h7<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pypi.python.org/pypi/Pillow/2.5.2</span><br><span class="vuln-link">https://pypi.python.org/pypi/Pillow/2.3.2</span><br><span class="vuln-link">http://www.debian.org/security/2014/dsa-3009</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/205e056f8f9b06ed7b925cf8aa0874bc4aaf8a7d</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-updates/2015-04/msg00056.html</span><br><span class="vuln-link">http://secunia.com/advisories/59825</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 205e056f8f9b06ed7b925cf8aa0874bc4aaf8a7d <br>pillow: 所有版本 &lt; 2.3.2 &gt;= 2.5 &lt; 2.5.2 <br><br><br><div class="cve-header">来自 CVE-2014-3589 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-76 / GHSA-cqhg-xjhh-p8hf</td>
+                            <td>Pillow before 7.1.0 has multiple out-of-bounds reads in libImaging/FliDecode.c.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-10177<br>CVE-2020-10177<br>GHSA-cqhg-xjhh-p8hf<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commits/master/src/libImaging</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4503</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-1/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2/</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2020/08/msg00012.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-cqhg-xjhh-p8hf</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 7.1.0 <br><br><br><div class="cve-header">来自 CVE-2020-10177 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-40 / GHSA-f4w8-cv6p-x6r5</td>
+                            <td>Pillow before 8.1.1 allows attackers to cause a denial of service (memory consumption) because the reported size of a contained image is not properly checked for a BLP container, and thus an attempted memory allocation can be very large.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-27921<br>CVE-2021-27921<br>GHSA-f4w8-cv6p-x6r5<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TQQY6472RX4J2SUJENWDZAWKTJJGP2ML/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZTSY25UJU7NJUFHH3HWT575LT4TDFWBZ/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S7G44Z33J4BNI2DPDROHWGVG2U7ZH5JU/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-f4w8-cv6p-x6r5</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-27921 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-69 / GHSA-f5g8-5qq7-938w</td>
+                            <td>In Pillow before 8.1.0, PcxDecode has a buffer over-read when decoding a crafted PCX file because the user-supplied stride value is trusted for buffer calculations.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-35653<br>CVE-2020-35653<br>GHSA-f5g8-5qq7-938w<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/index.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BF553AMNNNBW7SH4IM4MNE4M6GNZQ7YD/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/6BYVI5G44MRIPERKYDQEL3S3YQCZTVHE/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-f5g8-5qq7-938w</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.0 <br><br><br><div class="cve-header">来自 CVE-2020-35653 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-139 / GHSA-g6rj-rv7j-xwp4</td>
+                            <td>An issue was discovered in Pillow before 8.2.0. PSDImagePlugin.PsdImageFile lacked a sanity check on the number of input layers relative to the size of the data block. This could lead to a DoS on Image.open prior to Image.load.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-28675<br>CVE-2021-28675<br>GHSA-g6rj-rv7j-xwp4<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.2.0.html#cve-2021-28675-fix-dos-in-psdimageplugin</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQHA5HAIBOYI3R6HDWCLAGFTIQP767FL/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-g6rj-rv7j-xwp4</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.2.0 <br><br><br><div class="cve-header">来自 CVE-2021-28675 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2015-16 / GHSA-h5rf-vgqx-wjv2</td>
+                            <td>Pillow before 2.7.0 allows remote attackers to cause a denial of service via a compressed text chunk in a PNG image that has a large size when it is decompressed.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-9601<br>GHSA-h5rf-vgqx-wjv2<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/1060</span><br><span class="vuln-link">https://www.djangoproject.com/weblog/2015/jan/02/pillow-security-release/</span><br><span class="vuln-link">http://pillow.readthedocs.org/releasenotes/2.7.0.html</span><br><span class="vuln-link">http://lists.fedoraproject.org/pipermail/package-announce/2015-January/148442.html</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-updates/2015-04/msg00056.html</span><br><span class="vuln-link">http://www.oracle.com/technetwork/topics/security/bulletinjul2015-2511963.html</span><br><span class="vuln-link">http://www.securityfocus.com/bid/77758</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 2.7.0 <br><br><br><div class="cve-header">来自 CVE-2014-9601 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2016-5 / GHSA-hggx-3h72-49ww</td>
+                            <td>Buffer overflow in the ImagingLibTiffDecode function in libImaging/TiffDecode.c in Pillow before 3.1.1 allows remote attackers to overwrite memory via a crafted TIFF file.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2016-0740<br>GHSA-hggx-3h72-49ww<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://www.debian.org/security/2016/dsa-3499</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/6dcbf5bd96b717c58d7b642949da8d323099928e</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c3cb690fed5d4bf0c45576759de55d054916c165/CHANGES.rst</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">https://github.com/advisories/GHSA-hggx-3h72-49ww</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 6dcbf5bd96b717c58d7b642949da8d323099928e <br>pillow: 所有版本 &lt; 3.1.1 <br><br><br><div class="cve-header">来自 CVE-2016-0740 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-84 / GHSA-hj69-c76v-86wr</td>
+                            <td>libImaging/FliDecode.c in Pillow before 6.2.2 has an FLI buffer overflow.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-5313<br>CVE-2020-5313<br>GHSA-hj69-c76v-86wr<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/a09acd0decd8a87ccce939d5ff65dab59e7d365b</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.2.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/2MMU3WT2X64GS5WHDPKKC2WZA7UIIQ3A/</span><br><span class="vuln-link">https://usn.ubuntu.com/4272-1/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3DUMIBUYGJRAVJCTFUWBRLVQKOUTVX5P/</span><br><span class="vuln-link">https://www.debian.org/security/2020/dsa-4631</span><br><span class="vuln-link">https://github.com/advisories/GHSA-hj69-c76v-86wr</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; a09acd0decd8a87ccce939d5ff65dab59e7d365b <br>pillow: 所有版本 &lt; 6.2.2 <br><br><br><div class="cve-header">来自 CVE-2020-5313 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2016-7 / GHSA-hvr8-466p-75rh</td>
+                            <td>Integer overflow in the ImagingResampleHorizontal function in libImaging/Resample.c in Pillow before 3.1.1 allows remote attackers to have unspecified impact via negative values of the new size, which triggers a heap-based buffer overflow.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2016-4009<br>GHSA-hvr8-466p-75rh<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/4e0d9b0b9740d258ade40cce248c93777362ac1e</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/1714</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c3cb690fed5d4bf0c45576759de55d054916c165/CHANGES.rst</span><br><span class="vuln-link">http://www.securityfocus.com/bid/86064</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">https://github.com/advisories/GHSA-hvr8-466p-75rh</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 4e0d9b0b9740d258ade40cce248c93777362ac1e <br>pillow: 所有版本 &lt; 3.1.1 <br><br><br><div class="cve-header">来自 CVE-2016-4009 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2015-15 / GHSA-j6f7-g425-4gmx</td>
+                            <td>The Jpeg2KImagePlugin plugin in Pillow before 2.5.3 allows remote attackers to cause a denial of service via a crafted image.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-3598<br>GHSA-j6f7-g425-4gmx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pypi.python.org/pypi/Pillow/2.5.3</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-updates/2015-04/msg00056.html</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 2.5.3 <br><br><br><div class="cve-header">来自 CVE-2014-3598 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2019-110 / GHSA-j7mj-748x-7p78</td>
+                            <td>An issue was discovered in Pillow before 6.2.0. When reading specially crafted invalid image files, the library can either allocate very large amounts of memory or take an extremely long period of time to process the image.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2019-16865<br>GHSA-j7mj-748x-7p78<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/latest/releasenotes/6.2.0.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/LYDXD7EE4YAEVSTNIFZKNVPRVJX5ZOG3/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/EMJBUZQGQ2Q7HXYCQVRLU7OXNC7CAWWU/</span><br><span class="vuln-link">https://usn.ubuntu.com/4272-1/</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0566</span><br><span class="vuln-link">https://www.debian.org/security/2020/dsa-4631</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0580</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0578</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0683</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0681</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0694</span><br><span class="vuln-link">https://github.com/advisories/GHSA-j7mj-748x-7p78</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 6.2.0 <br><br><br><div class="cve-header">来自 CVE-2019-16865 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-jgpv-4h4c-xhw3</td>
+                            <td>### Impact<br>_Pillow before 8.1.1 allows attackers to cause a denial of service (memory consumption) because the reported size of a contained image is not properly checked for a BLP container, and thus an attempted memory allocation can be very large._<br><br>### Patches<br>_An issue was discovered in Pillow before 6.2.0. When reading specially crafted invalid image files, the library can either allocate very large amounts of memory or take an extremely long period of time to process the image._<br><br>### Workarounds<br>_An issue was discovered in Pillow before 6.2.0. When reading specially crafted invalid image files, the library can either allocate very large amounts of memory or take an extremely long period of time to process the image._<br><br>### References<br>https://nvd.nist.gov/vuln/detail/CVE-2021-27921<br><br>### For more information<br>If you have any questions or comments about this advisory:<br>* Open an issue in [example link to repo](http://example.com)<br>* Email us at [example email address](mailto:example@example.com)<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/calix2/pyVulApp/security/advisories/GHSA-jgpv-4h4c-xhw3</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.2 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-42979 / GHSA-m2vv-5vj5-2hm7</td>
+                            <td>Pillow before 9.2.0 performs Improper Handling of Highly Compressed GIF Data (Data Amplification).<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2022-45198<br>CVE-2022-45198<br>GHSA-m2vv-5vj5-2hm7<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://bugs.gentoo.org/855683</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/11918eac0628ec8ac0812670d9838361ead2d6a4</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/6402</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/releases/tag/9.2.0</span><br><span class="vuln-link">https://cwe.mitre.org/data/definitions/409.html</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 11918eac0628ec8ac0812670d9838361ead2d6a4 <br>pillow: 所有版本 &lt; 9.2.0 <br><br><br><div class="cve-header">来自 CVE-2022-45198 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-37 / GHSA-mvg9-xffr-p774</td>
+                            <td>An issue was discovered in Pillow before 8.1.1. In TiffDecode.c, there is an out-of-bounds read in TiffreadRGBATile via invalid tile boundaries.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25291<br>CVE-2021-25291<br>GHSA-mvg9-xffr-p774<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-mvg9-xffr-p774</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-25291 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-83 / GHSA-p49h-hjvm-jg3h</td>
+                            <td>libImaging/PcxDecode.c in Pillow before 6.2.2 has a PCX P mode buffer overflow.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-5312<br>CVE-2020-5312<br>GHSA-p49h-hjvm-jg3h<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.2.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/93b22b846e0269ee9594ff71a72bec02d2bea8fd</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/2MMU3WT2X64GS5WHDPKKC2WZA7UIIQ3A/</span><br><span class="vuln-link">https://usn.ubuntu.com/4272-1/</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0566</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3DUMIBUYGJRAVJCTFUWBRLVQKOUTVX5P/</span><br><span class="vuln-link">https://www.debian.org/security/2020/dsa-4631</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0580</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0578</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0683</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0681</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0694</span><br><span class="vuln-link">https://github.com/advisories/GHSA-p49h-hjvm-jg3h</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 93b22b846e0269ee9594ff71a72bec02d2bea8fd <br>pillow: 所有版本 &lt; 6.2.2 <br><br><br><div class="cve-header">来自 CVE-2020-5312 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-8 / GHSA-pw3c-h7wp-cvhx</td>
+                            <td>path_getbbox in path.c in Pillow before 9.0.0 improperly initializes ImagePath.Path.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2022-22815<br>CVE-2022-22815<br>GHSA-pw3c-h7wp-cvhx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c5d9223a8b5e9295d15b5a9b1ef1dae44c8499f3/src/path.c#L331</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#fixed-imagepath-path-array-handling</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-pw3c-h7wp-cvhx</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 9.0.0 <br><br><br><div class="cve-header">来自 CVE-2022-22815 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-93 / GHSA-q5hq-fp76-qmrc</td>
+                            <td>An issue was discovered in Pillow before 8.2.0. For EPS data, the readline implementation used in EPSImageFile has to deal with any combination of \r and \n as line endings. It used an accidentally quadratic method of accumulating lines while looking for a line ending. A malicious EPS file could use this to perform a DoS of Pillow in the open phase, before an image was accepted for opening.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-28677<br>CVE-2021-28677<br>GHSA-q5hq-fp76-qmrc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/5377</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.2.0.html#cve-2021-28677-fix-eps-dos-on-open</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQHA5HAIBOYI3R6HDWCLAGFTIQP767FL/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-q5hq-fp76-qmrc</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.2.0 <br><br><br><div class="cve-header">来自 CVE-2021-28677 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-82 / GHSA-r7rm-8j6h-r933</td>
+                            <td>libImaging/SgiRleDecode.c in Pillow before 6.2.2 has an SGI buffer overflow.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-5311<br>CVE-2020-5311<br>GHSA-r7rm-8j6h-r933<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.2.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/a79b65c47c7dc6fe623aadf09aa6192fc54548f3</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/2MMU3WT2X64GS5WHDPKKC2WZA7UIIQ3A/</span><br><span class="vuln-link">https://usn.ubuntu.com/4272-1/</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0566</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3DUMIBUYGJRAVJCTFUWBRLVQKOUTVX5P/</span><br><span class="vuln-link">https://www.debian.org/security/2020/dsa-4631</span><br><span class="vuln-link">https://access.redhat.com/errata/RHSA-2020:0580</span><br><span class="vuln-link">https://github.com/advisories/GHSA-r7rm-8j6h-r933</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; a79b65c47c7dc6fe623aadf09aa6192fc54548f3 <br>pillow: 所有版本 &lt; 6.2.2 <br><br><br><div class="cve-header">来自 CVE-2020-5311 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2014-23 / GHSA-r854-96gq-rfg3</td>
+                            <td>The (1) JpegImagePlugin.py and (2) EpsImagePlugin.py scripts in Python Image Library (PIL) 1.1.7 and earlier and Pillow before 2.3.1 uses the names of temporary files on the command line, which makes it easier for local users to conduct symlink attacks by listing the processes.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-1933<br>GHSA-r854-96gq-rfg3<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://www.ubuntu.com/usn/USN-2168-1</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2014/02/10/15</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2014/02/11/1</span><br><span class="vuln-link">https://github.com/python-imaging/Pillow/commit/4e9f367dfd3f04c8f5d23f7f759ec12782e10ee7</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-updates/2014-05/msg00002.html</span><br><span class="vuln-link">http://www.securityfocus.com/bid/65513</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">https://github.com/advisories/GHSA-r854-96gq-rfg3</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 4e9f367dfd3f04c8f5d23f7f759ec12782e10ee7 <br>pillow: 所有版本 &lt; 2.3.1 <br><br><br><div class="cve-header">来自 CVE-2014-1933 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2016-8 / GHSA-rwr3-c2q8-gm56</td>
+                            <td>Pillow before 3.3.2 allows context-dependent attackers to obtain sensitive information by using the &amp;quot;crafted image file&amp;quot; approach, related to an &amp;quot;Integer Overflow&amp;quot; issue affecting the Image.core.map_buffer in map.c component.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2016-9189<br>GHSA-rwr3-c2q8-gm56<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://pillow.readthedocs.io/en/3.4.x/releasenotes/3.3.2.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/issues/2105</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/2146/commits/c50ebe6459a131a1ea8ca531f10da616d3ceaa0f</span><br><span class="vuln-link">http://www.securityfocus.com/bid/94234</span><br><span class="vuln-link">http://www.debian.org/security/2016/dsa-3710</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">https://github.com/advisories/GHSA-rwr3-c2q8-gm56</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 3.3.2 <br><br><br><div class="cve-header">来自 CVE-2016-9189 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-81 / GHSA-vcqg-3p29-xw73</td>
+                            <td>libImaging/TiffDecode.c in Pillow before 6.2.2 has a TIFF decoding integer overflow, related to realloc.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-5310<br>CVE-2020-5310<br>GHSA-vcqg-3p29-xw73<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/6.2.2.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/4e2def2539ec13e53a82e06c4b3daf00454100c4</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/2MMU3WT2X64GS5WHDPKKC2WZA7UIIQ3A/</span><br><span class="vuln-link">https://usn.ubuntu.com/4272-1/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3DUMIBUYGJRAVJCTFUWBRLVQKOUTVX5P/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-vcqg-3p29-xw73</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 4e2def2539ec13e53a82e06c4b3daf00454100c4 <br>pillow: 所有版本 &lt; 6.2.2 <br><br><br><div class="cve-header">来自 CVE-2020-5310 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-79 / GHSA-vj42-xq3r-hr3r</td>
+                            <td>In libImaging/Jpeg2KDecode.c in Pillow before 7.1.0, there are multiple out-of-bounds reads via a crafted JP2 file.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-10994<br>CVE-2020-10994<br>GHSA-vj42-xq3r-hr3r<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commits/master/src/libImaging/</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4505</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-1/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-vj42-xq3r-hr3r</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 7.0.0 <br><br><br><div class="cve-header">来自 CVE-2020-10994 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-70 / GHSA-vqcj-wrf2-7v73</td>
+                            <td>In Pillow before 8.1.0, TiffDecode has a heap-based buffer overflow when decoding crafted YCbCr files because of certain interpretation conflicts with LibTIFF in RGBA mode.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2020-35654<br>CVE-2020-35654<br>GHSA-vqcj-wrf2-7v73<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/index.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BF553AMNNNBW7SH4IM4MNE4M6GNZQ7YD/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/6BYVI5G44MRIPERKYDQEL3S3YQCZTVHE/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TQQY6472RX4J2SUJENWDZAWKTJJGP2ML/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZTSY25UJU7NJUFHH3HWT575LT4TDFWBZ/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-vqcj-wrf2-7v73</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.0 <br><br><br><div class="cve-header">来自 CVE-2020-35654 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2016-9 / GHSA-w4vg-rf63-f3j3</td>
+                            <td>Pillow before 3.3.2 allows context-dependent attackers to execute arbitrary code by using the &amp;quot;crafted image file&amp;quot; approach, related to an &amp;quot;Insecure Sign Extension&amp;quot; issue affecting the ImagingNew in Storage.c component.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2016-9190<br>GHSA-w4vg-rf63-f3j3<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://pillow.readthedocs.io/en/3.4.x/releasenotes/3.3.2.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/issues/2105</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/2146/commits/5d8a0be45aad78c5a22c8d099118ee26ef8144af</span><br><span class="vuln-link">http://www.securityfocus.com/bid/94234</span><br><span class="vuln-link">http://www.debian.org/security/2016/dsa-3710</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><span class="vuln-link">https://github.com/advisories/GHSA-w4vg-rf63-f3j3</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 3.3.2 <br><br><br><div class="cve-header">来自 CVE-2016-9190 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2014-22 / GHSA-x895-2wrm-hvp7</td>
+                            <td>The (1) load_djpeg function in JpegImagePlugin.py, (2) Ghostscript function in EpsImagePlugin.py, (3) load function in IptcImagePlugin.py, and (4) _copy function in Image.py in Python Image Library (PIL) 1.1.7 and earlier and Pillow before 2.3.1 do not properly create temporary files, which allow local users to overwrite arbitrary files and obtain sensitive information via a symlink attack on the temporary file.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2014-1932<br>GHSA-x895-2wrm-hvp7<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2014/02/11/1</span><br><span class="vuln-link">http://www.ubuntu.com/usn/USN-2168-1</span><br><span class="vuln-link">https://github.com/python-imaging/Pillow/commit/4e9f367dfd3f04c8f5d23f7f759ec12782e10ee7</span><br><span class="vuln-link">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=737059</span><br><span class="vuln-link">http://lists.opensuse.org/opensuse-updates/2014-05/msg00002.html</span><br><span class="vuln-link">http://www.securityfocus.com/bid/65511</span><br><span class="vuln-link">https://security.gentoo.org/glsa/201612-52</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 4e9f367dfd3f04c8f5d23f7f759ec12782e10ee7 <br>pillow: 所有版本 &lt; 2.3.1 <br><br><br><div class="cve-header">来自 CVE-2014-1932 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2022-9 / GHSA-xrcv-f9gm-v42c</td>
+                            <td>path_getbbox in path.c in Pillow before 9.0.0 has a buffer over-read during initialization of ImagePath.Path.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2022-22816<br>CVE-2022-22816<br>GHSA-xrcv-f9gm-v42c<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/c5d9223a8b5e9295d15b5a9b1ef1dae44c8499f3/src/path.c#L331</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#fixed-imagepath-path-array-handling</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-xrcv-f9gm-v42c</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 9.0.0 <br><br><br><div class="cve-header">来自 CVE-2022-22816 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-77</td>
+                            <td>In libImaging/PcxDecode.c in Pillow before 7.1.0, an out-of-bounds read can occur when reading PCX files where state-&amp;gt;shuffle is instructed to read beyond state-&amp;gt;buffer.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commits/master/src/libImaging</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/6a83e4324738bb0452fbe8074a995b1c73f08de7#diff-9478f2787e3ae9668a15123b165c23ac</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-1/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2/</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 6a83e4324738bb0452fbe8074a995b1c73f08de7 <br>pillow: 所有版本 &lt; 7.1.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2020-78</td>
+                            <td>In Pillow before 7.1.0, there are two Buffer Overflows in libImaging/TiffDecode.c.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/7.1.0.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commits/master/src/libImaging</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/46f4a349b88915787fea3fb91348bb1665831bbb#diff-9478f2787e3ae9668a15123b165c23ac</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/4538</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HOKHNWV2VS5GESY7IBD237E7C6T3I427/</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/BEBCPE4F2VHTIT6EZA2YZQZLPVDEBJGD/</span><br><span class="vuln-link">https://usn.ubuntu.com/4430-2/</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 46f4a349b88915787fea3fb91348bb1665831bbb <br>pillow: 所有版本 &lt; 7.1.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-137</td>
+                            <td>An issue was discovered in Pillow before 8.2.0. There is an out-of-bounds read in J2kDecode, in j2ku_graya_la.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25287<br>CVE-2021-25287<br>GHSA-77gc-v2xv-rvvh<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.2.0.html#cve-2021-25287-cve-2021-25288-fix-oob-read-in-jpeg2kdecode</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/5377#issuecomment-833821470</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQHA5HAIBOYI3R6HDWCLAGFTIQP767FL/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-77gc-v2xv-rvvh</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.2.0 <br><br><br><div class="cve-header">来自 CVE-2021-25287 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-138</td>
+                            <td>An issue was discovered in Pillow before 8.2.0. There is an out-of-bounds read in J2kDecode, in j2ku_gray_i.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25288<br>CVE-2021-25288<br>GHSA-rwv7-3v45-hg29<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.2.0.html#cve-2021-25287-cve-2021-25288-fix-oob-read-in-jpeg2kdecode</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/5377#issuecomment-833821470</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQHA5HAIBOYI3R6HDWCLAGFTIQP767FL/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-rwv7-3v45-hg29</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.2.0 <br><br><br><div class="cve-header">来自 CVE-2021-25288 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-317</td>
+                            <td>The package pillow from 0 and before 8.3.2 are vulnerable to Regular Expression Denial of Service (ReDoS) via the getrgb function.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-23437<br>CVE-2021-23437<br>GHSA-98vv-pw6r-q6q4<br>SNYK-PYTHON-PILLOW-1319443<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.3.2.html</span><br><span class="vuln-link">https://github.com/python-pillow/Pillow/commit/9e08eb8f78fdfd2f476e1b20b7cf38683754866b</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-PYTHON-PILLOW-1319443</span><br><span class="vuln-link">https://github.com/advisories/GHSA-98vv-pw6r-q6q4</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 9e08eb8f78fdfd2f476e1b20b7cf38683754866b <br>pillow: 所有版本 &lt; 8.3.2 <br><br><br><div class="cve-header">来自 CVE-2021-23437 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-38</td>
+                            <td>An issue was discovered in Pillow before 8.1.1. The PDF parser allows a regular expression DoS (ReDoS) attack via a crafted PDF file because of a catastrophic backtracking regex.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25292<br>CVE-2021-25292<br>GHSA-9hx2-hgq2-2g4f<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-9hx2-hgq2-2g4f</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-25292 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-39</td>
+                            <td>An issue was discovered in Pillow before 8.1.1. There is an out-of-bounds read in SGIRleDecode.c.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-25293<br>CVE-2021-25293<br>GHSA-p43w-g3c5-g5mq<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.1.1.html</span><br><span class="vuln-link">https://github.com/advisories/GHSA-p43w-g3c5-g5mq</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.1.1 <br><br><br><div class="cve-header">来自 CVE-2021-25293 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2021-94</td>
+                            <td>An issue was discovered in Pillow before 8.2.0. For BLP data, BlpImagePlugin did not properly check that reads (after jumping to file offsets) returned data. This could lead to a DoS where the decoder could be run a large number of times on empty data.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-pillow-2021-28678<br>CVE-2021-28678<br>GHSA-hjfx-8p6c-g7gx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/pull/5377</span><br><span class="vuln-link">https://pillow.readthedocs.io/en/stable/releasenotes/8.2.0.html#cve-2021-28678-fix-blp-dos</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQHA5HAIBOYI3R6HDWCLAGFTIQP767FL/</span><br><span class="vuln-link">https://github.com/advisories/GHSA-hjfx-8p6c-g7gx</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 8.2.0 <br><br><br><div class="cve-header">来自 CVE-2021-28678 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: PYSEC-2023-175</td>
+                            <td>Pillow versions before v10.0.1 bundled libwebp binaries in wheels that are vulnerable to CVE-2023-5129 (previously CVE-2023-4863). Pillow v10.0.1 upgrades the bundled libwebp binary to v1.3.2.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst#1001-2023-09-15</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-5129</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-4863</span><br><br><div class="section-header">影响范围: </div><br>pillow: 所有版本 &lt; 10.0.1 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9wx4-h78v-vm56</td>
+                            <td>When making requests through a Requests `Session`, if the first request is made with `verify=False` to disable cert verification, all subsequent requests to the same origin will continue to ignore cert verification regardless of changes to the value of `verify`. This behavior will continue for the lifecycle of the connection in the connection pool.<br><br>### Remediation<br>Any of these options can be used to remediate the current issue, we highly recommend upgrading as the preferred mitigation.<br><br>* Upgrade to `requests&amp;gt;=2.32.0`.<br>* For `requests&amp;lt;2.32.0`, avoid setting `verify=False` for the first request to a host while using a Requests Session.<br>* For `requests&amp;lt;2.32.0`, call `close()` on `Session` objects to clear existing connections if `verify=False` is used.<br><br>### Related Links<br>* https://github.com/psf/requests/pull/6655<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-35195<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/psf/requests/security/advisories/GHSA-9wx4-h78v-vm56</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-35195</span><br><span class="vuln-link">https://github.com/psf/requests/pull/6655</span><br><span class="vuln-link">https://github.com/psf/requests/commit/a58d7f2ffb4d00b46dca2d70a3932a0b37e22fac</span><br><span class="vuln-link">https://github.com/psf/requests</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/IYLSNK5TL46Q6XPRVMHVWS63MVJQOK4Q</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/N7WP6EYDSUOCOJYHDK5NX43PYZ4SNHGZ</span><br><br><div class="section-header">影响范围: </div><br>requests: 所有版本 &lt; 2.32.0 <br><br><br><div class="cve-header">来自 CVE-2024-35195 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>1650</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>1682</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>106</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>74</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>546</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (106)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p>(仅显示前100个，共106个)</p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>tuxemon\status\effects\diehard.py</td></tr><tr><td>tuxemon\weather.py</td></tr><tr><td>tuxemon\status\conditions\current_hp.py</td></tr><tr><td>tuxemon\status\effects\sniping.py</td></tr><tr><td>tuxemon\status\effects\enraged.py</td></tr><tr><td>mods\tuxemon\db\status\prickly.json</td></tr><tr><td>tuxemon\status\effects\lockdown.py</td></tr><tr><td>tuxemon\status\effects\wasting.py</td></tr><tr><td>tuxemon\event\conditions\button_count.py</td></tr><tr><td>tuxemon\event\actions\modify_bill.py</td></tr><tr><td>tuxemon\status\__init__.py</td></tr><tr><td>tuxemon\boundary.py</td></tr><tr><td>tuxemon\money.py</td></tr><tr><td>tuxemon\status\effects\revenge.py</td></tr><tr><td>mods\tuxemon\db\status\slow.json</td></tr><tr><td>tuxemon\status\effects\flinching.py</td></tr><tr><td>mods\tuxemon\db\status\retaliate.json</td></tr><tr><td>mods\tuxemon\db\status\lifegift.json</td></tr><tr><td>mods\tuxemon\db\status\chargedup.json</td></tr><tr><td>tuxemon\status\effects\lifeleech.py</td></tr><tr><td>mods\tuxemon\db\status\tired.json</td></tr><tr><td>mods\tuxemon\db\status\confused.json</td></tr><tr><td>tuxemon\status\effects\harpooned.py</td></tr><tr><td>tuxemon\status\effects\statchange.py</td></tr><tr><td>tuxemon\status\effects\feedback.py</td></tr><tr><td>tuxemon\status\effects\poisoned.py</td></tr><tr><td>mods\tuxemon\db\status\poison.json</td></tr><tr><td>tuxemon\status\effects\burnt.py</td></tr><tr><td>mods\tuxemon\db\status\recover.json</td></tr><tr><td>mods\tuxemon\db\status\wasting.json</td></tr><tr><td>tuxemon\status\effects\prickly.py</td></tr><tr><td>tuxemon\status\effects\noddingoff.py</td></tr><tr><td>mods\tuxemon\db\status\charging.json</td></tr><tr><td>tuxemon\version.py</td></tr><tr><td>mods\tuxemon\db\status\blinded.json</td></tr><tr><td>tuxemon\status\effects\recover.py</td></tr><tr><td>tuxemon\states\control\set_language.py</td></tr><tr><td>mods\tuxemon\db\status\diehard.json</td></tr><tr><td>tuxemon\status\effects\lifegift.py</td></tr><tr><td>tuxemon\status\conditions\has_status.py</td></tr><tr><td>tuxemon\states\control\set_key_state.py</td></tr><tr><td>tests\tuxemon\test_version.py</td></tr><tr><td>tuxemon\terrain.py</td></tr><tr><td>tuxemon\status\effects\__init__.py</td></tr><tr><td>tuxemon\event\actions\remove_held_item.py</td></tr><tr><td>tuxemon\taste.py</td></tr><tr><td>mods\tuxemon\db\status\festering.json</td></tr><tr><td>mods\tuxemon\db\taste\taste.json</td></tr><tr><td>mods\tuxemon\db\status\grabbed.json</td></tr><tr><td>mods\tuxemon\db\status\elementalshield.json</td></tr><tr><td>tuxemon\states\control\control_state.py</td></tr><tr><td>mods\tuxemon\db\status\feedback.json</td></tr><tr><td>mods\tuxemon\db\status\revenge.json</td></tr><tr><td>mods\tuxemon\db\status\noddingoff.json</td></tr><tr><td>mods\tuxemon\db\status\sniping.json</td></tr><tr><td>tuxemon\status\conditions\status.py</td></tr><tr><td>mods\tuxemon\db\status\burn.json</td></tr><tr><td>mods\tuxemon\db\status\faint.json</td></tr><tr><td>mods\tuxemon\db\status\flinching.json</td></tr><tr><td>tuxemon\status\effects\stuck.py</td></tr><tr><td>tuxemon\technique\effects\foresight.py</td></tr><tr><td>mods\tuxemon\db\weather\weathers.json</td></tr><tr><td>tuxemon\status\conditions\__init__.py</td></tr><tr><td>tuxemon\states\monster_item\__init__.py</td></tr><tr><td>mods\tuxemon\db\status\lockdown.json</td></tr><tr><td>tuxemon\status\effects\festering.py</td></tr><tr><td>tests\tuxemon\test_pathfinder.py</td></tr><tr><td>tuxemon\event\conditions\bill_is.py</td></tr><tr><td>mods\tuxemon\mod.json</td></tr><tr><td>tuxemon\event\conditions\button_combo.py</td></tr><tr><td>tuxemon\status\effects\exhausted.py</td></tr><tr><td>mods\tuxemon\db\status\exhausted.json</td></tr><tr><td>tuxemon\event\conditions\button_held.py</td></tr><tr><td>mods\tuxemon\db\status\enraged.json</td></tr><tr><td>mods\db_config.json</td></tr><tr><td>tuxemon\status\status.py</td></tr><tr><td>mods\tuxemon\db\terrain\terrains.json</td></tr><tr><td>mods\tuxemon\db\status\softened.json</td></tr><tr><td>tests\tuxemon\test_boundary.py</td></tr><tr><td>tuxemon\status\statuscondition.py</td></tr><tr><td>tuxemon\status\effects\wild.py</td></tr><tr><td>tuxemon\core_manager.py</td></tr><tr><td>tests\tuxemon\test_events_platformpygame.py</td></tr><tr><td>mods\tuxemon\db\status\focused.json</td></tr><tr><td>tuxemon\status\effects\elemental_shield.py</td></tr><tr><td>tuxemon\event\actions\add_held_item.py</td></tr><tr><td>tests\tuxemon\test_money.py</td></tr><tr><td>tuxemon\status\effects\charging.py</td></tr><tr><td>mods\tuxemon\db\status\eliminated.json</td></tr><tr><td>tuxemon\event\actions\camera_shake.py</td></tr><tr><td>tuxemon\status\effects\retaliate.py</td></tr><tr><td>tuxemon\status\effects\tired.py</td></tr><tr><td>tuxemon\status\effects\chargedup.py</td></tr><tr><td>tuxemon\status\statuseffect.py</td></tr><tr><td>tuxemon\event\conditions\camera_position.py</td></tr><tr><td>mods\tuxemon\db\status\wild.json</td></tr><tr><td>tuxemon\event\actions\set_bill.py</td></tr><tr><td>tuxemon\platform\input_history.py</td></tr><tr><td>mods\tuxemon\db\status\hardshell.json</td></tr><tr><td>tuxemon\status\effects\confused.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (74)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>tuxemon\condition\effects\stuck.py</td></tr><tr><td>mods\tuxemon\db\condition\chargedup.json</td></tr><tr><td>tuxemon\condition\effects\chargedup.py</td></tr><tr><td>mods\tuxemon\db\condition\retaliate.json</td></tr><tr><td>tuxemon\condition\conditions\has_status.py</td></tr><tr><td>mods\tuxemon\db\condition\confused.json</td></tr><tr><td>mods\tuxemon\db\condition\prickly.json</td></tr><tr><td>tuxemon\condition\effects\exhausted.py</td></tr><tr><td>mods\tuxemon\db\condition\slow.json</td></tr><tr><td>tuxemon\condition\effects\confused.py</td></tr><tr><td>mods\tuxemon\db\condition\harpooned.json</td></tr><tr><td>tuxemon\condition\effects\harpooned.py</td></tr><tr><td>mods\tuxemon\db\condition\flinching.json</td></tr><tr><td>mods\tuxemon\db\condition\softened.json</td></tr><tr><td>mods\tuxemon\db\condition\eliminated.json</td></tr><tr><td>mods\tuxemon\db\condition\charging.json</td></tr><tr><td>tuxemon\condition\effects\sniping.py</td></tr><tr><td>mods\tuxemon\db\condition\stuck.json</td></tr><tr><td>tuxemon\condition\effects\flinching.py</td></tr><tr><td>tuxemon\condition\effects\festering.py</td></tr><tr><td>tuxemon\condition\effects\charging.py</td></tr><tr><td>tuxemon\condition\effects\enraged.py</td></tr><tr><td>tuxemon\condition\__init__.py</td></tr><tr><td>tuxemon\condition\effects\retaliate.py</td></tr><tr><td>tuxemon\condition\effects\lockdown.py</td></tr><tr><td>tuxemon\condition\effects\feedback.py</td></tr><tr><td>mods\tuxemon\db\condition\feedback.json</td></tr><tr><td>mods\tuxemon\db\condition\diehard.json</td></tr><tr><td>tuxemon\condition\effects\lifegift.py</td></tr><tr><td>mods\tuxemon\db\condition\revenge.json</td></tr><tr><td>tuxemon\condition\effects\prickly.py</td></tr><tr><td>tuxemon\condition\conditions\current_hp.py</td></tr><tr><td>mods\tuxemon\db\condition\festering.json</td></tr><tr><td>mods\tuxemon\db\condition\burn.json</td></tr><tr><td>tuxemon\condition\effects\burnt.py</td></tr><tr><td>mods\tuxemon\db\condition\wild.json</td></tr><tr><td>tuxemon\condition\effects\lifeleech.py</td></tr><tr><td>mods\tuxemon\db\condition\grabbed.json</td></tr><tr><td>mods\tuxemon\db\condition\wasting.json</td></tr><tr><td>tuxemon\states\world\world_classes.py</td></tr><tr><td>mods\tuxemon\db\condition\faint.json</td></tr><tr><td>mods\tuxemon\db\condition\hardshell.json</td></tr><tr><td>mods\tuxemon\db\condition\blinded.json</td></tr><tr><td>tuxemon\condition\effects\noddingoff.py</td></tr><tr><td>mods\tuxemon\db\condition\enraged.json</td></tr><tr><td>tuxemon\condition\conditions\status.py</td></tr><tr><td>tuxemon\condition\effects\__init__.py</td></tr><tr><td>tuxemon\condition\effects\wild.py</td></tr><tr><td>mods\tuxemon\db\condition\noddingoff.json</td></tr><tr><td>tuxemon\condition\condition.py</td></tr><tr><td>tuxemon\condition\effects\grabbed.py</td></tr><tr><td>tuxemon\condition\effects\diehard.py</td></tr><tr><td>mods\tuxemon\db\condition\elementalshield.json</td></tr><tr><td>tuxemon\condition\condcondition.py</td></tr><tr><td>tuxemon\condition\effects\statchange.py</td></tr><tr><td>mods\tuxemon\db\condition\poison.json</td></tr><tr><td>tuxemon\condition\effects\wasting.py</td></tr><tr><td>tuxemon\condition\effects\recover.py</td></tr><tr><td>mods\tuxemon\db\condition\tired.json</td></tr><tr><td>tuxemon\condition\effects\poisoned.py</td></tr><tr><td>mods\tuxemon\db\condition\lifeleech.json</td></tr><tr><td>mods\tuxemon\db\condition\focused.json</td></tr><tr><td>mods\tuxemon\db\condition\lockdown.json</td></tr><tr><td>tuxemon\condition\conditions\__init__.py</td></tr><tr><td>tuxemon\condition\effects\revenge.py</td></tr><tr><td>mods\tuxemon\db\condition\recover.json</td></tr><tr><td>tuxemon\condition\condeffect.py</td></tr><tr><td>tuxemon\condition\effects\elemental_shield.py</td></tr><tr><td>mods\tuxemon\db\condition\lifegift.json</td></tr><tr><td>mods\tuxemon\db\condition\sniping.json</td></tr><tr><td>tests\tuxemon\test_world_classes.py</td></tr><tr><td>mods\tuxemon\db\condition\exhausted.json</td></tr><tr><td>tests\tuxemon\test_money_actions.py</td></tr><tr><td>tuxemon\condition\effects\tired.py</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (546)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>mods\tuxemon\db\item\mm_metal.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_routeb.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\venomous_tentacle.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\control\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\shapechange.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\goad.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\hawk.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\mystery_tea.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\earth_booster.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\pouch.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_bubble.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\life_surge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\bubble_trap.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_metal.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route5.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\mending.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\imperial_tea.json</td><td>内容变更</td></tr><tr><td>tuxemon\locale.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_refined.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\skip.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\super_potion.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\potion.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\energy_field.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_citypark.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_cavity.json</td><td>内容变更</td></tr><tr><td>tuxemon\main.py</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_tools.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\spit_poison.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fester.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_random_variable.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\cureall.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_time_handler.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\static_field.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ubuntu.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\potluck.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\p_trepidation.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\gold_digger.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\jeluna.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_fire.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\neutralize.json</td><td>内容变更</td></tr><tr><td>tuxemon\technique\technique.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\clamp_on.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\start_cinema_mode.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\crushing_bite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sunburst.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\imperial_potion.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fledgling.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\eskipup.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ice_claw.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\items\item_menu.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\pollen_blast.json</td><td>内容变更</td></tr><tr><td>buildconfig\build_wine_cx_freeze.sh</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\roll.json</td><td>内容变更</td></tr><tr><td>buildconfig\build_wine_pyinstaller.sh</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\houndice.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\stabilo.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\world\world_menus.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\panjandrum.json</td><td>内容变更</td></tr><tr><td>tuxemon\combat.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_lion_mountain.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_earth.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\conditions\once.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_peppy.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\empty.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_formula.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\eaglace.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\radiance.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_money.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\earthquake.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\wing_tip.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\teleport.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\surge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\p_starry_night.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\run.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\staff_smash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\splinter.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\berserk.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_hardened.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\wiggle.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\surf.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\breath.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_blossom.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\character\__init__.py</td><td>内容变更</td></tr><tr><td>tuxemon\states\world\worldstate.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_supernova.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\raise_ranged.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\needle.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\gold_pass.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_variable.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\leaf_barrage.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\get_monster_tech.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\app_banking.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\ox_stick.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\boost_melee.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\barking.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\supernova.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\avalanche.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\water_blast.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\flamethrower.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\shammer_fossil.json</td><td>内容变更</td></tr><tr><td>tuxemon\cli\processor.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\rot.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\maps\spyder_leather_museum.yaml</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\thunderball.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\raise_armour.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\tweesher.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\pseudopod.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\fire_berry.json</td><td>内容变更</td></tr><tr><td>tuxemon\platform\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\omnichannel_badge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\lick_lash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\whirlwind.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\xp_transmitter.json</td><td>内容变更</td></tr><tr><td>tuxemon\map_view.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_datacenter.json</td><td>内容变更</td></tr><tr><td>tuxemon\camera.py</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\energy_claws.json</td><td>内容变更</td></tr><tr><td>tuxemon\element.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_earth.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_routec.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_monster_actions.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\lava.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\load_yaml.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tsunami.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\heronquak.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\altitude.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\load_game.py</td><td>内容变更</td></tr><tr><td>tuxemon\item\effects\switch.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\demiurge.json</td><td>内容变更</td></tr><tr><td>tuxemon\prepare.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tip.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\depth_charge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_male.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\platinum.json</td><td>内容变更</td></tr><tr><td>tuxemon\graphics.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\time_crisis.json</td><td>内容变更</td></tr><tr><td>tuxemon\evolution.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\shuriken.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\lima_pie.json</td><td>内容变更</td></tr><tr><td>tuxemon\player.py</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_monster.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\water_bullet.json</td><td>内容变更</td></tr><tr><td>tuxemon\economy.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tinder.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\change_taste.py</td><td>内容变更</td></tr><tr><td>tuxemon\event\conditions\check_world.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_wood.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\amnesia.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\firestorm.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\lettice.json</td><td>内容变更</td></tr><tr><td>tuxemon\audio.py</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\remove.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\clock.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\play_sound.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\insanity.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\booster_tech.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_layer.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sleeping_powder.json</td><td>内容变更</td></tr><tr><td>tuxemon\movement.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\heavenly_desserts.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\negation.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\earthmover_key.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\modify_money.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\font.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\venom.json</td><td>内容变更</td></tr><tr><td>tuxemon\platform\input_manager.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_panjandrum.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route2.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\strangulation.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\clairaudience.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\chill_mist.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\forfeit.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_salty.json</td><td>内容变更</td></tr><tr><td>tuxemon\config.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_dryadsgrove.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\shrapnel.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\gnaw.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\conditions\money_is.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\mission\spyder.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\slime.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\screen_transition.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\food_fight.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\persistance\save_menu.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route3.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\lineage.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\suplex.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\play_music.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\wendigger.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\miaow_milk.json</td><td>内容变更</td></tr><tr><td>tuxemon\item\effects\fishing.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\shape\shapes.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sting.json</td><td>内容变更</td></tr><tr><td>tuxemon\sprite.py</td><td>内容变更</td></tr><tr><td>tuxemon\formula.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\feint.json</td><td>内容变更</td></tr><tr><td>tuxemon\save.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\ancient_egg.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_evolution.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\bubbles.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\camera_mode.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\electroplate.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\grinding.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\stop_cinema_mode.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\peace_lily.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\boost_ranged.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tectonic_drill.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\canine.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\friendship_scroll.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\cohldrabi.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\petrify.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\webs_wind.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\suck_poison.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fungal_spore.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\wall_fire.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\ancient_tea.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\icicle_spear.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\one_two.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\sea_girdle.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_avalanche.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_routea.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\app_contacts.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\thunderstone.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sand_spray.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\beam.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\mystic_blending.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\raise_hp.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\flintstone.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\invictus.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\revenge_stance.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fiery.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route1.json</td><td>内容变更</td></tr><tr><td>buildconfig\setup_cx_freeze.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\midnight_mantle.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_monster_status.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_grand.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ice_storm.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\party\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\just_desserts.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\gust.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\shadow_boxing.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\cat_calling.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_greenwash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_mansion.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\pyramidion.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\stone_rot.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_hearty.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\monster_info\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\kindling_flame.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\biting_winds.json</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\cooldown.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sleep_bomb.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\maps\spyder_cathedral.yaml</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ram.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\peregrine.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\walls.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\overfeed.json</td><td>内容变更</td></tr><tr><td>tuxemon\menu\quantity.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\revive.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\flower_bloom.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\hallucinogen_spore.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\steel_jaws.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\punch.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\combat\combat.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\mm_wood.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\raise_dodge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\meltdown.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_water.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\char_wander.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\app_tuxepedia.json</td><td>内容变更</td></tr><tr><td>tuxemon\time_handler.py</td><td>内容变更</td></tr><tr><td>tuxemon\platform\platform_pygame\events.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\rocky_barrage.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_park.json</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\disappear.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\bullet.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\trample.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\constrict.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\pyrokinesis.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\salamander.json</td><td>内容变更</td></tr><tr><td>tuxemon\plugin.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\boost_dodge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\wolffsky.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_lavish.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ten_thousand_feathers.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ants.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\lightning_spheres.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_surf.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\camera_position.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\water_booster.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\slice.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\hammerhead.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\nimrod_badge.json</td><td>内容变更</td></tr><tr><td>tuxemon\item\effects\capture_combined.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_gambler.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\web.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\mind_explosion.json</td><td>内容变更</td></tr><tr><td>tuxemon\item\effects\restore.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\blossom.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\shooting_star.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\poseidon.json</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\give.py</td><td>内容变更</td></tr><tr><td>tuxemon\item\effects\capture.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\greenwash_badge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\peck.json</td><td>内容变更</td></tr><tr><td>tuxemon\item\effects\learn_mm.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\quicksand.json</td><td>内容变更</td></tr><tr><td>tuxemon\item\item.py</td><td>内容变更</td></tr><tr><td>tuxemon\states\techniques\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\divinity_beam.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\piece_of_cake.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\blood_nets.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_dragonscave.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_candy.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\oven.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\random_battle.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route6.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\fishing_rod.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\rift_dash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_fire.json</td><td>内容变更</td></tr><tr><td>tuxemon\menu\menu.py</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\multiattack.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\app_map.json</td><td>内容变更</td></tr><tr><td>tuxemon\encounter.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\dojo_pass.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\strike.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_all_in.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\glower.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\spiky_strike.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\conjurer.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\flood.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ruby.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tux_attack.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_nocturnal.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_actions.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\neptune.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\refresh.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fire_claw.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\set_mission.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\mudslide.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sudden_glow.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\blade.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\riposte.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\frostuce.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\infectious_bite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\spyder_pass.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\create_npc.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\battery_acid.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\crystal.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\magnetic_body.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\raise_speed.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\magma.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\starfall.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\overgrowth.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_vorpal.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\hatchet.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\book_wishes.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\gourmet.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\leaf_stab.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\sledgehammer.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\mobbing.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\chromeye.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\mind_vise.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\take_cover.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\viper.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\rust_bomb.json</td><td>内容变更</td></tr><tr><td>tuxemon\npc.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\diet.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\journal\journal_info.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\lust.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_frostbite.json</td><td>内容变更</td></tr><tr><td>tuxemon\monster.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\air_chain.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\all_in.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\feline.json</td><td>内容变更</td></tr><tr><td>tuxemon\constants\paths.py</td><td>内容变更</td></tr><tr><td>tuxemon\save_upgrader.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\lantern.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_zesty.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\blood_bond.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\snowstorm.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\allies_address.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fume.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_wood.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\breathe_fire.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\arcane_eye.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\wallow.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\cloud_aether.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\flow.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_neuter.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\baddrscratch.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\play_map_animation.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\nest.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\get_player_monster.py</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\camera_follow.py</td><td>内容变更</td></tr><tr><td>tuxemon\db.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\lucky_bamboo.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fire_ball.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route4.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\thorn_burst.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\laser_beam.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\waysprite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tail_lash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\pit.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\energy_beam.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ring.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\stampede.json</td><td>内容变更</td></tr><tr><td>tuxemon\menu\theme.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\stick.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\combat\combat_menus.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\boost_speed.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fluff_up.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\items\shop_menu.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\buzz.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\scope.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\give_all.json</td><td>内容变更</td></tr><tr><td>tuxemon\mission.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\muddle.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\changeling.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tea.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\muck.json</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\switch.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\scoop_badge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\p_monsters_eyes_meet.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_ancient.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_plugin.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\rhincus_fossil.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\woodsmash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_majestic.json</td><td>内容变更</td></tr><tr><td>buildconfig\build_pypy_portable_windows.sh</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\aardant.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\crankus.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\mm_earth.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\tux.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\combat\combat_animations.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\geyser.json</td><td>内容变更</td></tr><tr><td>tuxemon\log.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\raise_melee.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\assault.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\swap.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\adamantine.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\shaft_badge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\electric_multibite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\mm_fire.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\combat\combat_classes.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\maps\spyder.yaml</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\caper.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_action_queue.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_cotton_tunnel.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_shadow_boxing.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\mm_water.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\transfer_money.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\levitate.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\chillimp.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_water.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\flower_armor.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\proboscis.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\metal_cherry.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_omni.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_catch_release.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\frostbite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\perfect_cut.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\shadow_blast.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\encounter\spyder_route7.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\mission\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\dreamwalk.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\battery_discharge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\petrified_dung.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\kraken.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\boost_armour.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\restoration.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\sylvan.json</td><td>内容变更</td></tr><tr><td>tuxemon\item\conditions\status.py</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\random_encounter.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\chameleon.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\saber.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\one_million_talons.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\orbs.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\torch.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_crusher.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_female.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_metal.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tonguespear.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_xero.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\economy\spyder_scoops.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\cavity.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\sweet_sand.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\tornado.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\reg_papers.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\wood_booster.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\solar_synthesis.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\burrow_blast.json</td><td>内容变更</td></tr><tr><td>tuxemon\client.py</td><td>内容变更</td></tr><tr><td>buildconfig\build_installer.sh</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\metal_booster.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\wild_encounter.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\wall_of_steel.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\trading.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_diurnal.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_jsons_technique.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\nu_phone.json</td><td>内容变更</td></tr><tr><td>buildconfig\build_pypy_portable_linux.sh</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\poison_courtship.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\phone\phone_banking.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\babysnitch.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\maps\spyder_greenwash_level3.yaml</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\surfboard.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\fire_booster.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\stonehenge.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\thunderclap.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\eyebite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\monster\snowrilla.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\start\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\terror.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\add_monster.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_blade.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\egg_smash.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\undertaker.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\vorpal.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\fire_shield.json</td><td>内容变更</td></tr><tr><td>tuxemon\states\monster\__init__.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\phantasmal_force.json</td><td>内容变更</td></tr><tr><td>tuxemon\teleporter.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\cutting_leaves.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tm_scope.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_camera.py</td><td>内容变更</td></tr><tr><td>tuxemon\technique\effects\photogenesis.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\boulder.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\greenstone.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\hibernate.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\evasion.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\spyderbite.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\mega_potion.json</td><td>内容变更</td></tr><tr><td>tuxemon\shape.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\acid.json</td><td>内容变更</td></tr><tr><td>tuxemon\technique\conditions\status.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\ice_shield.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\tuxeball_noble.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\oedipus.json</td><td>内容变更</td></tr><tr><td>.github\workflows\build.yml</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\item\stovepipe.json</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\electrical_storm.json</td><td>内容变更</td></tr><tr><td>tuxemon\event\actions\spawn_monster.py</td><td>内容变更</td></tr><tr><td>mods\tuxemon\db\technique\rock.json</td><td>内容变更</td></tr><tr><td>tests\tuxemon\test_mission.py</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

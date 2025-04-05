@@ -1,0 +1,536 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:54:21</p>
+                <p>SBOM A: sample_data\wagoodman_dive_925cdd8.json</p>
+                <p>SBOM B: sample_data\wagoodman_dive.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>29</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>23</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">7.0/10 (70.0%) [B-]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 7.0/10.0 (70.0%)，安全等级: B-。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：大量新增依赖, 大量移除依赖, 主版本变更, 大量次版本变更, 重大版本变更。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-medium">1.1/1.7 (66.9%)</td>
+                    <td><ul class='details-list'><li>大量新增包(29个)可能增加攻击面</li><li>大量移除包(11个)可能影响功能稳定性</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖, 大量移除依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-medium">2.3/3.5 (66.7%)</td>
+                    <td><ul class='details-list'><li>3个包发生主版本变更，可能存在API不兼容</li><li>14个包发生次版本变更</li><li>4个包发生补丁版本变更</li><li>2个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-medium">2.0/2.6 (76.0%)</td>
+                    <td><ul class='details-list'><li>存在3个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更, 依赖变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.7/1.3 (50.0%)</td>
+                    <td><ul class='details-list'><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Branch-Protection, Token-Permissions, Security-Policy</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Branch-Protection风险, Token-Permissions风险, Security-Policy风险, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (29)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>go.opentelemetry.io/otel/trace</td><td>v1.31.0</td><td>MIT</td></tr><tr><td>github.com/scylladb/go-set</td><td>v1.0.2</td><td>MIT</td></tr><tr><td>golang.org/x/time</td><td>v0.11.0</td><td>MIT</td></tr><tr><td>go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</td><td>v0.54.0</td><td>MIT</td></tr><tr><td>github.com/containerd/log</td><td>v0.1.0</td><td>MIT</td></tr><tr><td>github.com/go-logr/logr</td><td>v1.4.2</td><td>MIT</td></tr><tr><td>github.com/go-logr/stdr</td><td>v1.2.2</td><td>MIT</td></tr><tr><td>github.com/sagikazarmark/locafero</td><td>v0.7.0</td><td>MIT</td></tr><tr><td>github.com/logrusorgru/aurora/v4</td><td>v4.0.0</td><td>MIT</td></tr><tr><td>github.com/moby/docker-image-spec</td><td>v1.3.1</td><td>MIT</td></tr><tr><td>github.com/sourcegraph/conc</td><td>v0.3.0</td><td>MIT</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.18.0</td><td>MIT</td></tr><tr><td>github.com/pmezard/go-difflib</td><td>v1.0.0</td><td>MIT</td></tr><tr><td>github.com/go-viper/mapstructure/v2</td><td>v2.2.1</td><td>MIT</td></tr><tr><td>github.com/felixge/httpsnoop</td><td>v1.0.4</td><td>MIT</td></tr><tr><td>github.com/subosito/gotenv</td><td>v1.6.0</td><td>MIT</td></tr><tr><td>github.com/pelletier/go-toml/v2</td><td>v2.2.3</td><td>MIT</td></tr><tr><td>github.com/cespare/xxhash/v2</td><td>v2.3.0</td><td>MIT</td></tr><tr><td>go.uber.org/atomic</td><td>v1.9.0</td><td>MIT</td></tr><tr><td>go.uber.org/multierr</td><td>v1.9.0</td><td>MIT</td></tr><tr><td>go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp</td><td>v1.31.0</td><td>MIT</td></tr><tr><td>github.com/distribution/reference</td><td>v0.6.0</td><td>MIT</td></tr><tr><td>go.opentelemetry.io/otel/sdk</td><td>v1.31.0</td><td>MIT</td></tr><tr><td>github.com/davecgh/go-spew</td><td>v1.1.1</td><td>MIT</td></tr><tr><td>github.com/docker/docker-credential-helpers</td><td>v0.8.2</td><td>MIT</td></tr><tr><td>github.com/fvbommel/sortorder</td><td>v1.1.0</td><td>MIT</td></tr><tr><td>gopkg.in/yaml.v3</td><td>v3.0.1</td><td>MIT</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.31.0</td><td>MIT</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.31.0</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (11)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/hashicorp/hcl</td><td>v1.0.0</td><td>MIT</td></tr><tr><td>gopkg.in/yaml.v2</td><td>v2.2.8</td><td>MIT</td></tr><tr><td>github.com/magiconair/properties</td><td>v1.8.1</td><td>MIT</td></tr><tr><td>github.com/logrusorgru/aurora</td><td>v0.0.0-20190803045625-94edacc10f9b</td><td>MIT</td></tr><tr><td>github.com/konsorten/go-windows-terminal-sequences</td><td>v1.0.2</td><td>MIT</td></tr><tr><td>github.com/pelletier/go-toml</td><td>v1.4.0</td><td>MIT</td></tr><tr><td>github.com/cespare/xxhash</td><td>v1.1.0</td><td>MIT</td></tr><tr><td>gotest.tools</td><td>v2.2.0+incompatible</td><td>MIT</td></tr><tr><td>github.com/mitchellh/mapstructure</td><td>v1.1.2</td><td>MIT</td></tr><tr><td>github.com/docker/distribution</td><td>v2.8.2+incompatible</td><td>MIT</td></tr><tr><td>github.com/spf13/jwalterweatherman</td><td>v1.1.0</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (23)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/google/uuid</td><td>v1.1.1</td><td>v1.6.0</td><td>次版本</td></tr><tr><td>golang.org/x/net</td><td>v0.17.0</td><td>v0.38.0</td><td>次版本</td></tr><tr><td>github.com/sergi/go-diff</td><td>v1.0.0</td><td>v1.3.1</td><td>次版本</td></tr><tr><td>github.com/dustin/go-humanize</td><td>v1.0.0</td><td>v1.0.1</td><td>补丁版本</td></tr><tr><td>github.com/stretchr/testify</td><td>v1.4.0</td><td>v1.10.0</td><td>次版本</td></tr><tr><td>github.com/opencontainers/go-digest</td><td>v1.0.0-rc1</td><td>v1.0.0</td><td>一般变更</td></tr><tr><td>github.com/mattn/go-isatty</td><td>v0.0.9</td><td>v0.0.20</td><td>补丁版本</td></tr><tr><td>github.com/awesome-gocui/keybinding</td><td>v1.0.1-0.20190805183143-864552bd36b7</td><td>v1.0.1-0.20211011072933-86029037a63f</td><td>一般变更</td></tr><tr><td>github.com/spf13/viper</td><td>v1.4.0</td><td>v1.20.1</td><td>次版本</td></tr><tr><td>github.com/spf13/afero</td><td>v1.2.2</td><td>v1.14.0</td><td>次版本</td></tr><tr><td>github.com/docker/docker</td><td>v24.0.7+incompatible</td><td>v28.0.4+incompatible</td><td>主版本</td></tr><tr><td>github.com/fatih/color</td><td>v1.7.0</td><td>v1.18.0</td><td>次版本</td></tr><tr><td>golang.org/x/term</td><td>v0.13.0</td><td>v0.30.0</td><td>次版本</td></tr><tr><td>github.com/spf13/cast</td><td>v1.3.0</td><td>v1.7.1</td><td>次版本</td></tr><tr><td>golang.org/x/sys</td><td>v0.13.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/mattn/go-colorable</td><td>v0.1.2</td><td>v0.1.13</td><td>补丁版本</td></tr><tr><td>github.com/sirupsen/logrus</td><td>v1.4.2</td><td>v1.9.3</td><td>次版本</td></tr><tr><td>github.com/spf13/pflag</td><td>v1.0.5</td><td>v1.0.6</td><td>补丁版本</td></tr><tr><td>github.com/spf13/cobra</td><td>v0.0.5</td><td>v1.9.1</td><td>主版本</td></tr><tr><td>golang.org/x/text</td><td>v0.13.0</td><td>v0.23.0</td><td>次版本</td></tr><tr><td>github.com/docker/cli</td><td>v0.0.0-20190906153656-016a3232168d</td><td>v28.0.4+incompatible</td><td>主版本</td></tr><tr><td>github.com/inconshreveable/mousetrap</td><td>v1.0.0</td><td>v1.1.0</td><td>次版本</td></tr><tr><td>github.com/fsnotify/fsnotify</td><td>v1.4.7</td><td>v1.8.0</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>111</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>116</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>54</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (7)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>dive\image\docker\docker_host_windows.go</td></tr><tr><td>Taskfile.yaml</td></tr><tr><td>.binny.yaml</td></tr><tr><td>runtime\ui\viewmodel\layer_set_state_test.go</td></tr><tr><td>.github\dependabot.yaml</td></tr><tr><td>dive\image\docker\docker_host_unix.go</td></tr><tr><td>dive\image\docker\build_test.go</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (2)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>.github\scripts\ci-check.sh</td></tr><tr><td>.github\scripts\go-mod-tidy-check.sh</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (54)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>dive\filetree\file_tree.go</td><td>内容变更</td></tr><tr><td>dive\filetree\node_data_test.go</td><td>内容变更</td></tr><tr><td>dive\filetree\efficiency_test.go</td><td>内容变更</td></tr><tr><td>runtime\ui\view\debug.go</td><td>内容变更</td></tr><tr><td>runtime\ui\controller.go</td><td>内容变更</td></tr><tr><td>.golangci.yaml</td><td>内容变更</td></tr><tr><td>runtime\ui\view\layer_details.go</td><td>内容变更</td></tr><tr><td>runtime\ui\view\filter.go</td><td>内容变更</td></tr><tr><td>.bouncer.yaml</td><td>内容变更</td></tr><tr><td>dive\filetree\file_node.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileTreeDirCollapse.txt</td><td>内容变更</td></tr><tr><td>.github\workflows\release.yaml</td><td>内容变更</td></tr><tr><td>dive\filetree\efficiency.go</td><td>内容变更</td></tr><tr><td>runtime\ui\app.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileTreeDirCursorRight.txt</td><td>内容变更</td></tr><tr><td>cmd\root.go</td><td>内容变更</td></tr><tr><td>dive\image\podman\build.go</td><td>内容变更</td></tr><tr><td>dive\image\docker\archive_resolver.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileTreeGoCase.txt</td><td>内容变更</td></tr><tr><td>dive\image\podman\resolver.go</td><td>内容变更</td></tr><tr><td>utils\format.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>runtime\export\export.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileShowAggregateChanges.txt</td><td>内容变更</td></tr><tr><td>runtime\ui\view\image_details.go</td><td>内容变更</td></tr><tr><td>runtime\ui\view\status.go</td><td>内容变更</td></tr><tr><td>dive\get_image_resolver.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\filetree.go</td><td>内容变更</td></tr><tr><td>.goreleaser.yaml</td><td>内容变更</td></tr><tr><td>runtime\run_test.go</td><td>内容变更</td></tr><tr><td>runtime\ci\evaluator.go</td><td>内容变更</td></tr><tr><td>runtime\ui\view\filetree.go</td><td>内容变更</td></tr><tr><td>runtime\ui\view\layer.go</td><td>内容变更</td></tr><tr><td>runtime\ui\format\format.go</td><td>内容变更</td></tr><tr><td>runtime\ui\layout\compound\layer_details_column.go</td><td>内容变更</td></tr><tr><td>dive\image\docker\config.go</td><td>内容变更</td></tr><tr><td>dive\image\docker\engine_resolver.go</td><td>内容变更</td></tr><tr><td>dive\filetree\node_data.go</td><td>内容变更</td></tr><tr><td>runtime\run.go</td><td>内容变更</td></tr><tr><td>dive\filetree\file_info.go</td><td>内容变更</td></tr><tr><td>.github\actions\bootstrap\action.yaml</td><td>内容变更</td></tr><tr><td>dive\image\docker\build.go</td><td>内容变更</td></tr><tr><td>dive\image\docker\image_archive.go</td><td>内容变更</td></tr><tr><td>dive\image\resolver.go</td><td>内容变更</td></tr><tr><td>runtime\ui\key\binding.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileTreeHideAddedRemovedModified.txt</td><td>内容变更</td></tr><tr><td>runtime\export\export_test.go</td><td>内容变更</td></tr><tr><td>dive\image\podman\resolver_unsupported.go</td><td>内容变更</td></tr><tr><td>runtime\export\layer.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileTreeDirCollapseAll.txt</td><td>内容变更</td></tr><tr><td>.github\workflows\validations.yaml</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\filetree_test.go</td><td>内容变更</td></tr><tr><td>runtime\ci\rule.go</td><td>内容变更</td></tr><tr><td>runtime\ui\viewmodel\testdata\TestFileTreeSelectLayer.txt</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

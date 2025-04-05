@@ -969,8 +969,6 @@ class ReportGenerator:
         
         # 生成HTML内容
         html_content = self._get_html_report_content()
-
-        print("html内容生成完了")
         
         # 写入文件
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -1422,6 +1420,7 @@ class ReportGenerator:
                 normalized_new = self._normalize_version(change.new_version)
                 
                 # 当规范化后的版本相同时显示为"无变更"
+                row_class = ""
                 if normalized_old == normalized_new:
                     change_type = "无变更"
                 else:

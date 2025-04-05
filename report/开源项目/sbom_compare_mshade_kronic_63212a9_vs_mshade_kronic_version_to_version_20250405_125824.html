@@ -1,0 +1,578 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 12:58:26</p>
+                <p>SBOM A: sample_data\mshade_kronic_63212a9.json</p>
+                <p>SBOM B: sample_data\mshade_kronic.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-medium">7.3/10 (72.5%) [B]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 7.3/10.0 (72.5%)，安全等级: B。 软件供应链总体安全性可接受，但存在一些需要关注的问题。 主要影响因素：主版本变更, 大量次版本变更, 重大版本变更, 缺少Scorecard评估。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-low">1.5/3.5 (42.3%)</td>
+                    <td><ul class='details-list'><li>5个包发生主版本变更，可能存在API不兼容</li><li>11个包发生次版本变更</li><li>5个包发生补丁版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-medium">0.8/1.3 (60.0%)</td>
+                    <td><ul class='details-list'><li>无法获取Scorecard评分数据</li></ul><div class='impact-factors'><strong>影响因素:</strong> 缺少Scorecard评估</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (21)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>requests</td><td>==2.31.0</td><td>==2.32.3</td><td>次版本</td></tr><tr><td>blinker</td><td>==1.7.0</td><td>==1.8.2</td><td>次版本</td></tr><tr><td>kubernetes</td><td>==29.0.0</td><td>==30.1.0</td><td>主版本</td></tr><tr><td>urllib3</td><td>==1.26.18</td><td>==1.26.19</td><td>补丁版本</td></tr><tr><td>Jinja2</td><td>==3.1.3</td><td>==3.1.4</td><td>补丁版本</td></tr><tr><td>pytest</td><td>==8.0.2</td><td>==8.2.2</td><td>次版本</td></tr><tr><td>google-auth</td><td>==2.28.1</td><td>==2.30.0</td><td>次版本</td></tr><tr><td>black</td><td>==24.2.0</td><td>==24.4.2</td><td>次版本</td></tr><tr><td>pyasn1-modules</td><td>==0.3.0</td><td>==0.4.0</td><td>次版本</td></tr><tr><td>itsdangerous</td><td>==2.1.2</td><td>==2.2.0</td><td>次版本</td></tr><tr><td>packaging</td><td>==23.2</td><td>==24.1</td><td>主版本</td></tr><tr><td>cachetools</td><td>==5.3.2</td><td>==5.3.3</td><td>补丁版本</td></tr><tr><td>pyasn1</td><td>==0.5.1</td><td>==0.6.0</td><td>次版本</td></tr><tr><td>gunicorn</td><td>==21.2.0</td><td>==22.0.0</td><td>主版本</td></tr><tr><td>Flask</td><td>==3.0.2</td><td>==3.0.3</td><td>补丁版本</td></tr><tr><td>boltons</td><td>==23.1.1</td><td>==24.0.0</td><td>主版本</td></tr><tr><td>requests-oauthlib</td><td>==1.3.1</td><td>==2.0.0</td><td>主版本</td></tr><tr><td>certifi</td><td>==2024.2.2</td><td>==2024.6.2</td><td>次版本</td></tr><tr><td>Werkzeug</td><td>==3.0.1</td><td>==3.0.3</td><td>补丁版本</td></tr><tr><td>websocket-client</td><td>==1.7.0</td><td>==1.8.0</td><td>次版本</td></tr><tr><td>idna</td><td>==3.6</td><td>==3.7</td><td>次版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">版本变更引入的漏洞 (8)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Jinja2</td>
+                            <td class="vuln-unknown">GHSA-cpwx-vrp4-4pq7<br>关联CVE: CVE-2025-27516</td>
+                            <td>未指定</td>
+                            <td>Jinja2 vulnerable to sandbox breakout through attr filter selecting format method&lt;br&gt;&lt;br&gt;An oversight in how the Jinja sandboxed environment interacts with the `|attr` filter allows an attacker that controls the content of a template to execute arbitrary Python code.
+
+To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.
+
+Jinja&#39;s sandbox does catch calls to `str.format` and ensures they don&#39;t escape the sandbox. However, it&#39;s possible to use the `|attr` filter to get a reference to a string&#39;s plain format method, bypassing the sandbox. After the fix, the `|attr` filter no longer bypasses the environment&#39;s attribute lookup.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-cpwx-vrp4-4pq7</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2025-27516' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2025-27516</a><br><a href='https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/90457bbf33b8662926ae65cdde4c4c32e756e403</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a></div></td>
+                            <td>2025-03-05</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Jinja2</td>
+                            <td class="vuln-unknown">GHSA-gmj6-6f8f-6699<br>关联CVE: CVE-2024-56201</td>
+                            <td>未指定</td>
+                            <td>Jinja has a sandbox breakout through malicious filenames&lt;br&gt;&lt;br&gt;A bug in the Jinja compiler allows an attacker that controls both the content and filename of a template to execute arbitrary Python code, regardless of if Jinja&#39;s sandbox is used.
+
+To exploit the vulnerability, an attacker needs to control both the filename and the contents of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates where the template author can also choose the template filename.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-56201' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-56201</a><br><a href='https://github.com/pallets/jinja/issues/1792' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/issues/1792</a><br><a href='https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a></div></td>
+                            <td>2024-12-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Jinja2</td>
+                            <td class="vuln-unknown">GHSA-q2x7-8rv6-6q7h<br>关联CVE: CVE-2024-56326</td>
+                            <td>未指定</td>
+                            <td>Jinja has a sandbox breakout through indirect reference to format method&lt;br&gt;&lt;br&gt;An oversight in how the Jinja sandboxed environment detects calls to `str.format` allows an attacker that controls the content of a template to execute arbitrary Python code.
+
+To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications which execute untrusted templates.
+
+Jinja&#39;s sandbox does catch calls to `str.format` and ensures they don&#39;t escape the sandbox. However, it&#39;s possible to store a reference to a malicious string&#39;s `format` method, then pass that to a filter that calls it. No such filters are built-in to Jinja, but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-56326' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-56326</a><br><a href='https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4</a><br><a href='https://github.com/pallets/jinja' target='_blank' class='vuln-link'>https://github.com/pallets/jinja</a><br><a href='https://github.com/pallets/jinja/releases/tag/3.1.5' target='_blank' class='vuln-link'>https://github.com/pallets/jinja/releases/tag/3.1.5</a></div></td>
+                            <td>2024-12-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>gunicorn</td>
+                            <td class="vuln-high">GHSA-hc5x-x2vx-497g<br>关联CVE: CVE-2024-6827</td>
+                            <td>具体受影响版本: 0.1, 0.10.0, 0.10.1, 0.11.0, 0.11.1, 0.11.2, 0.12.0, 0.12.1, 0.12.2, 0.13.0, 0.13.1, 0.13.2, 0.13.3, 0.13.4, 0.14.0, 0.14.1, 0.14.2, 0.14.3, 0.14.4, 0.14.5, 0.14.6, 0.15.0, 0.16.0, 0.16.1, 0.17.0, 0.17.1, 0.17.2, 0.17.3, 0.17.4, 0.2, 0.2.1, 0.3, 0.3.1, 0.3.2, 0.4, 0.4.1, 0.4.2, 0.5, 0.5.1, 0.6, 0.6.1, 0.6.2, 0.6.3, 0.6.4, 0.6.5, 0.6.6, 0.7.0, 0.7.1, 0.7.2, 0.8.0, 0.8.1, 0.9.0, 0.9.1, 17.5, 18.0, 19.0.0, 19.1.0, 19.1.1, 19.10.0, 19.2.0, 19.2.1, 19.3.0, 19.4.0, 19.4.1, 19.4.2, 19.4.3, 19.4.4, 19.4.5, 19.5.0, 19.6.0, 19.7.0, 19.7.1, 19.8.0, 19.8.1, 19.9.0, 20.0.0, 20.0.1, 20.0.2, 20.0.3, 20.0.4, 20.1.0, 21.0.0, 21.0.1, 21.1.0, 21.2.0, 22.0.0</td>
+                            <td>Gunicorn HTTP Request/Response Smuggling vulnerability&lt;br&gt;&lt;br&gt;Gunicorn version 21.2.0 does not properly validate the value of the &#39;Transfer-Encoding&#39; header as specified in the RFC standards, which leads to the default fallback method of &#39;Content-Length,&#39; making it vulnerable to TE.CL request smuggling. This vulnerability can lead to cache poisoning, data exposure, session manipulation, SSRF, XSS, DoS, data integrity compromise, security bypass, information leakage, and business logic abuse.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-6827' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-6827</a><br><a href='https://github.com/benoitc/gunicorn/issues/3278' target='_blank' class='vuln-link'>https://github.com/benoitc/gunicorn/issues/3278</a><br><a href='https://github.com/benoitc/gunicorn' target='_blank' class='vuln-link'>https://github.com/benoitc/gunicorn</a><br><a href='https://huntr.com/bounties/1b4f8f38-39da-44b6-9f98-f618639d0dd7' target='_blank' class='vuln-link'>https://huntr.com/bounties/1b4f8f38-39da-44b6-9f98-f618639d0dd7</a></div></td>
+                            <td>2025-03-20</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Werkzeug</td>
+                            <td class="vuln-unknown">GHSA-f9vj-2wh5-fj8j<br>关联CVE: CVE-2024-49766</td>
+                            <td>未指定</td>
+                            <td>Werkzeug safe_join not safe on Windows&lt;br&gt;&lt;br&gt;On Python &lt; 3.11 on Windows, `os.path.isabs()` does not catch UNC paths like `//server/share`. Werkzeug&#39;s `safe_join()` relies on this check, and so can produce a path that is not safe, potentially allowing unintended access to data. Applications using Python &gt;= 3.11, or not using Windows, are not vulnerable.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/werkzeug/security/advisories/GHSA-f9vj-2wh5-fj8j' target='_blank' class='vuln-link'>https://github.com/pallets/werkzeug/security/advisories/GHSA-f9vj-2wh5-fj8j</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-49766' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-49766</a><br><a href='https://github.com/pallets/werkzeug/commit/2767bcb10a7dd1c297d812cc5e6d11a474c1f092' target='_blank' class='vuln-link'>https://github.com/pallets/werkzeug/commit/2767bcb10a7dd1c297d812cc5e6d11a474c1f092</a><br><a href='https://github.com/pallets/werkzeug' target='_blank' class='vuln-link'>https://github.com/pallets/werkzeug</a><br><a href='https://github.com/pallets/werkzeug/releases/tag/3.0.6' target='_blank' class='vuln-link'>https://github.com/pallets/werkzeug/releases/tag/3.0.6</a></div></td>
+                            <td>2024-10-25</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Werkzeug</td>
+                            <td class="vuln-unknown">GHSA-q34m-jh98-gwm2<br>关联CVE: CVE-2024-49767</td>
+                            <td>未指定</td>
+                            <td>Werkzeug possible resource exhaustion when parsing file data in forms&lt;br&gt;&lt;br&gt;Applications using Werkzeug to parse `multipart/form-data` requests are vulnerable to resource exhaustion. A specially crafted form body can bypass the `Request.max_form_memory_size` setting.
+
+
+The `Request.max_content_length` setting, as well as resource limits provided by deployment software and platforms, are also available to limit the resources used during a request. This vulnerability does not affect those settings. All three types of limits should be considered and set appropriately when deploying an application.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/pallets/werkzeug/security/advisories/GHSA-q34m-jh98-gwm2' target='_blank' class='vuln-link'>https://github.com/pallets/werkzeug/security/advisories/GHSA-q34m-jh98-gwm2</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-49767' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-49767</a><br><a href='https://github.com/pallets/quart/commit/5e78c4169b8eb66b91ead3e62d44721b9e1644ee' target='_blank' class='vuln-link'>https://github.com/pallets/quart/commit/5e78c4169b8eb66b91ead3e62d44721b9e1644ee</a><br><a href='https://github.com/pallets/quart/commit/abb04a512496206de279225340ed022852fbf51f' target='_blank' class='vuln-link'>https://github.com/pallets/quart/commit/abb04a512496206de279225340ed022852fbf51f</a><br><a href='https://github.com/pallets/werkzeug/commit/50cfeebcb0727e18cc52ffbeb125f4a66551179b' target='_blank' class='vuln-link'>https://github.com/pallets/werkzeug/commit/50cfeebcb0727e18cc52ffbeb125f4a66551179b</a></div></td>
+                            <td>2024-10-25</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>certifi</td>
+                            <td class="vuln-low">GHSA-248v-346w-9cwc<br>关联CVE: CVE-2024-39689</td>
+                            <td>具体受影响版本: 2021.10.8, 2021.5.30, 2022.12.7, 2022.5.18, 2022.5.18.1, 2022.6.15, 2022.6.15.1, 2022.6.15.2, 2022.9.14, 2022.9.24, 2023.11.17, 2023.5.7, 2023.7.22, 2024.2.2, 2024.6.2</td>
+                            <td>Certifi removes GLOBALTRUST root certificate&lt;br&gt;&lt;br&gt;Certifi 2024.07.04 removes root certificates from &quot;GLOBALTRUST&quot; from the root store. These are in the process of being removed from Mozilla&#39;s trust store.
+
+GLOBALTRUST&#39;s root certificates are being removed pursuant to an investigation which identified &quot;long-running and unresolved compliance issues&quot;. Conclusions of Mozilla&#39;s investigation can be found [here]( https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/XpknYMPO8dI).<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/certifi/python-certifi/security/advisories/GHSA-248v-346w-9cwc' target='_blank' class='vuln-link'>https://github.com/certifi/python-certifi/security/advisories/GHSA-248v-346w-9cwc</a><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2024-39689' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2024-39689</a><br><a href='https://github.com/certifi/python-certifi/commit/bd8153872e9c6fc98f4023df9c2deaffea2fa463' target='_blank' class='vuln-link'>https://github.com/certifi/python-certifi/commit/bd8153872e9c6fc98f4023df9c2deaffea2fa463</a><br><a href='https://github.com/certifi/python-certifi' target='_blank' class='vuln-link'>https://github.com/certifi/python-certifi</a><br><a href='https://github.com/pypa/advisory-database/tree/main/vulns/certifi/PYSEC-2024-230.yaml' target='_blank' class='vuln-link'>https://github.com/pypa/advisory-database/tree/main/vulns/certifi/PYSEC-2024-230.yaml</a></div></td>
+                            <td>2024-07-05</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>certifi</td>
+                            <td class="vuln-unknown">PYSEC-2024-230<br>关联CVE: CVE-2024-39689</td>
+                            <td>具体受影响版本: 2021.10.8, 2021.5.30, 2022.12.7, 2022.5.18, 2022.5.18.1, 2022.6.15, 2022.6.15.1, 2022.6.15.2, 2022.9.14, 2022.9.24, 2023.11.17, 2023.5.7, 2023.7.22, 2024.2.2, 2024.6.2</td>
+                            <td>&lt;br&gt;&lt;br&gt;Certifi is a curated collection of Root Certificates for validating the trustworthiness of SSL certificates while verifying the identity of TLS hosts. Certifi starting in 2021.05.30 and prior to 2024.07.4 recognized root certificates from `GLOBALTRUST`. Certifi 2024.07.04 removes root certificates from `GLOBALTRUST` from the root store. These are in the process of being removed from Mozilla&#39;s trust store. `GLOBALTRUST`&#39;s root certificates are being removed pursuant to an investigation which identified &quot;long-running and unresolved compliance issues.&quot;<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://github.com/certifi/python-certifi/security/advisories/GHSA-248v-346w-9cwc' target='_blank' class='vuln-link'>https://github.com/certifi/python-certifi/security/advisories/GHSA-248v-346w-9cwc</a><br><a href='https://security.netapp.com/advisory/ntap-20241206-0001/' target='_blank' class='vuln-link'>https://security.netapp.com/advisory/ntap-20241206-0001/</a><br><a href='https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/XpknYMPO8dI' target='_blank' class='vuln-link'>https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/XpknYMPO8dI</a><br><a href='https://github.com/certifi/python-certifi/commit/bd8153872e9c6fc98f4023df9c2deaffea2fa463' target='_blank' class='vuln-link'>https://github.com/certifi/python-certifi/commit/bd8153872e9c6fc98f4023df9c2deaffea2fa463</a></div></td>
+                            <td>2024-07-05</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>39</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>39</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>6</td>
+                </tr>
+            </table>
+            
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (6)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>requirements-dev.txt</td><td>内容变更</td></tr><tr><td>requirements.txt</td><td>内容变更</td></tr><tr><td>chart\kronic\Chart.yaml</td><td>内容变更</td></tr><tr><td>.github\workflows\chart-testing.yaml</td><td>内容变更</td></tr><tr><td>.github\workflows\build.yaml</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

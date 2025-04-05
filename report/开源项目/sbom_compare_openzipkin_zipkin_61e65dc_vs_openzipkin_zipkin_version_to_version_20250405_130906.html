@@ -1,0 +1,611 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:09:30</p>
+                <p>SBOM A: sample_data\openzipkin_zipkin_61e65dc.json</p>
+                <p>SBOM B: sample_data\openzipkin_zipkin.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>31</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>26</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.0/10 (90.4%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.0/10.0 (90.4%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：主版本变更, 大量次版本变更, 重大版本变更, CII-Best-Practices风险, Vulnerabilities风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.9%)</td>
+                    <td><ul class='details-list'><li>新增了2个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.4/3.5 (96.7%)</td>
+                    <td><ul class='details-list'><li>4个包发生主版本变更，可能存在API不兼容</li><li>12个包发生次版本变更</li><li>13个包发生补丁版本变更</li><li>2个包发生其他版本变更</li></ul><div class='impact-factors'><strong>影响因素:</strong> 主版本变更, 大量次版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (96.9%)</td>
+                    <td><ul class='details-list'><li>26个包发生许可证变更</li><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.4/2.6 (92.0%)</td>
+                    <td><ul class='details-list'><li>存在1个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 重大版本变更</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.7/1.3 (53.0%)</td>
+                    <td><ul class='details-list'><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-83qj-6fr2-vhqg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-83qj-6fr2-vhqg</li><li>- Warn: Project is vulnerable to: GHSA-mg83-c7gq-rv5c (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-mg83-c7gq-rv5c</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99</li><li>- Warn: Project is vulnerable to: GHSA-96g7-g7g9-jxw8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-96g7-g7g9-jxw8</li><li>- Warn: Project is vulnerable to: GHSA-x574-m823-4x7w (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-x574-m823-4x7w</li><li>- Warn: Project is vulnerable to: GHSA-4r4m-qw57-chr8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-4r4m-qw57-chr8</li><li>- Warn: Project is vulnerable to: GHSA-xcj6-pq6g-qj4x (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-xcj6-pq6g-qj4x</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (8)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-83qj-6fr2-vhqg</td>
+                            <td>Path Equivalence: &amp;#39;file.Name&amp;#39; (Internal Dot) leading to Remote Code Execution and/or Information disclosure and/or malicious content added to uploaded files via write enabled Default Servlet in Apache Tomcat.<br><br>This issue affects Apache Tomcat: from 11.0.0-M1 through 11.0.2, from 10.1.0-M1 through 10.1.34, from 9.0.0.M1 through 9.0.98.<br><br>If all of the following were true, a malicious user was able to view security sensitive files and/or inject content into those files:<br>- writes enabled for the default servlet (disabled by default)<br>support for partial PUT (enabled by default)<br>a target URL for security sensitive uploads that was a sub-directory of a target URL for public uploads<br>- attacker knowledge of the names of security sensitive files being uploaded<br>- the security sensitive files also being uploaded via partial PUT<br><br>If all of the following were true, a malicious user was able to perform remote code execution:<br>writes enabled for the default servlet (disabled by default)<br>- support for partial PUT (enabled by default)<br>- application was using Tomcat&amp;#39;s file based session persistence with the default storage location<br>- application included a library that may be leveraged in a deserialization attack<br><br>Users are recommended to upgrade to version 11.0.3, 10.1.35 or 9.0.99, which fixes the issue.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-tomcat-2025-24813<br>CVE-2025-24813<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-24813</span><br><span class="vuln-link">https://github.com/apache/tomcat/commit/0a668e0c27f2b7ca0cc7c6eea32253b9b5ecb29c</span><br><span class="vuln-link">https://github.com/apache/tomcat/commit/eb61aade8f8daccaecabf07d428b877975622f72</span><br><span class="vuln-link">https://github.com/apache/tomcat/commit/f6c01d6577cf9a1e06792be47e623d36acc3b5dc</span><br><span class="vuln-link">https://github.com/absholi7ly/POC-CVE-2025-24813/blob/main/README.md</span><br><span class="vuln-link">https://github.com/apache/tomcat</span><br><span class="vuln-link">https://lists.apache.org/thread/j5fkjv2k477os90nczf2v9l61fb0kkgq</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2025/04/msg00003.html</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250321-0001</span><br><span class="vuln-link">https://www.vicarius.io/vsociety/posts/cve-2025-24813-detect-apache-tomcat-rce</span><br><span class="vuln-link">https://www.vicarius.io/vsociety/posts/cve-2025-24813-mitigate-apache-tomcat-rce</span><br><span class="vuln-link">http://www.openwall.com/lists/oss-security/2025/03/10/5</span><br><br><div class="section-header">影响范围: </div><br>org.apache.tomcat:tomcat-catalina: &gt;= 11.0.0-M1 &lt; 11.0.3 <br>org.apache.tomcat:tomcat-catalina: &gt;= 10.1.0-M1 &lt; 10.1.35 <br>org.apache.tomcat:tomcat-catalina: &gt;= 9.0.0.M1 &lt; 9.0.99 <br>org.apache.tomcat.embed:tomcat-embed-core: &gt;= 11.0.0-M1 &lt; 11.0.3 <br>org.apache.tomcat.embed:tomcat-embed-core: &gt;= 10.1.0-M1 &lt; 10.1.35 <br>org.apache.tomcat.embed:tomcat-embed-core: &gt;= 9.0.0.M1 &lt; 9.0.99 <br><br><br><div class="cve-header">来自 CVE-2025-24813 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-96g7-g7g9-jxw8</td>
+                            <td>### Impact<br>Consumers of the NPM package `happy-dom`<br><br>### Patches<br>The security vulnerability has been patched in v15.10.2<br><br>### Workarounds<br>No easy workarounds to my knowledge<br><br>### References<br>[#1585](https://github.com/capricorn86/happy-dom/issues/1585)<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-51757<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/capricorn86/happy-dom/security/advisories/GHSA-96g7-g7g9-jxw8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-51757</span><br><span class="vuln-link">https://github.com/capricorn86/happy-dom/issues/1585</span><br><span class="vuln-link">https://github.com/capricorn86/happy-dom/pull/1586</span><br><span class="vuln-link">https://github.com/capricorn86/happy-dom/commit/5ee0b1676d4ce20cc2a70d1c9c8d6f1e3f57efac</span><br><span class="vuln-link">https://github.com/capricorn86/happy-dom/commit/d23834c232f1cf5519c9418b073f1dcec6b2f0fd</span><br><span class="vuln-link">https://github.com/capricorn86/happy-dom</span><br><span class="vuln-link">https://github.com/capricorn86/happy-dom/releases/tag/v15.10.2</span><br><br><div class="section-header">影响范围: </div><br>happy-dom: 所有版本 &lt; 15.10.2 <br><br><br><div class="cve-header">来自 CVE-2024-51757 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-mg83-c7gq-rv5c</td>
+                            <td>BCryptPasswordEncoder.matches(CharSequence,String) will incorrectly return true for passwords larger than 72 characters as long as the first 72 characters are the same.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22228<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-22228</span><br><span class="vuln-link">https://github.com/spring-projects/spring-security/commit/46f0dc6dfc8402cd556c598fdf2d31f9d46cdbf3</span><br><span class="vuln-link">https://github.com/spring-projects/spring-security</span><br><span class="vuln-link">https://spring.io/security/cve-2025-22228</span><br><br><div class="section-header">影响范围: </div><br>org.springframework.security:spring-security-crypto: &gt;= 6.3.0 &lt; 6.3.8 <br>org.springframework.security:spring-security-crypto: &gt;= 6.4.0 &lt; 6.4.4 <br>org.springframework.security:spring-security-crypto: &gt;= 6.2.0 &lt; 6.2.10 <br>org.springframework.security:spring-security-crypto: &gt;= 6.1.0 &lt; 6.1.14 <br>org.springframework.security:spring-security-crypto: &gt;= 6.0.0 &lt; 6.0.16 <br>org.springframework.security:spring-security-crypto: &gt;= 5.8.0 &lt; 5.8.18 <br>org.springframework.security:spring-security-crypto: 所有版本 &lt; 5.7.16 <br><br><br><div class="cve-header">来自 CVE-2025-22228 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99</td>
+                            <td>### Summary<br><br>esbuild allows any websites to send any request to the development server and read the response due to default CORS settings.<br><br>### Details<br><br>esbuild sets `Access-Control-Allow-Origin: *` header to all requests, including the SSE connection, which allows any websites to send any request to the development server and read the response.<br><br>https://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L121<br>https://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L363<br><br>**Attack scenario**:<br><br>1. The attacker serves a malicious web page (`http://malicious.example.com`).<br>1. The user accesses the malicious web page.<br>1. The attacker sends a `fetch(&amp;#39;http://127.0.0.1:8000/main.js&amp;#39;)` request by JS in that malicious web page. This request is normally blocked by same-origin policy, but that&amp;#39;s not the case for the reasons above.<br>1. The attacker gets the content of `http://127.0.0.1:8000/main.js`.<br><br>In this scenario, I assumed that the attacker knows the URL of the bundle output file name. But the attacker can also get that information by<br><br>Fetching `/index.html`: normally you have a script tag here<br>Fetching `/assets`: it&amp;#39;s common to have a `assets` directory when you have JS files and CSS files in a different directory and the directory listing feature tells the attacker the list of files<br>Connecting `/esbuild` SSE endpoint: the SSE endpoint sends the URL path of the changed files when the file is changed (`new EventSource(&amp;#39;/esbuild&amp;#39;).addEventListener(&amp;#39;change&amp;#39;, e =&amp;gt; console.log(e.type, e.data))`)<br>Fetching URLs in the known file: once the attacker knows one file, the attacker can know the URLs imported from that file<br><br>The scenario above fetches the compiled content, but if the victim has the source map option enabled, the attacker can also get the non-compiled content by fetching the source map file.<br><br>### PoC<br><br>1. Download [reproduction.zip](https://github.com/user-attachments/files/18561484/reproduction.zip)<br>2. Extract it and move to that directory<br>1. Run `npm i`<br>1. Run `npm run watch`<br>1. Run `fetch(&amp;#39;http://127.0.0.1:8000/app.js&amp;#39;).then(r =&amp;gt; r.text()).then(content =&amp;gt; console.log(content))` in a different website&amp;#39;s dev tools.<br><br>![image](https://github.com/user-attachments/assets/08fc2e4d-e1ec-44ca-b0ea-78a73c3c40e9)<br><br>### Impact<br><br>Users using the serve feature may get the source code stolen by malicious websites.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/evanw/esbuild/security/advisories/GHSA-67mh-4wv8-2f99</span><br><span class="vuln-link">https://github.com/evanw/esbuild/commit/de85afd65edec9ebc44a11e245fd9e9a2e99760d</span><br><span class="vuln-link">https://github.com/evanw/esbuild</span><br><br><div class="section-header">影响范围: </div><br>esbuild: 所有版本 &lt; 0.25.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-x574-m823-4x7w</td>
+                            <td>### Summary<br>The contents of arbitrary files can be returned to the browser.<br><br>### Impact<br>Only apps explicitly exposing the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host)) are affected.<br><br>### Details<br>`@fs` denies access to files outside of Vite serving allow list. Adding `?raw??` or `?import&amp;amp;raw??` to the URL bypasses this limitation and returns the file content if it exists. This bypass exists because trailing separators such as `?` are removed in several places, but are not accounted for in query string regexes.<br><br>### PoC<br>```bash<br>$ npm create vite@latest<br>$ cd vite-project/<br>$ npm install<br>$ npm run dev<br><br>$ echo &amp;quot;top secret content&amp;quot; &amp;gt; /tmp/secret.txt<br><br># expected behaviour<br>$ curl &amp;quot;http://localhost:5173/@fs/tmp/secret.txt&amp;quot;<br><br>    &amp;lt;body&amp;gt;<br>      &amp;lt;h1&amp;gt;403 Restricted&amp;lt;/h1&amp;gt;<br>      &amp;lt;p&amp;gt;The request url &amp;amp;quot;/tmp/secret.txt&amp;amp;quot; is outside of Vite serving allow list.<br><br># security bypassed<br>$ curl &amp;quot;http://localhost:5173/@fs/tmp/secret.txt?import&amp;amp;raw??&amp;quot;<br>export default &amp;quot;top secret content\n&amp;quot;<br>//# sourceMappingURL=data:application/json;base64,eyJ2...<br>```<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-30208<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-x574-m823-4x7w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-30208</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/315695e9d97cc6cfa7e6d9e0229fb50cdae3d9f4</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/80381c38d6f068b12e6e928cd3c616bd1d64803c</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/807d7f06d33ab49c48a2a3501da3eea1906c0d41</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/92ca12dc79118bf66f2b32ff81ed09e0d0bd07ca</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/f234b5744d8b74c95535a7b82cc88ed2144263c1</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 6.2.0 &lt; 6.2.3 <br>vite: &gt;= 6.1.0 &lt; 6.1.2 <br>vite: &gt;= 6.0.0 &lt; 6.0.12 <br>vite: &gt;= 5.0.0 &lt; 5.4.15 <br>vite: 所有版本 &lt; 4.5.10 <br><br><br><div class="cve-header">来自 CVE-2025-30208 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-4r4m-qw57-chr8</td>
+                            <td>### Summary<br><br>The contents of arbitrary files can be returned to the browser.<br><br>### Impact<br>Only apps explicitly exposing the Vite dev server to the network (using `--host` or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host)) are affected.<br><br>### Details<br><br>base64 encoded content of non-allowed files is exposed using `?inline&amp;amp;import` (originally reported as `?import&amp;amp;?inline=1.wasm?init`)<br>content of non-allowed files is exposed using `?raw?import`<br><br>`/@fs/` isn&amp;#39;t needed to reproduce the issue for files inside the project root.<br><br>### PoC<br><br>Original report (check details above for simplified cases):<br><br>The ?import&amp;amp;?inline=1.wasm?init ending allows attackers to read arbitrary files and returns the file content if it exists.  Base64 decoding needs to be performed twice<br>```<br>$ npm create vite@latest<br>$ cd vite-project/<br>$ npm install<br>$ npm run dev<br>```<br><br>Example full URL `http://localhost:5173/@fs/C:/windows/win.ini?import&amp;amp;?inline=1.wasm?init`<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-31125<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-4r4m-qw57-chr8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-31125</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/59673137c45ac2bcfad1170d954347c1a17ab949</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 6.2.0 &lt; 6.2.4 <br>vite: &gt;= 6.1.0 &lt; 6.1.3 <br>vite: &gt;= 6.0.0 &lt; 6.0.13 <br>vite: &gt;= 5.0.0 &lt; 5.4.16 <br>vite: 所有版本 &lt; 4.5.11 <br><br><br><div class="cve-header">来自 CVE-2025-31125 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-xcj6-pq6g-qj4x</td>
+                            <td>### Summary<br><br>The contents of arbitrary files can be returned to the browser.<br><br>### Impact<br><br>Only apps explicitly exposing the Vite dev server to the network (using --host or [server.host config option](https://vitejs.dev/config/server-options.html#server-host)) are affected..<br><br>### Details<br><br>#### `.svg`<br><br>Requests ending with `.svg` are loaded at this line.<br>https://github.com/vitejs/vite/blob/037f801075ec35bb6e52145d659f71a23813c48f/packages/vite/src/node/plugins/asset.ts#L285-L290<br>By adding `?.svg` with `?.wasm?init` or with `sec-fetch-dest: script` header, the restriction was able to bypass.<br><br>This bypass is only possible if the file is smaller than [`build.assetsInlineLimit`](https://vite.dev/config/build-options.html#build-assetsinlinelimit) (default: 4kB) and when using Vite 6.0+.<br><br>#### relative paths<br><br>The check was applied before the id normalization. This allowed requests to bypass with relative paths (e.g. `../../`).<br><br>### PoC<br><br>```bash<br>npm create vite@latest<br>cd vite-project/<br>npm install<br>npm run dev<br>```<br><br>send request to read `etc/passwd`<br><br>```bash<br>curl &amp;#39;http://127.0.0.1:5173/etc/passwd?.svg?.wasm?init&amp;#39;<br>```<br><br>```bash<br>curl &amp;#39;http://127.0.0.1:5173/@fs/x/x/x/vite-project/?/../../../../../etc/passwd?import&amp;amp;?raw&amp;#39;<br>```<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-31486<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/vitejs/vite/security/advisories/GHSA-xcj6-pq6g-qj4x</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-31486</span><br><span class="vuln-link">https://github.com/vitejs/vite/commit/62d7e81ee189d65899bb65f3263ddbd85247b647</span><br><span class="vuln-link">https://github.com/vitejs/vite</span><br><span class="vuln-link">https://github.com/vitejs/vite/blob/037f801075ec35bb6e52145d659f71a23813c48f/packages/vite/src/node/plugins/asset.ts#L285-L290</span><br><br><div class="section-header">影响范围: </div><br>vite: &gt;= 6.2.0 &lt; 6.2.5 <br>vite: &gt;= 6.1.0 &lt; 6.1.4 <br>vite: &gt;= 6.0.0 &lt; 6.0.14 <br>vite: &gt;= 5.0.0 &lt; 5.4.17 <br>vite: 所有版本 &lt; 4.5.12 <br><br><br><div class="cve-header">来自 CVE-2025-31486 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>org.apache.pulsar:pulsar-client</td><td>${pulsar-client.version}</td><td>NOASSERTION</td></tr><tr><td>${project.groupId}.zipkin2:zipkin-collector-pulsar</td><td>${project.version}</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (31)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>@vitest</td><td>1.2.2</td><td>1.6.1</td><td>次版本</td></tr><tr><td>path-to-regexp</td><td>2.4.0</td><td>3.3.0</td><td>主版本</td></tr><tr><td>type-detect</td><td>4.0.8</td><td>4.1.0</td><td>次版本</td></tr><tr><td>com.squareup.moshi:moshi</td><td>1.15.1</td><td>1.15.2</td><td>补丁版本</td></tr><tr><td>fast-loops</td><td>1.1.3</td><td>1.1.4</td><td>补丁版本</td></tr><tr><td>com.thoughtworks.xstream:xstream</td><td>1.4.20</td><td>1.4.21</td><td>补丁版本</td></tr><tr><td>vitest</td><td>^1.2.2</td><td>^1.6.1</td><td>一般变更</td></tr><tr><td>fill-range</td><td>7.0.1</td><td>7.1.1</td><td>次版本</td></tr><tr><td>yocto-queue</td><td>1.0.0</td><td>1.1.1</td><td>次版本</td></tr><tr><td>com.amazon.ion:ion-java</td><td>1.11.4</td><td>1.11.10</td><td>补丁版本</td></tr><tr><td>source-map-js</td><td>1.2.0</td><td>1.2.1</td><td>补丁版本</td></tr><tr><td>org.springframework.cloud:spring-cloud-starter-netflix-eureka-server</td><td>4.1.1</td><td>4.2.0</td><td>次版本</td></tr><tr><td>http-proxy-middleware</td><td>^1.0.3</td><td>^2.0.7</td><td>一般变更</td></tr><tr><td>tinypool</td><td>0.8.2</td><td>0.8.4</td><td>补丁版本</td></tr><tr><td>strip-literal</td><td>1.3.0</td><td>2.1.1</td><td>主版本</td></tr><tr><td>braces</td><td>3.0.2</td><td>3.0.3</td><td>补丁版本</td></tr><tr><td>rollup</td><td>3.29.4</td><td>4.24.0</td><td>主版本</td></tr><tr><td>com.google.guava:guava</td><td>33.1.0-jre</td><td>33.4.0-jre</td><td>次版本</td></tr><tr><td>magic-string</td><td>0.30.7</td><td>0.30.17</td><td>补丁版本</td></tr><tr><td>chai</td><td>4.4.1</td><td>4.5.0</td><td>次版本</td></tr><tr><td>picocolors</td><td>1.0.0</td><td>1.1.1</td><td>次版本</td></tr><tr><td>vite-node</td><td>1.2.2</td><td>1.6.1</td><td>次版本</td></tr><tr><td>com.google.protobuf:protobuf-java</td><td>3.25.3</td><td>3.25.6</td><td>补丁版本</td></tr><tr><td>@esbuild</td><td>0.20.2</td><td>0.21.5</td><td>次版本</td></tr><tr><td>micromatch</td><td>4.0.5</td><td>4.0.8</td><td>补丁版本</td></tr><tr><td>nanoid</td><td>2.1.11</td><td>3.3.8</td><td>主版本</td></tr><tr><td>postcss</td><td>8.4.38</td><td>8.5.2</td><td>次版本</td></tr><tr><td>cross-spawn</td><td>6.0.5</td><td>6.0.6</td><td>补丁版本</td></tr><tr><td>org.springframework.boot:spring-boot-dependencies</td><td>3.2.6</td><td>3.4.2</td><td>次版本</td></tr><tr><td>com.netflix.concurrency-limits:concurrency-limits-core</td><td>0.5.1</td><td>0.5.3</td><td>补丁版本</td></tr><tr><td>deep-eql</td><td>4.1.3</td><td>4.1.4</td><td>补丁版本</td></tr>
+                </table>
+                
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (26)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>@vitest</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>type-detect</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>@sinclair</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>loupe</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>cac</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>p-limit</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>@jest</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>yocto-queue</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>source-map-js</td><td>NOASSERTION</td><td>BSD-3-Clause</td><td>否</td></tr><tr><td>get-func-name</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>tinypool</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>strip-literal</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>pathval</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>magic-string</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>chai</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>diff-sequences</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>picocolors</td><td>NOASSERTION</td><td>ISC</td><td>否</td></tr><tr><td>check-error</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>vite-node</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>@esbuild</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>micromatch</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>nanoid</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>postcss</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>assertion-error</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>tinyspy</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr><tr><td>deep-eql</td><td>NOASSERTION</td><td>MIT</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">新增包漏洞信息 (1)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>包名</th>
+                                    <th>漏洞ID</th>
+                                    <th>影响版本</th>
+                                    <th>描述</th>
+                                    <th>发布日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>org.apache.pulsar:pulsar-client</td>
+                            <td class="vuln-unknown">GHSA-c5fp-x2h5-vjv7<br>关联CVE: CVE-2022-33681</td>
+                            <td>具体受影响版本: 1.19.0-incubating, 1.20.0-incubating, 1.21.0-incubating, 1.22.0-incubating, 1.22.1-incubating, 2.0.0-rc1-incubating, 2.0.1-incubating, 2.1.0-incubating, 2.1.1-incubating, 2.2.0, 2.2.1, 2.3.0, 2.3.1, 2.3.2, 2.4.0, 2.4.1, 2.4.2, 2.5.0, 2.5.1, 2.5.2, 2.6.0, 2.6.1, 2.6.2, 2.6.3, 2.6.4, 2.7.0, 2.7.1, 2.7.2, 2.7.3, 2.7.4&lt;br&gt;具体受影响版本: 2.8.0, 2.8.1, 2.8.2, 2.8.3&lt;br&gt;具体受影响版本: 2.9.0, 2.9.1, 2.9.2&lt;br&gt;具体受影响版本: 2.10.0</td>
+                            <td>Apache Pulsar Java Client vulnerable to Improper Certificate Validation&lt;br&gt;&lt;br&gt;Delayed TLS hostname verification in the Pulsar Java Client and the Pulsar Proxy make each client vulnerable to a man in the middle attack. Connections from the Pulsar Java Client to the Pulsar Broker/Proxy and connections from the Pulsar Proxy to the Pulsar Broker are vulnerable. Authentication data is sent before verifying the server’s TLS certificate matches the hostname, which means authentication data could be exposed to an attacker. An attacker can only take advantage of this vulnerability by taking control of a machine &#39;between&#39; the client and the server. The attacker must then actively manipulate traffic to perform the attack by providing the client with a cryptographically valid certificate for an unrelated host. Because the client sends authentication data before performing hostname verification, an attacker could gain access to the client’s authentication data. The client eventually closes the connection when it verifies the hostname and identifies the targeted hostname does not match a hostname on the certificate. Because the client eventually closes the connection, the value of the intercepted authentication data depends on the authentication method used by the client. Token based authentication and username/password authentication methods are vulnerable because the authentication data can be used to impersonate the client in a separate session. This issue affects Apache Pulsar Java Client versions 2.7.0 to 2.7.4; 2.8.0 to 2.8.3; 2.9.0 to 2.9.2; 2.10.0; 2.6.4 and earlier.<div class='vuln-refs'><strong>参考链接:</strong><br><a href='https://nvd.nist.gov/vuln/detail/CVE-2022-33681' target='_blank' class='vuln-link'>https://nvd.nist.gov/vuln/detail/CVE-2022-33681</a><br><a href='https://github.com/apache/pulsar/tree/db26073728bf86fc80deecaece2dc02b50bbb9b5/pulsar-client' target='_blank' class='vuln-link'>https://github.com/apache/pulsar/tree/db26073728bf86fc80deecaece2dc02b50bbb9b5/pulsar-client</a><br><a href='https://lists.apache.org/thread/fpo6x10trvn20hlk0dmnr5vlz5v4kl3d' target='_blank' class='vuln-link'>https://lists.apache.org/thread/fpo6x10trvn20hlk0dmnr5vlz5v4kl3d</a></div></td>
+                            <td>2022-09-25</td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>638</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>653</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>15</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>68</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (15)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>docker\examples\docker-compose-pulsar.yml</td></tr><tr><td>zipkin-collector\pulsar\README.md</td></tr><tr><td>zipkin-collector\pulsar\src\main\java\zipkin2\collector\pulsar\LazyPulsarInit.java</td></tr><tr><td>zipkin-collector\pulsar\src\main\java\zipkin2\collector\pulsar\PulsarCollector.java</td></tr><tr><td>zipkin-server\src\test\java\zipkin2\server\internal\pulsar\ZipkinPulsarCollectorPropertiesTest.java</td></tr><tr><td>docker\test-images\zipkin-pulsar\README.md</td></tr><tr><td>zipkin-collector\pulsar\src\test\java\zipkin2\collector\pulsar\ITPulsarCollector.java</td></tr><tr><td>zipkin-collector\pulsar\src\main\java\zipkin2\collector\pulsar\PulsarSpanConsumer.java</td></tr><tr><td>zipkin-server\src\test\java\zipkin2\collector\pulsar\ZipkinPulsarCollectorPropertiesOverrideTest.java</td></tr><tr><td>zipkin-collector\pulsar\pom.xml</td></tr><tr><td>zipkin-server\src\main\java\zipkin2\server\internal\pulsar\ZipkinPulsarCollectorProperties.java</td></tr><tr><td>zipkin-server\src\test\java\zipkin2\server\internal\pulsar\Access.java</td></tr><tr><td>zipkin-server\src\test\java\zipkin2\server\internal\pulsar\ZipkinPulsarCollectorConfigurationTest.java</td></tr><tr><td>zipkin-server\src\main\java\zipkin2\server\internal\pulsar\ZipkinPulsarCollectorConfiguration.java</td></tr><tr><td>zipkin-collector\pulsar\src\test\java\zipkin2\collector\pulsar\PulsarExtension.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (68)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\Keys.java</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\tables\ZipkinSpans.java</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\Tables.java</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-eureka.yml</td><td>内容变更</td></tr><tr><td>zipkin-tests\pom.xml</td><td>内容变更</td></tr><tr><td>.github\workflows\security.yml</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-mysql.yml</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-ui.yml</td><td>内容变更</td></tr><tr><td>zipkin-lens\package.json</td><td>内容变更</td></tr><tr><td>zipkin-storage\elasticsearch\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-server\README.md</td><td>内容变更</td></tr><tr><td>docker\README.md</td><td>内容变更</td></tr><tr><td>benchmarks\src\test\java\zipkin2\server\ServerIntegratedBenchmark.java</td><td>内容变更</td></tr><tr><td>zipkin-collector\activemq\src\test\java\zipkin2\collector\activemq\ActiveMQExtension.java</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\pom.xml</td><td>内容变更</td></tr><tr><td>.github\workflows\create_release.yml</td><td>内容变更</td></tr><tr><td>docker\test-images\zipkin-cassandra\install.sh</td><td>内容变更</td></tr><tr><td>zipkin-junit5\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-collector\core\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-collector\rabbitmq\src\test\java\zipkin2\collector\rabbitmq\RabbitMQExtension.java</td><td>内容变更</td></tr><tr><td>.github\ISSUE_TEMPLATE\bug.md</td><td>内容变更</td></tr><tr><td>zipkin-storage\elasticsearch\src\test\java\zipkin2\elasticsearch\integration\ElasticsearchExtension.java</td><td>内容变更</td></tr><tr><td>build-bin\docker-compose-zipkin.yml</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\Zipkin.java</td><td>内容变更</td></tr><tr><td>.github\workflows\deploy.yml</td><td>内容变更</td></tr><tr><td>zipkin-server\src\main\java\zipkin2\server\internal\InternalZipkinConfiguration.java</td><td>内容变更</td></tr><tr><td>.github\workflows\test.yml</td><td>内容变更</td></tr><tr><td>zipkin-collector\scribe\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\tables\ZipkinDependencies.java</td><td>内容变更</td></tr><tr><td>zipkin\pom.xml</td><td>内容变更</td></tr><tr><td>docker\examples\README.md</td><td>内容变更</td></tr><tr><td>docker\RATIONALE.md</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\test\java\zipkin2\storage\mysql\v1\MySQLExtension.java</td><td>内容变更</td></tr><tr><td>zipkin-storage\cassandra\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-server\src\test\java\zipkin2\server\internal\eureka\BaseITZipkinEureka.java</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>zipkin-storage\pom.xml</td><td>内容变更</td></tr><tr><td>build-bin\README.md</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\tables\ZipkinAnnotations.java</td><td>内容变更</td></tr><tr><td>zipkin-server\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-storage\elasticsearch\src\test\java\zipkin2\elasticsearch\integration\ElasticsearchBaseExtension.java</td><td>内容变更</td></tr><tr><td>zipkin-collector\rabbitmq\pom.xml</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-rabbitmq.yml</td><td>内容变更</td></tr><tr><td>docker\test-images\zipkin-kafka\install.sh</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose.yml</td><td>内容变更</td></tr><tr><td>.github\workflows\lint.yml</td><td>内容变更</td></tr><tr><td>zipkin-storage\cassandra\src\test\java\zipkin2\storage\cassandra\CassandraContainer.java</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-cassandra.yml</td><td>内容变更</td></tr><tr><td>zipkin-lens\package-lock.json</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-kafka.yml</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\Indexes.java</td><td>内容变更</td></tr><tr><td>.github\workflows\docker_push.yml</td><td>内容变更</td></tr><tr><td>pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-storage\elasticsearch\src\test\java\zipkin2\elasticsearch\integration\OpenSearchExtension.java</td><td>内容变更</td></tr><tr><td>zipkin-collector\activemq\pom.xml</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-prometheus.yml</td><td>内容变更</td></tr><tr><td>.github\workflows\test_readme.yml</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-activemq.yml</td><td>内容变更</td></tr><tr><td>docker\test-images\zipkin-eureka\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-server\src\main\resources\zipkin-server-shared.yml</td><td>内容变更</td></tr><tr><td>benchmarks\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-collector\kafka\src\test\java\zipkin2\collector\kafka\KafkaExtension.java</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-uiproxy.yml</td><td>内容变更</td></tr><tr><td>zipkin-storage\mysql-v1\src\main\java\zipkin2\storage\mysql\v1\internal\generated\DefaultCatalog.java</td><td>内容变更</td></tr><tr><td>zipkin-lens\pom.xml</td><td>内容变更</td></tr><tr><td>zipkin-collector\pom.xml</td><td>内容变更</td></tr><tr><td>docker\examples\docker-compose-elasticsearch.yml</td><td>内容变更</td></tr><tr><td>zipkin-collector\kafka\pom.xml</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

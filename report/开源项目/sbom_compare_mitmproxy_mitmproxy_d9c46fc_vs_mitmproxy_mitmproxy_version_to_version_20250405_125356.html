@@ -1,0 +1,570 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>SBOM 比较报告</title>
+            <style>
+                
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            max-width: 800px;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .section-header {
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 10px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cve-header {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            display: block;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .collapsible {
+            background-color: #f2f2f2;
+            color: #2980b9;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px 5px 0 0;
+            border-left: 5px solid #3498db;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .collapsible:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        .active:after {
+            content: '-';
+        }
+        .security-score {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .score-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .score-percentage {
+            font-size: 24px;
+            color: #666;
+            margin: 0 10px;
+        }
+        .score-grade {
+            display: inline-block;
+            padding: 2px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .grade-a {
+            background-color: #4CAF50;
+        }
+        .grade-b {
+            background-color: #FFC107;
+        }
+        .grade-c {
+            background-color: #FF9800;
+        }
+        .grade-d, .grade-f {
+            background-color: #F44336;
+        }
+        .category-score {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .category-score-high {
+            background-color: #E8F5E9;
+        }
+        .category-score-medium {
+            background-color: #FFF8E1;
+        }
+        .category-score-low {
+            background-color: #FFEBEE;
+        }
+        .vuln-critical {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .vuln-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .vuln-medium {
+            color: #ff9800;
+        }
+        .vuln-low {
+            color: #4caf50;
+        }
+        .vuln-unknown {
+            color: #9e9e9e;
+        }
+        .vuln-link {
+            word-break: break-all;
+            display: block;
+            padding: 3px 0;
+        }
+        .risk-container {
+            padding: 10px 0;
+        }
+        .risk-high {
+            background-color: #FFEAEA;
+            border-left: 4px solid #F44336;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+        }
+        .risk-medium {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+        }
+        .risk-low {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+        }
+        .stage-header {
+            background-color: #EFF8FF;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 17px;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .risk-category {
+            color: #333;
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 5px;
+        }
+        .risk-description {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .risk-affected {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 3px;
+        }
+        .risk-recommendation {
+            font-style: italic;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        /* 版本降级警告样式 */
+        .warning-box {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        }
+        .warning-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+            padding-bottom: 5px;
+        }
+        .warning-content {
+            color: #b71c1c;
+        }
+        .warning-note {
+            font-weight: bold;
+            color: #c62828;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .critical-detail {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        .details-list {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .impact-factors {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .score {
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-high {
+            background-color: #4CAF50;
+        }
+        .score-medium {
+            background-color: #FFC107;
+        }
+        .score-low {
+            background-color: #F44336;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>SBOM 比较报告</h1>
+                <p>生成时间: 2025-04-05 12:54:18</p>
+                <p>SBOM A: sample_data\mitmproxy_mitmproxy_d9c46fc.json</p>
+                <p>SBOM B: sample_data\mitmproxy_mitmproxy.json</p>
+                
+                <h2>基本统计信息</h2>
+                <table>
+                    <tr>
+                        <th>新增包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>移除包数量</th>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <th>版本变更数量</th>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <th>许可证变更数量</th>
+                        <td>0</td>
+                    </tr>
+                </table>
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">软件供应链安全评分</span>
+                <span class="score score-high">9.4/10 (94.1%) [A+]</span>
+            </button>
+            <div class="content">
+                
+                <p class="score-summary">软件供应链安全评分为 9.4/10.0 (94.1%)，安全等级: A+。 软件供应链保持了较高的完整性和一致性。 主要影响因素：CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>得分</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td>供应链完整性</td>
+                    <td class="score-high">1.7/1.7 (100.0%)</td>
+                    <td><ul class='details-list'><li>供应链保持了较高的完整性，依赖结构稳定，无明显篡改迹象</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>版本一致性</td>
+                    <td class="score-high">3.5/3.5 (99.2%)</td>
+                    <td><ul class='details-list'><li>2个包发生次版本变更</li><li>9个包发生其他版本变更</li><li>版本变更合理，主要是补丁和小版本更新</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>许可证合规性</td>
+                    <td class="score-high">0.9/0.9 (100.0%)</td>
+                    <td><ul class='details-list'><li>许可证变更较少，无明显合规风险</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>风险评估</td>
+                    <td class="score-high">2.6/2.6 (100.0%)</td>
+                    <td><ul class='details-list'><li>风险分析未发现明显的安全问题</li></ul></td>
+                </tr>
+                
+                <tr>
+                    <td>Scorecard评估</td>
+                    <td class="score-low">0.7/1.3 (57.0%)</td>
+                    <td><ul class='details-list'><li>Binary-Artifacts需要改进</li><li>Code-Review需要改进</li><li>以下项目风险较高: CII-Best-Practices, Vulnerabilities, Branch-Protection, Token-Permissions</li><li>
+已知漏洞信息:</li><li>- Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</li><li>- Warn: Project is vulnerable to: GHSA-9mvj-f7w8-pvh2 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-9mvj-f7w8-pvh2</li><li>- Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</li><li>- Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</li><li>- Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99 (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99</li><li>- Warn: Project is vulnerable to: GHSA-35jh-r3h4-6jhm (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-35jh-r3h4-6jhm</li><li>- Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</li><li>- Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</li><li>- Warn: Project is vulnerable to: GHSA-7p7h-4mm5-852v (未知): 发现漏洞 Warn: Project is vulnerable to: GHSA-7p7h-4mm5-852v</li><li>项目安全实践亟需加强</li></ul><div class='impact-factors'><strong>影响因素:</strong> CII-Best-Practices风险, Vulnerabilities风险, Branch-Protection风险, Token-Permissions风险, 存在已知漏洞, 整体安全实践不足</div></td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+                
+                    <button type="button" class="collapsible">
+                        <span style="flex-grow: 1;">漏洞信息（来源：OSV） (9)</span>
+                        <span style="font-size:14px;color:#666">点击展开/收起</span>
+                    </button>
+                    <div class="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">漏洞ID</th>
+                                    <th style="width: 75%">描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-grv7-fg5c-xmjg</td>
+                            <td>The NPM package `braces` fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends &amp;quot;imbalanced braces&amp;quot; as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4068<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces/issues/35</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/37</span><br><span class="vuln-link">https://github.com/micromatch/braces/pull/40</span><br><span class="vuln-link">https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4068</span><br><span class="vuln-link">https://github.com/micromatch/braces</span><br><span class="vuln-link">https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308</span><br><br><div class="section-header">影响范围: </div><br>braces: 所有版本 &lt; 3.0.3 <br><br><br><div class="cve-header">来自 CVE-2024-4068 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-3xgq-45jj-v275</td>
+                            <td>Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-21538<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-21538</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/issues/165</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/pull/160</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd</span><br><span class="vuln-link">https://github.com/moxystudio/node-cross-spawn</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349</span><br><span class="vuln-link">https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230</span><br><br><div class="section-header">影响范围: </div><br>cross-spawn: &gt;= 7.0.0 &lt; 7.0.5 <br>cross-spawn: 所有版本 &lt; 6.0.6 <br><br><br><div class="cve-header">来自 CVE-2024-21538 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-35jh-r3h4-6jhm</td>
+                            <td>`lodash` versions prior to 4.17.21 are vulnerable to Command Injection via the template function.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2021-23337<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2021-23337</span><br><span class="vuln-link">https://github.com/lodash/lodash/commit/3469357cff396a26c363f8c1b5a91dde28ba4b1c</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpuoct2021.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujul2022.html</span><br><span class="vuln-link">https://www.oracle.com/security-alerts/cpujan2022.html</span><br><span class="vuln-link">https://www.oracle.com//security-alerts/cpujul2021.html</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JS-LODASH-1040724</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1074929</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSBOWERGITHUBLODASH-1074931</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSBOWER-1074928</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARS-1074930</span><br><span class="vuln-link">https://snyk.io/vuln/SNYK-JAVA-ORGFUJIONWEBJARS-1074932</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20210312-0006</span><br><span class="vuln-link">https://github.com/lodash/lodash/blob/ddfd9b11a0126db2302cb70ec9973b66baec0975/lodash.js%23L14851</span><br><span class="vuln-link">https://github.com/lodash/lodash/blob/ddfd9b11a0126db2302cb70ec9973b66baec0975/lodash.js#L14851</span><br><span class="vuln-link">https://github.com/lodash/lodash</span><br><span class="vuln-link">https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf</span><br><br><div class="section-header">影响范围: </div><br>lodash: 所有版本 &lt; 4.17.21 <br>lodash-es: 所有版本 &lt; 4.17.21 <br>lodash.template: 所有版本 <br>lodash-template: 所有版本 <br><br><br><div class="cve-header">来自 CVE-2021-23337 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-7p7h-4mm5-852v</td>
+                            <td>@rkesters/gnuplot is an easy to use node module to draw charts using gnuplot and ps2pdf. The trim-newlines package before 3.0.1 and 4.x before 4.0.1 for Node.js has an issue related to regular expression denial-of-service (ReDoS) for the `.end()` method.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2021-33623<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2021-33623</span><br><span class="vuln-link">https://github.com/sindresorhus/trim-newlines/commit/25246c6ce5eea1c82d448998733a6302a4350d91</span><br><span class="vuln-link">https://github.com/sindresorhus/trim-newlines/commit/b10d5f4afef832b16bc56d49fc52c68cbd403869</span><br><span class="vuln-link">https://github.com/sindresorhus/trim-newlines</span><br><span class="vuln-link">https://github.com/sindresorhus/trim-newlines/releases/tag/v4.0.1</span><br><span class="vuln-link">https://lists.debian.org/debian-lts-announce/2022/12/msg00033.html</span><br><span class="vuln-link">https://security.netapp.com/advisory/ntap-20210702-0007</span><br><span class="vuln-link">https://www.npmjs.com/package/trim-newlines</span><br><br><div class="section-header">影响范围: </div><br>trim-newlines: 所有版本 &lt; 3.0.1 <br>trim-newlines: &gt;= 4.0.0 &lt; 4.0.1 <br><br><br><div class="cve-header">来自 CVE-2021-33623 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-968p-4wvh-cqc8</td>
+                            <td>### Impact<br><br>When using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).<br><br>Your generated code is vulnerable if _all_ the following conditions are true:<br><span class="vuln-link">You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)</span><br>You use the `.replace` method on a regular expression that contains named capturing groups<br>**Your code uses untrusted strings as the second argument of `.replace`**<br><br>If you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:<br><span class="vuln-link">you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23</span><br><span class="vuln-link">you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10</span><br><br>You can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).<br><br><br>### Patches<br><br>This problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It&amp;#39;s likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.<br><br>Please note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.<br><br>### Workarounds<br><br>If you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$&amp;lt;` if it&amp;#39;s then not followed by `&amp;gt;` (possibly with other characters in between).<br><br>### References<br><br>This vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2025-27789<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8</span><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2025-27789</span><br><span class="vuln-link">https://github.com/babel/babel/pull/17173</span><br><span class="vuln-link">https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4</span><br><span class="vuln-link">https://github.com/babel/babel</span><br><br><div class="section-header">影响范围: </div><br>@babel/helpers: 所有版本 &lt; 7.26.10 <br>@babel/runtime: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs2: 所有版本 &lt; 7.26.10 <br>@babel/runtime-corejs3: 所有版本 &lt; 7.26.10 <br>@babel/helpers: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs2: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br>@babel/runtime-corejs3: &gt;= 8.0.0-alpha.0 &lt; 8.0.0-alpha.17 <br><br><br><div class="cve-header">来自 CVE-2025-27789 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-9mvj-f7w8-pvh2</td>
+                            <td>A vulnerability has been identified in Bootstrap that exposes users to Cross-Site Scripting (XSS) attacks. The issue is present in the carousel component, where the `data-slide` and `data-slide-to` attributes can be exploited through the href attribute of an `&amp;lt;a&amp;gt;` tag due to inadequate sanitization. This vulnerability could potentially enable attackers to execute arbitrary JavaScript within the victim&amp;#39;s browser.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-6484<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-6484</span><br><span class="vuln-link">https://github.com/rubysec/ruby-advisory-db/blob/master/gems/bootstrap-sass/CVE-2024-6484.yml</span><br><span class="vuln-link">https://github.com/rubysec/ruby-advisory-db/blob/master/gems/bootstrap/CVE-2024-6484.yml</span><br><span class="vuln-link">https://github.com/twbs/bootstrap</span><br><span class="vuln-link">https://www.herodevs.com/vulnerability-directory/cve-2024-6484</span><br><br><div class="section-header">影响范围: </div><br>bootstrap: &gt;= 2.0.0 <br>bootstrap: &gt;= 2.0.0 <br>bootstrap: &gt;= 2.0.0 <br>bootstrap-sass: &gt;= 2.0.0 <br>bootstrap.sass: &gt;= 2.0.0 <br>twbs/bootstrap: &gt;= 2.0.0 <br>org.webjars:bootstrap: &gt;= 2.0.0 <br>org.webjars.npm:bootstrap: &gt;= 2.0.0 <br>bootstrap-sass: &gt;= 2.0.0 <br><br><br><div class="cve-header">来自 CVE-2024-6484 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-67mh-4wv8-2f99</td>
+                            <td>### Summary<br><br>esbuild allows any websites to send any request to the development server and read the response due to default CORS settings.<br><br>### Details<br><br>esbuild sets `Access-Control-Allow-Origin: *` header to all requests, including the SSE connection, which allows any websites to send any request to the development server and read the response.<br><br>https://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L121<br>https://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L363<br><br>**Attack scenario**:<br><br>1. The attacker serves a malicious web page (`http://malicious.example.com`).<br>1. The user accesses the malicious web page.<br>1. The attacker sends a `fetch(&amp;#39;http://127.0.0.1:8000/main.js&amp;#39;)` request by JS in that malicious web page. This request is normally blocked by same-origin policy, but that&amp;#39;s not the case for the reasons above.<br>1. The attacker gets the content of `http://127.0.0.1:8000/main.js`.<br><br>In this scenario, I assumed that the attacker knows the URL of the bundle output file name. But the attacker can also get that information by<br><br>Fetching `/index.html`: normally you have a script tag here<br>Fetching `/assets`: it&amp;#39;s common to have a `assets` directory when you have JS files and CSS files in a different directory and the directory listing feature tells the attacker the list of files<br>Connecting `/esbuild` SSE endpoint: the SSE endpoint sends the URL path of the changed files when the file is changed (`new EventSource(&amp;#39;/esbuild&amp;#39;).addEventListener(&amp;#39;change&amp;#39;, e =&amp;gt; console.log(e.type, e.data))`)<br>Fetching URLs in the known file: once the attacker knows one file, the attacker can know the URLs imported from that file<br><br>The scenario above fetches the compiled content, but if the victim has the source map option enabled, the attacker can also get the non-compiled content by fetching the source map file.<br><br>### PoC<br><br>1. Download [reproduction.zip](https://github.com/user-attachments/files/18561484/reproduction.zip)<br>2. Extract it and move to that directory<br>1. Run `npm i`<br>1. Run `npm run watch`<br>1. Run `fetch(&amp;#39;http://127.0.0.1:8000/app.js&amp;#39;).then(r =&amp;gt; r.text()).then(content =&amp;gt; console.log(content))` in a different website&amp;#39;s dev tools.<br><br>![image](https://github.com/user-attachments/assets/08fc2e4d-e1ec-44ca-b0ea-78a73c3c40e9)<br><br>### Impact<br><br>Users using the serve feature may get the source code stolen by malicious websites.<br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://github.com/evanw/esbuild/security/advisories/GHSA-67mh-4wv8-2f99</span><br><span class="vuln-link">https://github.com/evanw/esbuild/commit/de85afd65edec9ebc44a11e245fd9e9a2e99760d</span><br><span class="vuln-link">https://github.com/evanw/esbuild</span><br><br><div class="section-header">影响范围: </div><br>esbuild: 所有版本 &lt; 0.25.0 <br></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-952p-6rrq-rcjv</td>
+                            <td>The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn&amp;#39;t find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won&amp;#39;t start backtracking the regular expression due to greedy matching.<br><br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2024-4067<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/issues/243</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/247</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/pull/266</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0</span><br><span class="vuln-link">https://advisory.checkmarx.net/advisory/CVE-2024-4067</span><br><span class="vuln-link">https://devhub.checkmarx.com/cve-details/CVE-2024-4067</span><br><span class="vuln-link">https://github.com/micromatch/micromatch</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448</span><br><span class="vuln-link">https://github.com/micromatch/micromatch/releases/tag/4.0.8</span><br><br><div class="section-header">影响范围: </div><br>micromatch: 所有版本 &lt; 4.0.8 <br><br><br><div class="cve-header">来自 CVE-2024-4067 的附加信息:</div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Warn: Project is vulnerable to: GHSA-7fh5-64p2-3v2j</td>
+                            <td>An issue was discovered in PostCSS before 8.4.31. It affects linters using PostCSS to parse external Cascading Style Sheets (CSS). There may be `\r` discrepancies, as demonstrated by `@font-face{ font:(\r/*);}` in a rule.<br><br>This vulnerability affects linters using PostCSS to parse external untrusted CSS. An attacker can prepare CSS in such a way that it will contains parts parsed by PostCSS as a CSS comment. After processing by PostCSS, it will be included in the PostCSS output in CSS nodes (rules, properties) despite being originally included in a comment.<br><br><div class="section-header">相关漏洞ID: </div><br>CVE-2023-44270<br><br><div class="section-header">参考链接: </div><br><span class="vuln-link">https://nvd.nist.gov/vuln/detail/CVE-2023-44270</span><br><span class="vuln-link">https://github.com/github/advisory-database/issues/2820</span><br><span class="vuln-link">https://github.com/postcss/postcss/commit/58cc860b4c1707510c9cd1bc1fa30b423a9ad6c5</span><br><span class="vuln-link">https://github.com/postcss/postcss</span><br><span class="vuln-link">https://github.com/postcss/postcss/blob/main/lib/tokenize.js#L25</span><br><span class="vuln-link">https://github.com/postcss/postcss/releases/tag/8.4.31</span><br><br><div class="section-header">影响范围: </div><br>postcss: 所有版本 &lt; 8.4.31 <br><br><br><div class="cve-header">来自 CVE-2023-44270 的附加信息:</div></td>
+                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                
+                
+                
+            <button type="button" class="collapsible">
+                <span style="flex-grow: 1;">版本变更 (11)</span>
+                <span style="font-size:14px;color:#666">点击展开/收起</span>
+            </button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>包名</th>
+                        <th>旧版本</th>
+                        <th>新版本</th>
+                        <th>变更类型</th>
+                    </tr>
+                    <tr><td>pyparsing</td><td>>=2.4.2,<=3.2.1</td><td>>=2.4.2,<=3.2.3</td><td>一般变更</td></tr><tr><td>mypy</td><td>>=1.10.1,<=1.14.1</td><td>>=1.10.1,<=1.15.0</td><td>一般变更</td></tr><tr><td>ruff</td><td>>=0.5.0,<=0.9.4</td><td>>=0.5.0,<=0.11.2</td><td>一般变更</td></tr><tr><td>pyinstaller-hooks-contrib</td><td>==2025.1</td><td>==2025.2</td><td>次版本</td></tr><tr><td>hypothesis</td><td>>=6.104.2,<=6.124.9</td><td>>=6.104.2,<=6.130.6</td><td>一般变更</td></tr><tr><td>pytest</td><td>>=8.2.2,<=8.3.4</td><td>>=8.2.2,<=8.3.5</td><td>一般变更</td></tr><tr><td>types-requests</td><td>>=2.32.0.20240622,<=2.32.0.20241016</td><td>>=2.32.0.20240622,<=2.32.0.20250328</td><td>一般变更</td></tr><tr><td>pytest-cov</td><td>>=5.0.0,<=6.0.0</td><td>>=5.0.0,<=6.1.0</td><td>一般变更</td></tr><tr><td>pytest-asyncio</td><td>>=0.23.6,<=0.25.3</td><td>>=0.23.6,<=0.26.0</td><td>一般变更</td></tr><tr><td>pyinstaller</td><td>==6.11.1</td><td>==6.12.0</td><td>次版本</td></tr><tr><td>tox</td><td>>=4.15.1,<=4.24.1</td><td>>=4.15.1,<=4.25.0</td><td>一般变更</td></tr>
+                </table>
+                
+            </div>
+            
+                
+                
+                
+                
+                
+                
+                
+            <h3>文件统计</h3>
+            <table>
+                <tr>
+                    <th>总文件数 (SBOM A)</th>
+                    <td>812</td>
+                </tr>
+                <tr>
+                    <th>总文件数 (SBOM B)</th>
+                    <td>825</td>
+                </tr>
+                <tr>
+                    <th>新增文件数</th>
+                    <td>53</td>
+                </tr>
+                <tr>
+                    <th>移除文件数</th>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <th>文件内容变更数</th>
+                    <td>63</td>
+                </tr>
+            </table>
+            
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">新增文件 (53)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>docs\src\content\howto\kubernetes.md</td></tr><tr><td>docs\src\content\howto\ignore-domains.md</td></tr><tr><td>docs\src\content\tutorials\_index.md</td></tr><tr><td>docs\src\content\concepts\options.md</td></tr><tr><td>docs\src\content\concepts\_index.md</td></tr><tr><td>mitmproxy\contentviews\socketio.py</td></tr><tr><td>docs\src\assets\recordings\mitmproxy_intercept_requests_instructions.json</td></tr><tr><td>docs\src\content\cli-tutorials\cli-02-intercept-requests.md</td></tr><tr><td>docs\src\content\web-tutorials\_index.md</td></tr><tr><td>docs\src\assets\recordings\mitmproxy_modify_requests_instructions.json</td></tr><tr><td>docs\src\content\addons\_index.md</td></tr><tr><td>docs\src\assets\recordings\mitmproxy_user_interface_instructions.json</td></tr><tr><td>docs\src\content\addons\overview.md</td></tr><tr><td>docs\src\content\addons\commands.md</td></tr><tr><td>docs\src\content\overview\installation.md</td></tr><tr><td>docs\src\content\api\_index.md</td></tr><tr><td>docs\src\assets\css\modern-normalize.css</td></tr><tr><td>docs\src\assets\recordings\mitmproxy_replay_requests_instructions.json</td></tr><tr><td>test\mitmproxy\contentviews\test_socketio.py</td></tr><tr><td>docs\src\archetypes\default.md</td></tr><tr><td>docs\src\content\overview\features.md</td></tr><tr><td>docs\src\assets\search.js</td></tr><tr><td>docs\src\content\howto\install-system-trusted-ca-android.md</td></tr><tr><td>docs\src\content\concepts\certificates.md</td></tr><tr><td>docs\src\content\concepts\modes.md</td></tr><tr><td>docs\src\content\howto\transparent-vms.md</td></tr><tr><td>docs\src\content\cli-tutorials\whats-next.md</td></tr><tr><td>docs\src\content\overview\getting-started.md</td></tr><tr><td>docs\src\content\addons\options.md</td></tr><tr><td>docs\src\content\howto\transparent.md</td></tr><tr><td>test\mitmproxy\net\test_free_port.py</td></tr><tr><td>docs\src\layouts\index.searchindex.js</td></tr><tr><td>docs\src\content\cli-tutorials\_index.md</td></tr><tr><td>docs\src\content\tutorials\highscores.md</td></tr><tr><td>docs\src\content\cli-tutorials\cli-03-modify-requests.md</td></tr><tr><td>docs\src\assets\elasticlunr.min.js</td></tr><tr><td>docs\src\content\cli-tutorials\cli-04-replay-requests.md</td></tr><tr><td>docs\src\content\addons\examples.md</td></tr><tr><td>docs\src\content\cli-tutorials\cli-01-user-interface.md</td></tr><tr><td>docs\src\assets\version-selector.js</td></tr><tr><td>docs\src\content\addons\api-changelog.md</td></tr><tr><td>docs\src\content\concepts\filters.md</td></tr><tr><td>docs\src\content\addons\event-hooks.md</td></tr><tr><td>docs\src\content\howto\_index.md</td></tr><tr><td>mitmproxy\net\free_port.py</td></tr><tr><td>docs\src\content\concepts\commands.md</td></tr><tr><td>docs\src\content\howto\wireshark-tls.md</td></tr><tr><td>docs\src\content\tutorials\client-replay.md</td></tr><tr><td>docs\src\assets\css\components\syntax.css</td></tr><tr><td>docs\src\content\overview\_index.md</td></tr><tr><td>docs\src\layouts\_default\baseof.html</td></tr><tr><td>docs\src\content\concepts\protocols.md</td></tr><tr><td>docs\src\content\concepts\how-mitmproxy-works.md</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">移除文件 (40)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                        </tr>
+                        <tr><td>docs\src\content\howto-transparent-vms.md</td></tr><tr><td>docs\src\content\addons-api-changelog.md</td></tr><tr><td>docs\src\static\recordings\mitmproxy_user_interface_instructions.json</td></tr><tr><td>docs\src\content\addons-commands.md</td></tr><tr><td>docs\src\themes\mitmproxydocs\archetypes\default.md</td></tr><tr><td>docs\src\content\concepts-howmitmproxyworks.md</td></tr><tr><td>docs\src\content\overview-features.md</td></tr><tr><td>docs\src\content\mitmproxytutorial-interceptrequests.md</td></tr><tr><td>docs\src\content\concepts-commands.md</td></tr><tr><td>docs\src\content\addons-options.md</td></tr><tr><td>docs\src\content\tute-highscores.md</td></tr><tr><td>docs\src\layouts\partials\sidemenu.html</td></tr><tr><td>docs\src\themes\mitmproxydocs\static\css\style.css</td></tr><tr><td>docs\src\content\concepts-certificates.md</td></tr><tr><td>docs\src\static\recordings\mitmproxy_modify_requests_instructions.json</td></tr><tr><td>docs\src\content\howto-wireshark-tls.md</td></tr><tr><td>docs\src\content\addons-overview.md</td></tr><tr><td>docs\src\content\tute-clientreplay.md</td></tr><tr><td>docs\src\themes\mitmproxydocs\layouts\partials\footer.html</td></tr><tr><td>docs\src\content\mitmproxytutorial-replayrequests.md</td></tr><tr><td>docs\src\themes\mitmproxydocs\layouts\_default\single.html</td></tr><tr><td>docs\src\static\recordings\mitmproxy_replay_requests_instructions.json</td></tr><tr><td>docs\src\content\howto-ignoredomains.md</td></tr><tr><td>docs\src\content\mitmproxytutorial-whatsnext.md</td></tr><tr><td>docs\src\content\concepts-options.md</td></tr><tr><td>docs\src\content\howto-install-system-trusted-ca-android.md</td></tr><tr><td>docs\src\static\recordings\mitmproxy_intercept_requests_instructions.json</td></tr><tr><td>docs\src\themes\mitmproxydocs\layouts\_default\list.html</td></tr><tr><td>docs\src\content\overview-getting-started.md</td></tr><tr><td>docs\src\content\howto-kubernetes.md</td></tr><tr><td>docs\src\content\addons-examples.md</td></tr><tr><td>docs\src\themes\mitmproxydocs\layouts\partials\header.html</td></tr><tr><td>docs\src\content\mitmproxytutorial-modifyrequests.md</td></tr><tr><td>docs\src\content\concepts-protocols.md</td></tr><tr><td>docs\src\content\concepts-modes.md</td></tr><tr><td>docs\src\content\overview-installation.md</td></tr><tr><td>docs\src\content\mitmproxytutorial-userinterface.md</td></tr><tr><td>docs\src\content\howto-transparent.md</td></tr><tr><td>docs\src\content\concepts-filters.md</td></tr><tr><td>docs\src\assets\syntax.css</td></tr>
+                    </table>
+                </div>
+                
+                
+                <button type="button" class="collapsible">
+                    <span style="flex-grow: 1;">文件变更 (63)</span>
+                    <span style="font-size:14px;color:#666">点击展开/收起</span>
+                </button>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th>文件名</th>
+                            <th>变更类型</th>
+                        </tr>
+                        <tr><td>web\src\js\flow\utils.ts</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.certs.md</td><td>内容变更</td></tr><tr><td>docs\src\layouts\shortcodes\asciicast.html</td><td>内容变更</td></tr><tr><td>docs\src\content\_index.md</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.net.server_spec.md</td><td>内容变更</td></tr><tr><td>test\mitmproxy\proxy\layers\test_tls.py</td><td>内容变更</td></tr><tr><td>docs\src\layouts\shortcodes\note.html</td><td>内容变更</td></tr><tr><td>test\mitmproxy\net\http\test_url.py</td><td>内容变更</td></tr><tr><td>docs\src\content\web-tutorials\web-05-replaying-flows.md</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.proxy.context.md</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.websocket.md</td><td>内容变更</td></tr><tr><td>CONTRIBUTING.md</td><td>内容变更</td></tr><tr><td>docs\src\layouts\partials\outdated.html</td><td>内容变更</td></tr><tr><td>mitmproxy\flowfilter.py</td><td>内容变更</td></tr><tr><td>mitmproxy\net\http\url.py</td><td>内容变更</td></tr><tr><td>test\mitmproxy\addons\test_proxyserver.py</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\layers\http\_events.py</td><td>内容变更</td></tr><tr><td>test\mitmproxy\net\data\verificationcerts\generate.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.connection.md</td><td>内容变更</td></tr><tr><td>docs\src\layouts\partials\edit-on-github.html</td><td>内容变更</td></tr><tr><td>docs\scripts\api-render.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.dns.md</td><td>内容变更</td></tr><tr><td>mitmproxy\http.py</td><td>内容变更</td></tr><tr><td>.github\workflows\main.yml</td><td>内容变更</td></tr><tr><td>docs\scripts\options.py</td><td>内容变更</td></tr><tr><td>docs\src\content\addons-api.md</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\layers\tls.py</td><td>内容变更</td></tr><tr><td>CHANGELOG.md</td><td>内容变更</td></tr><tr><td>mitmproxy\contentviews\__init__.py</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\layers\http\_http1.py</td><td>内容变更</td></tr><tr><td>docs\src\content\web-tutorials\web-04-modifying-requests.md</td><td>内容变更</td></tr><tr><td>docs\src\content\web-tutorials\web-03-analysing-flows.md</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\mode_servers.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.addonmanager.md</td><td>内容变更</td></tr><tr><td>mitmproxy\tools\console\flowview.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.proxy.server_hooks.md</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\layers\http\_http3.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.udp.md</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\layers\http\__init__.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.tls.md</td><td>内容变更</td></tr><tr><td>.github\workflows\autofix.yml</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.flow.md</td><td>内容变更</td></tr><tr><td>mitmproxy\proxy\layers\http\_http2.py</td><td>内容变更</td></tr><tr><td>.github\workflows\release.yml</td><td>内容变更</td></tr><tr><td>mitmproxy\addons\keepserving.py</td><td>内容变更</td></tr><tr><td>examples\contrib\change_upstream_proxy.py</td><td>内容变更</td></tr><tr><td>test\mitmproxy\proxy\layers\http\test_http2.py</td><td>内容变更</td></tr><tr><td>test\mitmproxy\addons\test_keepserving.py</td><td>内容变更</td></tr><tr><td>mitmproxy\addons\proxyserver.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.coretypes.multidict.md</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.tcp.md</td><td>内容变更</td></tr><tr><td>docs\src\layouts\partials\sidebar.html</td><td>内容变更</td></tr><tr><td>test\mitmproxy\proxy\layers\http\test_http3.py</td><td>内容变更</td></tr><tr><td>docs\src\layouts\partials\add-anchors.html</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.proxy.mode_specs.md</td><td>内容变更</td></tr><tr><td>mitmproxy\net\tls.py</td><td>内容变更</td></tr><tr><td>docs\src\content\web-tutorials\web-02-intercepting-traffic.md</td><td>内容变更</td></tr><tr><td>docs\src\layouts\_default\single.html</td><td>内容变更</td></tr><tr><td>docs\scripts\clirecording\generate_recordings.sh</td><td>内容变更</td></tr><tr><td>mitmproxy\version.py</td><td>内容变更</td></tr><tr><td>docs\src\content\api\mitmproxy.http.md</td><td>内容变更</td></tr><tr><td>docs\README.md</td><td>内容变更</td></tr><tr><td>docs\src\content\web-tutorials\web-01-user-interface.md</td><td>内容变更</td></tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <script>
+                // 初始化所有content的样式为隐藏
+                document.addEventListener('DOMContentLoaded', function() {
+                    var contents = document.querySelectorAll('.content');
+                    for (var i = 0; i < contents.length; i++) {
+                        contents[i].style.display = "none";
+                    }
+                });
+                
+                var coll = document.getElementsByClassName("collapsible");
+                for (var i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function(e) {
+                        // 阻止按钮的默认行为，防止页面刷新
+                        e.preventDefault();
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            </script>
+        </body>
+        </html>
+        
